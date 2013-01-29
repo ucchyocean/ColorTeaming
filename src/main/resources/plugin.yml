@@ -1,0 +1,74 @@
+name: ColorMeTeaming
+main: com.github.ucchyocean.cmt.ColorMeTeaming
+version: 1.0.0
+authors: [ucchy]
+load: startup
+description: ColorMe Teaming Plugin
+commands:
+  colorcount:
+    description: ColorMe Count Command
+    aliases: cc
+    usage: /<command> - Display members of color groups.
+    permission: colorteaming.count
+    permission-message: You don't have permission "<permission>".
+  colorcountsay:
+    description: ColorMe Count Command
+    aliases: ccsay
+    usage: /<command> - Broadcast members of color groups.
+    permission: colorteaming.count
+    permission-message: You don't have permission "<permission>".
+  colorfriendlyfire:
+    description: ColorMe Friendly Fire Disabler Command
+    aliases: cff
+    usage: /<command> (on|off) - Set Friendly Fire on/off.
+    permission: colorteaming.friendlyfire
+    permission-message: You don't have permission "<permission>".
+  colorchat:
+    description: ColorMe Team Chat Command
+    aliases: cchat
+    usage: /<command> (on|off|opCopyOn|opCopyOff)
+    permission: colorteaming.chat
+    permission-message: You don't have permission "<permission>".
+  colorglobal:
+    description: Global Chat command for ColorMe Team Chat Command
+    aliases: cg, g
+    usage: /<command> (message)
+    permission: colorteaming.global
+    permission-message: You don't have permission "<permission>".
+  colorleader:
+    description: ColorMe Team Leaders Command
+    aliases: cl
+    usage: |
+           /<command> (group) (user) - Set (user) for leader of (group).
+           /<command> (group) random [(numberOfLeaders)]
+           /<command> all [(numberOfLeaders)]
+           /<command> clear - Clear all of leaders.
+           /<command> view - Display leader information.
+           /<command> say - Broadcast leader information.
+    permission: colorteaming.leader
+    permission-message: You don't have permission "<permission>".
+  colortp:
+    description: ColorMe Team Teleport Command
+    aliases: ctp
+    usage: /<command> (group) (world) (x) (y) (z) - Teleport the members of (group) to (world):(x),(y),(z).
+    permission: colorteaming.tp
+    permission-message: You don't have permission "<permission>".
+permissions:
+  colorteaming.count:
+    description: ColorMe Count Command
+    default: op
+  colorteaming.friendlyfire:
+    description: ColorMe Friendly Fire Disabler Command
+    default: op
+  colorteaming.chat:
+    description: ColorMe Team Chat Command
+    default: op
+  colorteaming.global:
+    description: Global Chat command for ColorMe Team Chat Command
+    default: true
+  colorteaming.leader:
+    description: ColorMe Team Leaders Command
+    default: op
+  colorteaming.tp:
+    description: ColorMe Team Teleport Command
+    default: op

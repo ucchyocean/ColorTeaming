@@ -1,0 +1,19 @@
+# ColorMe Teaming Plugin 1.0.0
+# @author     ucchy
+# @license    GPLv3
+# @copyright  Copyright ucchy 2013
+
+# サーバー起動時のチームチャットモードを設定します。
+# trueになっている場合は、チャットの発言がチーム内のみになります。
+teamChatMode: false
+
+# teamChatMode が有効のときに、OPメンバーの画面にもチームチャットの内容を
+# 表示するかどうかを設定します。
+opDisplayMode: false
+
+# 同じチームメンバー同士の攻撃（剣などの直接攻撃と、弓矢）を無効にします。
+firelyFireDisabler: true
+
+# teamChatMode、firelyFireDisabler、大将選出などの対象外とするグループを設定します。
+# 管理者や、観客用のグループを設定してください。
+ignoreGroups: ['', 'white', 'gold']

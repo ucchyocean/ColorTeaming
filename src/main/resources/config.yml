@@ -1,0 +1,11 @@
+# ColorMe Teaming Plugin 1.0.0
+# @author     ucchy
+# @license    GPLv3
+# @copyright  Copyright ucchy 2013
+
+partyChatMode: false
+opDisplayMode: false
+
+firelyFireDisabler: true
+
+ignoreGroups: ['', 'white', 'gold']

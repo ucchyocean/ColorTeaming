@@ -1,0 +1,260 @@
+/*
+ * Copyright ucchy 2013
+ */
+package com.github.ucchyocean.cmt;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Vector;
+import java.util.logging.Logger;
+
+import org.bukkit.Bukkit;
+import org.bukkit.World;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
+
+import com.github.ucchyocean.cmt.command.CChatCommand;
+import com.github.ucchyocean.cmt.command.CChatGlobalCommand;
+import com.github.ucchyocean.cmt.command.CCountCommand;
+import com.github.ucchyocean.cmt.command.CFriendlyFireCommand;
+import com.github.ucchyocean.cmt.command.CLeaderCommand;
+import com.github.ucchyocean.cmt.command.CTPCommand;
+import com.github.ucchyocean.cmt.listener.CChatListener;
+import com.github.ucchyocean.cmt.listener.CFriendlyFireListener;
+import com.github.ucchyocean.cmt.listener.CLeaderListener;
+
+import de.dustplanet.colorme.Actions;
+import de.dustplanet.colorme.ColorMe;
+
+/**
+ * @author ucchy
+ * ColorMe を使用した、簡易PVPチーミングプラグイン
+ */
+public class ColorMeTeaming extends JavaPlugin {
+
+    private static final String TEAM_CHAT_FORMAT = "&2[%s]<%s&r&2> %s";
+    private static final String TEAM_INFORMATION_FORMAT = "&2[%s] %s";
+
+    private static ColorMeTeaming instance;
+    private static ColorMe colorme;
+
+    private static Logger logger;
+
+    public static List<String> ignoreGroups;
+    public static boolean isTeamChatMode;
+    public static boolean isOPDisplayMode;
+    public static boolean isFriendlyFireDisabler;
+
+    public static Hashtable<String, Vector<Player>> leaders;
+
+    /**
+     * @see org.bukkit.plugin.java.JavaPlugin#onEnable()
+     */
+    @Override
+    public void onEnable() {
+
+        instance = this;
+        leaders = new Hashtable<String, Vector<Player>>();
+        logger = getLogger();
+
+        // 設定の読み込み処理
+        try {
+            reloadConfigFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+            logger.severe("設定ファイルの読み込みに失敗しました。");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+
+        // 前提プラグイン ColorMe の取得
+        Plugin temp = getServer().getPluginManager().getPlugin("ColorMe");
+        if ( temp != null && temp instanceof ColorMe ) {
+            colorme = (ColorMe)temp;
+        } else {
+            logger.severe("ColorMe がロードされていません。");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+
+        // コマンドをサーバーに登録
+        CCountCommand ccCommand = new CCountCommand();
+        getCommand("colorcount").setExecutor(ccCommand);
+        getCommand("colorcountsay").setExecutor(ccCommand);
+
+        getCommand("colorfriendlyfire").setExecutor(new CFriendlyFireCommand());
+
+        getCommand("colorchat").setExecutor(new CChatCommand());
+
+        getCommand("colorglobal").setExecutor(new CChatGlobalCommand());
+
+        getCommand("colorleader").setExecutor(new CLeaderCommand());
+
+        getCommand("colortp").setExecutor(new CTPCommand());
+
+        // イベント購読をサーバーに登録
+        getServer().getPluginManager().registerEvents(new CFriendlyFireListener(), this);
+
+        getServer().getPluginManager().registerEvents(new CChatListener(), this);
+
+        getServer().getPluginManager().registerEvents(new CLeaderListener(), this);
+    }
+
+    /**
+     * config.ymlの読み出し処理。
+     * @throws IOException
+     */
+    protected void reloadConfigFile() throws IOException {
+
+        File configFile = new File(getDataFolder(), "config.yml");
+        if ( !configFile.exists() ) {
+            Utility.copyFileFromJar(getFile(), configFile, "config_ja.yml", false);
+        }
+
+        reloadConfig();
+        FileConfiguration config = getConfig();
+
+        isTeamChatMode = config.getBoolean("teamChatMode", false);
+        isOPDisplayMode = config.getBoolean("opDisplayMode", false);
+
+        isFriendlyFireDisabler = config.getBoolean("firelyFireDisabler", true);
+
+        ignoreGroups = config.getStringList("ignoreGroups");
+        if ( ignoreGroups == null ) {
+            ignoreGroups = new ArrayList<String>();
+        }
+    }
+
+    /**
+     * Player に設定されている、ColorMe の色設定を取得する。
+     * @param player プレイヤー
+     * @return ColorMeの色
+     */
+    public static String getPlayerColor(Player player) {
+
+        Actions actions = new Actions(colorme);
+        return actions.get(player.getName(), "default", "colors");
+    }
+
+    /**
+     * ColorMeに設定されている色情報で、ユーザーをグループごとのメンバーに整理して返すメソッド<br>
+     * ignoreGroupに設定されている色グループに所属しているプレーヤーは、除外される。
+     * @return 色をKey メンバーをValueとした Hashtable
+     */
+    public static Hashtable<String, Vector<Player>> getAllColorMembers() {
+
+        Hashtable<String, Vector<Player>> result = new Hashtable<String, Vector<Player>>();
+        Player[] players = Bukkit.getOnlinePlayers();
+
+        for ( Player p : players ) {
+
+            String color = getPlayerColor(p);
+
+            if ( ignoreGroups.contains(color) ) {
+                continue;
+            }
+
+            if ( result.containsKey(color) ) {
+                result.get(color).add(p);
+            } else {
+                Vector<Player> data = new Vector<Player>();
+                data.add(p);
+                result.put(color, data);
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * メッセージをブロードキャストに送信する。
+     * @param message 送信するメッセージ
+     */
+    public static void sendBroadcast(String message) {
+        instance.getServer().broadcastMessage(message);
+    }
+
+    /**
+     * メッセージをチームチャットに送信する。
+     * @param player 送信元プレイヤー
+     * @param message 送信するメッセージ
+     */
+    public static void sendTeamChat(Player player, String message) {
+
+        String color = getPlayerColor(player);
+
+        // メッセージを生成
+        String partyMessage = String.format(
+                Utility.replaceColorCode(TEAM_CHAT_FORMAT),
+                color,
+                player.getDisplayName(),
+                message
+                );
+
+        // チームメンバに送信する
+        Vector<Player> playersToSend = getAllColorMembers().get(color);
+        if ( isOPDisplayMode ) {
+            Player[] players = instance.getServer().getOnlinePlayers();
+            for ( Player p : players ) {
+                if ( p.isOp() && !playersToSend.contains(p) ) {
+                    playersToSend.add(p);
+                }
+            }
+        }
+        for ( Player p : playersToSend ) {
+            p.sendMessage(partyMessage);
+        }
+    }
+
+    /**
+     * 情報をチームチャットに送信する。
+     * @param color 送信先のチーム
+     * @param message 送信するメッセージ
+     */
+    public static void sendTeamChat(String color, String message) {
+
+        // メッセージを生成
+        String partyMessage = String.format(
+                Utility.replaceColorCode(TEAM_INFORMATION_FORMAT),
+                color,
+                message
+                );
+
+        // チームメンバに送信する
+        Vector<Player> playersToSend = getAllColorMembers().get(color);
+//        if ( isOPDisplayMode ) {
+//            Player[] players = instance.getServer().getOnlinePlayers();
+//            for ( Player p : players ) {
+//                if ( p.isOp() && !playersToSend.contains(p) ) {
+//                    playersToSend.add(p);
+//                }
+//            }
+//        }
+        for ( Player p : playersToSend ) {
+            p.sendMessage(partyMessage);
+        }
+    }
+
+    /**
+     * プレイヤー名からPlayerインスタンスを返す。
+     * @param name プレイヤー名
+     * @return
+     */
+    public static Player getPlayerExact(String name) {
+        return instance.getServer().getPlayerExact(name);
+    }
+
+    /**
+     * ワールド名からWorldインスタンスを返す。
+     * @param name ワールド名
+     * @return
+     */
+    public static World getWorld(String name) {
+        return instance.getServer().getWorld(name);
+    }
+}
