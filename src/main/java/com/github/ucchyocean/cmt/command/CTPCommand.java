@@ -31,22 +31,44 @@ public class CTPCommand implements CommandExecutor {
     public boolean onCommand(
             CommandSender sender, Command command, String label, String[] args) {
 
-        if ( args.length < 5 ) {
+        if ( args.length < 4 ) {
             return false;
         }
 
-        // 有効な座標が指定されたか確認する
-        if ( !checkXYZ(sender, args[2]) ||
-                !checkXYZ(sender, args[3]) ||
-                !checkXYZ(sender, args[4]) ) {
-            return true;
+        String group;
+        String world = "world";
+        int x_actual, y_actual, z_actual;
+
+        if ( args.length == 4 ) {
+
+            // 有効な座標が指定されたか確認する
+            if ( !checkXYZ(sender, args[1]) ||
+                    !checkXYZ(sender, args[2]) ||
+                    !checkXYZ(sender, args[3]) ) {
+                return true;
+            }
+
+            group = args[0];
+            x_actual = Integer.parseInt(args[1]);
+            y_actual = Integer.parseInt(args[2]);
+            z_actual = Integer.parseInt(args[3]);
+
+        } else {
+
+            // 有効な座標が指定されたか確認する
+            if ( !checkXYZ(sender, args[2]) ||
+                    !checkXYZ(sender, args[3]) ||
+                    !checkXYZ(sender, args[4]) ) {
+                return true;
+            }
+
+            group = args[0];
+            world = args[1];
+            x_actual = Integer.parseInt(args[2]);
+            y_actual = Integer.parseInt(args[3]);
+            z_actual = Integer.parseInt(args[4]);
         }
 
-        String group = args[0];
-        String world = args[1];
-        int x_actual = Integer.parseInt(args[2]);
-        int y_actual = Integer.parseInt(args[3]);
-        int z_actual = Integer.parseInt(args[4]);
         double x = (double)x_actual + 0.5;
         double y = (double)y_actual;
         double z = (double)z_actual + 0.5;

@@ -1,6 +1,6 @@
 name: ColorMeTeaming
 main: com.github.ucchyocean.cmt.ColorMeTeaming
-version: 1.1.0
+version: 1.2.0
 authors: [ucchy]
 load: startup
 description: ColorMe Teaming Plugin
@@ -50,7 +50,7 @@ commands:
   colortp:
     description: ColorMe Team Teleport Command
     aliases: ctp
-    usage: /<command> (group) (world) (x) (y) (z) - Teleport the members of (group) to (world):(x),(y),(z).
+    usage: /<command> (group) [(world)] (x) (y) (z) - Teleport the members of (group) to (world):(x),(y),(z).
     permission: colorteaming.tp
     permission-message: You don't have permission "<permission>".
   colorteaming:
