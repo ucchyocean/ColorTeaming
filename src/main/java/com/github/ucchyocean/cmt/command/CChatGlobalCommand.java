@@ -9,15 +9,13 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.github.ucchyocean.cmt.Utility;
-
 /**
  * @author ucchy
  * colorglobal(g)コマンドの実行クラス
  */
 public class CChatGlobalCommand implements CommandExecutor {
 
-    private static final String GLOBAL_CHAT_FORMAT = "#GLOBAL#<%s&r>%s";
+    private static final String GLOBAL_CHAT_MARKER = "#GLOBAL#";
 
     /**
      * @see org.bukkit.plugin.java.JavaPlugin#onCommand(org.bukkit.command.CommandSender, org.bukkit.command.Command, java.lang.String, java.lang.String[])
@@ -41,11 +39,7 @@ public class CChatGlobalCommand implements CommandExecutor {
         }
 
         Player player = (Player)sender;
-        String globalMessage = String.format(
-                Utility.replaceColorCode(GLOBAL_CHAT_FORMAT),
-                player.getDisplayName(),
-                message.toString()
-                );
+        String globalMessage = GLOBAL_CHAT_MARKER + message.toString();
 
         // コマンド実行者のチャットイベントとして処理
         player.chat(globalMessage);

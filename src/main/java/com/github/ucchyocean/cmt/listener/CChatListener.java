@@ -26,16 +26,16 @@ public class CChatListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPlayerChat(AsyncPlayerChatEvent event) {
 
-        // チームチャット無効なら、何もせずに抜ける
-        if ( !ColorMeTeaming.isTeamChatMode ) {
-            return;
-        }
-
         // GLOBALマーカーが付いていたら、/g コマンドを経由してきたので、
         // GLOBALマーカーを取り除いてから抜ける。
         if ( event.getMessage().startsWith(GLOBAL_CHAT_MARKER) ) {
             String newMessage = event.getMessage().substring(GLOBAL_CHAT_MARKER.length());
             event.setMessage(newMessage);
+            return;
+        }
+
+        // チームチャット無効なら、何もせずに抜ける
+        if ( !ColorMeTeaming.isTeamChatMode ) {
             return;
         }
 
