@@ -6,13 +6,17 @@ package com.github.ucchyocean.cmt;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -20,6 +24,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.ucchyocean.cmt.command.CChatCommand;
 import com.github.ucchyocean.cmt.command.CChatGlobalCommand;
+import com.github.ucchyocean.cmt.command.CClassCommand;
 import com.github.ucchyocean.cmt.command.CCountCommand;
 import com.github.ucchyocean.cmt.command.CFriendlyFireCommand;
 import com.github.ucchyocean.cmt.command.CLeaderCommand;
@@ -50,6 +55,8 @@ public class ColorMeTeaming extends JavaPlugin {
     public static boolean isTeamChatMode;
     public static boolean isOPDisplayMode;
     public static boolean isFriendlyFireDisabler;
+    public static Map<String, String> classItems;
+    public static Map<String, String> classArmors;
 
     public static Hashtable<String, Vector<Player>> leaders;
 
@@ -98,6 +105,8 @@ public class ColorMeTeaming extends JavaPlugin {
 
         getCommand("colortp").setExecutor(new CTPCommand());
 
+        getCommand("colorclass").setExecutor(new CClassCommand());
+
         getCommand("colorteaming").setExecutor(new CTeamingCommand());
 
         // イベント購読をサーバーに登録
@@ -130,6 +139,20 @@ public class ColorMeTeaming extends JavaPlugin {
         ignoreGroups = config.getStringList("ignoreGroups");
         if ( ignoreGroups == null ) {
             ignoreGroups = new ArrayList<String>();
+        }
+
+        classItems = new HashMap<String, String>();
+        classArmors = new HashMap<String, String>();
+        ConfigurationSection section = config.getConfigurationSection("classes");
+        if ( section != null ) {
+            Iterator<String> i = section.getValues(false).keySet().iterator();
+            while (i.hasNext()) {
+                String clas = i.next();
+                classItems.put(clas, config.getString("classes." + clas + ".items", "") );
+                if ( config.contains("classes." + clas + ".armor") ) {
+                    classArmors.put(clas, config.getString("classes." + clas + ".armor") );
+                }
+            }
         }
     }
 

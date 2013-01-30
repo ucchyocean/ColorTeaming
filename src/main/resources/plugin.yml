@@ -1,6 +1,6 @@
 name: ColorMeTeaming
 main: com.github.ucchyocean.cmt.ColorMeTeaming
-version: 1.0.0
+version: 1.1.0
 authors: [ucchy]
 load: startup
 description: ColorMe Teaming Plugin
@@ -59,6 +59,12 @@ commands:
     usage: /<command> reload - reload config.yml file.
     permission: colorteaming.admin
     permission-message: You don't have permission "<permission>".
+  colorclass:
+    description: ColorMe Inventory Initializing Command
+    aliases: cclass
+    usage: /<command> (group) (class)
+    permission: colorteaming.class
+    permission-message: You don't have permission "<permission>".
 permissions:
   colorteaming.count:
     description: ColorMe Count Command
@@ -80,4 +86,7 @@ permissions:
     default: op
   colorteaming.admin:
     description: ColorMe Teaming Plugin Administration Command
+    default: op
+  colorteaming.class:
+    description: ColorMe Inventory Initializing Command
     default: op

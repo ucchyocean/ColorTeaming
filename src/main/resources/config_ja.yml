@@ -1,4 +1,4 @@
-# ColorMe Teaming Plugin 1.0.0
+# ColorMe Teaming Plugin 1.1.0
 # @author     ucchy
 # @license    GPLv3
 # @copyright  Copyright ucchy 2013
@@ -17,3 +17,18 @@ firelyFireDisabler: true
 # teamChatMode、firelyFireDisabler、大将選出などの対象外とするグループを設定します。
 # 管理者や、観客用のグループを設定してください。
 ignoreGroups: ['', 'white', 'gold']
+
+# クラスごとのインベントリーの内容を設定します。設定形式はClassSignと同じです。
+classes:
+    Chef:
+        items: 39:10,40:10,281:10
+    Knight:
+        items: 267,320:5
+        armor: 306,307,308,309
+    Archer:
+        items: 261,262:50,297:4
+        armor: 298,299,300,301
+    Armored:
+        armor: 302,303,304,305
+    Builder:
+        items: 44:64,44@2:64,44@3:64,44@4:64,44@5:64
