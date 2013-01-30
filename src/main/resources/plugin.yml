@@ -31,7 +31,7 @@ commands:
     permission-message: You don't have permission "<permission>".
   colorglobal:
     description: Global Chat command for ColorMe Team Chat Command
-    aliases: cg, g
+    aliases: [cg,g]
     usage: /<command> (message)
     permission: colorteaming.global
     permission-message: You don't have permission "<permission>".
@@ -53,6 +53,12 @@ commands:
     usage: /<command> (group) (world) (x) (y) (z) - Teleport the members of (group) to (world):(x),(y),(z).
     permission: colorteaming.tp
     permission-message: You don't have permission "<permission>".
+  colorteaming:
+    description: ColorMe Teaming Plugin Administration Command
+    aliases: ct
+    usage: /<command> reload - reload config.yml file.
+    permission: colorteaming.admin
+    permission-message: You don't have permission "<permission>".
 permissions:
   colorteaming.count:
     description: ColorMe Count Command
@@ -71,4 +77,7 @@ permissions:
     default: op
   colorteaming.tp:
     description: ColorMe Team Teleport Command
+    default: op
+  colorteaming.admin:
+    description: ColorMe Teaming Plugin Administration Command
     default: op

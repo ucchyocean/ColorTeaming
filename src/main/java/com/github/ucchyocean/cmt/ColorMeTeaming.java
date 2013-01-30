@@ -24,6 +24,7 @@ import com.github.ucchyocean.cmt.command.CCountCommand;
 import com.github.ucchyocean.cmt.command.CFriendlyFireCommand;
 import com.github.ucchyocean.cmt.command.CLeaderCommand;
 import com.github.ucchyocean.cmt.command.CTPCommand;
+import com.github.ucchyocean.cmt.command.CTeamingCommand;
 import com.github.ucchyocean.cmt.listener.CChatListener;
 import com.github.ucchyocean.cmt.listener.CFriendlyFireListener;
 import com.github.ucchyocean.cmt.listener.CLeaderListener;
@@ -64,7 +65,7 @@ public class ColorMeTeaming extends JavaPlugin {
 
         // 設定の読み込み処理
         try {
-            reloadConfigFile();
+            reloadConfigFileInternal();
         } catch (IOException e) {
             e.printStackTrace();
             logger.severe("設定ファイルの読み込みに失敗しました。");
@@ -97,6 +98,8 @@ public class ColorMeTeaming extends JavaPlugin {
 
         getCommand("colortp").setExecutor(new CTPCommand());
 
+        getCommand("colorteaming").setExecutor(new CTeamingCommand());
+
         // イベント購読をサーバーに登録
         getServer().getPluginManager().registerEvents(new CFriendlyFireListener(), this);
 
@@ -109,7 +112,7 @@ public class ColorMeTeaming extends JavaPlugin {
      * config.ymlの読み出し処理。
      * @throws IOException
      */
-    protected void reloadConfigFile() throws IOException {
+    private void reloadConfigFileInternal() throws IOException {
 
         File configFile = new File(getDataFolder(), "config.yml");
         if ( !configFile.exists() ) {
@@ -127,6 +130,18 @@ public class ColorMeTeaming extends JavaPlugin {
         ignoreGroups = config.getStringList("ignoreGroups");
         if ( ignoreGroups == null ) {
             ignoreGroups = new ArrayList<String>();
+        }
+    }
+
+    /**
+     * config.yml の再読み込みを行う。
+     */
+    public static void reloadConfigFile() {
+
+        try {
+            instance.reloadConfigFileInternal();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
