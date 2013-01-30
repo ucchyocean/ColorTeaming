@@ -6,6 +6,8 @@ package com.github.ucchyocean.cmt.command;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -25,6 +27,9 @@ public class CClassCommand implements CommandExecutor {
 
     private static final String PREERR = ChatColor.RED.toString();
     private static final String PREINFO = ChatColor.GRAY.toString();
+
+    private static final String REGEX_ITEM_PATTERN = "([0-9]+)(@[0-9]+)?(:[0-9]+)?";
+    private static Pattern pattern;
 
     /**
      * @see org.bukkit.plugin.java.JavaPlugin#onCommand(org.bukkit.command.CommandSender, org.bukkit.command.Command, java.lang.String, java.lang.String[])
@@ -68,25 +73,24 @@ public class CClassCommand implements CommandExecutor {
             p.getInventory().setBoots(null);
 
             // アイテムの配布
-            for (int i = 0; i < itemData.length; i++) {
-                if (itemData[i][2] == 0) giveItems(p, itemData[i][0], itemData[i][1]);
-                else giveItems(p, itemData[i][0], itemData[i][1], itemData[i][2]);
+            for ( int[] data : itemData ) {
+                give(p, data[0], data[1], data[2]);
             }
 
             // 防具の配布
             if ( armor != null ) {
-                String[] armorarr = armor.split("[,]");
-                if (Integer.parseInt(armorarr[0]) != 0) {
-                    p.getInventory().setHelmet(new ItemStack(Integer.parseInt(armorarr[0]), 1));
+                int[][] armorData = parseClassItemData(armor);
+                if (armorData[0][0] != 0) {
+                    p.getInventory().setHelmet(getItemStack(armorData[0][0], 1, 0));
                 }
-                if (Integer.parseInt(armorarr[1]) != 0) {
-                    p.getInventory().setChestplate(new ItemStack(Integer.parseInt(armorarr[1]), 1));
+                if (armorData[1][0] != 0) {
+                    p.getInventory().setChestplate(getItemStack(armorData[1][0], 1, 0));
                 }
-                if (Integer.parseInt(armorarr[2]) != 0) {
-                    p.getInventory().setLeggings(new ItemStack(Integer.parseInt(armorarr[2]), 1));
+                if (armorData[2][0] != 0) {
+                    p.getInventory().setLeggings(getItemStack(armorData[2][0], 1, 0));
                 }
-                if (Integer.parseInt(armorarr[3]) != 0) {
-                    p.getInventory().setBoots(new ItemStack(Integer.parseInt(armorarr[3]), 1));
+                if (armorData[3][0] != 0) {
+                    p.getInventory().setBoots(getItemStack(armorData[3][0], 1, 0));
                 }
             }
         }
@@ -98,50 +102,36 @@ public class CClassCommand implements CommandExecutor {
     }
 
 
-
+    /**
+     * Classのアイテムデータ文字列を解析し、int配列に変換する。
+     * @param data 解析元の文字列　例）"44:64,44@2:64,281:10"
+     * @return 解析結果　例）{{44,64,0},{44,64,2},{281,10,0}}
+     */
     private int[][] parseClassItemData(String data) {
+
+        if ( pattern == null ) {
+            pattern = Pattern.compile(REGEX_ITEM_PATTERN);
+        }
 
         ArrayList<int[]> buffer = new ArrayList<int[]>();
         String[] array = data.split("[,]");
         for (int i = 0; i < array.length; i++) {
-            int amnt = 0;
-            int dmg = 0;
-            int item = 0;
 
-            if (array[i].contains("@")) {
-                String[] array2 = array[i].split("[@]");
+            int item = 0, damage = 0, amount = 0;
+            Matcher matcher = pattern.matcher(array[i]);
 
-                if (array2[1].contains(":")) {
-                    String[] array3 = array2[1].split("[:]");
-
-                    try {
-                        item = Integer.parseInt(array2[0]);
-                        dmg = Integer.parseInt(array3[0]);
-                        amnt = Integer.parseInt(array3[1]);
-                    } catch (NumberFormatException e) {}
-                } else {
-                    try {
-                        item = Integer.parseInt(array2[0]);
-                        dmg = Integer.parseInt(array2[1]);
-                        amnt = 1;
-                    } catch (NumberFormatException e) {}
+            if ( matcher.matches() ) {
+                item = Integer.parseInt(matcher.group(1));
+                if ( matcher.group(2) != null ) {
+                    damage = Integer.parseInt(matcher.group(2).substring(1));
                 }
-            } else if (array[i].contains(":")) {
-                String[] array2 = array[i].split("[:]");
-
-                try {
-                    item = Integer.parseInt(array2[0]);
-                    amnt = Integer.parseInt(array2[1]);
-                } catch (NumberFormatException e) {}
-            } else {
-                try {
-                    item = Integer.parseInt(array[i]);
-                    amnt = 1;
-                } catch (NumberFormatException e) {}
+                if ( matcher.group(3) != null ) {
+                    amount = Integer.parseInt(matcher.group(3).substring(1));
+                }
             }
 
-            if (amnt > 0 || item > 0) {
-                buffer.add(new int[]{item, amnt, dmg});
+            if ( amount > 0 || item > 0 ) {
+                buffer.add(new int[]{item, amount, damage});
             }
         }
 
@@ -151,37 +141,46 @@ public class CClassCommand implements CommandExecutor {
         return result;
     }
 
-    private boolean giveItems(Player p, int item, int amnt) {
+    /**
+     * アイテムを配布する
+     * @param player 配布先プレイヤー
+     * @param item 配布するアイテムのID
+     * @param amount 配布するアイテムの数量
+     * @param damage 配布するアイテムのダメージ値（指定しない場合は0にする）
+     * @return 配布したかどうか。
+     */
+    private boolean give(Player player, int item, int amount, int damage) {
+
+        // Materialの取得
         Material m = Material.getMaterial(item);
         if (m == null) {
-            p.sendMessage(PREERR + "指定されたItemID " + item + " が見つかりません。");
+            player.sendMessage(PREERR + "指定されたItemID " + item + " が見つかりません。");
             return false;
         }
 
-        while (amnt > 64) {
-            p.getInventory().addItem(new ItemStack(item, 64));
-            amnt -= 64;
+        // 65個を超える配布量の場合は、64個ごとに配布する。
+        while (amount > 64) {
+            player.getInventory().addItem(getItemStack(item, 64, damage));
+            amount -= 64;
         }
 
-        p.getInventory().addItem(new ItemStack(item, amnt));
+        // アイテムの配布
+        player.getInventory().addItem(getItemStack(item, amount, damage));
 
         return true;
     }
 
-    private boolean giveItems(Player p, int item, int amnt, int dmg) {
-        Material m = Material.getMaterial(item);
-        if (m == null) {
-            p.sendMessage(PREERR + "指定されたItemID " + item + " が見つかりません。");
-            return false;
-        }
-
-        while (amnt > 64) {
-            p.getInventory().addItem(new ItemStack(item, 64, (byte)dmg));
-            amnt -= 64;
-        }
-
-        p.getInventory().addItem(new ItemStack(item, amnt, (byte)dmg));
-
-        return true;
+    /**
+     * ItemStackインスタンスを返す
+     * @param item 配布するアイテムのID
+     * @param amount 配布するアイテムの数量
+     * @param damage 配布するアイテムのダメージ値（指定しない場合は0にする）
+     * @return ItemStackインスタンス
+     */
+    private ItemStack getItemStack(int item, int amount, int damage) {
+        if ( damage > 0 )
+            return new ItemStack(item, amount, (byte)damage);
+        else
+            return new ItemStack(item, amount);
     }
 }
