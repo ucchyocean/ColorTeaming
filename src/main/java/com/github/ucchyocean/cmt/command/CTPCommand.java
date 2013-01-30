@@ -8,6 +8,7 @@ import java.util.Vector;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -46,6 +47,15 @@ public class CTPCommand implements CommandExecutor {
                     !checkXYZ(sender, args[2]) ||
                     !checkXYZ(sender, args[3]) ) {
                 return true;
+            }
+
+            // 実行者がプレイヤーかコマンドブロックなら、worldを取得して設定する
+            if ( sender instanceof BlockCommandSender ) {
+                BlockCommandSender block = (BlockCommandSender)sender;
+                world = block.getBlock().getWorld().getName();
+            } else if ( sender instanceof Player ) {
+                Player player = (Player)sender;
+                world = player.getWorld().getName();
             }
 
             group = args[0];

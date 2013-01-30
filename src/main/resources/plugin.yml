@@ -53,17 +53,17 @@ commands:
     usage: /<command> (group) [(world)] (x) (y) (z) - Teleport the members of (group) to (world):(x),(y),(z).
     permission: colorteaming.tp
     permission-message: You don't have permission "<permission>".
-  colorteaming:
-    description: ColorMe Teaming Plugin Administration Command
-    aliases: ct
-    usage: /<command> reload - reload config.yml file.
-    permission: colorteaming.admin
-    permission-message: You don't have permission "<permission>".
   colorclass:
     description: ColorMe Inventory Initializing Command
     aliases: cclass
     usage: /<command> (group) (class)
     permission: colorteaming.class
+    permission-message: You don't have permission "<permission>".
+  colorteaming:
+    description: ColorMe Teaming Plugin Administration Command
+    aliases: ct
+    usage: /<command> reload - reload config.yml file.
+    permission: colorteaming.admin
     permission-message: You don't have permission "<permission>".
 permissions:
   colorteaming.count:
