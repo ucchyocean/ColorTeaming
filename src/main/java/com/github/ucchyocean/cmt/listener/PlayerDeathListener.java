@@ -35,8 +35,6 @@ public class PlayerDeathListener implements Listener {
         Player player = event.getEntity();
         String color = ColorMeTeaming.getPlayerColor(player);
 
-        System.out.println("color : " + color);
-
         // Death数を加算
         if ( !ColorMeTeaming.ignoreGroups.contains(color) ) {
             if ( !ColorMeTeaming.killDeathCounts.containsKey(color) ) {
@@ -79,8 +77,6 @@ public class PlayerDeathListener implements Listener {
         }
 
         String colorKiller = ColorMeTeaming.getPlayerColor(killer);
-
-        System.out.println("color killer : " + colorKiller);
 
         // Kill数を加算
         if ( !ColorMeTeaming.ignoreGroups.contains(colorKiller) ) {
