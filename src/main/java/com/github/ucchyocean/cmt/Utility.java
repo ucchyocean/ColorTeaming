@@ -156,4 +156,38 @@ public class Utility {
 
         return data;
     }
+
+    /**
+     * テキストデータを、ファイルに全て書き込む。
+     * @param outputFilePath 書き込み対象ファイル
+     * @param data テキストデータ
+     * @throws IOException
+     */
+    protected static void writeAllLinesToFile(String outputFilePath, Vector<String> data) throws IOException {
+
+        BufferedWriter writer = null;
+
+        try {
+            writer = new BufferedWriter(
+                    new OutputStreamWriter(
+                            new FileOutputStream (outputFilePath)));
+
+            for (String l : data) {
+                writer.write(l);
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw e;
+        } finally {
+            if ( writer != null ) {
+                try {
+                    writer.flush();
+                    writer.close();
+                } catch (IOException e) {
+                    // do nothing.
+                }
+            }
+        }
+    }
 }

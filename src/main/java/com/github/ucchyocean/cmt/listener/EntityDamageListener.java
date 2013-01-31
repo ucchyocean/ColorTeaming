@@ -18,7 +18,7 @@ import com.github.ucchyocean.cmt.ColorMeTeaming;
  * @author ucchy
  * 仲間同士の攻撃が発生したかどうかを確認するクラス
  */
-public class CFriendlyFireListener implements Listener {
+public class EntityDamageListener implements Listener {
 
     /**
      * Entity が Entity に、ダメージを与えたときに発生するイベント。

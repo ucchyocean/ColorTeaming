@@ -27,12 +27,13 @@ import com.github.ucchyocean.cmt.command.CChatGlobalCommand;
 import com.github.ucchyocean.cmt.command.CClassCommand;
 import com.github.ucchyocean.cmt.command.CCountCommand;
 import com.github.ucchyocean.cmt.command.CFriendlyFireCommand;
+import com.github.ucchyocean.cmt.command.CKillCommand;
 import com.github.ucchyocean.cmt.command.CLeaderCommand;
 import com.github.ucchyocean.cmt.command.CTPCommand;
 import com.github.ucchyocean.cmt.command.CTeamingCommand;
-import com.github.ucchyocean.cmt.listener.CChatListener;
-import com.github.ucchyocean.cmt.listener.CFriendlyFireListener;
-import com.github.ucchyocean.cmt.listener.CLeaderListener;
+import com.github.ucchyocean.cmt.listener.PlayerChatListener;
+import com.github.ucchyocean.cmt.listener.EntityDamageListener;
+import com.github.ucchyocean.cmt.listener.PlayerDeathListener;
 
 import de.dustplanet.colorme.Actions;
 import de.dustplanet.colorme.ColorMe;
@@ -58,7 +59,12 @@ public class ColorMeTeaming extends JavaPlugin {
     public static Map<String, String> classItems;
     public static Map<String, String> classArmors;
 
+    public static int killPoint;
+    public static int deathPoint;
+    public static int tkPoint;
+
     public static Hashtable<String, Vector<Player>> leaders;
+    public static Hashtable<String, int[]> killDeathCounts;
 
     /**
      * @see org.bukkit.plugin.java.JavaPlugin#onEnable()
@@ -67,7 +73,6 @@ public class ColorMeTeaming extends JavaPlugin {
     public void onEnable() {
 
         instance = this;
-        leaders = new Hashtable<String, Vector<Player>>();
         logger = getLogger();
 
         // 設定の読み込み処理
@@ -107,14 +112,20 @@ public class ColorMeTeaming extends JavaPlugin {
 
         getCommand("colorclass").setExecutor(new CClassCommand());
 
+        getCommand("colorkill").setExecutor(new CKillCommand());
+
         getCommand("colorteaming").setExecutor(new CTeamingCommand());
 
         // イベント購読をサーバーに登録
-        getServer().getPluginManager().registerEvents(new CFriendlyFireListener(), this);
+        getServer().getPluginManager().registerEvents(new EntityDamageListener(), this);
 
-        getServer().getPluginManager().registerEvents(new CChatListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerChatListener(), this);
 
-        getServer().getPluginManager().registerEvents(new CLeaderListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerDeathListener(), this);
+
+        // 変数の初期化
+        killDeathCounts = new Hashtable<String, int[]>();
+        leaders = new Hashtable<String, Vector<Player>>();
     }
 
     /**
@@ -154,6 +165,10 @@ public class ColorMeTeaming extends JavaPlugin {
                 }
             }
         }
+
+        killPoint = config.getInt("points.killPoint", 1);
+        deathPoint = config.getInt("points.deathPoint", -1);
+        tkPoint = config.getInt("points.tkPoint", -3);
     }
 
     /**

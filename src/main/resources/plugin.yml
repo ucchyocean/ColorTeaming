@@ -59,6 +59,12 @@ commands:
     usage: /<command> (group) (class)
     permission: colorteaming.class
     permission-message: You don't have permission "<permission>".
+  colorkill:
+    description: ColorMe Team Kill-Death Count Command
+    aliases: [ckill,ck]
+    usage: /<command> [(say clear)]
+    permission: colorteaming.kill
+    permission-message: You don't have permission "<permission>".
   colorteaming:
     description: ColorMe Teaming Plugin Administration Command
     aliases: ct
@@ -89,4 +95,7 @@ permissions:
     default: op
   colorteaming.class:
     description: ColorMe Inventory Initializing Command
+    default: op
+  colorteaming.kill:
+    description: ColorMe Team Kill-Death Count Command
     default: op

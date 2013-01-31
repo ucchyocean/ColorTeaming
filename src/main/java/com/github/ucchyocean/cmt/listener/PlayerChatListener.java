@@ -15,7 +15,7 @@ import com.github.ucchyocean.cmt.ColorMeTeaming;
  * @author ucchy
  * チャットが発生したときに、チームチャットへ転送するためのリスナークラス
  */
-public class CChatListener implements Listener {
+public class PlayerChatListener implements Listener {
 
     private static final String GLOBAL_CHAT_MARKER = "#GLOBAL#";
 

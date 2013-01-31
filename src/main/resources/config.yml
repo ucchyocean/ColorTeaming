@@ -11,15 +11,16 @@ firelyFireDisabler: true
 ignoreGroups: ['', 'white', 'gold']
 
 classes:
-    Chef:
-        items: 39:10,40:10,281:10
     Knight:
         items: 267,320:5
         armor: 306,307,308,309
     Archer:
         items: 261,262:50,297:4
         armor: 298,299,300,301
-    Armored:
-        armor: 302,303,304,305
     Builder:
         items: 44:64,44@2:64,44@3:64,44@4:64,44@5:64
+
+points:
+    killPoint: 1
+    deathPoint: -1
+    tkPoint: -3
