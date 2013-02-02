@@ -224,6 +224,15 @@ public class ColorMeTeaming extends JavaPlugin {
         return result;
     }
 
+    public static Vector<Player> getAllPlayers() {
+        Player[] temp = instance.getServer().getOnlinePlayers();
+        Vector<Player> result = new Vector<Player>();
+        for ( Player p : temp ) {
+            result.add(p);
+        }
+        return result;
+    }
+
     /**
      * メッセージをブロードキャストに送信する。
      * @param message 送信するメッセージ

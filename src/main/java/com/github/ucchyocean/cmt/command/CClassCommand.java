@@ -46,9 +46,15 @@ public class CClassCommand implements CommandExecutor {
 
         Hashtable<String, Vector<Player>> members = ColorMeTeaming.getAllColorMembers();
 
-        // 有効なグループ名が指定されたか確認する
-        if ( !members.containsKey(group) ) {
-            sender.sendMessage(PREERR + "グループ " + group + " が存在しません。");
+        // 有効なグループ名かユーザー名が指定されたか確認する
+        boolean isGroup = false;
+        if ( members.containsKey(group)  ) {
+            // グループ指定
+            isGroup = true;
+        } else if ( ColorMeTeaming.getAllPlayers().contains(ColorMeTeaming.getPlayerExact(group)) ) {
+            // ユーザー指定
+        } else {
+            sender.sendMessage(PREERR + "グループまたはプレイヤー " + group + " が存在しません。");
             return true;
         }
 
@@ -63,7 +69,15 @@ public class CClassCommand implements CommandExecutor {
         String armor = ColorMeTeaming.classArmors.get(clas);
         int[][] itemData = parseClassItemData(items);
 
-        for ( Player p : members.get(group) ) {
+        Vector<Player> playersToSet;
+        if ( isGroup ) {
+            playersToSet = members.get(group);
+        } else {
+            playersToSet = new Vector<Player>();
+            playersToSet.add(ColorMeTeaming.getPlayerExact(group));
+        }
+
+        for ( Player p : playersToSet ) {
 
             // インベントリの消去
             p.getInventory().clear();
@@ -95,8 +109,13 @@ public class CClassCommand implements CommandExecutor {
             }
         }
 
+        String type = "グループ";
+        if ( !isGroup ) {
+            type = "ユーザー";
+        }
+
         sender.sendMessage(PREINFO +
-                String.format("グループ %s に、%s クラスの装備とアイテムを配布しました。", group, clas));
+                String.format("%s %s に、%s クラスの装備とアイテムを配布しました。", type, group, clas));
 
         return true;
     }

@@ -58,7 +58,7 @@ commands:
   colorclass:
     description: ColorMe Inventory Initializing Command
     aliases: cclass
-    usage: /<command> (group) (class)
+    usage: /<command> (group|user) (class)
     permission: colorteaming.class
     permission-message: You don't have permission "<permission>".
   colorkill:
