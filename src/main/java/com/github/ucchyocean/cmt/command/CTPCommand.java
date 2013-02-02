@@ -32,7 +32,7 @@ public class CTPCommand implements CommandExecutor {
     public boolean onCommand(
             CommandSender sender, Command command, String label, String[] args) {
 
-        if ( args.length < 4 ) {
+        if ( args.length < 2 ) {
             return false;
         }
 
@@ -40,7 +40,26 @@ public class CTPCommand implements CommandExecutor {
         String world = "world";
         int x_actual, y_actual, z_actual;
 
-        if ( args.length == 4 ) {
+        if ( args[1].equalsIgnoreCase("here") ) {
+
+            if ( sender instanceof Player ) {
+                x_actual = ((Player)sender).getLocation().getBlockX();
+                y_actual = ((Player)sender).getLocation().getBlockY();
+                z_actual = ((Player)sender).getLocation().getBlockZ();
+                world = ((Player)sender).getWorld().getName();
+            } else if ( sender instanceof BlockCommandSender ) {
+                x_actual = ((BlockCommandSender)sender).getBlock().getX();
+                y_actual = ((BlockCommandSender)sender).getBlock().getY()+1;
+                z_actual = ((BlockCommandSender)sender).getBlock().getZ();
+                world = ((BlockCommandSender)sender).getBlock().getWorld().getName();
+            } else {
+                sender.sendMessage(PREERR + "ctp の here 指定は、コンソールからは実行できません。");
+                return true;
+            }
+
+            group = args[0];
+
+        } else if ( args.length == 4 ) {
 
             // 有効な座標が指定されたか確認する
             if ( !checkXYZ(sender, args[1]) ||
