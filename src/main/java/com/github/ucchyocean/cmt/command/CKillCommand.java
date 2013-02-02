@@ -37,12 +37,21 @@ public class CKillCommand implements CommandExecutor {
                 isBroadcast = true;
             }
 
-            // 全グループの得点を集計して、得点順に並べる
+            // グループは存在するが、得点データがない場合、このタイミングで作成しておく
             Hashtable<String, Vector<Player>> members = new Hashtable<String, Vector<Player>>();
+            Enumeration<String> keys_all = members.keys();
+            while ( keys_all.hasMoreElements() ) {
+                String key = keys_all.nextElement();
+                if ( !ColorMeTeaming.killDeathCounts.containsKey(key) ) {
+                    ColorMeTeaming.killDeathCounts.put(key, new int[3]);
+                }
+            }
+
+            // 全グループの得点を集計して、得点順に並べる
             Vector<String> groups = new Vector<String>();
             Vector<Integer> points = new Vector<Integer>();
 
-            Enumeration<String> keys = members.keys();
+            Enumeration<String> keys = ColorMeTeaming.killDeathCounts.keys();
             while ( keys.hasMoreElements() ) {
                 String group = keys.nextElement();
                 int point = 0;
@@ -51,14 +60,14 @@ public class CKillCommand implements CommandExecutor {
                     point = counts[0] * ColorMeTeaming.killPoint +
                             counts[1] * ColorMeTeaming.deathPoint +
                             counts[2] * ColorMeTeaming.tkPoint;
-
-                    int index = 0;
-                    while ( groups.size() > index && points.elementAt(index) > point ) {
-                        index++;
-                    }
-                    groups.add(index, group);
-                    points.add(index, point);
                 }
+
+                int index = 0;
+                while ( groups.size() > index && points.elementAt(index) > point ) {
+                    index++;
+                }
+                groups.add(index, group);
+                points.add(index, point);
             }
 
             // 全グループの得点を表示する
@@ -73,7 +82,7 @@ public class CKillCommand implements CommandExecutor {
                 int point = points.elementAt(rank-1);
                 int[] counts = ColorMeTeaming.killDeathCounts.get(group);
                 String message = String.format(
-                        ChatColor.RED + "%d. %s %dpoints (%dkill, %ddeath, %dtk)",
+                        "%d. %s %dpoints (%dkill, %ddeath, %dtk)",
                         rank, group, point, counts[0], counts[1], counts[2]);
 
                 if ( !isBroadcast ) {

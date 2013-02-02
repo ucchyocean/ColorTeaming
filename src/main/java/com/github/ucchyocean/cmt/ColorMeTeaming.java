@@ -31,8 +31,8 @@ import com.github.ucchyocean.cmt.command.CKillCommand;
 import com.github.ucchyocean.cmt.command.CLeaderCommand;
 import com.github.ucchyocean.cmt.command.CTPCommand;
 import com.github.ucchyocean.cmt.command.CTeamingCommand;
-import com.github.ucchyocean.cmt.listener.PlayerChatListener;
 import com.github.ucchyocean.cmt.listener.EntityDamageListener;
+import com.github.ucchyocean.cmt.listener.PlayerChatListener;
 import com.github.ucchyocean.cmt.listener.PlayerDeathListener;
 
 import de.dustplanet.colorme.Actions;
@@ -309,5 +309,17 @@ public class ColorMeTeaming extends JavaPlugin {
      */
     public static World getWorld(String name) {
         return instance.getServer().getWorld(name);
+    }
+
+    /**
+     * config.yml に、設定値を保存する
+     * @param key 設定値のキー
+     * @param value 設定値の値
+     */
+    public static void setConfigValue(String key, Object value) {
+
+        FileConfiguration config = instance.getConfig();
+        config.set(key, value);
+        instance.saveConfig();
     }
 }

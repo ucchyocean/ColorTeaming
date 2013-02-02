@@ -29,18 +29,22 @@ public class CChatCommand implements CommandExecutor {
         if ( args[0].equalsIgnoreCase("on") ) {
             ColorMeTeaming.isTeamChatMode = true;
             sender.sendMessage(ChatColor.RED + "チームチャットモードになりました。");
+            ColorMeTeaming.setConfigValue("teamChatMode", true);
             return true;
         } else if ( args[0].equalsIgnoreCase("off") ) {
             ColorMeTeaming.isTeamChatMode = false;
             sender.sendMessage(ChatColor.RED + "チームチャットを一時的に無効にしました。");
+            ColorMeTeaming.setConfigValue("teamChatMode", false);
             return true;
         } else if ( args[0].equalsIgnoreCase("opcopyon") ) {
             ColorMeTeaming.isOPDisplayMode = true;
             sender.sendMessage(ChatColor.RED + "チームチャットをOPにも表示します。");
+            ColorMeTeaming.setConfigValue("opDisplayMode", true);
             return true;
         } else if ( args[0].equalsIgnoreCase("opcopyoff") ) {
             ColorMeTeaming.isOPDisplayMode = false;
             sender.sendMessage(ChatColor.RED + "チームチャットのOPへの表示をオフにします。");
+            ColorMeTeaming.setConfigValue("opDisplayMode", false);
             return true;
         }
 

@@ -6,14 +6,12 @@ package com.github.ucchyocean.cmt;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.util.Vector;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 
@@ -119,75 +117,5 @@ public class Utility {
     public static String replaceColorCode(String source) {
 
         return source.replaceAll("&([0-9a-fk-or])", "\u00A7$1");
-    }
-
-    /**
-     * テキストファイルから全ての行を読み取り、内容を返す
-     * @param inputFilePath 読み取り対象ファイル
-     * @return テキストファイルの内容
-     * @throws IOException
-     */
-    protected static Vector<String> readAllLinesFromFile(String inputFilePath) throws IOException {
-
-        Vector<String> data = new Vector<String>();
-        BufferedReader reader = null;
-
-        try {
-            reader = new BufferedReader(
-                    new InputStreamReader(
-                            new FileInputStream (inputFilePath), "UTF-8"));
-
-            String line;
-            while ((line = reader.readLine()) != null) {
-                data.add(line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw e;
-        } finally {
-            if ( reader != null ) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    // do nothing.
-                }
-            }
-        }
-
-        return data;
-    }
-
-    /**
-     * テキストデータを、ファイルに全て書き込む。
-     * @param outputFilePath 書き込み対象ファイル
-     * @param data テキストデータ
-     * @throws IOException
-     */
-    protected static void writeAllLinesToFile(String outputFilePath, Vector<String> data) throws IOException {
-
-        BufferedWriter writer = null;
-
-        try {
-            writer = new BufferedWriter(
-                    new OutputStreamWriter(
-                            new FileOutputStream (outputFilePath)));
-
-            for (String l : data) {
-                writer.write(l);
-                writer.newLine();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw e;
-        } finally {
-            if ( writer != null ) {
-                try {
-                    writer.flush();
-                    writer.close();
-                } catch (IOException e) {
-                    // do nothing.
-                }
-            }
-        }
     }
 }
