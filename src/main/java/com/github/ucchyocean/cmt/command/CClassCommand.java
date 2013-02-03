@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright ucchy 2013
  */
 package com.github.ucchyocean.cmt.command;
@@ -88,7 +88,9 @@ public class CClassCommand implements CommandExecutor {
 
             // アイテムの配布
             for ( int[] data : itemData ) {
-                give(p, data[0], data[1], data[2]);
+                if ( data[0] > 0 ) {
+                    give(p, data[0], data[1], data[2]);
+                }
             }
 
             // 防具の配布
@@ -136,7 +138,7 @@ public class CClassCommand implements CommandExecutor {
         String[] array = data.split("[,]");
         for (int i = 0; i < array.length; i++) {
 
-            int item = 0, damage = 0, amount = 0;
+            int item = 0, damage = 0, amount = 1;
             Matcher matcher = pattern.matcher(array[i]);
 
             if ( matcher.matches() ) {
@@ -149,9 +151,7 @@ public class CClassCommand implements CommandExecutor {
                 }
             }
 
-            if ( amount > 0 || item > 0 ) {
-                buffer.add(new int[]{item, amount, damage});
-            }
+            buffer.add(new int[]{item, amount, damage});
         }
 
         int[][] result = new int[buffer.size()][];
