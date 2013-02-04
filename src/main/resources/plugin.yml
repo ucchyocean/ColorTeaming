@@ -1,6 +1,6 @@
 name: ColorMeTeaming
 main: com.github.ucchyocean.cmt.ColorMeTeaming
-version: 1.2.3
+version: 1.2.4
 authors: [ucchy]
 load: startup
 description: ColorMe Teaming Plugin
@@ -67,11 +67,21 @@ commands:
     usage: /<command> [(say clear)]
     permission: colorteaming.kill
     permission-message: You don't have permission "<permission>".
+  colorspawn:
+    description: ColorMe Team Spawn Set Command
+    aliases: [cspawn,cs]
+    usage: |
+           /<command> (group) [(world)] (x) (y) (z) - Set the respawn point of (group) to (world):(x),(y),(z).
+           /<command> (group) here - Set the respawn point of (group) to here.
+    permission: colorteaming.spawn
+    permission-message: You don't have permission "<permission>".
   colorteaming:
     description: ColorMe Teaming Plugin Administration Command
     aliases: ct
-    usage: /<command> reload - reload config.yml file.
-    permission: colorteaming.admin
+    usage: |
+           /<command> set [numberOfGroup] - Set new random groups.
+           /<command> reload - Reload config.yml file.
+    permission: colorteaming.team
     permission-message: You don't have permission "<permission>".
 permissions:
   colorteaming.count:
@@ -92,12 +102,15 @@ permissions:
   colorteaming.tp:
     description: ColorMe Team Teleport Command
     default: op
-  colorteaming.admin:
-    description: ColorMe Teaming Plugin Administration Command
-    default: op
   colorteaming.class:
     description: ColorMe Inventory Initializing Command
     default: op
   colorteaming.kill:
     description: ColorMe Team Kill-Death Count Command
+    default: op
+  colorteaming.spawn:
+    description: ColorMe Team Spawn Set Command
+    default: op
+  colorteaming.team:
+    description: ColorMe Teaming Plugin Administration Command
     default: op

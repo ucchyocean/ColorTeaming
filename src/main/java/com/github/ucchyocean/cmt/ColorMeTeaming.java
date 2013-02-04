@@ -29,6 +29,7 @@ import com.github.ucchyocean.cmt.command.CCountCommand;
 import com.github.ucchyocean.cmt.command.CFriendlyFireCommand;
 import com.github.ucchyocean.cmt.command.CKillCommand;
 import com.github.ucchyocean.cmt.command.CLeaderCommand;
+import com.github.ucchyocean.cmt.command.CSpawnCommand;
 import com.github.ucchyocean.cmt.command.CTPCommand;
 import com.github.ucchyocean.cmt.command.CTeamingCommand;
 import com.github.ucchyocean.cmt.listener.EntityDamageListener;
@@ -114,6 +115,8 @@ public class ColorMeTeaming extends JavaPlugin {
 
         getCommand("colorkill").setExecutor(new CKillCommand());
 
+        getCommand("colorspawn").setExecutor(new CSpawnCommand());
+
         getCommand("colorteaming").setExecutor(new CTeamingCommand());
 
         // イベント購読をサーバーに登録
@@ -195,6 +198,18 @@ public class ColorMeTeaming extends JavaPlugin {
     }
 
     /**
+     * Player に、ColorMe の色を設定する。
+     * @param player プレイヤー
+     * @param color ColorMeの色
+     */
+    public static void setPlayerColor(Player player, String color) {
+
+        Actions actions = new Actions(colorme);
+        actions.set(player.getName(), color, "default", "colors");
+        actions.checkNames(player.getName(), "default");
+    }
+
+    /**
      * ColorMeに設定されている色情報で、ユーザーをグループごとのメンバーに整理して返すメソッド<br>
      * ignoreGroupに設定されている色グループに所属しているプレーヤーは、除外される。
      * @return 色をKey メンバーをValueとした Hashtable
@@ -224,6 +239,10 @@ public class ColorMeTeaming extends JavaPlugin {
         return result;
     }
 
+    /**
+     * 全てのプレイヤーを取得する
+     * @return 全てのプレイヤー
+     */
     public static Vector<Player> getAllPlayers() {
         Player[] temp = instance.getServer().getOnlinePlayers();
         Vector<Player> result = new Vector<Player>();

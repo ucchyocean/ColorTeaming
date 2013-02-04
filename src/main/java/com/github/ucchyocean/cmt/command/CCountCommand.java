@@ -64,12 +64,12 @@ public class CCountCommand implements CommandExecutor {
                 String pre = ChatColor.GRAY.toString();
                 sender.sendMessage(String.format("%s* %s - %d",
                         pre, key, member.size()));
-                sender.sendMessage(pre + "  " + value);
+                sender.sendMessage(pre + value);
             } else {
                 String pre = ChatColor.RED.toString();
                 ColorMeTeaming.sendBroadcast( String.format("%s* %s - %d",
                         pre, key, member.size()));
-                ColorMeTeaming.sendBroadcast(pre + "  " + value);
+                ColorMeTeaming.sendBroadcast(pre + value);
             }
         }
 

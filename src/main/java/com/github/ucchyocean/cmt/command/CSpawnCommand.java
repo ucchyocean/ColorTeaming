@@ -13,21 +13,20 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 import com.github.ucchyocean.cmt.ColorMeTeaming;
 
 /**
  * @author ucchy
- * colortp(ctp)コマンドの実行クラス
+ * colorspawn(cs)コマンドの実行クラス
  */
-public class CTPCommand implements CommandExecutor {
+public class CSpawnCommand implements CommandExecutor {
 
     private static final String PREERR = ChatColor.RED.toString();
     private static final String PREINFO = ChatColor.GRAY.toString();
 
     /**
-     * @see org.bukkit.plugin.java.JavaPlugin#onCommand(org.bukkit.command.CommandSender, org.bukkit.command.Command, java.lang.String, java.lang.String[])
+     * @see org.bukkit.command.CommandExecutor#onCommand(org.bukkit.command.CommandSender, org.bukkit.command.Command, java.lang.String, java.lang.String[])
      */
     public boolean onCommand(
             CommandSender sender, Command command, String label, String[] args) {
@@ -40,7 +39,10 @@ public class CTPCommand implements CommandExecutor {
         String world = "world";
         int x_actual, y_actual, z_actual;
 
+        group = args[0];
+
         if ( args[1].equalsIgnoreCase("here") ) {
+            // here 指定
 
             if ( sender instanceof Player ) {
                 x_actual = ((Player)sender).getLocation().getBlockX();
@@ -53,11 +55,9 @@ public class CTPCommand implements CommandExecutor {
                 z_actual = ((BlockCommandSender)sender).getBlock().getZ();
                 world = ((BlockCommandSender)sender).getBlock().getWorld().getName();
             } else {
-                sender.sendMessage(PREERR + "ctp の here 指定は、コンソールからは実行できません。");
+                sender.sendMessage(PREERR + "cspawn の here 指定は、コンソールからは実行できません。");
                 return true;
             }
-
-            group = args[0];
 
         } else if ( args.length == 4 ) {
 
@@ -77,7 +77,6 @@ public class CTPCommand implements CommandExecutor {
                 world = player.getWorld().getName();
             }
 
-            group = args[0];
             x_actual = Integer.parseInt(args[1]);
             y_actual = Integer.parseInt(args[2]);
             z_actual = Integer.parseInt(args[3]);
@@ -91,7 +90,6 @@ public class CTPCommand implements CommandExecutor {
                 return true;
             }
 
-            group = args[0];
             world = args[1];
             x_actual = Integer.parseInt(args[2]);
             y_actual = Integer.parseInt(args[3]);
@@ -120,13 +118,13 @@ public class CTPCommand implements CommandExecutor {
             return true;
         }
 
-        // テレポートを実行する
+        // spawnpoint設定を行う
         Location loc = new Location(ColorMeTeaming.getWorld(world), x, y, z);
         for ( Player p : members.get(group) ) {
-            p.teleport(loc, TeleportCause.COMMAND);
+            p.setBedSpawnLocation(loc, true);
         }
 
-        sender.sendMessage(PREINFO + "グループ " + group + " のプレイヤーを全員テレポートしました。");
+        sender.sendMessage(PREINFO + "グループ " + group + " のリスポンポイントを設定しました。");
 
         return true;
     }
