@@ -39,7 +39,7 @@ public class CTeamingCommand implements CommandExecutor {
             sender.sendMessage("config.ymlの再読み込みを行いました。");
             return true;
 
-        } else if ( args[0].equalsIgnoreCase("set") ) {
+        } else if ( args[0].equalsIgnoreCase("random") ) {
 
             // 設定するグループ数を、2番目の引数から取得する
             int numberOfGroups = 2;
@@ -69,6 +69,12 @@ public class CTeamingCommand implements CommandExecutor {
                 int group = i % numberOfGroups;
                 String color = GROUP_COLORS[group];
                 ColorMeTeaming.setPlayerColor(players.elementAt(i), color);
+            }
+
+            // 各グループに、通知メッセージを出す
+            for ( int i=0; i<numberOfGroups; i++ ) {
+                ColorMeTeaming.sendTeamChat(GROUP_COLORS[i],
+                        "あなたは " + GROUP_COLORS[i] + " グループになりました。");
             }
         }
 

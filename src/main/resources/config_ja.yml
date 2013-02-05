@@ -1,4 +1,4 @@
-# ColorMe Teaming Plugin 1.2.4
+# ColorMe Teaming Plugin 1.2.5
 # @author     ucchy
 # @license    GPLv3
 # @copyright  Copyright ucchy 2013
@@ -38,3 +38,6 @@ points:
     killPoint: 1
     deathPoint: -1
     tkPoint: -3
+
+# 死んでリスポンしたときに、グループから自動で抜けるかどうかを設定します。
+autoColorRemove: true

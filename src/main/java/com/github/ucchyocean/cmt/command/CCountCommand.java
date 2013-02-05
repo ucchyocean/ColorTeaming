@@ -31,7 +31,8 @@ public class CCountCommand implements CommandExecutor {
             CommandSender sender, Command command, String label, String[] args) {
 
         boolean isBroadcast = false;
-        if ( command.getName().equals("colorcountsay") )
+        if ( command.getName().equals("colorcountsay") ||
+                (args.length >= 1 && args[0].equalsIgnoreCase("say") ))
             isBroadcast = true;
 
         // メンバー情報の取得

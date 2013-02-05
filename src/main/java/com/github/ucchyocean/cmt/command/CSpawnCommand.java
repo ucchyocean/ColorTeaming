@@ -124,7 +124,10 @@ public class CSpawnCommand implements CommandExecutor {
             p.setBedSpawnLocation(loc, true);
         }
 
-        sender.sendMessage(PREINFO + "グループ " + group + " のリスポンポイントを設定しました。");
+        String message = String.format(
+                "グループ %s のリスポーンポイントを (%d,%d,%d) に設定しました。",
+                group, x_actual, y_actual, z_actual);
+        sender.sendMessage(PREINFO + message);
 
         return true;
     }

@@ -59,6 +59,7 @@ public class ColorMeTeaming extends JavaPlugin {
     public static boolean isFriendlyFireDisabler;
     public static Map<String, String> classItems;
     public static Map<String, String> classArmors;
+    public static boolean autoColorRemove;
 
     public static int killPoint;
     public static int deathPoint;
@@ -172,6 +173,8 @@ public class ColorMeTeaming extends JavaPlugin {
         killPoint = config.getInt("points.killPoint", 1);
         deathPoint = config.getInt("points.deathPoint", -1);
         tkPoint = config.getInt("points.tkPoint", -3);
+
+        autoColorRemove = config.getBoolean("autoColorRemove", true);
     }
 
     /**
@@ -206,6 +209,17 @@ public class ColorMeTeaming extends JavaPlugin {
 
         Actions actions = new Actions(colorme);
         actions.set(player.getName(), color, "default", "colors");
+        actions.checkNames(player.getName(), "default");
+    }
+
+    /**
+     * Player に設定されている、ColorMe の色設定を削除する。
+     * @param player プレイヤー
+     */
+    public static void removePlayerColor(Player player) {
+
+        Actions actions = new Actions(colorme);
+        actions.remove(player.getName(), "default", "colors");
         actions.checkNames(player.getName(), "default");
     }
 

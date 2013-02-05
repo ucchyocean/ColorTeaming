@@ -19,7 +19,7 @@ import com.github.ucchyocean.cmt.ColorMeTeaming;
 
 /**
  * @author ucchy
- * プレイヤーが死亡したりログアウトしたときに、大将だったかどうかを確認するクラス
+ * プレイヤーが死亡したりログアウトしたときに、通知を受け取って処理するクラス
  */
 public class PlayerDeathListener implements Listener {
 
@@ -87,6 +87,11 @@ public class PlayerDeathListener implements Listener {
                 ColorMeTeaming.killDeathCounts.get(colorKiller)[2]++;
             else
                 ColorMeTeaming.killDeathCounts.get(colorKiller)[0]++;
+        }
+
+        // 色設定を削除する
+        if ( ColorMeTeaming.autoColorRemove ) {
+            ColorMeTeaming.removePlayerColor(player);
         }
     }
 
