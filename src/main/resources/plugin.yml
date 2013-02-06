@@ -77,7 +77,7 @@ commands:
     permission-message: You don't have permission "<permission>".
   colorrandom:
     description: ColorMe Random Team Setting Command
-    aliases: [crandom,rc]
+    aliases: [crandom,randomcolor,rc]
     usage: /<command> [(numberOfGroups)] - Make random teams.
     permission: colorteaming.random
     permission-message: You don't have permission "<permission>".
