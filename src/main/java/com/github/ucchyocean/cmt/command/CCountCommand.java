@@ -35,6 +35,13 @@ public class CCountCommand implements CommandExecutor {
                 (args.length >= 1 && args[0].equalsIgnoreCase("say") ))
             isBroadcast = true;
 
+        sendCCMessage(sender, isBroadcast);
+
+        return true;
+    }
+
+    protected static void sendCCMessage(CommandSender sender, boolean isBroadcast) {
+
         // メンバー情報の取得
         Hashtable<String, Vector<Player>> members =
                 ColorMeTeaming.getAllColorMembers();
@@ -73,7 +80,5 @@ public class CCountCommand implements CommandExecutor {
                 ColorMeTeaming.sendBroadcast(pre + value);
             }
         }
-
-        return true;
     }
 }
