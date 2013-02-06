@@ -48,8 +48,8 @@ import de.dustplanet.colorme.ColorMe;
  */
 public class ColorMeTeaming extends JavaPlugin {
 
-    private static final String TEAM_CHAT_FORMAT = "&2[%s&2]<%s&r&2> %s";
-    private static final String TEAM_INFORMATION_FORMAT = "&2[%s&2] %s";
+    private static final String TEAM_CHAT_FORMAT = "&a[%s&a]<%s&r&a> %s";
+    private static final String TEAM_INFORMATION_FORMAT = "&a[%s&a] %s";
 
     private static ColorMeTeaming instance;
     private static ColorMe colorme;
@@ -329,8 +329,10 @@ public class ColorMeTeaming extends JavaPlugin {
 
         // チームメンバに送信する
         Vector<Player> playersToSend = getAllColorMembers().get(color);
-        for ( Player p : playersToSend ) {
-            p.sendMessage(partyMessage);
+        if ( playersToSend != null ) {
+            for ( Player p : playersToSend ) {
+                p.sendMessage(partyMessage);
+            }
         }
     }
 
