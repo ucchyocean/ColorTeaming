@@ -118,4 +118,14 @@ public class Utility {
 
         return source.replaceAll("&([0-9a-fk-or])", "\u00A7$1");
     }
+
+    /**
+     * 文字列が整数値に変換可能かどうかを判定する
+     * @param source 変換対象の文字列
+     * @return 整数に変換可能かどうか
+     */
+    public static boolean tryIntParse(String source) {
+
+        return source.matches("^(-?[1-9][0-9]*|0)$");
+    }
 }

@@ -3,6 +3,7 @@
  */
 package com.github.ucchyocean.cmt.command;
 
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -48,22 +49,20 @@ public class CKillCommand implements CommandExecutor {
             }
 
             // 全グループの得点を集計して、得点順に並べる
-            Vector<String> groups = new Vector<String>();
-            Vector<Integer> points = new Vector<Integer>();
+            ArrayList<String> groups = new ArrayList<String>();
+            ArrayList<Integer> points = new ArrayList<Integer>();
 
             Enumeration<String> keys = ColorMeTeaming.killDeathCounts.keys();
             while ( keys.hasMoreElements() ) {
                 String group = keys.nextElement();
                 int point = 0;
-                if ( ColorMeTeaming.killDeathCounts.containsKey(group) ) {
-                    int[] counts = ColorMeTeaming.killDeathCounts.get(group);
-                    point = counts[0] * ColorMeTeaming.killPoint +
-                            counts[1] * ColorMeTeaming.deathPoint +
-                            counts[2] * ColorMeTeaming.tkPoint;
-                }
+                int[] counts = ColorMeTeaming.killDeathCounts.get(group);
+                point = counts[0] * ColorMeTeaming.killPoint +
+                        counts[1] * ColorMeTeaming.deathPoint +
+                        counts[2] * ColorMeTeaming.tkPoint;
 
                 int index = 0;
-                while ( groups.size() > index && points.elementAt(index) > point ) {
+                while ( groups.size() > index && points.get(index) > point ) {
                     index++;
                 }
                 groups.add(index, group);
@@ -78,8 +77,8 @@ public class CKillCommand implements CommandExecutor {
             }
 
             for ( int rank=1; rank<=groups.size(); rank++ ) {
-                String group = groups.elementAt(rank-1);
-                int point = points.elementAt(rank-1);
+                String group = groups.get(rank-1);
+                int point = points.get(rank-1);
                 int[] counts = ColorMeTeaming.killDeathCounts.get(group);
                 String message = String.format(
                         "%d. %s %dpoints (%dkill, %ddeath, %dtk)",
@@ -92,9 +91,73 @@ public class CKillCommand implements CommandExecutor {
                 }
             }
 
+            // ユーザー得点の集計
+
+            // まだ1つも得点が記録されていないなら、ここでコマンドは終わる。
+            if ( ColorMeTeaming.killDeathUserCounts.size() <= 0 ) {
+                return true;
+            }
+
+            ArrayList<Player> users = new ArrayList<Player>();
+            ArrayList<Integer> userPoints = new ArrayList<Integer>();
+
+            Enumeration<Player> playersEnum = ColorMeTeaming.killDeathUserCounts.keys();
+            while ( playersEnum.hasMoreElements() ) {
+                Player p = playersEnum.nextElement();
+                int point = 0;
+                int[] counts = ColorMeTeaming.killDeathUserCounts.get(p);
+                point = counts[0] * ColorMeTeaming.killPoint +
+                        counts[1] * ColorMeTeaming.deathPoint +
+                        counts[2] * ColorMeTeaming.tkPoint;
+
+                int index = 0;
+                while ( groups.size() > index && points.get(index) > point ) {
+                    index++;
+                }
+                users.add(index, p);
+                userPoints.add(index, point);
+            }
+
+            // 1位と、1位と同じ得点の人を、MVPにする
+            ArrayList<Player> mvp = new ArrayList<Player>();
+            mvp.add(users.get(0));
+            int index = 1;
+            while ( userPoints.size() > index && userPoints.get(0) == userPoints.get(index) ) {
+                mvp.add(users.get(index));
+                index++;
+            }
+
+            // MVPの得点を表示する
+            for ( int i=0; i<mvp.size(); i++ ) {
+                Player player = users.get(i);
+                int point = userPoints.get(i);
+                int[] counts = ColorMeTeaming.killDeathUserCounts.get(users.get(i));
+                String message = String.format(
+                        "[MVP] %s %dpoints (%dkill, %ddeath, %dtk)",
+                        player.getName(), point, counts[0], counts[1], counts[2]);
+                if ( !isBroadcast ) {
+                    sender.sendMessage(ChatColor.GRAY + message);
+                } else {
+                    ColorMeTeaming.sendBroadcast(ChatColor.RED + message);
+                }
+            }
+
+            // 個人の得点を個人のコンソールに表示する
+            for ( int i=0; i<users.size(); i++ ) {
+                Player player = users.get(i);
+                int point = userPoints.get(i);
+                int[] counts = ColorMeTeaming.killDeathUserCounts.get(users.get(i));
+                String message = String.format(
+                        "[Your Score] %s %dpoints (%dkill, %ddeath, %dtk)",
+                        player.getName(), point, counts[0], counts[1], counts[2]);
+
+                player.sendMessage(ChatColor.GRAY + message);
+            }
+
         } else if ( args.length >= 1 && args[0].equalsIgnoreCase("clear") ) {
 
             ColorMeTeaming.killDeathCounts.clear();
+            ColorMeTeaming.killDeathUserCounts.clear();
             sender.sendMessage(ChatColor.GRAY + "KillDeath数をリセットしました。");
         }
 

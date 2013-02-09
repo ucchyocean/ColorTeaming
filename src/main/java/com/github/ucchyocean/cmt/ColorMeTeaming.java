@@ -70,6 +70,7 @@ public class ColorMeTeaming extends JavaPlugin {
 
     public static Hashtable<String, Vector<Player>> leaders;
     public static Hashtable<String, int[]> killDeathCounts;
+    public static Hashtable<Player, int[]> killDeathUserCounts;
 
     /**
      * @see org.bukkit.plugin.java.JavaPlugin#onEnable()
@@ -136,6 +137,7 @@ public class ColorMeTeaming extends JavaPlugin {
 
         // 変数の初期化
         killDeathCounts = new Hashtable<String, int[]>();
+        killDeathUserCounts = new Hashtable<Player, int[]>();
         leaders = new Hashtable<String, Vector<Player>>();
     }
 

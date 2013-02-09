@@ -37,10 +37,16 @@ public class PlayerDeathListener implements Listener {
 
         // Death数を加算
         if ( !ColorMeTeaming.ignoreGroups.contains(color) ) {
+            // グループへ加算
             if ( !ColorMeTeaming.killDeathCounts.containsKey(color) ) {
                 ColorMeTeaming.killDeathCounts.put(color, new int[3]);
             }
             ColorMeTeaming.killDeathCounts.get(color)[1]++;
+            // ユーザーへ加算
+            if ( !ColorMeTeaming.killDeathUserCounts.containsKey(player) ) {
+                ColorMeTeaming.killDeathUserCounts.put(player, new int[3]);
+            }
+            ColorMeTeaming.killDeathUserCounts.get(player)[1]++;
         }
 
         // 死亡したプレイヤーが、大将だった場合、倒されたことを全体に通知する。
@@ -80,6 +86,7 @@ public class PlayerDeathListener implements Listener {
 
         // Kill数を加算
         if ( !ColorMeTeaming.ignoreGroups.contains(colorKiller) ) {
+            // グループへ加算
             if ( !ColorMeTeaming.killDeathCounts.containsKey(colorKiller) ) {
                 ColorMeTeaming.killDeathCounts.put(colorKiller, new int[3]);
             }
@@ -87,6 +94,14 @@ public class PlayerDeathListener implements Listener {
                 ColorMeTeaming.killDeathCounts.get(colorKiller)[2]++;
             else
                 ColorMeTeaming.killDeathCounts.get(colorKiller)[0]++;
+            // ユーザーへ加算
+            if ( !ColorMeTeaming.killDeathUserCounts.containsKey(killer) ) {
+                ColorMeTeaming.killDeathUserCounts.put(killer, new int[3]);
+            }
+            if ( color.equals(colorKiller) ) // 同じグループだった場合のペナルティ
+                ColorMeTeaming.killDeathUserCounts.get(killer)[2]++;
+            else
+                ColorMeTeaming.killDeathUserCounts.get(killer)[0]++;
         }
 
         // 色設定を削除する
