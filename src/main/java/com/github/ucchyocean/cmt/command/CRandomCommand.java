@@ -14,6 +14,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.github.ucchyocean.cmt.ColorMeTeaming;
+import com.github.ucchyocean.cmt.Utility;
 
 /**
  * @author ucchy
@@ -65,7 +66,7 @@ public class CRandomCommand implements CommandExecutor {
         for ( int i=0; i<numberOfGroups; i++ ) {
             ColorMeTeaming.sendTeamChat(GROUP_COLORS[i],
                     "あなたは " +
-                    ColorMeTeaming.replaceThings(GROUP_COLORS[i]) +
+                    Utility.replaceColors(GROUP_COLORS[i]) +
                     GROUP_COLORS[i] +
                     ChatColor.GREEN +
                     " グループになりました。");

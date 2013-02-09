@@ -15,7 +15,6 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -295,7 +294,7 @@ public class ColorMeTeaming extends JavaPlugin {
         // メッセージを生成
         String partyMessage = String.format(
                 Utility.replaceColorCode(TEAM_CHAT_FORMAT),
-                replaceThings(color) + color,
+                Utility.replaceColors(color) + color,
                 player.getDisplayName(),
                 message
                 );
@@ -325,7 +324,7 @@ public class ColorMeTeaming extends JavaPlugin {
         // メッセージを生成
         String partyMessage = String.format(
                 Utility.replaceColorCode(TEAM_INFORMATION_FORMAT),
-                replaceThings(color) + color,
+                Utility.replaceColors(color) + color,
                 message
                 );
 
@@ -368,45 +367,4 @@ public class ColorMeTeaming extends JavaPlugin {
         instance.saveConfig();
     }
 
-    /**
-     * ColorMeの色設定を、ChatColorクラスに変換する
-     * @param color ColorMeの色設定
-     * @return ChatColorクラス
-     */
-    public static ChatColor replaceThings(String color) {
-
-        if (color.equalsIgnoreCase("red")) {
-            return ChatColor.RED;
-        } else if (color.equalsIgnoreCase("blue")) {
-            return ChatColor.BLUE;
-        } else if (color.equalsIgnoreCase("yellow")) {
-            return ChatColor.YELLOW;
-        } else if (color.equalsIgnoreCase("green")) {
-            return ChatColor.GREEN;
-        } else if (color.equalsIgnoreCase("aqua")) {
-            return ChatColor.AQUA;
-        } else if (color.equalsIgnoreCase("gray")) {
-            return ChatColor.GRAY;
-        } else if (color.equalsIgnoreCase("dark_red")) {
-            return ChatColor.DARK_RED;
-        } else if (color.equalsIgnoreCase("dark_green")) {
-            return ChatColor.DARK_GREEN;
-        } else if (color.equalsIgnoreCase("dark_aqua")) {
-            return ChatColor.DARK_AQUA;
-        } else if (color.equalsIgnoreCase("black")) {
-            return ChatColor.BLACK;
-        } else if (color.equalsIgnoreCase("dark_blue")) {
-            return ChatColor.DARK_BLUE;
-        } else if (color.equalsIgnoreCase("dark_gray")) {
-            return ChatColor.DARK_GRAY;
-        } else if (color.equalsIgnoreCase("dark_purple")) {
-            return ChatColor.DARK_PURPLE;
-        } else if (color.equalsIgnoreCase("gold")) {
-            return ChatColor.GOLD;
-        } else if (color.equalsIgnoreCase("light_purple")) {
-            return ChatColor.LIGHT_PURPLE;
-        } else {
-            return ChatColor.WHITE;
-        }
-    }
 }
