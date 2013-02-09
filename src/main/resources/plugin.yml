@@ -105,9 +105,6 @@ permissions:
   colorteaming.chat:
     description: ColorMe Team Chat Command
     default: op
-  colorteaming.global:
-    description: Global Chat command for ColorMe Team Chat Command
-    default: true
   colorteaming.leader:
     description: ColorMe Team Leaders Command
     default: op
@@ -132,3 +129,20 @@ permissions:
   colorteaming.team:
     description: ColorMe Teaming Plugin Administration Command
     default: op
+  colorteaming.*
+    children:
+      colorteaming.count: true
+      colorteaming.friendlyfire: true
+      colorteaming.chat: true
+      colorteaming.leader: true
+      colorteaming.tp: true
+      colorteaming.class: true
+      colorteaming.kill: true
+      colorteaming.spawn: true
+      colorteaming.random: true
+      colorteaming.remove: true
+      colorteaming.team: true
+    description: Allows all commands for ColorMeTeaming
+  colorteaming.global:
+    description: Global Chat command for ColorMe Team Chat Command
+    default: true

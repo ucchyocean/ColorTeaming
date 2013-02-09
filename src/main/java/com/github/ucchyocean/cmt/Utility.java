@@ -128,9 +128,8 @@ public class Utility {
      */
     public static boolean tryIntParse(String source) {
 
-        return source.matches("^(-?[1-9][0-9]*|0)$");
+        return source.matches("^-?[0-9]+$");
     }
-
 
     /**
      * ColorMeの色設定を、ChatColorクラスに変換する
