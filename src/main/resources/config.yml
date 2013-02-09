@@ -29,3 +29,5 @@ points:
     tkPoint: -3
 
 autoColorRemove: true
+
+coloringDeathMessage: true

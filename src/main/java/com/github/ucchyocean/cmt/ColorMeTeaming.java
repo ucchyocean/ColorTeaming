@@ -62,6 +62,7 @@ public class ColorMeTeaming extends JavaPlugin {
     public static Map<String, String> classItems;
     public static Map<String, String> classArmors;
     public static boolean autoColorRemove;
+    public static boolean coloringDeathMessage;
 
     public static int killPoint;
     public static int deathPoint;
@@ -183,6 +184,8 @@ public class ColorMeTeaming extends JavaPlugin {
         tkPoint = config.getInt("points.tkPoint", -3);
 
         autoColorRemove = config.getBoolean("autoColorRemove", true);
+
+        coloringDeathMessage = config.getBoolean("coloringDeathMessage", true);
     }
 
     /**

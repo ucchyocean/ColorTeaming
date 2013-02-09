@@ -35,6 +35,12 @@ public class PlayerDeathListener implements Listener {
         Player player = event.getEntity();
         String color = ColorMeTeaming.getPlayerColor(player);
 
+        // DeathMessageのプレイヤー名を、displayMessageで置き換え
+        if ( ColorMeTeaming.coloringDeathMessage ) {
+            event.setDeathMessage( event.getDeathMessage().replace(
+                    player.getName(), player.getDisplayName() + ChatColor.RESET));
+        }
+
         // Death数を加算
         if ( !ColorMeTeaming.ignoreGroups.contains(color) ) {
             // グループへ加算
