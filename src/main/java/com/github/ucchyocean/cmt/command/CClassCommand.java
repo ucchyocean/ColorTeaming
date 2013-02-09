@@ -4,7 +4,9 @@
 package com.github.ucchyocean.cmt.command;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Set;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -14,6 +16,8 @@ import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.enchantments.EnchantmentWrapper;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -28,8 +32,11 @@ public class CClassCommand implements CommandExecutor {
     private static final String PREERR = ChatColor.RED.toString();
     private static final String PREINFO = ChatColor.GRAY.toString();
 
-    private static final String REGEX_ITEM_PATTERN = "([0-9]+)(@[0-9]+)?(:[0-9]+)?";
+    private static final String REGEX_ITEM_PATTERN = "([0-9]+)(?:@([0-9]+))?(?::([0-9]+))?|([0-9]+)((?:\\^[0-9]+-[1-9]+)+)";
+    private static final String REGEX_ENCHANT_PATTERN = "\\^([0-9]+)-([0-9]+)";
+
     private static Pattern pattern;
+    private static Pattern patternEnchant;
 
     /**
      * @see org.bukkit.plugin.java.JavaPlugin#onCommand(org.bukkit.command.CommandSender, org.bukkit.command.Command, java.lang.String, java.lang.String[])
@@ -67,7 +74,7 @@ public class CClassCommand implements CommandExecutor {
         // クラス設定を実行する
         String items = ColorMeTeaming.classItems.get(clas);
         String armor = ColorMeTeaming.classArmors.get(clas);
-        int[][] itemData = parseClassItemData(items);
+        ArrayList<ItemStack> itemData = parseClassItemData(sender, items);
 
         Vector<Player> playersToSet;
         if ( isGroup ) {
@@ -87,26 +94,26 @@ public class CClassCommand implements CommandExecutor {
             p.getInventory().setBoots(null);
 
             // アイテムの配布
-            for ( int[] data : itemData ) {
-                if ( data[0] > 0 ) {
-                    give(p, data[0], data[1], data[2]);
+            for ( ItemStack item : itemData ) {
+                if ( item != null ) {
+                    p.getInventory().addItem(item);
                 }
             }
 
             // 防具の配布
             if ( armor != null ) {
-                int[][] armorData = parseClassItemData(armor);
-                if (armorData[0][0] != 0) {
-                    p.getInventory().setHelmet(getItemStack(armorData[0][0], 1, 0));
+                ArrayList<ItemStack> armorData = parseClassItemData(sender, armor);
+                if (armorData.get(0) != null ) {
+                    p.getInventory().setHelmet(armorData.get(0));
                 }
-                if (armorData[1][0] != 0) {
-                    p.getInventory().setChestplate(getItemStack(armorData[1][0], 1, 0));
+                if (armorData.get(1) != null ) {
+                    p.getInventory().setChestplate(armorData.get(1));
                 }
-                if (armorData[2][0] != 0) {
-                    p.getInventory().setLeggings(getItemStack(armorData[2][0], 1, 0));
+                if (armorData.get(2) != null ) {
+                    p.getInventory().setLeggings(armorData.get(2));
                 }
-                if (armorData[3][0] != 0) {
-                    p.getInventory().setBoots(getItemStack(armorData[3][0], 1, 0));
+                if (armorData.get(3) != null ) {
+                    p.getInventory().setBoots(armorData.get(3));
                 }
             }
         }
@@ -124,69 +131,99 @@ public class CClassCommand implements CommandExecutor {
 
 
     /**
-     * Classのアイテムデータ文字列を解析し、int配列に変換する。
+     * Classのアイテムデータ文字列を解析し、ItemStack配列に変換する。
      * @param data 解析元の文字列　例）"44:64,44@2:64,281:10"
-     * @return 解析結果　例）{{44,64,0},{44,64,2},{281,10,0}}
+     * @return ItemStackの配列
      */
-    private int[][] parseClassItemData(String data) {
+    private ArrayList<ItemStack> parseClassItemData(CommandSender sender, String data) {
 
         if ( pattern == null ) {
             pattern = Pattern.compile(REGEX_ITEM_PATTERN);
+            patternEnchant = Pattern.compile(REGEX_ENCHANT_PATTERN);
         }
 
-        ArrayList<int[]> buffer = new ArrayList<int[]>();
+        ArrayList<ItemStack> items = new ArrayList<ItemStack>();
+
         String[] array = data.split("[,]");
         for (int i = 0; i < array.length; i++) {
 
-            int item = 0, damage = 0, amount = 1;
             Matcher matcher = pattern.matcher(array[i]);
 
             if ( matcher.matches() ) {
-                item = Integer.parseInt(matcher.group(1));
-                if ( matcher.group(2) != null ) {
-                    damage = Integer.parseInt(matcher.group(2).substring(1));
-                }
-                if ( matcher.group(3) != null ) {
-                    amount = Integer.parseInt(matcher.group(3).substring(1));
+
+                if ( matcher.group(1) != null ) {
+                    // group1 が null でないなら、id@damage:amount 形式の指定である。
+
+                    int item = 0, damage = 0, amount = 1;
+                    item = Integer.parseInt(matcher.group(1));
+                    if ( matcher.group(2) != null ) {
+                        damage = Integer.parseInt(matcher.group(2));
+                    }
+                    if ( matcher.group(3) != null ) {
+                        amount = Integer.parseInt(matcher.group(3));
+                    }
+
+                    // item id が0なら、nullを設定して次へ進む
+                    if ( item == 0 ) {
+                        items.add(null);
+                        continue;
+                    }
+
+                    // Materialの取得をして、正しいIDが指定されたかどうかを確認する
+                    Material m = Material.getMaterial(item);
+                    if (m == null) {
+                        sender.sendMessage(PREERR + "指定されたItemID " + item + " が見つかりません。");
+                        return null;
+                    }
+
+                    // 65個を超える量の場合は、64個ごとにItemStackにする。
+                    while (amount > 64) {
+                        items.add(getItemStack(item, 64, damage));
+                        amount -= 64;
+                    }
+
+                    items.add(getItemStack(item, amount, damage));
+
+                } else if ( matcher.group(4) != null ) {
+                    // group4、group5 が null でないなら、ID^Ench-Level... 形式の指定である。
+
+                    int item = 0;
+                    HashMap<Integer, Integer> enchants = new HashMap<Integer, Integer>();
+
+                    item = Integer.parseInt(matcher.group(4));
+
+                    // item id が0なら、nullを設定して次へ進む
+                    if ( item == 0 ) {
+                        items.add(null);
+                        continue;
+                    }
+
+                    // Materialの取得をして、正しいIDが指定されたかどうかを確認する
+                    Material m = Material.getMaterial(item);
+                    if (m == null) {
+                        sender.sendMessage(PREERR + "指定されたItemID " + item + " が見つかりません。");
+                        return null;
+                    }
+
+                    // 指定エンチャントの解析
+                    Matcher matcherEnchant = patternEnchant.matcher(matcher.group(5));
+                    while ( matcherEnchant.find() ) {
+                        int enchantID = Integer.parseInt(matcherEnchant.group(1));
+                        int enchantLevel = Integer.parseInt(matcherEnchant.group(2));
+                        enchants.put(enchantID, enchantLevel);
+                    }
+
+                    items.add(getEnchantedItem(item, enchants));
+
+                } else {
+
+                    sender.sendMessage(PREERR + "指定された形式 " + matcher.group(0) + " が正しく解析できません。");
+                    return null;
                 }
             }
-
-            buffer.add(new int[]{item, amount, damage});
         }
 
-        int[][] result = new int[buffer.size()][];
-        buffer.toArray(result);
-
-        return result;
-    }
-
-    /**
-     * アイテムを配布する
-     * @param player 配布先プレイヤー
-     * @param item 配布するアイテムのID
-     * @param amount 配布するアイテムの数量
-     * @param damage 配布するアイテムのダメージ値（指定しない場合は0にする）
-     * @return 配布したかどうか。
-     */
-    private boolean give(Player player, int item, int amount, int damage) {
-
-        // Materialの取得
-        Material m = Material.getMaterial(item);
-        if (m == null) {
-            player.sendMessage(PREERR + "指定されたItemID " + item + " が見つかりません。");
-            return false;
-        }
-
-        // 65個を超える配布量の場合は、64個ごとに配布する。
-        while (amount > 64) {
-            player.getInventory().addItem(getItemStack(item, 64, damage));
-            amount -= 64;
-        }
-
-        // アイテムの配布
-        player.getInventory().addItem(getItemStack(item, amount, damage));
-
-        return true;
+        return items;
     }
 
     /**
@@ -201,5 +238,25 @@ public class CClassCommand implements CommandExecutor {
             return new ItemStack(item, amount, (byte)damage);
         else
             return new ItemStack(item, amount);
+    }
+
+    /**
+     * エンチャント付きのItemStackインスタンスを返す
+     * @param item 配布するアイテムのID
+     * @param enchants 付与するエンチャントIDと、そのレベルのセット
+     * @return ItemStackインスタンス
+     */
+    private ItemStack getEnchantedItem(int item, HashMap<Integer, Integer> enchants) {
+
+        ItemStack i = new ItemStack(item, 1);
+
+        Set<Integer> keys = enchants.keySet();
+        for ( int eid : keys ) {
+            int level = enchants.get(eid);
+            Enchantment ench = new EnchantmentWrapper(eid);
+            i.addEnchantment(ench, level);
+        }
+
+        return i;
     }
 }
