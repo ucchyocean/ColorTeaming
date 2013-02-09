@@ -10,6 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import com.github.ucchyocean.cmt.ColorMeTeaming;
+import com.github.ucchyocean.cmt.ColorMeTeamingConfig;
 
 /**
  * @author ucchy
@@ -35,7 +36,7 @@ public class PlayerChatListener implements Listener {
         }
 
         // チームチャット無効なら、何もせずに抜ける
-        if ( !ColorMeTeaming.isTeamChatMode ) {
+        if ( !ColorMeTeamingConfig.isTeamChatMode ) {
             return;
         }
 
@@ -43,7 +44,7 @@ public class PlayerChatListener implements Listener {
         String color = ColorMeTeaming.getPlayerColor(player);
 
         // 所属する色が無効グループなら、何もせずに抜ける
-        if ( ColorMeTeaming.ignoreGroups.contains(color) ) {
+        if ( ColorMeTeamingConfig.ignoreGroups.contains(color) ) {
             return;
         }
 

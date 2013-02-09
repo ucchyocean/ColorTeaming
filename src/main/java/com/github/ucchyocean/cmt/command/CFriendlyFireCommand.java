@@ -8,7 +8,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-import com.github.ucchyocean.cmt.ColorMeTeaming;
+import com.github.ucchyocean.cmt.ColorMeTeamingConfig;
 
 /**
  * @author ucchy
@@ -27,14 +27,14 @@ public class CFriendlyFireCommand implements CommandExecutor {
         }
 
         if ( args[0].equalsIgnoreCase("on") ) {
-            ColorMeTeaming.isFriendlyFireDisabler = true;
+            ColorMeTeamingConfig.isFriendlyFireDisabler = true;
             sender.sendMessage(ChatColor.GRAY + "仲間同士の攻撃が無効になりました。");
-            ColorMeTeaming.setConfigValue("firelyFireDisabler", true);
+            ColorMeTeamingConfig.setConfigValue("firelyFireDisabler", true);
             return true;
         } else if ( args[0].equalsIgnoreCase("off") ) {
-            ColorMeTeaming.isFriendlyFireDisabler = false;
+            ColorMeTeamingConfig.isFriendlyFireDisabler = false;
             sender.sendMessage(ChatColor.GRAY + "仲間同士の攻撃が有効になりました。");
-            ColorMeTeaming.setConfigValue("firelyFireDisabler", false);
+            ColorMeTeamingConfig.setConfigValue("firelyFireDisabler", false);
             return true;
         }
 

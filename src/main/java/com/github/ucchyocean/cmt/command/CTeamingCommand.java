@@ -7,7 +7,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-import com.github.ucchyocean.cmt.ColorMeTeaming;
+import com.github.ucchyocean.cmt.ColorMeTeamingConfig;
 
 /**
  * @author ucchy
@@ -27,7 +27,7 @@ public class CTeamingCommand implements CommandExecutor {
 
         if ( args[0].equalsIgnoreCase("reload") ) {
 
-            ColorMeTeaming.reloadConfigFile();
+            ColorMeTeamingConfig.reloadConfig();
             sender.sendMessage("config.ymlの再読み込みを行いました。");
             return true;
         }

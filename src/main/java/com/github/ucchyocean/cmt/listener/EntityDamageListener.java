@@ -13,6 +13,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 import com.github.ucchyocean.cmt.ColorMeTeaming;
+import com.github.ucchyocean.cmt.ColorMeTeamingConfig;
 
 /**
  * @author ucchy
@@ -33,7 +34,7 @@ public class EntityDamageListener implements Listener {
         }
 
         // 無効状態なら、何もしない
-        if (!ColorMeTeaming.isFriendlyFireDisabler) {
+        if (!ColorMeTeamingConfig.isFriendlyFireDisabler) {
             return;
         }
 

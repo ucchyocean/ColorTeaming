@@ -13,6 +13,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.github.ucchyocean.cmt.ColorMeTeaming;
+import com.github.ucchyocean.cmt.ColorMeTeamingConfig;
 
 /**
  * @author ucchy
@@ -33,24 +34,24 @@ public class CChatCommand implements CommandExecutor {
         }
 
         if ( args[0].equalsIgnoreCase("on") ) {
-            ColorMeTeaming.isTeamChatMode = true;
+            ColorMeTeamingConfig.isTeamChatMode = true;
             sender.sendMessage(ChatColor.RED + "チームチャットモードになりました。");
-            ColorMeTeaming.setConfigValue("teamChatMode", true);
+            ColorMeTeamingConfig.setConfigValue("teamChatMode", true);
             return true;
         } else if ( args[0].equalsIgnoreCase("off") ) {
-            ColorMeTeaming.isTeamChatMode = false;
+            ColorMeTeamingConfig.isTeamChatMode = false;
             sender.sendMessage(ChatColor.RED + "チームチャットを一時的に無効にしました。");
-            ColorMeTeaming.setConfigValue("teamChatMode", false);
+            ColorMeTeamingConfig.setConfigValue("teamChatMode", false);
             return true;
         } else if ( args[0].equalsIgnoreCase("opcopyon") ) {
-            ColorMeTeaming.isOPDisplayMode = true;
+            ColorMeTeamingConfig.isOPDisplayMode = true;
             sender.sendMessage(ChatColor.RED + "チームチャットをOPにも表示します。");
-            ColorMeTeaming.setConfigValue("opDisplayMode", true);
+            ColorMeTeamingConfig.setConfigValue("opDisplayMode", true);
             return true;
         } else if ( args[0].equalsIgnoreCase("opcopyoff") ) {
-            ColorMeTeaming.isOPDisplayMode = false;
+            ColorMeTeamingConfig.isOPDisplayMode = false;
             sender.sendMessage(ChatColor.RED + "チームチャットのOPへの表示をオフにします。");
-            ColorMeTeaming.setConfigValue("opDisplayMode", false);
+            ColorMeTeamingConfig.setConfigValue("opDisplayMode", false);
             return true;
         } else if ( args.length >= 2 ){
             // グループにメッセージ送信

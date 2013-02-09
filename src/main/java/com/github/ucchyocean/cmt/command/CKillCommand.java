@@ -15,6 +15,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.github.ucchyocean.cmt.ColorMeTeaming;
+import com.github.ucchyocean.cmt.ColorMeTeamingConfig;
 
 /**
  * @author ucchy
@@ -57,9 +58,9 @@ public class CKillCommand implements CommandExecutor {
                 String group = keys.nextElement();
                 int point = 0;
                 int[] counts = ColorMeTeaming.killDeathCounts.get(group);
-                point = counts[0] * ColorMeTeaming.killPoint +
-                        counts[1] * ColorMeTeaming.deathPoint +
-                        counts[2] * ColorMeTeaming.tkPoint;
+                point = counts[0] * ColorMeTeamingConfig.killPoint +
+                        counts[1] * ColorMeTeamingConfig.deathPoint +
+                        counts[2] * ColorMeTeamingConfig.tkPoint;
 
                 int index = 0;
                 while ( groups.size() > index && points.get(index) > point ) {
@@ -106,9 +107,9 @@ public class CKillCommand implements CommandExecutor {
                 Player p = playersEnum.nextElement();
                 int point = 0;
                 int[] counts = ColorMeTeaming.killDeathUserCounts.get(p);
-                point = counts[0] * ColorMeTeaming.killPoint +
-                        counts[1] * ColorMeTeaming.deathPoint +
-                        counts[2] * ColorMeTeaming.tkPoint;
+                point = counts[0] * ColorMeTeamingConfig.killPoint +
+                        counts[1] * ColorMeTeamingConfig.deathPoint +
+                        counts[2] * ColorMeTeamingConfig.tkPoint;
 
                 int index = 0;
                 while ( groups.size() > index && points.get(index) > point ) {

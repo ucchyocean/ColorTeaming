@@ -4,20 +4,12 @@
 package com.github.ucchyocean.cmt;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -50,23 +42,10 @@ public class ColorMeTeaming extends JavaPlugin {
     private static final String TEAM_CHAT_FORMAT = "&a[%s&a]<%s&r&a> %s";
     private static final String TEAM_INFORMATION_FORMAT = "&a[%s&a] %s";
 
-    private static ColorMeTeaming instance;
+    protected static ColorMeTeaming instance;
     private static ColorMe colorme;
 
-    private static Logger logger;
-
-    public static List<String> ignoreGroups;
-    public static boolean isTeamChatMode;
-    public static boolean isOPDisplayMode;
-    public static boolean isFriendlyFireDisabler;
-    public static Map<String, String> classItems;
-    public static Map<String, String> classArmors;
-    public static boolean autoColorRemove;
-    public static boolean coloringDeathMessage;
-
-    public static int killPoint;
-    public static int deathPoint;
-    public static int tkPoint;
+    public static Logger logger;
 
     public static Hashtable<String, Vector<Player>> leaders;
     public static Hashtable<String, int[]> killDeathCounts;
@@ -82,14 +61,7 @@ public class ColorMeTeaming extends JavaPlugin {
         logger = getLogger();
 
         // 設定の読み込み処理
-        try {
-            reloadConfigFileInternal();
-        } catch (IOException e) {
-            e.printStackTrace();
-            logger.severe("設定ファイルの読み込みに失敗しました。");
-            getServer().getPluginManager().disablePlugin(this);
-            return;
-        }
+        ColorMeTeamingConfig.reloadConfig();
 
         // 前提プラグイン ColorMe の取得
         Plugin temp = getServer().getPluginManager().getPlugin("ColorMe");
@@ -142,65 +114,6 @@ public class ColorMeTeaming extends JavaPlugin {
     }
 
     /**
-     * config.ymlの読み出し処理。
-     * @throws IOException
-     */
-    private void reloadConfigFileInternal() throws IOException {
-
-        File configFile = new File(getDataFolder(), "config.yml");
-        if ( !configFile.exists() ) {
-            Utility.copyFileFromJar(getFile(), configFile, "config_ja.yml", false);
-        }
-
-        reloadConfig();
-        FileConfiguration config = getConfig();
-
-        isTeamChatMode = config.getBoolean("teamChatMode", false);
-        isOPDisplayMode = config.getBoolean("opDisplayMode", false);
-
-        isFriendlyFireDisabler = config.getBoolean("firelyFireDisabler", true);
-
-        ignoreGroups = config.getStringList("ignoreGroups");
-        if ( ignoreGroups == null ) {
-            ignoreGroups = new ArrayList<String>();
-        }
-
-        classItems = new HashMap<String, String>();
-        classArmors = new HashMap<String, String>();
-        ConfigurationSection section = config.getConfigurationSection("classes");
-        if ( section != null ) {
-            Iterator<String> i = section.getValues(false).keySet().iterator();
-            while (i.hasNext()) {
-                String clas = i.next();
-                classItems.put(clas, config.getString("classes." + clas + ".items", "") );
-                if ( config.contains("classes." + clas + ".armor") ) {
-                    classArmors.put(clas, config.getString("classes." + clas + ".armor") );
-                }
-            }
-        }
-
-        killPoint = config.getInt("points.killPoint", 1);
-        deathPoint = config.getInt("points.deathPoint", -1);
-        tkPoint = config.getInt("points.tkPoint", -3);
-
-        autoColorRemove = config.getBoolean("autoColorRemove", true);
-
-        coloringDeathMessage = config.getBoolean("coloringDeathMessage", true);
-    }
-
-    /**
-     * config.yml の再読み込みを行う。
-     */
-    public static void reloadConfigFile() {
-
-        try {
-            instance.reloadConfigFileInternal();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
      * Player に設定されている、ColorMe の色設定を取得する。
      * @param player プレイヤー
      * @return ColorMeの色
@@ -248,7 +161,7 @@ public class ColorMeTeaming extends JavaPlugin {
 
             String color = getPlayerColor(p);
 
-            if ( ignoreGroups.contains(color) ) {
+            if ( ColorMeTeamingConfig.ignoreGroups.contains(color) ) {
                 continue;
             }
 
@@ -304,7 +217,7 @@ public class ColorMeTeaming extends JavaPlugin {
 
         // チームメンバに送信する
         Vector<Player> playersToSend = getAllColorMembers().get(color);
-        if ( isOPDisplayMode ) {
+        if ( ColorMeTeamingConfig.isOPDisplayMode ) {
             Player[] players = instance.getServer().getOnlinePlayers();
             for ( Player p : players ) {
                 if ( p.isOp() && !playersToSend.contains(p) ) {
@@ -358,16 +271,7 @@ public class ColorMeTeaming extends JavaPlugin {
         return instance.getServer().getWorld(name);
     }
 
-    /**
-     * config.yml に、設定値を保存する
-     * @param key 設定値のキー
-     * @param value 設定値の値
-     */
-    public static void setConfigValue(String key, Object value) {
-
-        FileConfiguration config = instance.getConfig();
-        config.set(key, value);
-        instance.saveConfig();
+    protected static File getPluginJarFile() {
+        return instance.getFile();
     }
-
 }

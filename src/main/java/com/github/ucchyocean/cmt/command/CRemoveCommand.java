@@ -8,7 +8,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-import com.github.ucchyocean.cmt.ColorMeTeaming;
+import com.github.ucchyocean.cmt.ColorMeTeamingConfig;
 
 /**
  * @author ucchy
@@ -27,14 +27,14 @@ public class CRemoveCommand implements CommandExecutor {
         }
 
         if ( args[0].equalsIgnoreCase("on") ) {
-            ColorMeTeaming.autoColorRemove = true;
+            ColorMeTeamingConfig.autoColorRemove = true;
             sender.sendMessage(ChatColor.GRAY + "死亡時のチーム離脱が有効になりました。");
-            ColorMeTeaming.setConfigValue("firelyFireDisabler", true);
+            ColorMeTeamingConfig.setConfigValue("firelyFireDisabler", true);
             return true;
         } else if ( args[0].equalsIgnoreCase("off") ) {
-            ColorMeTeaming.autoColorRemove = false;
+            ColorMeTeamingConfig.autoColorRemove = false;
             sender.sendMessage(ChatColor.GRAY + "死亡時のチーム離脱が無効になりました。");
-            ColorMeTeaming.setConfigValue("firelyFireDisabler", false);
+            ColorMeTeamingConfig.setConfigValue("firelyFireDisabler", false);
             return true;
         }
 
