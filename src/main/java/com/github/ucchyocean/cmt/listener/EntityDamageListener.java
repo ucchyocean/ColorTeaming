@@ -3,10 +3,10 @@
  */
 package com.github.ucchyocean.cmt.listener;
 
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -54,13 +54,13 @@ public class EntityDamageListener implements Listener {
                 event.setCancelled(true);
             }
 
-        // 加害者が矢、被害者がプレイヤーの場合
-        } else if ( attacker instanceof Arrow && defender instanceof Player ) {
+        // 加害者が飛来物(Projectile)、被害者がプレイヤーの場合
+        } else if ( attacker instanceof Projectile && defender instanceof Player ) {
 
-            Arrow arrow = (Arrow)attacker;
-            LivingEntity shooter = arrow.getShooter();
+            Projectile projectile = (Projectile)attacker;
+            LivingEntity shooter = projectile.getShooter();
 
-            // 矢を打ったのがプレイヤーなら、
+            // 飛来物を打ったのがプレイヤーなら、
             if ( shooter instanceof Player ) {
 
                 // ColorMe のカラーを取得し、同じ色かどうか確認する
