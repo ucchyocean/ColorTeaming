@@ -14,6 +14,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.github.ucchyocean.cmt.ColorMeTeaming;
+import com.github.ucchyocean.cmt.ColorMeTeamingConfig;
 import com.github.ucchyocean.cmt.Utility;
 
 /**
@@ -70,6 +71,11 @@ public class CRandomCommand implements CommandExecutor {
                     GROUP_COLORS[i] +
                     ChatColor.GREEN +
                     " グループになりました。");
+        }
+
+        // 保護領域の更新
+        if ( ColorMeTeamingConfig.protectRespawnPointWithWorldGuard ) {
+            ColorMeTeaming.wghandler.refreshGroupMembers();
         }
 
         // コマンド完了を、CCメッセージで通知する
