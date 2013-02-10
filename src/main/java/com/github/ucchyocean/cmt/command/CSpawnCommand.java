@@ -3,9 +3,6 @@
  */
 package com.github.ucchyocean.cmt.command;
 
-import java.util.Hashtable;
-import java.util.Vector;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.BlockCommandSender;
@@ -15,6 +12,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.github.ucchyocean.cmt.ColorMeTeaming;
+import com.github.ucchyocean.cmt.ColorMeTeamingConfig;
+import com.github.ucchyocean.cmt.Utility;
 
 /**
  * @author ucchy
@@ -104,11 +103,14 @@ public class CSpawnCommand implements CommandExecutor {
         double y = (double)y_actual;
         double z = (double)z_actual + 0.5;
 
-        Hashtable<String, Vector<Player>> members = ColorMeTeaming.getAllColorMembers();
-
         // 有効なグループ名が指定されたか確認する
-        if ( !members.containsKey(group) ) {
-            sender.sendMessage(PREERR + "グループ " + group + " が存在しません。");
+        if ( !Utility.isValidColor(group) ) {
+            sender.sendMessage(PREERR + "グループ " + group + " はColorMeに設定できないグループ名です。");
+            return true;
+        }
+        if ( ColorMeTeamingConfig.ignoreGroups.contains(group) ) {
+            sender.sendMessage(PREERR + "グループ " + group + " は" +
+                    "config.ymlでignoreGroupsに指定されているグループなので、使用できません。");
             return true;
         }
 
@@ -119,10 +121,8 @@ public class CSpawnCommand implements CommandExecutor {
         }
 
         // spawnpoint設定を行う
-        Location loc = new Location(ColorMeTeaming.getWorld(world), x, y, z);
-        for ( Player p : members.get(group) ) {
-            p.setBedSpawnLocation(loc, true);
-        }
+        Location location = new Location(ColorMeTeaming.getWorld(world), x, y, z);
+        ColorMeTeaming.respawnConfig.set(group, location);
 
         String message = String.format(
                 "グループ %s のリスポーンポイントを (%d,%d,%d) に設定しました。",

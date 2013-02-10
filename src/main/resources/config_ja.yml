@@ -47,5 +47,4 @@ autoColorRemove: true
 
 # デスメッセージ（死んだときに表示されるメッセージ）の名前を、
 # ColorMeの色で表示するかどうかを設定します。
-# 他のいろいろなプラグインとの兼ね合いもあるので、十分検証して導入してください。
 coloringDeathMessage: true

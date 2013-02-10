@@ -3,4 +3,4 @@ ColorMeTeaming
 
 ColorMe Teaming Plugin
 
-http://www50.atwiki.jp/sakusouzu2/pages/93.html
+http://forum.minecraftuser.jp/viewtopic.php?f=38&t=9729

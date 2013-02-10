@@ -46,6 +46,7 @@ public class ColorMeTeaming extends JavaPlugin {
     private static ColorMe colorme;
 
     public static Logger logger;
+    public static RespawnConfiguration respawnConfig;
 
     public static Hashtable<String, Vector<Player>> leaders;
     public static Hashtable<String, int[]> killDeathCounts;
@@ -111,6 +112,7 @@ public class ColorMeTeaming extends JavaPlugin {
         killDeathCounts = new Hashtable<String, int[]>();
         killDeathUserCounts = new Hashtable<Player, int[]>();
         leaders = new Hashtable<String, Vector<Player>>();
+        respawnConfig = new RespawnConfiguration();
     }
 
     /**
@@ -271,6 +273,10 @@ public class ColorMeTeaming extends JavaPlugin {
         return instance.getServer().getWorld(name);
     }
 
+    /**
+     * このプラグインのJarファイル自身を示すFileクラスを返す。
+     * @return
+     */
     protected static File getPluginJarFile() {
         return instance.getFile();
     }

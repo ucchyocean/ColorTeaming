@@ -4,6 +4,7 @@
 package com.github.ucchyocean.cmt.listener;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -35,6 +36,14 @@ public class PlayerDeathListener implements Listener {
 
         Player player = event.getEntity();
         String color = ColorMeTeaming.getPlayerColor(player);
+
+        // リスポーンポイントを設定
+        if ( !ColorMeTeamingConfig.ignoreGroups.contains(color) ) {
+            Location respawn = ColorMeTeaming.respawnConfig.get(color);
+            if ( respawn != null ) {
+                player.setBedSpawnLocation(respawn, true);
+            }
+        }
 
         // DeathMessageのプレイヤー名を、displayMessageで置き換え
         if ( ColorMeTeamingConfig.coloringDeathMessage ) {

@@ -56,9 +56,8 @@ public class CKillCommand implements CommandExecutor {
             Enumeration<String> keys = ColorMeTeaming.killDeathCounts.keys();
             while ( keys.hasMoreElements() ) {
                 String group = keys.nextElement();
-                int point = 0;
                 int[] counts = ColorMeTeaming.killDeathCounts.get(group);
-                point = counts[0] * ColorMeTeamingConfig.killPoint +
+                int point = counts[0] * ColorMeTeamingConfig.killPoint +
                         counts[1] * ColorMeTeamingConfig.deathPoint +
                         counts[2] * ColorMeTeamingConfig.tkPoint;
 
@@ -105,14 +104,13 @@ public class CKillCommand implements CommandExecutor {
             Enumeration<Player> playersEnum = ColorMeTeaming.killDeathUserCounts.keys();
             while ( playersEnum.hasMoreElements() ) {
                 Player p = playersEnum.nextElement();
-                int point = 0;
                 int[] counts = ColorMeTeaming.killDeathUserCounts.get(p);
-                point = counts[0] * ColorMeTeamingConfig.killPoint +
+                int point = counts[0] * ColorMeTeamingConfig.killPoint +
                         counts[1] * ColorMeTeamingConfig.deathPoint +
                         counts[2] * ColorMeTeamingConfig.tkPoint;
 
                 int index = 0;
-                while ( groups.size() > index && points.get(index) > point ) {
+                while ( users.size() > index && userPoints.get(index) > point ) {
                     index++;
                 }
                 users.add(index, p);
