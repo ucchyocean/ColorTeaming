@@ -3,9 +3,9 @@
  */
 package com.github.ucchyocean.cmt.command;
 
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.Vector;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -43,7 +43,7 @@ public class CCountCommand implements CommandExecutor {
     protected static void sendCCMessage(CommandSender sender, boolean isBroadcast) {
 
         // メンバー情報の取得
-        Hashtable<String, Vector<Player>> members =
+        Hashtable<String, ArrayList<Player>> members =
                 ColorMeTeaming.getAllColorMembers();
 
         // 最初の行を送信
@@ -58,7 +58,7 @@ public class CCountCommand implements CommandExecutor {
         while ( keys.hasMoreElements() ) {
 
             String key = (String)keys.nextElement();
-            Vector<Player> member = members.get(key);
+            ArrayList<Player> member = members.get(key);
 
             StringBuilder value = new StringBuilder();
             for ( Player p : member ) {

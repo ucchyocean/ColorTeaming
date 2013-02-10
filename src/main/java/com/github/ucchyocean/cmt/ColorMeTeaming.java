@@ -4,6 +4,7 @@
 package com.github.ucchyocean.cmt;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -154,9 +155,9 @@ public class ColorMeTeaming extends JavaPlugin {
      * ignoreGroupに設定されている色グループに所属しているプレーヤーは、除外される。
      * @return 色をKey メンバーをValueとした Hashtable
      */
-    public static Hashtable<String, Vector<Player>> getAllColorMembers() {
+    public static Hashtable<String, ArrayList<Player>> getAllColorMembers() {
 
-        Hashtable<String, Vector<Player>> result = new Hashtable<String, Vector<Player>>();
+        Hashtable<String, ArrayList<Player>> result = new Hashtable<String, ArrayList<Player>>();
         Player[] players = Bukkit.getOnlinePlayers();
 
         for ( Player p : players ) {
@@ -170,7 +171,7 @@ public class ColorMeTeaming extends JavaPlugin {
             if ( result.containsKey(color) ) {
                 result.get(color).add(p);
             } else {
-                Vector<Player> data = new Vector<Player>();
+                ArrayList<Player> data = new ArrayList<Player>();
                 data.add(p);
                 result.put(color, data);
             }
@@ -218,7 +219,7 @@ public class ColorMeTeaming extends JavaPlugin {
                 );
 
         // チームメンバに送信する
-        Vector<Player> playersToSend = getAllColorMembers().get(color);
+        ArrayList<Player> playersToSend = getAllColorMembers().get(color);
         if ( ColorMeTeamingConfig.isOPDisplayMode ) {
             Player[] players = instance.getServer().getOnlinePlayers();
             for ( Player p : players ) {
@@ -247,7 +248,7 @@ public class ColorMeTeaming extends JavaPlugin {
                 );
 
         // チームメンバに送信する
-        Vector<Player> playersToSend = getAllColorMembers().get(color);
+        ArrayList<Player> playersToSend = getAllColorMembers().get(color);
         if ( playersToSend != null ) {
             for ( Player p : playersToSend ) {
                 p.sendMessage(partyMessage);

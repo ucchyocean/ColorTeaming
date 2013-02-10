@@ -3,8 +3,8 @@
  */
 package com.github.ucchyocean.cmt.command;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Vector;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -57,7 +57,7 @@ public class CChatCommand implements CommandExecutor {
             // グループにメッセージ送信
             String group = args[0];
 
-            Hashtable<String, Vector<Player>> members = ColorMeTeaming.getAllColorMembers();
+            Hashtable<String, ArrayList<Player>> members = ColorMeTeaming.getAllColorMembers();
 
             // 有効なグループ名が指定されたか確認する
             if ( !members.containsKey(group) ) {

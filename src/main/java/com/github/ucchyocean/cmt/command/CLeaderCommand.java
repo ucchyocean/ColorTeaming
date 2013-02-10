@@ -3,6 +3,7 @@
  */
 package com.github.ucchyocean.cmt.command;
 
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Random;
@@ -92,7 +93,7 @@ public class CLeaderCommand implements CommandExecutor {
         } else if ( group.equalsIgnoreCase("all") ) {
             // all 指定の場合。
 
-            Hashtable<String, Vector<Player>> members = ColorMeTeaming.getAllColorMembers();
+            Hashtable<String, ArrayList<Player>> members = ColorMeTeaming.getAllColorMembers();
 
             int numberOfLeaders = 1;
             if ( args.length >= 2 && args[1].matches("[1-9]") ) {
@@ -121,7 +122,7 @@ public class CLeaderCommand implements CommandExecutor {
                 int[] leaderIndexes = getPickupNumbers(members.get(key).size(), numberOfLeaders);
                 ColorMeTeaming.leaders.put(key, new Vector<Player>());
                 for ( int i : leaderIndexes ) {
-                    ColorMeTeaming.leaders.get(key).add(members.get(key).elementAt(i));
+                    ColorMeTeaming.leaders.get(key).add(members.get(key).get(i));
                 }
 
                 // リーダーになった人を、チームに通知する
@@ -142,7 +143,7 @@ public class CLeaderCommand implements CommandExecutor {
         } else {
             // group 指定処理の場合
 
-            Hashtable<String, Vector<Player>> members = ColorMeTeaming.getAllColorMembers();
+            Hashtable<String, ArrayList<Player>> members = ColorMeTeaming.getAllColorMembers();
 
             if ( !members.containsKey(group) ) {
                 sender.sendMessage(PREERR + group + " グループは存在しないようです。");
@@ -162,7 +163,7 @@ public class CLeaderCommand implements CommandExecutor {
                 ColorMeTeaming.leaders.put(group, new Vector<Player>());
                 Random random = new Random();
                 int value = random.nextInt(members.get(group).size());
-                Player newLeader = members.get(group).elementAt(value);
+                Player newLeader = members.get(group).get(value);
                 ColorMeTeaming.leaders.get(group).add(newLeader);
 
                 String message = String.format("%s チームの大将に、%s が選ばれました。", group, newLeader.getName());

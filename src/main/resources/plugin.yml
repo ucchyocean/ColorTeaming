@@ -4,6 +4,8 @@ version: 1.4.0
 authors: [ucchy,owatakun]
 load: startup
 description: ColorMe Teaming Plugin
+depend: [ColorMe]
+softdepend: [TagAPI, WorldGuard]
 commands:
   colorcount:
     description: ColorMe Count Command

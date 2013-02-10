@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Set;
-import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -52,7 +51,7 @@ public class CClassCommand implements CommandExecutor {
         String group = args[0];
         String clas = args[1];
 
-        Hashtable<String, Vector<Player>> members = ColorMeTeaming.getAllColorMembers();
+        Hashtable<String, ArrayList<Player>> members = ColorMeTeaming.getAllColorMembers();
 
         // 有効なグループ名かユーザー名が指定されたか確認する
         boolean isGroup = false;
@@ -77,11 +76,11 @@ public class CClassCommand implements CommandExecutor {
         String armor = ColorMeTeamingConfig.classArmors.get(clas);
         ArrayList<ItemStack> itemData = parseClassItemData(sender, items);
 
-        Vector<Player> playersToSet;
+        ArrayList<Player> playersToSet;
         if ( isGroup ) {
             playersToSet = members.get(group);
         } else {
-            playersToSet = new Vector<Player>();
+            playersToSet = new ArrayList<Player>();
             playersToSet.add(ColorMeTeaming.getPlayerExact(group));
         }
 
