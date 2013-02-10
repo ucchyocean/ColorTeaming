@@ -66,7 +66,7 @@ commands:
   colorkill:
     description: ColorMe Team Kill-Death Count Command
     aliases: [ckill,ck]
-    usage: /<command> [(say clear)]
+    usage: /<command> [(say|clear)]
     permission: colorteaming.kill
     permission-message: You don't have permission "<permission>".
   colorspawn:
@@ -84,7 +84,7 @@ commands:
     permission: colorteaming.random
     permission-message: You don't have permission "<permission>".
   colorremove:
-    description: ColorMe Random Team Setting Command
+    description: ColorMe Auto Color Remove Setting Command
     aliases: cr
     usage: /<command> (on|off) - Auto color remove on Player death.
     permission: colorteaming.remove
@@ -93,7 +93,8 @@ commands:
     description: ColorMe Teaming Plugin Administration Command
     aliases: ct
     usage: |
-           /<command> set [numberOfGroup] - Set new random groups.
+           /<command> add (group) (user) - Add (user) to (group).
+           /<command> remove (group) - Remove (group).
            /<command> reload - Reload config.yml file.
     permission: colorteaming.team
     permission-message: You don't have permission "<permission>".
