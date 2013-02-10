@@ -89,6 +89,12 @@ public class PlayerDeathListener implements Listener {
             }
         }
 
+        // DeathMessageのKillerプレイヤー名を、displayMessageで置き換え
+        if ( ColorMeTeamingConfig.coloringDeathMessage ) {
+            event.setDeathMessage( event.getDeathMessage().replace(
+                    killer.getName(), killer.getDisplayName() + ChatColor.RESET));
+        }
+
         String colorKiller = ColorMeTeaming.getPlayerColor(killer);
 
         // Kill数を加算

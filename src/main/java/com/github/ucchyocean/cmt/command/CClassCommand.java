@@ -33,7 +33,7 @@ public class CClassCommand implements CommandExecutor {
     private static final String PREERR = ChatColor.RED.toString();
     private static final String PREINFO = ChatColor.GRAY.toString();
 
-    private static final String REGEX_ITEM_PATTERN = "([0-9]+)(?:@([0-9]+))?(?::([0-9]+))?|([0-9]+)((?:\\^[0-9]+-[1-9]+)+)";
+    private static final String REGEX_ITEM_PATTERN = "([0-9]+)(?:@([0-9]+))?(?::([0-9]+))?|([0-9]+)((?:\\^[0-9]+-[0-9]+)+)";
     private static final String REGEX_ENCHANT_PATTERN = "\\^([0-9]+)-([0-9]+)";
 
     private static Pattern pattern;
@@ -255,7 +255,12 @@ public class CClassCommand implements CommandExecutor {
         for ( int eid : keys ) {
             int level = enchants.get(eid);
             Enchantment ench = new EnchantmentWrapper(eid);
-            i.addEnchantment(ench, level);
+            if ( level < ench.getStartLevel() ) {
+                level = ench.getStartLevel();
+            } else if ( level > ench.getMaxLevel() ) {
+                level = ench.getMaxLevel();
+            }
+            i.addUnsafeEnchantment(ench, level);
         }
 
         return i;
