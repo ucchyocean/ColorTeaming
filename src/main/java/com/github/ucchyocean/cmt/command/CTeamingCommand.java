@@ -4,6 +4,7 @@
 package com.github.ucchyocean.cmt.command;
 
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.Hashtable;
 
 import org.bukkit.ChatColor;
@@ -41,6 +42,26 @@ public class CTeamingCommand implements CommandExecutor {
             sender.sendMessage("config.ymlの再読み込みを行いました。");
             return true;
 
+        } else if ( args[0].equalsIgnoreCase("removeall") ) {
+
+            Hashtable<String, ArrayList<Player>> members = ColorMeTeaming.getAllColorMembers();
+            Enumeration<String> keys = members.keys();
+            while ( keys.hasMoreElements() ) {
+                String group = keys.nextElement();
+                for ( Player p : members.get(group) ) {
+                    ColorMeTeaming.removePlayerColor(p);
+                    p.sendMessage(PREINFO + "グループ " + group + " が解散しました。");
+                }
+            }
+            sender.sendMessage(PREINFO + "全てのグループが解散しました。");
+
+            // 保護領域の更新
+            if ( ColorMeTeamingConfig.protectRespawnPointWithWorldGuard ) {
+                ColorMeTeaming.wghandler.refreshGroupMembers();
+            }
+
+            return true;
+
         } else if ( args.length >= 2 && args[0].equalsIgnoreCase("remove") ) {
 
             Hashtable<String, ArrayList<Player>> members = ColorMeTeaming.getAllColorMembers();
@@ -55,7 +76,12 @@ public class CTeamingCommand implements CommandExecutor {
             }
             sender.sendMessage(PREINFO + "グループ " + group + " が解散しました。");
 
-            // TODO: 保護領域の更新
+            // 保護領域の更新
+            if ( ColorMeTeamingConfig.protectRespawnPointWithWorldGuard ) {
+                ColorMeTeaming.wghandler.refreshGroupMembers();
+            }
+
+            return true;
 
         } else if ( args.length >= 3 && args[0].equalsIgnoreCase("add") ) {
 
@@ -73,8 +99,12 @@ public class CTeamingCommand implements CommandExecutor {
 
             ColorMeTeaming.setPlayerColor(player, group);
 
-            // TODO: 保護領域の更新
+            // 保護領域の更新
+            if ( ColorMeTeamingConfig.protectRespawnPointWithWorldGuard ) {
+                ColorMeTeaming.wghandler.refreshGroupMembers();
+            }
 
+            return true;
         }
 
         return false;

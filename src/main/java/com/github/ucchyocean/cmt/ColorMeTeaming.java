@@ -30,6 +30,7 @@ import com.github.ucchyocean.cmt.command.CTeamingCommand;
 import com.github.ucchyocean.cmt.listener.EntityDamageListener;
 import com.github.ucchyocean.cmt.listener.PlayerChatListener;
 import com.github.ucchyocean.cmt.listener.PlayerDeathListener;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 
 import de.dustplanet.colorme.Actions;
 import de.dustplanet.colorme.ColorMe;
@@ -45,6 +46,7 @@ public class ColorMeTeaming extends JavaPlugin {
 
     protected static ColorMeTeaming instance;
     private static ColorMe colorme;
+    public static WorldGuardHandler wghandler;
 
     public static Logger logger;
     public static RespawnConfiguration respawnConfig;
@@ -73,6 +75,10 @@ public class ColorMeTeaming extends JavaPlugin {
             logger.severe("ColorMe がロードされていません。");
             getServer().getPluginManager().disablePlugin(this);
             return;
+        }
+
+        // 前提プラグイン WorldGuard の取得
+        if ( ColorMeTeamingConfig.protectRespawnPointWithWorldGuard ) {
         }
 
         // コマンドをサーバーに登録
@@ -280,5 +286,21 @@ public class ColorMeTeaming extends JavaPlugin {
      */
     protected static File getPluginJarFile() {
         return instance.getFile();
+    }
+
+    /**
+     * WorldGuardプラグインをロードする
+     */
+    protected void loadWorldGuard() {
+        Plugin temp = getServer().getPluginManager().getPlugin("WorldGuard");
+        if ( temp != null && temp instanceof WorldGuardPlugin ) {
+            wghandler = new WorldGuardHandler((WorldGuardPlugin)temp);
+        } else {
+            logger.warning("WorldGuard がロードされていません。");
+            logger.warning("protectRespawnPointWithWorldGuard の設定を false に変更します。");
+            ColorMeTeamingConfig.setConfigValue(
+                    "protectRespawnPointWithWorldGuard", false);
+            ColorMeTeamingConfig.protectRespawnPointWithWorldGuard = false;
+        }
     }
 }

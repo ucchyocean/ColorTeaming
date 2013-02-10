@@ -129,6 +129,12 @@ public class CSpawnCommand implements CommandExecutor {
                 group, x_actual, y_actual, z_actual);
         sender.sendMessage(PREINFO + message);
 
+        // WorldGuard連携の場合は、保護領域を作成する
+        if ( ColorMeTeamingConfig.protectRespawnPointWithWorldGuard ) {
+            int range = ColorMeTeamingConfig.protectRespawnPointRange;
+            ColorMeTeaming.wghandler.makeTeamRegion(group, location, range);
+        }
+
         return true;
     }
 

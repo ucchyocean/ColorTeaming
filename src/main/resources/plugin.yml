@@ -95,6 +95,7 @@ commands:
     usage: |
            /<command> add (group) (user) - Add (user) to (group).
            /<command> remove (group) - Remove (group).
+           /<command> removeAll - Remove all groups.
            /<command> reload - Reload config.yml file.
     permission: colorteaming.team
     permission-message: You don't have permission "<permission>".

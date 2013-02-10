@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import com.sk89q.worldedit.BlockVector;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.domains.DefaultDomain;
+import com.sk89q.worldguard.protection.databases.ProtectionDatabaseException;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
@@ -30,6 +31,8 @@ public class WorldGuardHandler {
     private static final String REGION_PREFIX = "_team_spawn_region";
 
     private WorldGuardPlugin wg;
+    private ArrayList<String> regionNames;
+    private World defaultWorld;
 
     /**
      * コンストラクタ
@@ -37,46 +40,76 @@ public class WorldGuardHandler {
      */
     protected WorldGuardHandler(WorldGuardPlugin worldguard) {
         this.wg = worldguard;
+        regionNames = new ArrayList<String>();
+        defaultWorld = ColorMeTeaming.getWorld("world");
     }
 
+    /**
+     * 色グループの保護領域を作成します
+     * @param group グループ名
+     * @param center 保護領域の中心
+     * @param range 保護領域の半径
+     */
     public void makeTeamRegion(String group, Location center, int range) {
+
+        String regionName = group + REGION_PREFIX;
 
         Hashtable<String, ArrayList<Player>> members = ColorMeTeaming.getAllColorMembers();
 
-        // メンバーが存在しないグループなら、何もせずに終了する
-        if ( !members.containsKey(group) ) {
-            return;
-        }
-
         // 領域を定義して、WorldGuardに領域を登録する
-        String regionName = group + REGION_PREFIX;
-
         BlockVector pt1 = new BlockVector(
-                center.getX() - range,
-                center.getY() - range,
-                center.getZ() - range);
+                center.getX() - range - 1,
+                center.getY() - range - 1,
+                center.getZ() - range - 1);
         BlockVector pt2 = new BlockVector(
-                center.getX() + range,
-                center.getY() + range,
-                center.getZ() + range);
+                center.getX() + range - 1,
+                center.getY() + range - 1,
+                center.getZ() + range - 1);
         ProtectedCuboidRegion region =
                 new ProtectedCuboidRegion(regionName, pt1, pt2);
 
         RegionManager manager = wg.getRegionManager(center.getWorld());
+
+        // 既に領域がある場合は、消しておく。
+        if ( manager.hasRegion(regionName) ) {
+            manager.removeRegion(regionName);
+        }
+
+        // 領域を登録
         manager.addRegion(region);
+
+
+        if ( !regionNames.contains(regionName) ) {
+            regionNames.add(regionName);
+        }
 
         // メンバーを設定する
         region.setMembers(makeDomain(members.get(group)));
 
-        // メンバー外の進入を拒否に設定する
+        // メンバー以外の進入を拒否に設定する
         region.setFlag(DefaultFlag.ENTRY, StateFlag.State.DENY);
+
+        // 設定したワールドを保存する（TODO:これは苦し紛れの対応なので、再考が必要）
+        defaultWorld = center.getWorld();
+
+        // WorldGuardのsaveを実行する
+        try {
+            manager.save();
+        } catch (ProtectionDatabaseException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
      * 全保護領域のメンバーを更新する
-     * @param defaultWorld 対象の世界
      */
-    public void refreshGroupMembers(World defaultWorld) {
+    public void refreshGroupMembers() {
+
+        // regionNames のコピー作成
+        ArrayList<String> regionNameRemain = new ArrayList<String>();
+        for ( String r : regionNames ) {
+            regionNameRemain.add(r);
+        }
 
         // メンバーを取得して領域に再設定していく
         RegionManager manager = wg.getRegionManager(defaultWorld);
@@ -90,6 +123,21 @@ public class WorldGuardHandler {
                 continue;
             }
             region.setMembers(makeDomain(members.get(key)));
+
+            regionNameRemain.remove(key + REGION_PREFIX);
+        }
+
+        // メンバーが居ない領域は削除する
+        for ( String r : regionNameRemain ) {
+            manager.removeRegion(r);
+            regionNames.remove(r);
+        }
+
+        // WorldGuardのsaveを実行する
+        try {
+            manager.save();
+        } catch (ProtectionDatabaseException e) {
+            e.printStackTrace();
         }
     }
 
@@ -101,6 +149,9 @@ public class WorldGuardHandler {
     private DefaultDomain makeDomain(ArrayList<Player> players) {
 
         DefaultDomain domain = new DefaultDomain();
+        if ( players == null || players.size() <= 0 ) {
+            return domain;
+        }
         for ( Player p : players ) {
             domain.addPlayer(p.getName());
         }

@@ -31,3 +31,7 @@ points:
 autoColorRemove: true
 
 coloringDeathMessage: true
+
+protectRespawnPointWithWorldGuard: false
+
+protectRespawnPointRange: 3

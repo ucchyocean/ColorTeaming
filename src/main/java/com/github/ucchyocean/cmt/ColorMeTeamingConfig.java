@@ -28,6 +28,8 @@ public class ColorMeTeamingConfig {
     public static Map<String, String> classArmors;
     public static boolean autoColorRemove;
     public static boolean coloringDeathMessage;
+    public static boolean protectRespawnPointWithWorldGuard;
+    public static int protectRespawnPointRange;
 
     public static int killPoint;
     public static int deathPoint;
@@ -79,8 +81,16 @@ public class ColorMeTeamingConfig {
         autoColorRemove = config.getBoolean("autoColorRemove", true);
 
         coloringDeathMessage = config.getBoolean("coloringDeathMessage", true);
-    }
 
+        protectRespawnPointWithWorldGuard =
+                config.getBoolean("protectRespawnPointWithWorldGuard", false);
+        protectRespawnPointRange = config.getInt("protectRespawnPointRange", 3);
+
+        // WorldGuardプラグイン連携が true になったら、WorldGaurdをロードする
+        if ( protectRespawnPointWithWorldGuard && ColorMeTeaming.wghandler == null ) {
+            ColorMeTeaming.instance.loadWorldGuard();
+        }
+    }
 
     /**
      * config.yml に、設定値を保存する
