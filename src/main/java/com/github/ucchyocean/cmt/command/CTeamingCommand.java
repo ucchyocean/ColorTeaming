@@ -8,6 +8,7 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -44,13 +45,15 @@ public class CTeamingCommand implements CommandExecutor {
 
         } else if ( args[0].equalsIgnoreCase("removeall") ) {
 
+            Location defaultSpawn = ColorMeTeamingConfig.defaultWorld.getSpawnLocation();
+
             Hashtable<String, ArrayList<Player>> members = ColorMeTeaming.getAllColorMembers();
             Enumeration<String> keys = members.keys();
             while ( keys.hasMoreElements() ) {
                 String group = keys.nextElement();
                 for ( Player p : members.get(group) ) {
                     ColorMeTeaming.removePlayerColor(p);
-                    p.sendMessage(PREINFO + "グループ " + group + " が解散しました。");
+                    p.setBedSpawnLocation(defaultSpawn, true);
                 }
             }
             sender.sendMessage(PREINFO + "全てのグループが解散しました。");
@@ -70,8 +73,12 @@ public class CTeamingCommand implements CommandExecutor {
                 sender.sendMessage(PREERR + "グループ " + group + " は存在しません。");
                 return true;
             }
+
+            Location defaultSpawn = ColorMeTeamingConfig.defaultWorld.getSpawnLocation();
+
             for ( Player p : members.get(group) ) {
                 ColorMeTeaming.removePlayerColor(p);
+                p.setBedSpawnLocation(defaultSpawn, true);
                 p.sendMessage(PREINFO + "グループ " + group + " が解散しました。");
             }
             sender.sendMessage(PREINFO + "グループ " + group + " が解散しました。");
