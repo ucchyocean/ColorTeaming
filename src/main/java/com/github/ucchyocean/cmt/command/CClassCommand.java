@@ -32,7 +32,7 @@ public class CClassCommand implements CommandExecutor {
     private static final String PREERR = ChatColor.RED.toString();
     private static final String PREINFO = ChatColor.GRAY.toString();
 
-    private static final String REGEX_ITEM_PATTERN = "([0-9]+)(?:@([0-9]+))?(?::([0-9]+))?|([0-9]+)((?:\\^[0-9]+-[0-9]+)+)";
+    private static final String REGEX_ITEM_PATTERN = "([0-9]+)(?:@([0-9]+))?(?::([0-9]+))?|([0-9]+)((?:\\^[0-9]+-[0-9]+)+(?:@([0-9]+))?)";
     private static final String REGEX_ENCHANT_PATTERN = "\\^([0-9]+)-([0-9]+)";
 
     private static Pattern pattern;
@@ -154,10 +154,11 @@ public class CClassCommand implements CommandExecutor {
                 if ( matcher.group(1) != null ) {
                     // group1 が null でないなら、id@damage:amount 形式の指定である。
 
-                    int item = 0, damage = 0, amount = 1;
+                    int item = 0, amount = 1;
+                    short damage = 0;
                     item = Integer.parseInt(matcher.group(1));
                     if ( matcher.group(2) != null ) {
-                        damage = Integer.parseInt(matcher.group(2));
+                        damage = Short.parseShort(matcher.group(2));
                     }
                     if ( matcher.group(3) != null ) {
                         amount = Integer.parseInt(matcher.group(3));
@@ -188,9 +189,13 @@ public class CClassCommand implements CommandExecutor {
                     // group4、group5 が null でないなら、ID^Ench-Level... 形式の指定である。
 
                     int item = 0;
+                    short damage = 0;
                     HashMap<Integer, Integer> enchants = new HashMap<Integer, Integer>();
 
                     item = Integer.parseInt(matcher.group(4));
+                    if ( matcher.group(6) != null ) {
+                        damage = Short.parseShort(matcher.group(6));
+                    }
 
                     // item id が0なら、nullを設定して次へ進む
                     if ( item == 0 ) {
@@ -213,7 +218,7 @@ public class CClassCommand implements CommandExecutor {
                         enchants.put(enchantID, enchantLevel);
                     }
 
-                    items.add(getEnchantedItem(item, enchants));
+                    items.add(getEnchantedItem(item, enchants, damage));
 
                 } else {
 
@@ -233,9 +238,9 @@ public class CClassCommand implements CommandExecutor {
      * @param damage 配布するアイテムのダメージ値（指定しない場合は0にする）
      * @return ItemStackインスタンス
      */
-    private ItemStack getItemStack(int item, int amount, int damage) {
+    private ItemStack getItemStack(int item, int amount, short damage) {
         if ( damage > 0 )
-            return new ItemStack(item, amount, (byte)damage);
+            return new ItemStack(item, amount, damage);
         else
             return new ItemStack(item, amount);
     }
@@ -246,9 +251,9 @@ public class CClassCommand implements CommandExecutor {
      * @param enchants 付与するエンチャントIDと、そのレベルのセット
      * @return ItemStackインスタンス
      */
-    private ItemStack getEnchantedItem(int item, HashMap<Integer, Integer> enchants) {
+    private ItemStack getEnchantedItem(int item, HashMap<Integer, Integer> enchants, short damage) {
 
-        ItemStack i = new ItemStack(item, 1);
+        ItemStack i = getItemStack(item, 1, damage);
 
         Set<Integer> keys = enchants.keySet();
         for ( int eid : keys ) {
@@ -256,8 +261,8 @@ public class CClassCommand implements CommandExecutor {
             Enchantment ench = new EnchantmentWrapper(eid);
             if ( level < ench.getStartLevel() ) {
                 level = ench.getStartLevel();
-            } else if ( level > ench.getMaxLevel() ) {
-                level = ench.getMaxLevel();
+            } else if ( level > 127 ) {
+                level = 127;
             }
             i.addUnsafeEnchantment(ench, level);
         }
