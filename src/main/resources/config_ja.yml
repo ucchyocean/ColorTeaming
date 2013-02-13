@@ -1,4 +1,4 @@
-# ColorMe Teaming Plugin 1.4.0
+# ColorMe Teaming Plugin 1.4.1
 # @author     ucchy
 # @license    GPLv3
 # @copyright  Copyright ucchy 2013
@@ -23,17 +23,17 @@ ignoreGroups: ['', 'white', 'gold']
 # 通常のアイテム → (アイテムID)[@(ダメージ値)][:(個数)]
 # エンチャント付きアイテム → (アイテムID)^(エンチャントID)-(エンチャントレベル)
 classes:
-    Knight:
-        items: 267,320:5
-        armor: 306,307,308,309
-    Archer:
-        items: 261,262:50,297:4
-        armor: 298,299,300,301
-    Builder:
-        items: 44:64,44@2:64,44@3:64,44@4:64,44@5:64
-    Diver:
-        items: 256^32-5^34-3,257^32-5^34-3,393:10
-        armor: 306^5-3^6-1,0,0,309^2-4
+  Knight:
+    items: 267,320:5
+    armor: 306,307,308,309
+  Archer:
+    items: 261,262:50,297:4
+    armor: 298,299,300,301
+  Builder:
+    items: 44:64,44@2:64,44@3:64,44@4:64,44@5:64
+  Diver:
+    items: 256^32-5^34-3,257^32-5^34-3,393:10
+    armor: 306^5-3^6-1,0,0,309^2-4
 
 # ckillコマンド用の得点設定。
 # killPoint - 他のチームのプレイヤーを倒したときの獲得点数。
@@ -41,9 +41,9 @@ classes:
 # tkPoint - 自分のチームのプレイヤーを倒したときの獲得点数。
 #           cffがonで、チームメンバーへのダメージがないなら、設定の意味は無い。
 points:
-    killPoint: 1
-    deathPoint: -1
-    tkPoint: -3
+  killPoint: 1
+  deathPoint: -1
+  tkPoint: -3
 
 # 死んでリスポンしたときに、グループから自動で抜けるかどうかを設定します。
 autoColorRemove: true

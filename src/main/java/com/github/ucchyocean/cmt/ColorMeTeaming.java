@@ -77,10 +77,6 @@ public class ColorMeTeaming extends JavaPlugin {
             return;
         }
 
-        // 前提プラグイン WorldGuard の取得
-        if ( ColorMeTeamingConfig.protectRespawnPointWithWorldGuard ) {
-        }
-
         // コマンドをサーバーに登録
         CCountCommand ccCommand = new CCountCommand();
         getCommand("colorcount").setExecutor(ccCommand);

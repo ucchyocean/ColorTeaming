@@ -84,8 +84,8 @@ public class PlayerDeathListener implements Listener {
 
         // 倒したプレイヤーを取得
         // 直接攻撃で倒された場合は、killerをそのまま使う
-        Player killer = player.getKiller();
         // 間接攻撃で倒された場合は、shooterを取得して使う
+        Player killer = player.getKiller();
         if ( killer == null ) {
             return;
         } else if ( killer instanceof Projectile ) {
