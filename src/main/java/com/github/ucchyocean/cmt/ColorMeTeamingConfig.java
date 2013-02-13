@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -19,6 +20,8 @@ import org.bukkit.configuration.file.FileConfiguration;
  * ColorMeTeaming の設定ハンドルクラス
  */
 public class ColorMeTeamingConfig {
+
+    public static World defaultWorld;
 
     public static List<String> ignoreGroups;
     public static boolean isTeamChatMode;
@@ -90,6 +93,13 @@ public class ColorMeTeamingConfig {
         if ( protectRespawnPointWithWorldGuard && ColorMeTeaming.wghandler == null ) {
             ColorMeTeaming.instance.loadWorldGuard();
         }
+
+        String worldName = config.getString("world", "world");
+        defaultWorld = ColorMeTeaming.getWorld(worldName);
+        if ( defaultWorld == null ) {
+            defaultWorld = ColorMeTeaming.getWorld("world");
+        }
+
     }
 
     /**

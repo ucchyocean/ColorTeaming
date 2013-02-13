@@ -3,6 +3,8 @@
 # @license    GPLv3
 # @copyright  Copyright ucchy 2013
 
+world: 'world'
+
 partyChatMode: false
 opDisplayMode: false
 

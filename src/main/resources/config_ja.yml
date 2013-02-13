@@ -3,6 +3,9 @@
 # @license    GPLv3
 # @copyright  Copyright ucchy 2013
 
+# PVPを実施するworld名を設定してください。
+world: 'world'
+
 # サーバー起動時のチームチャットモードを設定します。
 # trueになっている場合は、チャットの発言がチーム内のみになります。
 teamChatMode: false

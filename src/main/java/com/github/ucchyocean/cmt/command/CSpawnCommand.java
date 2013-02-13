@@ -35,7 +35,7 @@ public class CSpawnCommand implements CommandExecutor {
         }
 
         String group;
-        String world = "world";
+        String world = ColorMeTeamingConfig.defaultWorld.getName();
         int x_actual, y_actual, z_actual;
 
         group = args[0];
@@ -131,8 +131,16 @@ public class CSpawnCommand implements CommandExecutor {
 
         // WorldGuard連携の場合は、保護領域を作成する
         if ( ColorMeTeamingConfig.protectRespawnPointWithWorldGuard ) {
-            int range = ColorMeTeamingConfig.protectRespawnPointRange;
-            ColorMeTeaming.wghandler.makeTeamRegion(group, location, range);
+            if ( !location.getWorld().equals(ColorMeTeamingConfig.defaultWorld) ) {
+                sender.sendMessage(PREERR + "config.yml の設定[" +
+                        ColorMeTeamingConfig.defaultWorld.getName() +
+                        "]と、指定したポイントのワールド[" +
+                        location.getWorld().getName() +
+                        "が異なるため、保護領域の作成に失敗しました。");
+            } else {
+                int range = ColorMeTeamingConfig.protectRespawnPointRange;
+                ColorMeTeaming.wghandler.makeTeamRegion(group, location, range);
+            }
         }
 
         return true;

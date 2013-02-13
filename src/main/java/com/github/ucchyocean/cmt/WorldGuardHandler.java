@@ -8,7 +8,6 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import com.sk89q.worldedit.BlockVector;
@@ -32,7 +31,6 @@ public class WorldGuardHandler {
 
     private WorldGuardPlugin wg;
     private ArrayList<String> regionNames;
-    private World defaultWorld;
 
     /**
      * コンストラクタ
@@ -41,7 +39,6 @@ public class WorldGuardHandler {
     protected WorldGuardHandler(WorldGuardPlugin worldguard) {
         this.wg = worldguard;
         regionNames = new ArrayList<String>();
-        defaultWorld = ColorMeTeaming.getWorld("world");
     }
 
     /**
@@ -78,7 +75,6 @@ public class WorldGuardHandler {
         // 領域を登録
         manager.addRegion(region);
 
-
         if ( !regionNames.contains(regionName) ) {
             regionNames.add(regionName);
         }
@@ -89,9 +85,6 @@ public class WorldGuardHandler {
         // メンバー以外の進入を拒否に設定する、PVPを不可にする
         region.setFlag(DefaultFlag.ENTRY, StateFlag.State.DENY);
         region.setFlag(DefaultFlag.PVP, StateFlag.State.DENY);
-
-        // 設定したワールドを保存する（TODO:これは苦し紛れの対応なので、再考が必要）
-        defaultWorld = center.getWorld();
 
         // WorldGuardのsaveを実行する
         try {
@@ -113,7 +106,7 @@ public class WorldGuardHandler {
         }
 
         // メンバーを取得して領域に再設定していく
-        RegionManager manager = wg.getRegionManager(defaultWorld);
+        RegionManager manager = wg.getRegionManager(ColorMeTeamingConfig.defaultWorld);
         Hashtable<String, ArrayList<Player>> members = ColorMeTeaming.getAllColorMembers();
         Enumeration<String> keys = members.keys();
 

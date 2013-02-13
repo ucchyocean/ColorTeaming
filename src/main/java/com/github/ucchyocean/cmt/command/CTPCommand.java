@@ -16,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 import com.github.ucchyocean.cmt.ColorMeTeaming;
+import com.github.ucchyocean.cmt.ColorMeTeamingConfig;
 
 /**
  * @author ucchy
@@ -37,7 +38,7 @@ public class CTPCommand implements CommandExecutor {
         }
 
         String group;
-        String world = "world";
+        String world = ColorMeTeamingConfig.defaultWorld.getName();
         int x_actual, y_actual, z_actual;
 
         if ( args[1].equalsIgnoreCase("here") ) {
