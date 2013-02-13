@@ -142,15 +142,17 @@ public class CKillCommand implements CommandExecutor {
             }
 
             // 個人の得点を個人のコンソールに表示する
-            for ( int i=0; i<users.size(); i++ ) {
-                Player player = users.get(i);
-                int point = userPoints.get(i);
-                int[] counts = ColorMeTeaming.killDeathUserCounts.get(users.get(i));
-                String message = String.format(
-                        "[Your Score] %s %dpoints (%dkill, %ddeath, %dtk)",
-                        player.getName(), point, counts[0], counts[1], counts[2]);
+            if ( isBroadcast ) {
+                for ( int i=0; i<users.size(); i++ ) {
+                    Player player = users.get(i);
+                    int point = userPoints.get(i);
+                    int[] counts = ColorMeTeaming.killDeathUserCounts.get(users.get(i));
+                    String message = String.format(
+                            "[Your Score] %s %dpoints (%dkill, %ddeath, %dtk)",
+                            player.getName(), point, counts[0], counts[1], counts[2]);
 
-                player.sendMessage(ChatColor.GRAY + message);
+                    player.sendMessage(ChatColor.GRAY + message);
+                }
             }
 
         } else if ( args.length >= 1 && args[0].equalsIgnoreCase("clear") ) {

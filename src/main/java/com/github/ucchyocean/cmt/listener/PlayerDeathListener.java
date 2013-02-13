@@ -18,6 +18,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import com.github.ucchyocean.cmt.ColorMeTeaming;
 import com.github.ucchyocean.cmt.ColorMeTeamingConfig;
+import com.github.ucchyocean.cmt.Utility;
 
 /**
  * @author ucchy
@@ -45,10 +46,11 @@ public class PlayerDeathListener implements Listener {
             }
         }
 
-        // DeathMessageのプレイヤー名を、displayMessageで置き換え
+        // DeathMessageのプレイヤー名を、色つきで置き換え
         if ( ColorMeTeamingConfig.coloringDeathMessage ) {
             event.setDeathMessage( event.getDeathMessage().replace(
-                    player.getName(), player.getDisplayName() + ChatColor.RESET));
+                    player.getName(),
+                    Utility.replaceColors(color) + player.getName() + ChatColor.RESET));
         }
 
         // Death数を加算
@@ -98,13 +100,14 @@ public class PlayerDeathListener implements Listener {
             }
         }
 
+        String colorKiller = ColorMeTeaming.getPlayerColor(killer);
+
         // DeathMessageのKillerプレイヤー名を、displayMessageで置き換え
         if ( ColorMeTeamingConfig.coloringDeathMessage ) {
             event.setDeathMessage( event.getDeathMessage().replace(
-                    killer.getName(), killer.getDisplayName() + ChatColor.RESET));
+                    killer.getName(),
+                    Utility.replaceColors(colorKiller) + killer.getName() + ChatColor.RESET));
         }
-
-        String colorKiller = ColorMeTeaming.getPlayerColor(killer);
 
         // Kill数を加算
         if ( !ColorMeTeamingConfig.ignoreGroups.contains(colorKiller) ) {

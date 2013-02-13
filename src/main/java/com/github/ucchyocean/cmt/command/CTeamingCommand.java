@@ -45,7 +45,8 @@ public class CTeamingCommand implements CommandExecutor {
 
         } else if ( args[0].equalsIgnoreCase("removeall") ) {
 
-            Location defaultSpawn = ColorMeTeamingConfig.defaultWorld.getSpawnLocation();
+            Location defaultSpawn = ColorMeTeaming.getWorld(
+                    ColorMeTeamingConfig.defaultWorldName).getSpawnLocation();
 
             Hashtable<String, ArrayList<Player>> members = ColorMeTeaming.getAllColorMembers();
             Enumeration<String> keys = members.keys();
@@ -74,7 +75,8 @@ public class CTeamingCommand implements CommandExecutor {
                 return true;
             }
 
-            Location defaultSpawn = ColorMeTeamingConfig.defaultWorld.getSpawnLocation();
+            Location defaultSpawn = ColorMeTeaming.getWorld(
+                    ColorMeTeamingConfig.defaultWorldName).getSpawnLocation();
 
             for ( Player p : members.get(group) ) {
                 ColorMeTeaming.removePlayerColor(p);

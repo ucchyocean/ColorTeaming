@@ -11,7 +11,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -21,7 +20,7 @@ import org.bukkit.configuration.file.FileConfiguration;
  */
 public class ColorMeTeamingConfig {
 
-    public static World defaultWorld;
+    public static String defaultWorldName;
 
     public static List<String> ignoreGroups;
     public static boolean isTeamChatMode;
@@ -94,12 +93,7 @@ public class ColorMeTeamingConfig {
             ColorMeTeaming.instance.loadWorldGuard();
         }
 
-        String worldName = config.getString("world", "world");
-        defaultWorld = ColorMeTeaming.getWorld(worldName);
-        if ( defaultWorld == null ) {
-            defaultWorld = ColorMeTeaming.getWorld("world");
-        }
-
+        defaultWorldName = config.getString("world", "world");
     }
 
     /**

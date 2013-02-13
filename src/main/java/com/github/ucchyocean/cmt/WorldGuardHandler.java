@@ -106,7 +106,8 @@ public class WorldGuardHandler {
         }
 
         // メンバーを取得して領域に再設定していく
-        RegionManager manager = wg.getRegionManager(ColorMeTeamingConfig.defaultWorld);
+        RegionManager manager = wg.getRegionManager(ColorMeTeaming.getWorld(
+                ColorMeTeamingConfig.defaultWorldName));
         Hashtable<String, ArrayList<Player>> members = ColorMeTeaming.getAllColorMembers();
         Enumeration<String> keys = members.keys();
 

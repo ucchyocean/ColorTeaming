@@ -38,7 +38,7 @@ public class CTPCommand implements CommandExecutor {
         }
 
         String group;
-        String world = ColorMeTeamingConfig.defaultWorld.getName();
+        String world = ColorMeTeamingConfig.defaultWorldName;
         int x_actual, y_actual, z_actual;
 
         if ( args[1].equalsIgnoreCase("here") ) {
