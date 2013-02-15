@@ -146,7 +146,7 @@ public class Utility {
         if ( isValidColor(color) ) {
             return ChatColor.valueOf(color.toUpperCase());
         }
-        return null;
+        return ChatColor.WHITE;
     }
 
     /**
