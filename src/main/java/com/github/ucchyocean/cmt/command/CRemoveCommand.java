@@ -29,12 +29,12 @@ public class CRemoveCommand implements CommandExecutor {
         if ( args[0].equalsIgnoreCase("on") ) {
             ColorMeTeamingConfig.autoColorRemove = true;
             sender.sendMessage(ChatColor.GRAY + "死亡時のチーム離脱が有効になりました。");
-            ColorMeTeamingConfig.setConfigValue("firelyFireDisabler", true);
+            ColorMeTeamingConfig.setConfigValue("autoColorRemove", true);
             return true;
         } else if ( args[0].equalsIgnoreCase("off") ) {
             ColorMeTeamingConfig.autoColorRemove = false;
             sender.sendMessage(ChatColor.GRAY + "死亡時のチーム離脱が無効になりました。");
-            ColorMeTeamingConfig.setConfigValue("firelyFireDisabler", false);
+            ColorMeTeamingConfig.setConfigValue("autoColorRemove", false);
             return true;
         }
 
