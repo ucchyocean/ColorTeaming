@@ -5,6 +5,7 @@ package com.github.ucchyocean.cmt.listener;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -88,45 +89,47 @@ public class PlayerDeathListener implements Listener {
         // 直接攻撃で倒された場合は、killerをそのまま使う
         // 間接攻撃で倒された場合は、shooterを取得して使う
         Player killer = player.getKiller();
-        if ( killer == null ) {
-            return;
-        } else if ( killer instanceof Projectile ) {
-            EntityDamageEvent cause = event.getEntity().getLastDamageCause();
-            LivingEntity shooter = ((Projectile) killer).getShooter();
-            if ( cause instanceof EntityDamageByEntityEvent && shooter instanceof Player ) {
-                killer = (Player)shooter;
-            } else {
-                return;
+
+        EntityDamageEvent cause = event.getEntity().getLastDamageCause();
+        if ( cause != null && cause instanceof EntityDamageByEntityEvent ) {
+            Entity damager = ((EntityDamageByEntityEvent)cause).getDamager();
+            if ( damager instanceof Projectile ) {
+                LivingEntity shooter = ((Projectile) damager).getShooter();
+                if ( shooter instanceof Player ) {
+                    killer = (Player)shooter;
+                }
             }
         }
 
-        String colorKiller = ColorMeTeaming.getPlayerColor(killer);
-
-        // DeathMessageのKillerプレイヤー名を、displayMessageで置き換え
-        if ( ColorMeTeamingConfig.coloringDeathMessage ) {
-            event.setDeathMessage( event.getDeathMessage().replace(
-                    killer.getName(),
-                    Utility.replaceColors(colorKiller) + killer.getName() + ChatColor.RESET));
-        }
-
-        // Kill数を加算
-        if ( !ColorMeTeamingConfig.ignoreGroups.contains(colorKiller) ) {
-            // グループへ加算
-            if ( !ColorMeTeaming.killDeathCounts.containsKey(colorKiller) ) {
-                ColorMeTeaming.killDeathCounts.put(colorKiller, new int[3]);
+        if ( killer != null ) {
+            String colorKiller = ColorMeTeaming.getPlayerColor(killer);
+    
+            // DeathMessageのKillerプレイヤー名を、displayMessageで置き換え
+            if ( ColorMeTeamingConfig.coloringDeathMessage ) {
+                event.setDeathMessage( event.getDeathMessage().replace(
+                        killer.getName(),
+                        Utility.replaceColors(colorKiller) + killer.getName() + ChatColor.RESET));
             }
-            if ( color.equals(colorKiller) ) // 同じグループだった場合のペナルティ
-                ColorMeTeaming.killDeathCounts.get(colorKiller)[2]++;
-            else
-                ColorMeTeaming.killDeathCounts.get(colorKiller)[0]++;
-            // ユーザーへ加算
-            if ( !ColorMeTeaming.killDeathUserCounts.containsKey(killer) ) {
-                ColorMeTeaming.killDeathUserCounts.put(killer, new int[3]);
+    
+            // Kill数を加算
+            if ( !ColorMeTeamingConfig.ignoreGroups.contains(colorKiller) ) {
+                // グループへ加算
+                if ( !ColorMeTeaming.killDeathCounts.containsKey(colorKiller) ) {
+                    ColorMeTeaming.killDeathCounts.put(colorKiller, new int[3]);
+                }
+                if ( color.equals(colorKiller) ) // 同じグループだった場合のペナルティ
+                    ColorMeTeaming.killDeathCounts.get(colorKiller)[2]++;
+                else
+                    ColorMeTeaming.killDeathCounts.get(colorKiller)[0]++;
+                // ユーザーへ加算
+                if ( !ColorMeTeaming.killDeathUserCounts.containsKey(killer) ) {
+                    ColorMeTeaming.killDeathUserCounts.put(killer, new int[3]);
+                }
+                if ( color.equals(colorKiller) ) // 同じグループだった場合のペナルティ
+                    ColorMeTeaming.killDeathUserCounts.get(killer)[2]++;
+                else
+                    ColorMeTeaming.killDeathUserCounts.get(killer)[0]++;
             }
-            if ( color.equals(colorKiller) ) // 同じグループだった場合のペナルティ
-                ColorMeTeaming.killDeathUserCounts.get(killer)[2]++;
-            else
-                ColorMeTeaming.killDeathUserCounts.get(killer)[0]++;
         }
 
         // 色設定を削除する
