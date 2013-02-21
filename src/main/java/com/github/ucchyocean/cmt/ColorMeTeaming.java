@@ -30,6 +30,8 @@ import com.github.ucchyocean.cmt.command.CTeamingCommand;
 import com.github.ucchyocean.cmt.listener.EntityDamageListener;
 import com.github.ucchyocean.cmt.listener.PlayerChatListener;
 import com.github.ucchyocean.cmt.listener.PlayerDeathListener;
+import com.github.ucchyocean.cmt.listener.PlayerQuitListener;
+import com.github.ucchyocean.cmt.listener.PlayerRespawnListener;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 
 import de.dustplanet.colorme.Actions;
@@ -111,6 +113,10 @@ public class ColorMeTeaming extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new PlayerDeathListener(), this);
 
+        getServer().getPluginManager().registerEvents(new PlayerQuitListener(), this);
+
+        getServer().getPluginManager().registerEvents(new PlayerRespawnListener(), this);
+
         // 変数の初期化
         killDeathCounts = new Hashtable<String, int[]>();
         killDeathUserCounts = new Hashtable<Player, int[]>();
@@ -139,6 +145,7 @@ public class ColorMeTeaming extends JavaPlugin {
         Actions actions = new Actions(colorme);
         actions.set(player.getName(), color, "default", "colors");
         actions.checkNames(player.getName(), "default");
+//        TagAPI.refreshPlayer(player);
     }
 
     /**
@@ -150,6 +157,7 @@ public class ColorMeTeaming extends JavaPlugin {
         Actions actions = new Actions(colorme);
         actions.remove(player.getName(), "default", "colors");
         actions.checkNames(player.getName(), "default");
+//        TagAPI.refreshPlayer(player);
     }
 
     /**
