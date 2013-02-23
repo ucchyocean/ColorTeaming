@@ -129,5 +129,10 @@ public class PlayerDeathListener implements Listener {
                     ColorMeTeaming.killDeathUserCounts.get(killer)[0]++;
             }
         }
+
+        // 色設定を削除する
+        if ( ColorMeTeamingConfig.autoColorRemove ) {
+            ColorMeTeaming.removePlayerColor(player);
+        }
     }
 }

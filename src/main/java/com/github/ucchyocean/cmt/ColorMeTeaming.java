@@ -145,7 +145,6 @@ public class ColorMeTeaming extends JavaPlugin {
         Actions actions = new Actions(colorme);
         actions.set(player.getName(), color, "default", "colors");
         actions.checkNames(player.getName(), "default");
-//        TagAPI.refreshPlayer(player);
     }
 
     /**
@@ -157,7 +156,6 @@ public class ColorMeTeaming extends JavaPlugin {
         Actions actions = new Actions(colorme);
         actions.remove(player.getName(), "default", "colors");
         actions.checkNames(player.getName(), "default");
-//        TagAPI.refreshPlayer(player);
     }
 
     /**

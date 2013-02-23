@@ -35,10 +35,5 @@ public class PlayerRespawnListener implements Listener {
                 event.setRespawnLocation(respawn);
             }
         }
-
-        // 色設定を削除する
-        if ( ColorMeTeamingConfig.autoColorRemove ) {
-            ColorMeTeaming.removePlayerColor(player);
-        }
     }
 }
