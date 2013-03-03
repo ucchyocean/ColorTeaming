@@ -18,6 +18,7 @@ import com.github.ucchyocean.cmt.command.CChatCommand;
 import com.github.ucchyocean.cmt.command.CChatGlobalCommand;
 import com.github.ucchyocean.cmt.command.CClassCommand;
 import com.github.ucchyocean.cmt.command.CCountCommand;
+import com.github.ucchyocean.cmt.command.CExplodeCommand;
 import com.github.ucchyocean.cmt.command.CFriendlyFireCommand;
 import com.github.ucchyocean.cmt.command.CKillCommand;
 import com.github.ucchyocean.cmt.command.CLeaderCommand;
@@ -102,6 +103,8 @@ public class ColorMeTeaming extends JavaPlugin {
         getCommand("colorrandom").setExecutor(new CRandomCommand());
 
         getCommand("colorremove").setExecutor(new CRemoveCommand());
+
+        getCommand("colorexplode").setExecutor(new CExplodeCommand());
 
         getCommand("colorteaming").setExecutor(new CTeamingCommand());
 

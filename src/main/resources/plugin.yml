@@ -99,6 +99,12 @@ commands:
     usage: /<command> (on|off) - Auto color remove on Player death.
     permission: colorteaming.remove
     permission-message: You don't have permission "<permission>".
+  colorexplode:
+    description: ColorMe Explosion Command. It's a "Bakuhatsu-Oti".
+    aliases: ce
+    usage: /<command> (group) - Explode the members of group.
+    permission: colorteaming.explode
+    permission-message: You don't have permission "<permission>".
   colorteaming:
     description: ColorMe Teaming Plugin Administration Command
     aliases: ct
@@ -140,6 +146,9 @@ permissions:
   colorteaming.remove:
     description: ColorMe Color Remove on Death Command
     default: op
+  colorteaming.explode:
+    description: ColorMe Explosion Command
+    default: op
   colorteaming.team:
     description: ColorMe Teaming Plugin Administration Command
     default: op
@@ -155,6 +164,7 @@ permissions:
       colorteaming.spawn: true
       colorteaming.random: true
       colorteaming.remove: true
+      colorteaming.explode: true
       colorteaming.team: true
     description: Allows all commands for ColorMeTeaming
   colorteaming.global:
