@@ -53,7 +53,7 @@ public class CExplodeCommand implements CommandExecutor {
             p.sendMessage("どーーん！");
         }
 
-        ColorMeTeaming.sendBroadcast(PRENOTICE + "グループ " + group + " ");
+        ColorMeTeaming.sendBroadcast(PRENOTICE + "グループ " + group + " は全員爆死しました。");
 
         return true;
     }
