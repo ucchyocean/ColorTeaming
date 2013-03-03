@@ -57,6 +57,7 @@ commands:
     usage: |
            /<command> (group) [(world)] (x) (y) (z) - Teleport the members of (group) to (world):(x),(y),(z).
            /<command> (group) here - Teleport the members of (group) to here.
+           /<command> (group) spawn - Teleport the members of (group) to group's respawn point.
     permission: colorteaming.tp
     permission-message: You don't have permission "<permission>".
   colorclass:
