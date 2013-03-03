@@ -6,7 +6,6 @@ package com.github.ucchyocean.cmt.command;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.Vector;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -40,7 +39,7 @@ public class CKillCommand implements CommandExecutor {
             }
 
             // グループは存在するが、得点データがない場合、このタイミングで作成しておく
-            Hashtable<String, Vector<Player>> members = new Hashtable<String, Vector<Player>>();
+            Hashtable<String, ArrayList<Player>> members = new Hashtable<String, ArrayList<Player>>();
             Enumeration<String> keys_all = members.keys();
             while ( keys_all.hasMoreElements() ) {
                 String key = keys_all.nextElement();

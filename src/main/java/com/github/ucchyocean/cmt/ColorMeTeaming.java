@@ -6,7 +6,6 @@ package com.github.ucchyocean.cmt;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Vector;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
@@ -53,7 +52,7 @@ public class ColorMeTeaming extends JavaPlugin {
     public static Logger logger;
     public static RespawnConfiguration respawnConfig;
 
-    public static Hashtable<String, Vector<Player>> leaders;
+    public static Hashtable<String, ArrayList<Player>> leaders;
     public static Hashtable<String, int[]> killDeathCounts;
     public static Hashtable<Player, int[]> killDeathUserCounts;
 
@@ -120,7 +119,7 @@ public class ColorMeTeaming extends JavaPlugin {
         // 変数の初期化
         killDeathCounts = new Hashtable<String, int[]>();
         killDeathUserCounts = new Hashtable<Player, int[]>();
-        leaders = new Hashtable<String, Vector<Player>>();
+        leaders = new Hashtable<String, ArrayList<Player>>();
         respawnConfig = new RespawnConfiguration();
     }
 
@@ -192,9 +191,9 @@ public class ColorMeTeaming extends JavaPlugin {
      * 全てのプレイヤーを取得する
      * @return 全てのプレイヤー
      */
-    public static Vector<Player> getAllPlayers() {
+    public static ArrayList<Player> getAllPlayers() {
         Player[] temp = instance.getServer().getOnlinePlayers();
-        Vector<Player> result = new Vector<Player>();
+        ArrayList<Player> result = new ArrayList<Player>();
         for ( Player p : temp ) {
             result.add(p);
         }

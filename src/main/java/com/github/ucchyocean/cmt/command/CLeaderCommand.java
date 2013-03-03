@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Random;
-import java.util.Vector;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -120,7 +119,7 @@ public class CLeaderCommand implements CommandExecutor {
 
                 // ランダムにリーダーを選出する
                 int[] leaderIndexes = getPickupNumbers(members.get(key).size(), numberOfLeaders);
-                ColorMeTeaming.leaders.put(key, new Vector<Player>());
+                ColorMeTeaming.leaders.put(key, new ArrayList<Player>());
                 for ( int i : leaderIndexes ) {
                     ColorMeTeaming.leaders.get(key).add(members.get(key).get(i));
                 }
@@ -160,7 +159,7 @@ public class CLeaderCommand implements CommandExecutor {
             if ( user.equalsIgnoreCase("random") ) {
 
                 // ランダムにリーダーを選出する
-                ColorMeTeaming.leaders.put(group, new Vector<Player>());
+                ColorMeTeaming.leaders.put(group, new ArrayList<Player>());
                 Random random = new Random();
                 int value = random.nextInt(members.get(group).size());
                 Player newLeader = members.get(group).get(value);
@@ -180,7 +179,7 @@ public class CLeaderCommand implements CommandExecutor {
             } else {
 
                 // リーダーを設定
-                ColorMeTeaming.leaders.put(group, new Vector<Player>());
+                ColorMeTeaming.leaders.put(group, new ArrayList<Player>());
                 ColorMeTeaming.leaders.get(group).add(ColorMeTeaming.getPlayerExact(user));
 
                 String message = String.format("%s チームの大将に、%s が選ばれました。", group, user);

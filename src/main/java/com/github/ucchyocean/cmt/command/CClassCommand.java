@@ -53,9 +53,13 @@ public class CClassCommand implements CommandExecutor {
 
         Hashtable<String, ArrayList<Player>> members = ColorMeTeaming.getAllColorMembers();
 
-        // 有効なグループ名かユーザー名が指定されたか確認する
+        // 有効なグループ名かユーザー名か'all'が指定されたかを確認する
+        boolean isAll = false;
         boolean isGroup = false;
-        if ( members.containsKey(group)  ) {
+        if ( group.equalsIgnoreCase("all") ) {
+            // 全プレイヤー指定
+            isAll = true;
+        } else if ( members.containsKey(group)  ) {
             // グループ指定
             isGroup = true;
         } else if ( ColorMeTeaming.getAllPlayers().contains(ColorMeTeaming.getPlayerExact(group)) ) {
@@ -77,7 +81,9 @@ public class CClassCommand implements CommandExecutor {
         ArrayList<ItemStack> itemData = parseClassItemData(sender, items);
 
         ArrayList<Player> playersToSet;
-        if ( isGroup ) {
+        if ( isAll ) {
+            playersToSet = ColorMeTeaming.getAllPlayers();
+        } else if ( isGroup ) {
             playersToSet = members.get(group);
         } else {
             playersToSet = new ArrayList<Player>();

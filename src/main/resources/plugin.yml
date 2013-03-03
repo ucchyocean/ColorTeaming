@@ -63,7 +63,9 @@ commands:
   colorclass:
     description: ColorMe Inventory Initializing Command
     aliases: cclass
-    usage: /<command> (group|user) (class)
+    usage: |
+           /<command> (group|user) (class) - Initialize inventory and armor by class.
+           /<command> all (class) - Initialize inventory and armor of all players by class.
     permission: colorteaming.class
     permission-message: You don't have permission "<permission>".
   colorkill:

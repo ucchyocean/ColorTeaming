@@ -3,8 +3,8 @@
  */
 package com.github.ucchyocean.cmt.command;
 
+import java.util.ArrayList;
 import java.util.Random;
-import java.util.Vector;
 
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -39,8 +39,8 @@ public class CRandomCommand implements CommandExecutor {
         }
 
         // ゲームモードがクリエイティブの人は除外する
-        Vector<Player> tempPlayers = ColorMeTeaming.getAllPlayers();
-        Vector<Player> players = new Vector<Player>();
+        ArrayList<Player> tempPlayers = ColorMeTeaming.getAllPlayers();
+        ArrayList<Player> players = new ArrayList<Player>();
         for ( Player p : tempPlayers ) {
             if ( p.getGameMode() != GameMode.CREATIVE ) {
                 players.add(p);
@@ -51,8 +51,8 @@ public class CRandomCommand implements CommandExecutor {
         Random rand = new Random();
         for ( int i=0; i<players.size(); i++ ) {
             int j = rand.nextInt(players.size());
-            Player temp = players.elementAt(i);
-            players.set(i, players.elementAt(j));
+            Player temp = players.get(i);
+            players.set(i, players.get(j));
             players.set(j, temp);
         }
 
@@ -60,7 +60,7 @@ public class CRandomCommand implements CommandExecutor {
         for ( int i=0; i<players.size(); i++ ) {
             int group = i % numberOfGroups;
             String color = GROUP_COLORS[group];
-            ColorMeTeaming.setPlayerColor(players.elementAt(i), color);
+            ColorMeTeaming.setPlayerColor(players.get(i), color);
         }
 
         // 各グループに、通知メッセージを出す
