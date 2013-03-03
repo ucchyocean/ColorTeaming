@@ -127,13 +127,19 @@ public class CClassCommand implements CommandExecutor {
             p.updateInventory();
         }
 
-        String type = "グループ";
-        if ( !isGroup ) {
-            type = "ユーザー";
+        String target;
+        if ( isAll ) {
+            target = "全てのプレイヤー";
+        } else {
+            String type = "グループ";
+            if ( !isGroup ) {
+                type = "プレイヤー";
+            }
+            target = type + group;
         }
 
         sender.sendMessage(PREINFO +
-                String.format("%s %s に、%s クラスの装備とアイテムを配布しました。", type, group, clas));
+                String.format("%s に、%s クラスの装備とアイテムを配布しました。", target, clas));
 
         return true;
     }
