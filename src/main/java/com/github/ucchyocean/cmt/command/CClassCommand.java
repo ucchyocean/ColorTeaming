@@ -41,6 +41,7 @@ public class CClassCommand implements CommandExecutor {
     /**
      * @see org.bukkit.plugin.java.JavaPlugin#onCommand(org.bukkit.command.CommandSender, org.bukkit.command.Command, java.lang.String, java.lang.String[])
      */
+    @SuppressWarnings("deprecation")
     public boolean onCommand(
             CommandSender sender, Command command, String label, String[] args) {
 
@@ -122,6 +123,8 @@ public class CClassCommand implements CommandExecutor {
                     p.getInventory().setBoots(armorData.get(3));
                 }
             }
+
+            p.updateInventory();
         }
 
         String type = "グループ";
