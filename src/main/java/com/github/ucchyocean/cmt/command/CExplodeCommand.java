@@ -38,7 +38,7 @@ public class CExplodeCommand implements CommandExecutor {
         String group = args[0]; // 制裁を加えるグループ
 
         Hashtable<String, ArrayList<Player>> members =
-                new Hashtable<String, ArrayList<Player>>();
+                ColorMeTeaming.getAllColorMembers();
 
         if ( !members.containsKey(group) ) {
             sender.sendMessage(PREERR + "グループ " + group + " は存在しません。");
