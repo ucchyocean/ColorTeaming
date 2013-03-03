@@ -28,7 +28,9 @@ commands:
   colorchat:
     description: ColorMe Team Chat Command
     aliases: cchat
-    usage: /<command> (on|off|opCopyOn|opCopyOff)
+    usage: |
+           /<command> (on|off) - Enable/Disable team chat.
+           /<command> (opon|opoff) - Enable/Disable display op copy mode.
     permission: colorteaming.chat
     permission-message: You don't have permission "<permission>".
   colorglobal:
