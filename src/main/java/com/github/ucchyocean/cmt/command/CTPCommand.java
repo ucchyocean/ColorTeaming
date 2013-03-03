@@ -43,6 +43,8 @@ public class CTPCommand implements CommandExecutor {
 
         if ( args[1].equalsIgnoreCase("here") ) {
 
+            group = args[0];
+
             if ( sender instanceof Player ) {
                 x_actual = ((Player)sender).getLocation().getBlockX();
                 y_actual = ((Player)sender).getLocation().getBlockY();
@@ -58,7 +60,21 @@ public class CTPCommand implements CommandExecutor {
                 return true;
             }
 
+        } else if ( args[1].equalsIgnoreCase("spawn") ) {
+
             group = args[0];
+
+            Location respawnPoint = ColorMeTeaming.respawnConfig.get(group);
+
+            if ( respawnPoint == null ) {
+                sender.sendMessage(PREERR + "グループ " + group + " にリスポーンポイントが指定されていません。");
+                return true;
+            }
+
+            x_actual = respawnPoint.getBlockX();
+            y_actual = respawnPoint.getBlockY();
+            z_actual = respawnPoint.getBlockZ();
+            world = respawnPoint.getWorld().getName();
 
         } else if ( args.length == 4 ) {
 
