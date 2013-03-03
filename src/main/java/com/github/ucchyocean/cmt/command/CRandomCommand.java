@@ -4,6 +4,7 @@
 package com.github.ucchyocean.cmt.command;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.Random;
 
 import org.bukkit.ChatColor;
@@ -78,8 +79,12 @@ public class CRandomCommand implements CommandExecutor {
             ColorMeTeaming.wghandler.refreshGroupMembers();
         }
 
+        // メンバー情報の取得
+        Hashtable<String, ArrayList<Player>> members =
+                ColorMeTeaming.getAllColorMembers();
+
         // コマンド完了を、CCメッセージで通知する
-        CCountCommand.sendCCMessage(sender, false);
+        CCountCommand.sendCCMessage(sender, members, false);
 
         return true;
     }

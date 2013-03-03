@@ -10,13 +10,18 @@ commands:
   colorcount:
     description: ColorMe Count Command
     aliases: cc
-    usage: /<command> - Display members of color groups.
+    usage: |
+           /<command> - Display members of color groups (exclude "ignoreGroups").
+           /<command> all - Display members of color groups include "ignoreGroups".
+           /<command> say [all] - Broadcast members of color groups.
     permission: colorteaming.count
     permission-message: You don't have permission "<permission>".
   colorcountsay:
     description: ColorMe Count Command
     aliases: ccsay
-    usage: /<command> - Broadcast members of color groups.
+    usage: |
+           /<command> - Broadcast members of color groups (exclude "ignoreGroups").
+           /<command> all - Broadcast members of color groups include "ignoreGroups".
     permission: colorteaming.count
     permission-message: You don't have permission "<permission>".
   colorfriendlyfire:

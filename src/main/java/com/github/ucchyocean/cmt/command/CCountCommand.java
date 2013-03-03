@@ -30,21 +30,57 @@ public class CCountCommand implements CommandExecutor {
     public boolean onCommand(
             CommandSender sender, Command command, String label, String[] args) {
 
+        // 引数の処理
         boolean isBroadcast = false;
-        if ( command.getName().equals("colorcountsay") ||
-                (args.length >= 1 && args[0].equalsIgnoreCase("say") ))
-            isBroadcast = true;
+        boolean isAll = false;
 
-        sendCCMessage(sender, isBroadcast);
+        if ( command.getName().equals("colorcountsay") ) {
+            isBroadcast = true;
+            if ( args.length >= 1 && args[0].equalsIgnoreCase("all") ) {
+                isAll = true;
+            }
+        } else if ( args.length >= 1 && args[0].equalsIgnoreCase("say") ) {
+            isBroadcast = true;
+            if ( args.length >= 2 && args[1].equalsIgnoreCase("all") ) {
+                isAll = true;
+            }
+        } else if ( args.length >= 1 && args[0].equalsIgnoreCase("all") ) {
+            isAll = true;
+        }
+
+        // メンバー情報の取得
+        Hashtable<String, ArrayList<Player>> members;
+        if ( !isAll ) {
+            members = ColorMeTeaming.getAllColorMembers();
+        } else {
+            members = new Hashtable<String, ArrayList<Player>>();
+            ArrayList<Player> players = ColorMeTeaming.getAllPlayers();
+            for ( Player p : players ) {
+                String color = ColorMeTeaming.getPlayerColor(p);
+                if ( members.containsKey(color) ) {
+                    members.get(color).add(p);
+                } else {
+                    ArrayList<Player> data = new ArrayList<Player>();
+                    data.add(p);
+                    members.put(color, data);
+                }
+            }
+        }
+
+        // ccコマンドの実行
+        sendCCMessage(sender, members, isBroadcast);
 
         return true;
     }
 
-    protected static void sendCCMessage(CommandSender sender, boolean isBroadcast) {
-
-        // メンバー情報の取得
-        Hashtable<String, ArrayList<Player>> members =
-                ColorMeTeaming.getAllColorMembers();
+    /**
+     * ccコマンドを実行して、実行結果を表示する。
+     * @param sender コマンド実行者
+     * @param members カウント対象のメンバー情報
+     * @param isBroadcast ブロードキャストかどうか
+     */
+    protected static void sendCCMessage(CommandSender sender,
+            Hashtable<String, ArrayList<Player>> members, boolean isBroadcast) {
 
         // 最初の行を送信
         if ( !isBroadcast ) {
