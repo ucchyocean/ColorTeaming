@@ -63,6 +63,13 @@ commands:
            /<command> (group) [(world)] (x) (y) (z) - Teleport the members of (group) to (world):(x),(y),(z).
            /<command> (group) here - Teleport the members of (group) to here.
            /<command> (group) spawn - Teleport the members of (group) to group's respawn point.
+           /<command> (group) (point) - Teleport the members of (group) to registered point.
+           /<command> set (point) [(world)] (x) (y) (z) - Register new point.
+           /<command> set (point) here - Register new point.
+           /<command> remove (point) - Remove registered point.
+           /<command> all spawn - Teleport all player to group's respawn point.
+           /<command> all (point) - Teleport all player to registered point.
+           /<command> list - Show registered point list.
     permission: colorteaming.tp
     permission-message: You don't have permission "<permission>".
   colorclass:

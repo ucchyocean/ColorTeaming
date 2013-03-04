@@ -52,6 +52,7 @@ public class ColorMeTeaming extends JavaPlugin {
 
     public static Logger logger;
     public static RespawnConfiguration respawnConfig;
+    public static TPPointConfiguration tppointConfig;
 
     public static Hashtable<String, ArrayList<Player>> leaders;
     public static Hashtable<String, int[]> killDeathCounts;
@@ -124,6 +125,7 @@ public class ColorMeTeaming extends JavaPlugin {
         killDeathUserCounts = new Hashtable<Player, int[]>();
         leaders = new Hashtable<String, ArrayList<Player>>();
         respawnConfig = new RespawnConfiguration();
+        tppointConfig = new TPPointConfiguration();
     }
 
     /**
