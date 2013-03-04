@@ -48,7 +48,7 @@ public class PlayerQuitListener implements Listener {
         }
 
         // 色設定を削除する
-        if ( ColorMeTeamingConfig.autoColorRemove ) {
+        if ( ColorMeTeamingConfig.colorRemoveOnQuit ) {
             ColorMeTeaming.removePlayerColor(player);
         }
     }

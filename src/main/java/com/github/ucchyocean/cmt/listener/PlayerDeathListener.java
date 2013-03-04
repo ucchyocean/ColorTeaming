@@ -131,7 +131,7 @@ public class PlayerDeathListener implements Listener {
         }
 
         // 色設定を削除する
-        if ( ColorMeTeamingConfig.autoColorRemove ) {
+        if ( ColorMeTeamingConfig.colorRemoveOnDeath ) {
             ColorMeTeaming.removePlayerColor(player);
         }
     }
