@@ -28,7 +28,8 @@ public class ColorMeTeamingConfig {
     public static boolean isFriendlyFireDisabler;
     public static Map<String, String> classItems;
     public static Map<String, String> classArmors;
-    public static boolean autoColorRemove;
+    public static boolean colorRemoveOnDeath;
+    public static boolean colorRemoveOnQuit;
     public static boolean coloringDeathMessage;
     public static boolean protectRespawnPointWithWorldGuard;
     public static int protectRespawnPointRange;
@@ -80,7 +81,9 @@ public class ColorMeTeamingConfig {
         deathPoint = config.getInt("points.deathPoint", -1);
         tkPoint = config.getInt("points.tkPoint", -3);
 
-        autoColorRemove = config.getBoolean("autoColorRemove", true);
+        colorRemoveOnDeath = config.getBoolean("autoColorRemove", true);
+        colorRemoveOnDeath = config.getBoolean("colorRemoveOnDeath", colorRemoveOnDeath);
+        colorRemoveOnQuit = config.getBoolean("colorRemoveOnQuit", colorRemoveOnDeath);
 
         coloringDeathMessage = config.getBoolean("coloringDeathMessage", true);
 

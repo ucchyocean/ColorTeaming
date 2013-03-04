@@ -12,7 +12,7 @@ import com.github.ucchyocean.cmt.ColorMeTeamingConfig;
 
 /**
  * @author ucchy
- * CRemove(CR)コマンドの実行クラス
+ * ColorRemove(CR)コマンドの実行クラス
  */
 public class CRemoveCommand implements CommandExecutor {
 
@@ -27,18 +27,55 @@ public class CRemoveCommand implements CommandExecutor {
         }
 
         if ( args[0].equalsIgnoreCase("on") ) {
-            ColorMeTeamingConfig.autoColorRemove = true;
-            sender.sendMessage(ChatColor.GRAY + "死亡時のチーム離脱が有効になりました。");
-            ColorMeTeamingConfig.setConfigValue("autoColorRemove", true);
+            setColorRemoveOnDeath(sender, true);
+            setColorRemoveOnQuit(sender, true);
             return true;
         } else if ( args[0].equalsIgnoreCase("off") ) {
-            ColorMeTeamingConfig.autoColorRemove = false;
-            sender.sendMessage(ChatColor.GRAY + "死亡時のチーム離脱が無効になりました。");
-            ColorMeTeamingConfig.setConfigValue("autoColorRemove", false);
+            setColorRemoveOnDeath(sender, false);
+            setColorRemoveOnQuit(sender, false);
+            return true;
+        } else if ( args[0].equalsIgnoreCase("death") && args.length >= 2 ) {
+            if ( args[1].equalsIgnoreCase("off") ) {
+                setColorRemoveOnDeath(sender, false);
+            } else {
+                setColorRemoveOnDeath(sender, true);
+            }
+            return true;
+        } else if ( args[0].equalsIgnoreCase("quit") && args.length >= 2 ) {
+            if ( args[1].equalsIgnoreCase("off") ) {
+                setColorRemoveOnQuit(sender, false);
+            } else {
+                setColorRemoveOnQuit(sender, true);
+            }
             return true;
         }
 
         return false;
     }
 
+    /**
+     * 死亡時のチーム離脱の有効/無効を切り替える
+     * @param sender メッセージ送信先
+     * @param enable 有効/無効
+     */
+    private void setColorRemoveOnDeath(CommandSender sender, boolean enable) {
+        ColorMeTeamingConfig.colorRemoveOnDeath = enable;
+        ColorMeTeamingConfig.setConfigValue("colorRemoveOnDeath", enable);
+        String msg = enable ? "有効" : "無効";
+        sender.sendMessage(ChatColor.GRAY +
+                "死亡時のチーム離脱が" + msg + "になりました。");
+    }
+
+    /**
+     * ログアウト時のチーム離脱の有効/無効を切り替える
+     * @param sender メッセージ送信先
+     * @param enable 有効/無効
+     */
+    private void setColorRemoveOnQuit(CommandSender sender, boolean enable) {
+        ColorMeTeamingConfig.colorRemoveOnQuit = enable;
+        ColorMeTeamingConfig.setConfigValue("colorRemoveOnQuit", enable);
+        String msg = enable ? "有効" : "無効";
+        sender.sendMessage(ChatColor.GRAY +
+                "ログアウト時のチーム離脱が" + msg + "になりました。");
+    }
 }
