@@ -3,6 +3,8 @@
  */
 package com.github.ucchyocean.cmt.command;
 
+import java.util.ArrayList;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.BlockCommandSender;
@@ -21,6 +23,9 @@ import com.github.ucchyocean.cmt.Utility;
  */
 public class CSpawnCommand implements CommandExecutor {
 
+    private static final String PRE_LINE_MESSAGE =
+            "=== Team Spawn Point Information ===";
+
     private static final String PREERR = ChatColor.RED.toString();
     private static final String PREINFO = ChatColor.GRAY.toString();
 
@@ -30,8 +35,53 @@ public class CSpawnCommand implements CommandExecutor {
     public boolean onCommand(
             CommandSender sender, Command command, String label, String[] args) {
 
+        if ( args.length >= 1 && args[0].equalsIgnoreCase("list") ) {
+            // cspawn list の実行
+
+            sender.sendMessage(PREINFO + PRE_LINE_MESSAGE);
+            ArrayList<String> list = ColorMeTeaming.respawnConfig.list();
+            for ( String l : list ) {
+                sender.sendMessage(PREINFO + l);
+            }
+
+            return true;
+        }
+
+        // 以下、引数2つ以上が必要になるので、1つしか指定されていなければここで終わる.
         if ( args.length < 2 ) {
             return false;
+        }
+
+        if ( args[0].equalsIgnoreCase("remove") ) {
+
+            if ( args[1].equalsIgnoreCase("all") ) {
+                // cspawn remove all の実行
+
+                ArrayList<String> keys = ColorMeTeaming.respawnConfig.keys();
+                for ( String k : keys ) {
+                    ColorMeTeaming.respawnConfig.set(k, null);
+                }
+
+                sender.sendMessage(PREINFO + "全てのグループリスポーン設定を削除しました。");
+
+                return true;
+
+            } else {
+                // cspawn remove (group) の実行
+
+                String group = args[1];
+
+                if ( ColorMeTeaming.respawnConfig.get(group) == null ) {
+                    sender.sendMessage(PREERR + "グループ " + group + " のリスポーン設定がありません。");
+                    return true;
+                }
+
+                ColorMeTeaming.respawnConfig.set(group, null);
+
+                sender.sendMessage(PREINFO + "グループ " + group + " のリスポーン設定を削除しました。");
+
+                return true;
+            }
         }
 
         String group;
@@ -41,7 +91,7 @@ public class CSpawnCommand implements CommandExecutor {
         group = args[0];
 
         if ( args[1].equalsIgnoreCase("here") ) {
-            // here 指定
+            // cspawn (group) here の実行
 
             if ( sender instanceof Player ) {
                 x_actual = ((Player)sender).getLocation().getBlockX();
@@ -59,6 +109,7 @@ public class CSpawnCommand implements CommandExecutor {
             }
 
         } else if ( args.length == 4 ) {
+            // cspawn (group) (x) (y) (z) の実行
 
             // 有効な座標が指定されたか確認する
             if ( !checkXYZ(sender, args[1]) ||
@@ -81,6 +132,7 @@ public class CSpawnCommand implements CommandExecutor {
             z_actual = Integer.parseInt(args[3]);
 
         } else if ( args.length >= 5 ) {
+            // cspawn (group) (world) (x) (y) (z) の実行
 
             // 有効な座標が指定されたか確認する
             if ( !checkXYZ(sender, args[2]) ||

@@ -92,6 +92,9 @@ commands:
     usage: |
            /<command> (group) [(world)] (x) (y) (z) - Set the respawn point of (group) to (world):(x),(y),(z).
            /<command> (group) here - Set the respawn point of (group) to here.
+           /<command> remove (group) - Remove (group)'s respawn point.
+           /<command> remove all - Remove all respawn points.
+           /<command> list - Show registered respawn points list.
     permission: colorteaming.spawn
     permission-message: You don't have permission "<permission>".
   colorrandom:

@@ -108,6 +108,24 @@ public abstract class PointConfigAbst {
     }
 
     /**
+     * 現在の設定ファイル内のキー一覧を取得する
+     * @return
+     */
+    public ArrayList<String> keys() {
+
+        ArrayList<String> results = new ArrayList<String>();
+
+        config = YamlConfiguration.loadConfiguration(file);
+
+        Iterator<String> i = config.getValues(false).keySet().iterator();
+        while (i.hasNext()) {
+            results.add(i.next());
+        }
+
+        return results;
+    }
+
+    /**
      * ファイルから全ポイントのリストを取得する
      * @return リスト
      */
@@ -128,7 +146,7 @@ public abstract class PointConfigAbst {
             double y = section.getDouble(KEY_LOCY, 65);
             double z = section.getDouble(KEY_LOCZ, 0);
 
-            results.add(name + " (" + w + "_" + x + "," + y + "," + z + ")");
+            results.add(name + " : " + w + "-(" + x + ", " + y + ", " + z + ")");
         }
 
         return results;
