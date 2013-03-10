@@ -76,6 +76,7 @@ public class CTPCommand implements CommandExecutor {
                         sender.sendMessage(PREERR +
                                 "グループ " + group + " にリスポーンポイントが指定されていません。");
                     } else {
+                        location = location.add(0.5, 0, 0.5);
                         for ( Player p : members.get(group) ) {
                             p.teleport(location, TeleportCause.COMMAND);
                         }
@@ -104,6 +105,8 @@ public class CTPCommand implements CommandExecutor {
                     for ( Player p : members.get(group) ) {
                         p.teleport(location, TeleportCause.COMMAND);
                     }
+                    sender.sendMessage(PREINFO +
+                            "グループ " + group + " のプレイヤーを全員テレポートしました。");
                 }
             }
 
@@ -142,6 +145,11 @@ public class CTPCommand implements CommandExecutor {
             // ポイント登録の実行
             ColorMeTeaming.tppointConfig.set(point, location);
 
+            String message = String.format(
+                    PREINFO + "ポイント %s を (%d, %d, %d) に設定しました。",
+                    point, location.getBlockX(), location.getBlockY(), location.getBlockZ());
+            sender.sendMessage(message);
+
             return true;
 
         } else if ( args[0].equalsIgnoreCase("remove") ) {
@@ -157,6 +165,12 @@ public class CTPCommand implements CommandExecutor {
 
             // ポイント削除の実行
             ColorMeTeaming.tppointConfig.set(point, null);
+
+            String message = String.format(
+                    PREINFO + "ポイント %s を削除しました。", point);
+            sender.sendMessage(message);
+
+            return true;
 
         } else {
             // ctp (group) ほにゃらら の実行
@@ -196,6 +210,7 @@ public class CTPCommand implements CommandExecutor {
                             "グループ " + group + " にリスポーンポイントが指定されていません。");
                     return true;
                 }
+                location = location.add(0.5, 0, 0.5);
 
             } else if ( args.length <= 3 ) {
                 // ctp (group) (point)
@@ -208,6 +223,7 @@ public class CTPCommand implements CommandExecutor {
                             "ポイント " + point + " は登録されていません。");
                     return true;
                 }
+                location = location.add(0.5, 0, 0.5);
 
             } else {
                 // ctp (group) [world] (x) (y) (z)
@@ -217,6 +233,7 @@ public class CTPCommand implements CommandExecutor {
                 if ( location == null ) {
                     return true;
                 }
+                location = location.add(0.5, 0, 0.5);
             }
 
             // テレポートの実行
@@ -228,8 +245,6 @@ public class CTPCommand implements CommandExecutor {
 
             return true;
         }
-
-        return false;
     }
 
     /**

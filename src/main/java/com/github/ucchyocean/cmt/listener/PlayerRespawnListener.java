@@ -33,6 +33,7 @@ public class PlayerRespawnListener implements Listener {
         if ( !ColorMeTeamingConfig.ignoreGroups.contains(color) ) {
             Location respawn = ColorMeTeaming.respawnConfig.get(color);
             if ( respawn != null ) {
+                respawn = respawn.add(0.5, 0, 0.5);
                 event.setRespawnLocation(respawn);
             }
         }

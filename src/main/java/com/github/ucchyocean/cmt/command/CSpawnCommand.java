@@ -177,7 +177,7 @@ public class CSpawnCommand implements CommandExecutor {
         ColorMeTeaming.respawnConfig.set(group, location);
 
         String message = String.format(
-                "グループ %s のリスポーンポイントを (%d,%d,%d) に設定しました。",
+                "グループ %s のリスポーンポイントを (%d, %d, %d) に設定しました。",
                 group, x_actual, y_actual, z_actual);
         sender.sendMessage(PREINFO + message);
 

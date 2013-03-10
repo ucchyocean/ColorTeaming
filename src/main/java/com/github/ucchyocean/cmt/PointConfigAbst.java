@@ -71,9 +71,9 @@ public abstract class PointConfigAbst {
         if ( world == null ) {
             return null;
         }
-        double x = section.getDouble(KEY_LOCX, 0);
-        double y = section.getDouble(KEY_LOCY, 65);
-        double z = section.getDouble(KEY_LOCZ, 0);
+        int x = section.getInt(KEY_LOCX, 0);
+        int y = section.getInt(KEY_LOCY, 65);
+        int z = section.getInt(KEY_LOCZ, 0);
         return new Location(world, x, y, z);
     }
 
@@ -86,9 +86,9 @@ public abstract class PointConfigAbst {
 
         if ( location != null ) {
             String world = location.getWorld().getName();
-            double x = location.getX();
-            double y = location.getY();
-            double z = location.getZ();
+            int x = location.getBlockX();
+            int y = location.getBlockY();
+            int z = location.getBlockZ();
 
             config.set(name + "." + KEY_WORLD, world);
             config.set(name + "." + KEY_LOCX, x);
@@ -142,9 +142,9 @@ public abstract class PointConfigAbst {
 
             ConfigurationSection section = config.getConfigurationSection(name);
             String w = section.getString(KEY_WORLD, "world");
-            double x = section.getDouble(KEY_LOCX, 0);
-            double y = section.getDouble(KEY_LOCY, 65);
-            double z = section.getDouble(KEY_LOCZ, 0);
+            int x = section.getInt(KEY_LOCX, 0);
+            int y = section.getInt(KEY_LOCY, 65);
+            int z = section.getInt(KEY_LOCZ, 0);
 
             results.add(name + " : " + w + "-(" + x + ", " + y + ", " + z + ")");
         }
