@@ -62,9 +62,6 @@ public class Utility {
                 while ( (len = is.read(buf)) != -1 ) {
                     fos.write(buf, 0, len);
                 }
-                fos.flush();
-                fos.close();
-                is.close();
 
             } else {
                 reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
