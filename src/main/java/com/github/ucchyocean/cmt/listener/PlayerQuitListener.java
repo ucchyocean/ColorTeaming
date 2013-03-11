@@ -27,6 +27,11 @@ public class PlayerQuitListener implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
 
+        // colorRemoveOnQuitがfalseなら、ここでは何もしない。
+        if ( !ColorMeTeamingConfig.colorRemoveOnQuit ) {
+            return;
+        }
+
         Player player = event.getPlayer();
         String color = ColorMeTeaming.getPlayerColor(player);
 
@@ -48,9 +53,7 @@ public class PlayerQuitListener implements Listener {
         }
 
         // 色設定を削除する
-        if ( ColorMeTeamingConfig.colorRemoveOnQuit ) {
-            ColorMeTeaming.removePlayerColor(player);
-        }
+        ColorMeTeaming.removePlayerColor(player);
     }
 
 }
