@@ -1,6 +1,6 @@
 name: ColorMeTeaming
 main: com.github.ucchyocean.cmt.ColorMeTeaming
-version: 1.4.5
+version: 1.4.6
 authors: [ucchy,owatakun]
 load: startup
 description: ColorMe Teaming Plugin

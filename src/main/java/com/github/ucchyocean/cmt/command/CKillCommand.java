@@ -34,7 +34,7 @@ public class CKillCommand implements CommandExecutor {
         if ( args.length == 0 || (args.length >= 1 && args[0].equalsIgnoreCase("say")) ) {
 
             boolean isBroadcast = false;
-            if ( args.length == 1 && args[0].equalsIgnoreCase("say") ) {
+            if ( args.length >= 1 && args[0].equalsIgnoreCase("say") ) {
                 isBroadcast = true;
             }
 
@@ -97,13 +97,13 @@ public class CKillCommand implements CommandExecutor {
                 return true;
             }
 
-            ArrayList<Player> users = new ArrayList<Player>();
+            ArrayList<String> users = new ArrayList<String>();
             ArrayList<Integer> userPoints = new ArrayList<Integer>();
 
-            Enumeration<Player> playersEnum = ColorMeTeaming.killDeathUserCounts.keys();
+            Enumeration<String> playersEnum = ColorMeTeaming.killDeathUserCounts.keys();
             while ( playersEnum.hasMoreElements() ) {
-                Player p = playersEnum.nextElement();
-                int[] counts = ColorMeTeaming.killDeathUserCounts.get(p);
+                String playerName = playersEnum.nextElement();
+                int[] counts = ColorMeTeaming.killDeathUserCounts.get(playerName);
                 int point = counts[0] * ColorMeTeamingConfig.killPoint +
                         counts[1] * ColorMeTeamingConfig.deathPoint +
                         counts[2] * ColorMeTeamingConfig.tkPoint;
@@ -112,12 +112,12 @@ public class CKillCommand implements CommandExecutor {
                 while ( users.size() > index && userPoints.get(index) > point ) {
                     index++;
                 }
-                users.add(index, p);
+                users.add(index, playerName);
                 userPoints.add(index, point);
             }
 
             // 1位と、1位と同じ得点の人を、MVPにする
-            ArrayList<Player> mvp = new ArrayList<Player>();
+            ArrayList<String> mvp = new ArrayList<String>();
             mvp.add(users.get(0));
             int index = 1;
             while ( userPoints.size() > index && userPoints.get(0) == userPoints.get(index) ) {
@@ -127,12 +127,12 @@ public class CKillCommand implements CommandExecutor {
 
             // MVPの得点を表示する
             for ( int i=0; i<mvp.size(); i++ ) {
-                Player player = users.get(i);
+                String mvpName = users.get(i);
                 int point = userPoints.get(i);
                 int[] counts = ColorMeTeaming.killDeathUserCounts.get(users.get(i));
                 String message = String.format(
                         "[MVP] %s %dpoints (%dkill, %ddeath, %dtk)",
-                        player.getName(), point, counts[0], counts[1], counts[2]);
+                        mvpName, point, counts[0], counts[1], counts[2]);
                 if ( !isBroadcast ) {
                     sender.sendMessage(ChatColor.GRAY + message);
                 } else {
@@ -143,25 +143,28 @@ public class CKillCommand implements CommandExecutor {
             // 個人の得点を個人のコンソールに表示する
             if ( isBroadcast ) {
                 for ( int i=0; i<users.size(); i++ ) {
-                    Player player = users.get(i);
+                    String playerName = users.get(i);
                     int point = userPoints.get(i);
                     int[] counts = ColorMeTeaming.killDeathUserCounts.get(users.get(i));
                     String message = String.format(
                             "[Your Score] %s %dpoints (%dkill, %ddeath, %dtk)",
-                            player.getName(), point, counts[0], counts[1], counts[2]);
+                            playerName, point, counts[0], counts[1], counts[2]);
 
-                    player.sendMessage(ChatColor.GRAY + message);
+                    ColorMeTeaming.getPlayerExact(playerName).sendMessage(ChatColor.GRAY + message);
                 }
             }
+
+            return true;
 
         } else if ( args.length >= 1 && args[0].equalsIgnoreCase("clear") ) {
 
             ColorMeTeaming.killDeathCounts.clear();
             ColorMeTeaming.killDeathUserCounts.clear();
             sender.sendMessage(ChatColor.GRAY + "KillDeath数をリセットしました。");
+            return true;
         }
 
-        return true;
+        return false;
     }
 
 }

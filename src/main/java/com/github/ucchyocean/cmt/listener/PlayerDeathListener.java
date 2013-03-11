@@ -37,14 +37,6 @@ public class PlayerDeathListener implements Listener {
         Player player = event.getEntity();
         String color = ColorMeTeaming.getPlayerColor(player);
 
-        // リスポーンポイントを設定
-//        if ( !ColorMeTeamingConfig.ignoreGroups.contains(color) ) {
-//            Location respawn = ColorMeTeaming.respawnConfig.get(color);
-//            if ( respawn != null ) {
-//                player.setBedSpawnLocation(respawn, true);
-//            }
-//        }
-
         // DeathMessageのプレイヤー名を、色つきで置き換え
         if ( ColorMeTeamingConfig.coloringDeathMessage ) {
             event.setDeathMessage( event.getDeathMessage().replace(
@@ -60,19 +52,19 @@ public class PlayerDeathListener implements Listener {
             }
             ColorMeTeaming.killDeathCounts.get(color)[1]++;
             // ユーザーへ加算
-            if ( !ColorMeTeaming.killDeathUserCounts.containsKey(player) ) {
-                ColorMeTeaming.killDeathUserCounts.put(player, new int[3]);
+            if ( !ColorMeTeaming.killDeathUserCounts.containsKey(player.getName()) ) {
+                ColorMeTeaming.killDeathUserCounts.put(player.getName(), new int[3]);
             }
-            ColorMeTeaming.killDeathUserCounts.get(player)[1]++;
+            ColorMeTeaming.killDeathUserCounts.get(player.getName())[1]++;
         }
 
         // 死亡したプレイヤーが、大将だった場合、倒されたことを全体に通知する。
         if ( ColorMeTeaming.leaders.containsKey(color) &&
-                ColorMeTeaming.leaders.get(color).contains(player) ) {
+                ColorMeTeaming.leaders.get(color).contains(player.getName()) ) {
             String message = String.format(PRENOTICE + "%s チームの大将、%s が倒されました！",
                     color, player.getName());
             ColorMeTeaming.sendBroadcast(message);
-            ColorMeTeaming.leaders.get(color).remove(player);
+            ColorMeTeaming.leaders.get(color).remove(player.getName());
 
             if ( ColorMeTeaming.leaders.get(color).size() >= 1 ) {
                 message = String.format(PRENOTICE + "%s チームの残り大将は、あと %d 人です。",
@@ -120,13 +112,13 @@ public class PlayerDeathListener implements Listener {
                 else
                     ColorMeTeaming.killDeathCounts.get(colorKiller)[0]++;
                 // ユーザーへ加算
-                if ( !ColorMeTeaming.killDeathUserCounts.containsKey(killer) ) {
-                    ColorMeTeaming.killDeathUserCounts.put(killer, new int[3]);
+                if ( !ColorMeTeaming.killDeathUserCounts.containsKey(killer.getName()) ) {
+                    ColorMeTeaming.killDeathUserCounts.put(killer.getName(), new int[3]);
                 }
                 if ( color.equals(colorKiller) ) // 同じグループだった場合のペナルティ
-                    ColorMeTeaming.killDeathUserCounts.get(killer)[2]++;
+                    ColorMeTeaming.killDeathUserCounts.get(killer.getName())[2]++;
                 else
-                    ColorMeTeaming.killDeathUserCounts.get(killer)[0]++;
+                    ColorMeTeaming.killDeathUserCounts.get(killer.getName())[0]++;
             }
         }
 

@@ -54,9 +54,9 @@ public class ColorMeTeaming extends JavaPlugin {
     public static RespawnConfiguration respawnConfig;
     public static TPPointConfiguration tppointConfig;
 
-    public static Hashtable<String, ArrayList<Player>> leaders;
+    public static Hashtable<String, ArrayList<String>> leaders;
     public static Hashtable<String, int[]> killDeathCounts;
-    public static Hashtable<Player, int[]> killDeathUserCounts;
+    public static Hashtable<String, int[]> killDeathUserCounts;
 
     /**
      * @see org.bukkit.plugin.java.JavaPlugin#onEnable()
@@ -122,8 +122,8 @@ public class ColorMeTeaming extends JavaPlugin {
 
         // 変数の初期化
         killDeathCounts = new Hashtable<String, int[]>();
-        killDeathUserCounts = new Hashtable<Player, int[]>();
-        leaders = new Hashtable<String, ArrayList<Player>>();
+        killDeathUserCounts = new Hashtable<String, int[]>();
+        leaders = new Hashtable<String, ArrayList<String>>();
         respawnConfig = new RespawnConfiguration();
         tppointConfig = new TPPointConfiguration();
     }

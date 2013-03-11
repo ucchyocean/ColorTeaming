@@ -37,11 +37,11 @@ public class PlayerQuitListener implements Listener {
 
         // ログアウトしたプレイヤーが、大将だった場合、逃げたことを全体に通知する。
         if ( ColorMeTeaming.leaders.containsKey(color) &&
-                ColorMeTeaming.leaders.get(color).contains(player) ) {
+                ColorMeTeaming.leaders.get(color).contains(player.getName()) ) {
             String message = String.format(PRENOTICE + "%s チームの大将、%s は逃げ出した！",
                     color, player.getName());
             ColorMeTeaming.sendBroadcast(message);
-            ColorMeTeaming.leaders.get(color).remove(player);
+            ColorMeTeaming.leaders.get(color).remove(player.getName());
 
             if ( ColorMeTeaming.leaders.get(color).size() >= 1 ) {
                 message = String.format(PRENOTICE + "%s チームの残り大将は、あと %d 人です。",

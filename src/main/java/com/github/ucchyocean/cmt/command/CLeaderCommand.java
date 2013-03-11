@@ -69,13 +69,13 @@ public class CLeaderCommand implements CommandExecutor {
             while ( keys.hasMoreElements() ) {
                 String key = keys.nextElement();
                 StringBuilder temp = new StringBuilder();
-                for ( Player p : ColorMeTeaming.leaders.get(key) ) {
+                for ( String name : ColorMeTeaming.leaders.get(key) ) {
                     if ( temp.length() == 0 ) {
                         temp.append("  ");
                     } else {
                         temp.append(", ");
                     }
-                    temp.append(p.getName());
+                    temp.append(name);
                 }
 
                 if ( isBroadcast ) {
@@ -119,18 +119,18 @@ public class CLeaderCommand implements CommandExecutor {
 
                 // ランダムにリーダーを選出する
                 int[] leaderIndexes = getPickupNumbers(members.get(key).size(), numberOfLeaders);
-                ColorMeTeaming.leaders.put(key, new ArrayList<Player>());
+                ColorMeTeaming.leaders.put(key, new ArrayList<String>());
                 for ( int i : leaderIndexes ) {
-                    ColorMeTeaming.leaders.get(key).add(members.get(key).get(i));
+                    ColorMeTeaming.leaders.get(key).add(members.get(key).get(i).getName());
                 }
 
                 // リーダーになった人を、チームに通知する
                 StringBuilder l = new StringBuilder();
-                for ( Player p : ColorMeTeaming.leaders.get(key) ) {
+                for ( String name : ColorMeTeaming.leaders.get(key) ) {
                     if ( l.length() != 0 ) {
                         l.append(", ");
                     }
-                    l.append(p.getName());
+                    l.append(name);
                 }
                 String message = String.format("%s チームの大将に、%s が選ばれました。", key, l);
                 ColorMeTeaming.sendTeamChat(key, message);
@@ -155,23 +155,24 @@ public class CLeaderCommand implements CommandExecutor {
             }
 
             String user = args[1];
+            Player player = ColorMeTeaming.getPlayerExact(user);
 
             if ( user.equalsIgnoreCase("random") ) {
 
                 // ランダムにリーダーを選出する
-                ColorMeTeaming.leaders.put(group, new ArrayList<Player>());
+                ColorMeTeaming.leaders.put(group, new ArrayList<String>());
                 Random random = new Random();
                 int value = random.nextInt(members.get(group).size());
-                Player newLeader = members.get(group).get(value);
+                String newLeader = members.get(group).get(value).getName();
                 ColorMeTeaming.leaders.get(group).add(newLeader);
 
-                String message = String.format("%s チームの大将に、%s が選ばれました。", group, newLeader.getName());
+                String message = String.format("%s チームの大将に、%s が選ばれました。", group, newLeader);
                 ColorMeTeaming.sendTeamChat(group, message);
                 sender.sendMessage(String.format(PREINFO + "%s チームの大将を、1 人設定しました。", group));
 
                 return true;
 
-            } else if ( !members.get(group).contains(user) ) {
+            } else if ( player != null && !members.get(group).contains(player) ) {
 
                 sender.sendMessage(PREERR + user + " は、" + group + " グループにいないようです。");
                 return true;
@@ -179,8 +180,8 @@ public class CLeaderCommand implements CommandExecutor {
             } else {
 
                 // リーダーを設定
-                ColorMeTeaming.leaders.put(group, new ArrayList<Player>());
-                ColorMeTeaming.leaders.get(group).add(ColorMeTeaming.getPlayerExact(user));
+                ColorMeTeaming.leaders.put(group, new ArrayList<String>());
+                ColorMeTeaming.leaders.get(group).add(user);
 
                 String message = String.format("%s チームの大将に、%s が選ばれました。", group, user);
                 ColorMeTeaming.sendTeamChat(group, message);
