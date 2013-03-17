@@ -7,6 +7,25 @@ description: 簡易PVPチーミングプラグイン
 depend: [ColorMe]
 softdepend: [TagAPI, WorldGuard]
 commands:
+  colorteaming:
+    description: ColorMeTeamingの管理用コマンド
+    aliases: ct
+    usage: |
+           /<command> add (group) (player) - playerをgroupに追加します。
+           /<command> remove (group) - groupを解散します。
+           /<command> removeAll - 全てのグループを解散します。
+           /<command> reload - ColorMeTeaming の config.yml を再読み込みします。
+    permission: colorteaming.team
+    permission-message: パーミッション "<permission>" が無いため、実行できません。
+  colorrandom:
+    description: 新しいチーム分けをランダムに設定するためのコマンド
+    aliases: [crandom,randomcolor,rc]
+    usage: |
+           /<command> - 全てのプレイヤーを2チームにチーム分けします。
+           /<command> (numberOfGroups) - 全てのプレイヤーを、numberOfGroupsの数のチームにチーム分けします。
+           /<command> rest - 色が設定されていない人を、現在設定されているグループにランダム割り振りする。
+    permission: colorteaming.random
+    permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorcount:
     description: メンバーを一覧表示するコマンド
     aliases: cc
@@ -102,15 +121,6 @@ commands:
            /<command> list - リスポーン設定を一覧表示します。
     permission: colorteaming.spawn
     permission-message: パーミッション "<permission>" が無いため、実行できません。
-  colorrandom:
-    description: 新しいチーム分けをランダムに設定するためのコマンド
-    aliases: [crandom,randomcolor,rc]
-    usage: |
-           /<command> - 全てのプレイヤーを2チームにチーム分けします。
-           /<command> (numberOfGroups) - 全てのプレイヤーを、numberOfGroupsの数のチームにチーム分けします。
-           /<command> rest - 色が設定されていない人を、現在設定されているグループにランダム割り振りする。
-    permission: colorteaming.random
-    permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorremove:
     description: チームを離脱する条件を設定するためのコマンド
     aliases: cr
@@ -127,17 +137,13 @@ commands:
            /<command> (player) - playerが爆発して死亡します。
     permission: colorteaming.explode
     permission-message: パーミッション "<permission>" が無いため、実行できません。
-  colorteaming:
-    description: ColorMeTeamingの管理用コマンド
-    aliases: ct
-    usage: |
-           /<command> add (group) (player) - playerをgroupに追加します。
-           /<command> remove (group) - groupを解散します。
-           /<command> removeAll - 全てのグループを解散します。
-           /<command> reload - ColorMeTeaming の config.yml を再読み込みします。
-    permission: colorteaming.team
-    permission-message: パーミッション "<permission>" が無いため、実行できません。
 permissions:
+  colorteaming.team:
+    description: colorteaming(ct)コマンドの使用権限
+    default: op
+  colorteaming.random:
+    description: colorrandom(crandom)コマンドの使用権限
+    default: op
   colorteaming.count:
     description: colorcount(cc)コマンドの使用権限
     default: op
@@ -162,20 +168,16 @@ permissions:
   colorteaming.spawn:
     description: colorspawn(cspawn)コマンドの使用権限
     default: op
-  colorteaming.random:
-    description: colorrandom(crandom)コマンドの使用権限
-    default: op
   colorteaming.remove:
     description: colorremove(cr)コマンドの使用権限
     default: op
   colorteaming.explode:
     description: colorexplode(cexplode)コマンドの使用権限
     default: op
-  colorteaming.team:
-    description: colorteaming(ct)コマンドの使用権限
-    default: op
   colorteaming.*:
     children:
+      colorteaming.team: true
+      colorteaming.random: true
       colorteaming.count: true
       colorteaming.friendlyfire: true
       colorteaming.chat: true
@@ -184,10 +186,8 @@ permissions:
       colorteaming.class: true
       colorteaming.kill: true
       colorteaming.spawn: true
-      colorteaming.random: true
       colorteaming.remove: true
       colorteaming.explode: true
-      colorteaming.team: true
     description: ColorTeamingプラグインの管理系コマンド全ての使用権限
   colorteaming.global:
     description: colorglobal(g)コマンドの使用権限
