@@ -102,6 +102,9 @@ public class CRandomCommand implements CommandExecutor {
         // コマンド完了を、CCメッセージで通知する
         CCountCommand.sendCCMessage(sender, members, false);
 
+        // メンバー情報をlastdataに保存する
+        ColorMeTeaming.sdhandler.save("lastdata");
+
         return true;
     }
 
@@ -166,6 +169,9 @@ public class CRandomCommand implements CommandExecutor {
 
         // コマンド完了を、CCメッセージで通知する
         CCountCommand.sendCCMessage(sender, members, false);
+
+        // メンバー情報をlastdataに保存する
+        ColorMeTeaming.sdhandler.save("lastdata");
 
         return true;
     }
