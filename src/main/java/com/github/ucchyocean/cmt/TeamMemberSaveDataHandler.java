@@ -68,16 +68,18 @@ public class TeamMemberSaveDataHandler {
         keys = ColorMeTeaming.killDeathCounts.keys();
         while ( keys.hasMoreElements() ) {
             String key = keys.nextElement();
-            config.set("killDeathCounts." + key,
-                    ColorMeTeaming.killDeathCounts.get(key));
+            List<Integer> data =
+                    convertToList(ColorMeTeaming.killDeathCounts.get(key));
+            config.set("killDeathCounts." + key, data);
         }
 
         // ユーザーキルデス数の保存
         keys = ColorMeTeaming.killDeathUserCounts.keys();
         while ( keys.hasMoreElements() ) {
             String key = keys.nextElement();
-            config.set("killDeathUserCounts." + key,
-                    ColorMeTeaming.killDeathUserCounts.get(key));
+            List<Integer> data =
+                    convertToList(ColorMeTeaming.killDeathUserCounts.get(key));
+            config.set("killDeathUserCounts." + key, data);
         }
 
         // セーブデータをファイルへ保存
@@ -196,5 +198,14 @@ public class TeamMemberSaveDataHandler {
                 ColorMeTeaming.removePlayerColor(p);
             }
         }
+    }
+
+    private List<Integer> convertToList(int[] arr) {
+
+        List<Integer> result = new ArrayList<Integer>();
+        for ( int i : arr ) {
+            result.add(new Integer(i));
+        }
+        return result;
     }
 }

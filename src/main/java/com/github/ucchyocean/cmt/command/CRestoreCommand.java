@@ -32,6 +32,11 @@ public class CRestoreCommand implements CommandExecutor {
             profileName = args[0];
         }
 
+        if ( !ColorMeTeaming.sdhandler.isExist(profileName) ) {
+            sender.sendMessage(PREERR + profileName + " というデータが存在しません。");
+            return true;
+        }
+
         boolean result = ColorMeTeaming.sdhandler.load(profileName);
 
         if ( result ) {
