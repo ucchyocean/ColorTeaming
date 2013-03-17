@@ -23,7 +23,7 @@ commands:
     usage: |
            /<command> - 全てのプレイヤーを2チームにチーム分けします。
            /<command> (numberOfGroups) - 全てのプレイヤーを、numberOfGroupsの数のチームにチーム分けします。
-           /<command> rest - 色が設定されていない人を、現在設定されているグループにランダム割り振りする。
+           /<command> rest - 色が設定されていない人を、現在設定されているグループにランダム割り振りします。
     permission: colorteaming.random
     permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorcount:

@@ -4,6 +4,7 @@
 package com.github.ucchyocean.cmt.command;
 
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Set;
@@ -81,13 +82,15 @@ public class CClassCommand implements CommandExecutor {
         String armor = ColorMeTeamingConfig.classArmors.get(clas);
         ArrayList<ItemStack> itemData = parseClassItemData(sender, items);
 
-        ArrayList<Player> playersToSet;
+        ArrayList<Player> playersToSet = new ArrayList<Player>();
         if ( isAll ) {
-            playersToSet = ColorMeTeaming.getAllPlayers();
+            Enumeration<String> groups = members.keys();
+            while ( groups.hasMoreElements() ) {
+                playersToSet.addAll(members.get(groups.nextElement()));
+            }
         } else if ( isGroup ) {
             playersToSet = members.get(group);
         } else {
-            playersToSet = new ArrayList<Player>();
             playersToSet.add(ColorMeTeaming.getPlayerExact(group));
         }
 
