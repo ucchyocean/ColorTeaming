@@ -206,6 +206,28 @@ public class ColorMeTeaming extends JavaPlugin {
     }
 
     /**
+     * 指定したワールドにいる全てのプレイヤーを取得する。
+     * ただし、指定したワールドが存在しない場合は、空のリストが返される。
+     * @param worldName ワールド名
+     * @return 全てのプレイヤー
+     */
+    public static ArrayList<Player> getAllPlayersOnWorld(String worldName) {
+
+        Player[] temp = instance.getServer().getOnlinePlayers();
+        ArrayList<Player> result = new ArrayList<Player>();
+        World world = getWorld(worldName);
+        if ( world == null ) {
+            return result;
+        }
+        for ( Player p : temp ) {
+            if ( p.getWorld().equals(world) ) {
+                result.add(p);
+            }
+        }
+        return result;
+    }
+
+    /**
      * メッセージをブロードキャストに送信する。
      * @param message 送信するメッセージ
      */

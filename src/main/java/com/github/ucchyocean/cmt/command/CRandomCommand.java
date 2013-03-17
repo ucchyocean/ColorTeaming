@@ -40,7 +40,8 @@ public class CRandomCommand implements CommandExecutor {
         }
 
         // ゲームモードがクリエイティブの人は除外する
-        ArrayList<Player> tempPlayers = ColorMeTeaming.getAllPlayers();
+        ArrayList<Player> tempPlayers =
+                ColorMeTeaming.getAllPlayersOnWorld(ColorMeTeamingConfig.defaultWorldName);
         ArrayList<Player> players = new ArrayList<Player>();
         for ( Player p : tempPlayers ) {
             if ( p.getGameMode() != GameMode.CREATIVE ) {
