@@ -35,17 +35,23 @@ public class CExplodeCommand implements CommandExecutor {
             return false;
         }
 
-        String group = args[0]; // 制裁を加えるグループ
+        String target = args[0]; // 制裁を加えるグループかユーザー
 
         Hashtable<String, ArrayList<Player>> members =
                 ColorMeTeaming.getAllColorMembers();
+        ArrayList<Player> playersToExplode = new ArrayList<Player>();
 
-        if ( !members.containsKey(group) ) {
-            sender.sendMessage(PREERR + "グループ " + group + " は存在しません。");
+        if ( members.containsKey(target) ) {
+            // target はグループである場合
+            playersToExplode = members.get(target);
+        } else if ( ColorMeTeaming.getPlayerExact(target) != null ) {
+            // target はプレイヤーである場合
+            playersToExplode.add(ColorMeTeaming.getPlayerExact(target));
+        } else {
+            sender.sendMessage(PREERR + target +
+                    " というグループまたはプレイヤーは存在しません。");
             return true;
         }
-
-        ArrayList<Player> playersToExplode = members.get(group);
 
         for ( Player p : playersToExplode ) {
             p.getWorld().createExplosion(p.getLocation(), 0); // 爆発エフェクト発生
@@ -53,7 +59,7 @@ public class CExplodeCommand implements CommandExecutor {
             p.sendMessage("どーーん！");
         }
 
-        ColorMeTeaming.sendBroadcast(PRENOTICE + "グループ " + group + " は全員爆死しました。");
+        ColorMeTeaming.sendBroadcast(PRENOTICE + "ターゲットは爆死しました。");
 
         return true;
     }

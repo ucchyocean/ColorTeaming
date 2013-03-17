@@ -1,166 +1,178 @@
 name: ColorMeTeaming
 main: com.github.ucchyocean.cmt.ColorMeTeaming
-version: 1.4.6
+version: 1.4.7
 authors: [ucchy,owatakun]
 load: startup
-description: ColorMe Teaming Plugin
+description: 簡易PVPチーミングプラグイン
 depend: [ColorMe]
 softdepend: [TagAPI, WorldGuard]
 commands:
   colorcount:
-    description: ColorMe Count Command
+    description: メンバーを一覧表示するコマンド
     aliases: cc
     usage: |
-           /<command> - Display members of color groups (exclude "ignoreGroups").
-           /<command> all - Display members of color groups include "ignoreGroups".
-           /<command> say [all] - Broadcast members of color groups.
+           /<command> - 各色グループのメンバーを一覧表示します。
+           /<command> all - 全てのプレイヤー（ignoreGroups込み）のメンバーを一覧表示します。
+           /<command> say [all] - 各色グループのメンバーの一覧を、サーバー全体メッセージで表示します。
     permission: colorteaming.count
-    permission-message: You don't have permission "<permission>".
+    permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorcountsay:
-    description: ColorMe Count Command
+    description: メンバーを一覧表示するコマンド
     aliases: ccsay
     usage: |
-           /<command> - Broadcast members of color groups (exclude "ignoreGroups").
-           /<command> all - Broadcast members of color groups include "ignoreGroups".
+           /<command> - 各色グループのメンバーの一覧を、サーバー全体メッセージで表示します。
+           /<command> all - 全てのプレイヤー（ignoreGroups込み）のメンバーを一覧表示します。
     permission: colorteaming.count
-    permission-message: You don't have permission "<permission>".
+    permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorfriendlyfire:
-    description: ColorMe Friendly Fire Disabler Command
+    description: メンバー間の攻撃の有効無効を切り替えるコマンド
     aliases: cff
-    usage: /<command> (on|off) - Set Friendly Fire on/off.
+    usage: /<command> (on|off) - 各色グループのメンバー間の攻撃を、onで無効に、offで有効に設定します。
     permission: colorteaming.friendlyfire
-    permission-message: You don't have permission "<permission>".
+    permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorchat:
-    description: ColorMe Team Chat Command
+    description: チームチャットの有効無効を切り替えるコマンド
     aliases: cchat
     usage: |
-           /<command> (on|off) - Enable/Disable team chat.
-           /<command> (opon|opoff) - Enable/Disable display op copy mode.
+           /<command> (on|off) - 各色グループのメンバーのチャットを、onでチームチャットに、offで通常チャットに設定します。
+           /<command> (opon|opoff) - 各チームのチームチャットを、OPが傍聴するかどうかを設定します。
     permission: colorteaming.chat
-    permission-message: You don't have permission "<permission>".
+    permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorglobal:
-    description: Global Chat command for ColorMe Team Chat Command
+    description: チームチャット有効時にグローバルへ発言するためのコマンド
     aliases: [cg,g]
-    usage: /<command> (message)
+    usage: /<command> (message) - チームチャットが設定されている状態で、通常のチャット発言を行います。
     permission: colorteaming.global
-    permission-message: You don't have permission "<permission>".
+    permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorleader:
-    description: ColorMe Team Leaders Command
+    description: 各グループから大将を選出するコマンド
     aliases: cl
     usage: |
-           /<command> (group) (user) - Set (user) for leader of (group).
-           /<command> (group) random [(numberOfLeaders)]
-           /<command> all [(numberOfLeaders)]
-           /<command> clear - Clear all of leaders.
-           /<command> view - Display leader information.
-           /<command> say - Broadcast leader information.
+           /<command> (group) (player) - playerを、groupの大将に設定します。
+           /<command> (group) random [(numberOfLeaders)] - groupの中からランダムに1人を、groupの大将に設定します。numberOfLeadersを指定した場合、指定した人数を大将として選出します。
+           /<command> all [(numberOfLeaders)] - 全てのグループからランダムに1人を、各グループの大将に設定します。numberOfLeadersを指定した場合、指定した人数を各グループから大将として選出します。
+           /<command> clear - 大将設定を削除します。
+           /<command> view - 大将設定を表示します。
+           /<command> say - 大将設定を、サーバー全体メッセージで表示します。
     permission: colorteaming.leader
-    permission-message: You don't have permission "<permission>".
+    permission-message: パーミッション "<permission>" が無いため、実行できません。
   colortp:
-    description: ColorMe Team Teleport Command
+    description: 各グループをテレポートするためのコマンド
     aliases: ctp
     usage: |
-           /<command> (group) [(world)] (x) (y) (z) - Teleport the members of (group) to (world):(x),(y),(z).
-           /<command> (group) here - Teleport the members of (group) to here.
-           /<command> (group) spawn - Teleport the members of (group) to group's respawn point.
-           /<command> (group) (point) - Teleport the members of (group) to registered point.
-           /<command> set (point) [(world)] (x) (y) (z) - Register new point.
-           /<command> set (point) here - Register new point.
-           /<command> remove (point) - Remove registered point.
-           /<command> all spawn - Teleport all player to group's respawn point.
-           /<command> all (point) - Teleport all player to registered point.
-           /<command> list - Show registered point list.
+           /<command> (group) [(world)] (x) (y) (z) - groupのメンバー全員を、(world):(x),(y),(z) の場所にテレポートします。
+           /<command> (group) here - groupのメンバー全員を、コマンドを実行した人の場所にテレポートします。
+           /<command> (group) spawn - groupのメンバー全員を、グループのリスポーンポイントにテレポートします。
+           /<command> (group) (point) - groupのメンバー全員を、指定されたポイントにテレポートします。
+           /<command> set (point) [(world)] (x) (y) (z) - 新しいポイントを、(world):(x),(y),(z) の場所に登録します。
+           /<command> set (point) here - 新しいポイントを、この場所に登録します。
+           /<command> remove (point) - 登録されたポイントを削除します。
+           /<command> all spawn - 全てのプレイヤーを、グループのリスポーンポイントにテレポートします。
+           /<command> all (point) - 全てのプレイヤーを、指定されたポイントにテレポートします。
+           /<command> list - 登録されたポイントを一覧表示します。
     permission: colorteaming.tp
-    permission-message: You don't have permission "<permission>".
+    permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorclass:
-    description: ColorMe Inventory Initializing Command
+    description: インベントリを設定されたアイテムで初期化するためのコマンド
     aliases: cclass
     usage: |
-           /<command> (group|user) (class) - Initialize inventory and armor by class.
-           /<command> all (class) - Initialize inventory and armor of all players by class.
+           /<command> (group) (class) - groupのメンバー全員のアイテムと装備を、config.yml の classes 設定に書かれているクラス設定のアイテムに変更します。
+           /<command> (player) (class) - player のアイテムと装備を、config.yml の classes 設定に書かれているクラス設定のアイテムに変更します。
+           /<command> all (class) - 全プレイヤーのアイテムと装備を、config.yml の classes 設定に書かれているクラス設定のアイテムに変更します。
     permission: colorteaming.class
-    permission-message: You don't have permission "<permission>".
+    permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorkill:
-    description: ColorMe Team Kill-Death Count Command
+    description: チームごとのキルデス数を表示するためのコマンド
     aliases: [ckill,ck]
-    usage: /<command> [(say|clear)]
+    usage: |
+           /<command> - 全てのグループごとのキルデス数カウントを参照します。
+           /<command> say - 全てのグループごとのキルデス数カウントを、サーバー全体メッセージで表示します。
+           /<command> clear - 全てのグループごとのキルデス数カウントを初期化して0にします。
+
     permission: colorteaming.kill
-    permission-message: You don't have permission "<permission>".
+    permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorspawn:
-    description: ColorMe Team Spawn Set Command
+    description: チームごとのリスポーンポイントを設定するためのコマンド
     aliases: [cspawn,cs]
     usage: |
-           /<command> (group) [(world)] (x) (y) (z) - Set the respawn point of (group) to (world):(x),(y),(z).
-           /<command> (group) here - Set the respawn point of (group) to here.
-           /<command> remove (group) - Remove (group)'s respawn point.
-           /<command> remove all - Remove all respawn points.
-           /<command> list - Show registered respawn points list.
+           /<command> (group) [(world)] (x) (y) (z) - groupのメンバー全員のリスポーンポイントを、(world):(x),(y),(z) の場所に設定します。
+           /<command> (group) here - groupのメンバー全員のリスポーンポイントを、コマンドを実行した人の場所に設定します。
+           /<command> remove (group) - groupのリスポーンポイント設定を削除します。
+           /<command> remove all - 全てのグループのリスポーン設定を削除します。
+           /<command> list - リスポーン設定を一覧表示します。
     permission: colorteaming.spawn
-    permission-message: You don't have permission "<permission>".
+    permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorrandom:
-    description: ColorMe Random Team Setting Command
+    description: 新しいチーム分けをランダムに設定するためのコマンド
     aliases: [crandom,randomcolor,rc]
-    usage: /<command> [(numberOfGroups)] - Make random teams.
+    usage: |
+           /<command> - 全てのプレイヤーを2チームにチーム分けします。
+           /<command> (numberOfGroups) - 全てのプレイヤーを、numberOfGroupsの数のチームにチーム分けします。
+           /<command> rest - 色が設定されていない人を、現在設定されているグループにランダム割り振りする。
     permission: colorteaming.random
-    permission-message: You don't have permission "<permission>".
+    permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorremove:
-    description: ColorMe Auto Color Remove Setting Command
+    description: チームを離脱する条件を設定するためのコマンド
     aliases: cr
-    usage: /<command> (on|off) - Auto color remove on Player death.
+    usage: |
+           /<command> death (on|off) - 死亡時に自動でチームから抜けるかどうかを設定します。
+           /<command> quit (on|off) - ログアウト時に自動でチームから抜けるかどうかを設定します。
     permission: colorteaming.remove
-    permission-message: You don't have permission "<permission>".
+    permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorexplode:
-    description: ColorMe Explosion Command. It's a "Bakuhatsu-Oti".
+    description: チームを爆発させるコマンド（爆発オチ用）
     aliases: ce
-    usage: /<command> (group) - Explode the members of group.
+    usage: |
+           /<command> (group) - groupのメンバー全員が爆発して死亡します。
+           /<command> (player) - playerが爆発して死亡します。
     permission: colorteaming.explode
-    permission-message: You don't have permission "<permission>".
+    permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorteaming:
-    description: ColorMe Teaming Plugin Administration Command
+    description: ColorMeTeamingの管理用コマンド
     aliases: ct
     usage: |
-           /<command> add (group) (user) - Add (user) to (group).
-           /<command> remove (group) - Remove (group).
-           /<command> removeAll - Remove all groups.
-           /<command> reload - Reload config.yml file.
+           /<command> add (group) (player) - playerをgroupに追加します。
+           /<command> remove (group) - groupを解散します。
+           /<command> removeAll - 全てのグループを解散します。
+           /<command> reload - ColorMeTeaming の config.yml を再読み込みします。
     permission: colorteaming.team
-    permission-message: You don't have permission "<permission>".
+    permission-message: パーミッション "<permission>" が無いため、実行できません。
 permissions:
   colorteaming.count:
-    description: ColorMe Count Command
+    description: colorcount(cc)コマンドの使用権限
     default: op
   colorteaming.friendlyfire:
-    description: ColorMe Friendly Fire Disabler Command
+    description: colorfriendlyfire(cff)コマンドの使用権限
     default: op
   colorteaming.chat:
-    description: ColorMe Team Chat Command
+    description: colorchat(cchat)コマンドの使用権限
     default: op
   colorteaming.leader:
-    description: ColorMe Team Leaders Command
+    description: colorleader(cl)コマンドの使用権限
     default: op
   colorteaming.tp:
-    description: ColorMe Team Teleport Command
+    description: colortp(ctp)コマンドの使用権限
     default: op
   colorteaming.class:
-    description: ColorMe Inventory Initializing Command
+    description: colorclass(cclass)コマンドの使用権限
     default: op
   colorteaming.kill:
-    description: ColorMe Team Kill-Death Count Command
+    description: colorkill(ckill)コマンドの使用権限
     default: op
   colorteaming.spawn:
-    description: ColorMe Team Spawn Set Command
+    description: colorspawn(cspawn)コマンドの使用権限
     default: op
   colorteaming.random:
-    description: ColorMe Random Team Making Command
+    description: colorrandom(crandom)コマンドの使用権限
     default: op
   colorteaming.remove:
-    description: ColorMe Color Remove on Death Command
+    description: colorremove(cr)コマンドの使用権限
     default: op
   colorteaming.explode:
-    description: ColorMe Explosion Command
+    description: colorexplode(cexplode)コマンドの使用権限
     default: op
   colorteaming.team:
-    description: ColorMe Teaming Plugin Administration Command
+    description: colorteaming(ct)コマンドの使用権限
     default: op
   colorteaming.*:
     children:
@@ -176,7 +188,7 @@ permissions:
       colorteaming.remove: true
       colorteaming.explode: true
       colorteaming.team: true
-    description: Allows all commands for ColorMeTeaming
+    description: ColorTeamingプラグインの管理系コマンド全ての使用権限
   colorteaming.global:
-    description: Global Chat command for ColorMe Team Chat Command
+    description: colorglobal(g)コマンドの使用権限
     default: true
