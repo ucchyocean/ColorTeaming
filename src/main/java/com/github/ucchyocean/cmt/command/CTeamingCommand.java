@@ -44,16 +44,12 @@ public class CTeamingCommand implements CommandExecutor {
 
         } else if ( args[0].equalsIgnoreCase("removeall") ) {
 
-//            Location defaultSpawn = ColorMeTeaming.getWorld(
-//                    ColorMeTeamingConfig.defaultWorldName).getSpawnLocation();
-
             Hashtable<String, ArrayList<Player>> members = ColorMeTeaming.getAllColorMembers();
             Enumeration<String> keys = members.keys();
             while ( keys.hasMoreElements() ) {
                 String group = keys.nextElement();
                 for ( Player p : members.get(group) ) {
                     ColorMeTeaming.removePlayerColor(p);
-//                    p.setBedSpawnLocation(defaultSpawn, true);
                 }
             }
             sender.sendMessage(PREINFO + "全てのグループが解散しました。");
@@ -74,12 +70,8 @@ public class CTeamingCommand implements CommandExecutor {
                 return true;
             }
 
-//            Location defaultSpawn = ColorMeTeaming.getWorld(
-//                    ColorMeTeamingConfig.defaultWorldName).getSpawnLocation();
-
             for ( Player p : members.get(group) ) {
                 ColorMeTeaming.removePlayerColor(p);
-//                p.setBedSpawnLocation(defaultSpawn, true);
                 p.sendMessage(PREINFO + "グループ " + group + " が解散しました。");
             }
             sender.sendMessage(PREINFO + "グループ " + group + " が解散しました。");

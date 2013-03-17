@@ -129,6 +129,22 @@ commands:
            /<command> quit (on|off) - ログアウト時に自動でチームから抜けるかどうかを設定します。
     permission: colorteaming.remove
     permission-message: パーミッション "<permission>" が無いため、実行できません。
+  colorsave:
+    description: チーム分けのメンバー情報とキルデス数を保存するためのコマンド
+    aliases: csave
+    usage: |
+           /<command> - チーム分けのメンバー情報とキルデス数を、"lastdata" という名前で保存します。
+           /<command> (name) - チーム分けのメンバー情報とキルデス数を、nameという名前で保存します。
+    permission: colorteaming.save
+    permission-message: パーミッション "<permission>" が無いため、実行できません。
+  colorrestore:
+    description: チーム分けのメンバー情報とキルデス数を、保存されたデータから復帰するためのコマンド
+    aliases: crestore
+    usage: |
+           /<command> - チーム分けのメンバー情報とキルデス数を、"lastdata" から復帰します。
+           /<command> (name) - チーム分けのメンバー情報とキルデス数を、nameという名前のデータから復帰します。
+    permission: colorteaming.restore
+    permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorexplode:
     description: チームを爆発させるコマンド（爆発オチ用）
     aliases: ce
@@ -171,6 +187,12 @@ permissions:
   colorteaming.remove:
     description: colorremove(cr)コマンドの使用権限
     default: op
+  colorteaming.save:
+    description: colorsave(csave)コマンドの使用権限
+    default: op
+  colorteaming.restore:
+    description: colorrestore(crestore)コマンドの使用権限
+    default: op
   colorteaming.explode:
     description: colorexplode(cexplode)コマンドの使用権限
     default: op
@@ -187,6 +209,8 @@ permissions:
       colorteaming.kill: true
       colorteaming.spawn: true
       colorteaming.remove: true
+      colorteaming.save: true
+      colorteaming.restore: true
       colorteaming.explode: true
     description: ColorTeamingプラグインの管理系コマンド全ての使用権限
   colorteaming.global:

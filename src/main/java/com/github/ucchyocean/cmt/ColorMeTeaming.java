@@ -24,6 +24,8 @@ import com.github.ucchyocean.cmt.command.CKillCommand;
 import com.github.ucchyocean.cmt.command.CLeaderCommand;
 import com.github.ucchyocean.cmt.command.CRandomCommand;
 import com.github.ucchyocean.cmt.command.CRemoveCommand;
+import com.github.ucchyocean.cmt.command.CRestoreCommand;
+import com.github.ucchyocean.cmt.command.CSaveCommand;
 import com.github.ucchyocean.cmt.command.CSpawnCommand;
 import com.github.ucchyocean.cmt.command.CTPCommand;
 import com.github.ucchyocean.cmt.command.CTeamingCommand;
@@ -49,6 +51,7 @@ public class ColorMeTeaming extends JavaPlugin {
     protected static ColorMeTeaming instance;
     private static ColorMe colorme;
     public static WorldGuardHandler wghandler;
+    public static TeamMemberSaveDataHandler sdhandler;
 
     public static Logger logger;
     public static RespawnConfiguration respawnConfig;
@@ -107,6 +110,10 @@ public class ColorMeTeaming extends JavaPlugin {
 
         getCommand("colorexplode").setExecutor(new CExplodeCommand());
 
+        getCommand("colorsave").setExecutor(new CSaveCommand());
+
+        getCommand("colorrestore").setExecutor(new CRestoreCommand());
+
         getCommand("colorteaming").setExecutor(new CTeamingCommand());
 
         // イベント購読をサーバーに登録
@@ -126,6 +133,7 @@ public class ColorMeTeaming extends JavaPlugin {
         leaders = new Hashtable<String, ArrayList<String>>();
         respawnConfig = new RespawnConfiguration();
         tppointConfig = new TPPointConfiguration();
+        sdhandler = new TeamMemberSaveDataHandler(getDataFolder());
     }
 
     /**
