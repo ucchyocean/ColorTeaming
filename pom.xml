@@ -1,8 +1,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.github.ucchyocean</groupId>
-  <artifactId>ColorMeTeaming</artifactId>
-  <version>1.4.7</version>
+  <artifactId>ColorTeaming</artifactId>
+  <version>1.5.0</version>
 
   <repositories>
     <repository>
@@ -16,13 +16,9 @@
     <dependency>
       <groupId>org.bukkit</groupId>
       <artifactId>craftbukkit</artifactId>
-      <version>1.4.7-R0.2-SNAPSHOT</version>
+      <version>1.5-R0.1-SNAPSHOT</version>
     </dependency>
-    <dependency>
-      <groupId>de.dustplanet</groupId>
-      <artifactId>ColorMe</artifactId>
-      <version>3.7-SNAPSHOT</version>
-    </dependency>
+    <!-- temporary delete.
     <dependency>
       <groupId>com.sk89q</groupId>
       <artifactId>worldguard</artifactId>
@@ -33,6 +29,7 @@
       <artifactId>worldedit</artifactId>
       <version>5.5.1</version>
     </dependency>
+     -->
   </dependencies>
 
   <build>

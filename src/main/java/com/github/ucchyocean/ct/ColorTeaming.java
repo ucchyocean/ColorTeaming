@@ -1,0 +1,385 @@
+/*
+ * Copyright ucchy 2013
+ */
+package com.github.ucchyocean.ct;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Set;
+import java.util.logging.Logger;
+
+import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
+
+import com.github.ucchyocean.ct.command.CChatCommand;
+import com.github.ucchyocean.ct.command.CChatGlobalCommand;
+import com.github.ucchyocean.ct.command.CClassCommand;
+import com.github.ucchyocean.ct.command.CCountCommand;
+import com.github.ucchyocean.ct.command.CExplodeCommand;
+import com.github.ucchyocean.ct.command.CFriendlyFireCommand;
+import com.github.ucchyocean.ct.command.CKillCommand;
+import com.github.ucchyocean.ct.command.CLeaderCommand;
+import com.github.ucchyocean.ct.command.CRandomCommand;
+import com.github.ucchyocean.ct.command.CRemoveCommand;
+import com.github.ucchyocean.ct.command.CRestoreCommand;
+import com.github.ucchyocean.ct.command.CSaveCommand;
+import com.github.ucchyocean.ct.command.CSpawnCommand;
+import com.github.ucchyocean.ct.command.CTPCommand;
+import com.github.ucchyocean.ct.command.CTeamingCommand;
+import com.github.ucchyocean.ct.listener.PlayerChatListener;
+import com.github.ucchyocean.ct.listener.PlayerDeathListener;
+import com.github.ucchyocean.ct.listener.PlayerQuitListener;
+import com.github.ucchyocean.ct.listener.PlayerRespawnListener;
+
+/**
+ * @author ucchy
+ * ColorMe を使用した、簡易PVPチーミングプラグイン
+ */
+public class ColorTeaming extends JavaPlugin {
+
+    private static final String TEAM_CHAT_FORMAT = "&a[%s&a]<%s&r&a> %s";
+    private static final String TEAM_INFORMATION_FORMAT = "&a[%s&a] %s";
+
+    protected static ColorTeaming instance;
+//    private static ColorMe colorme;
+//    public static WorldGuardHandler wghandler;
+    public static TeamMemberSaveDataHandler sdhandler;
+
+    public static Logger logger;
+    public static RespawnConfiguration respawnConfig;
+    public static TPPointConfiguration tppointConfig;
+
+    public static Hashtable<String, ArrayList<String>> leaders;
+    public static Hashtable<String, int[]> killDeathCounts;
+    public static Hashtable<String, int[]> killDeathUserCounts;
+
+    /**
+     * @see org.bukkit.plugin.java.JavaPlugin#onEnable()
+     */
+    @Override
+    public void onEnable() {
+
+        instance = this;
+        logger = getLogger();
+
+        // 設定の読み込み処理
+        ColorTeamingConfig.reloadConfig();
+
+        // 前提プラグイン ColorMe の取得
+//        Plugin temp = getServer().getPluginManager().getPlugin("ColorMe");
+//        if ( temp != null && temp instanceof ColorMe ) {
+//            colorme = (ColorMe)temp;
+//        } else {
+//            logger.severe("ColorMe がロードされていません。");
+//            getServer().getPluginManager().disablePlugin(this);
+//            return;
+//        }
+
+        // コマンドをサーバーに登録
+        CCountCommand ccCommand = new CCountCommand();
+        getCommand("colorcount").setExecutor(ccCommand);
+        getCommand("colorcountsay").setExecutor(ccCommand);
+
+        getCommand("colorfriendlyfire").setExecutor(new CFriendlyFireCommand());
+
+        getCommand("colorchat").setExecutor(new CChatCommand());
+
+        getCommand("colorglobal").setExecutor(new CChatGlobalCommand());
+
+        getCommand("colorleader").setExecutor(new CLeaderCommand());
+
+        getCommand("colortp").setExecutor(new CTPCommand());
+
+        getCommand("colorclass").setExecutor(new CClassCommand());
+
+        getCommand("colorkill").setExecutor(new CKillCommand());
+
+        getCommand("colorspawn").setExecutor(new CSpawnCommand());
+
+        getCommand("colorrandom").setExecutor(new CRandomCommand());
+
+        getCommand("colorremove").setExecutor(new CRemoveCommand());
+
+        getCommand("colorexplode").setExecutor(new CExplodeCommand());
+
+        getCommand("colorsave").setExecutor(new CSaveCommand());
+
+        getCommand("colorrestore").setExecutor(new CRestoreCommand());
+
+        getCommand("colorteaming").setExecutor(new CTeamingCommand());
+
+        // イベント購読をサーバーに登録
+        getServer().getPluginManager().registerEvents(new PlayerChatListener(), this);
+
+        getServer().getPluginManager().registerEvents(new PlayerDeathListener(), this);
+
+        getServer().getPluginManager().registerEvents(new PlayerQuitListener(), this);
+
+        getServer().getPluginManager().registerEvents(new PlayerRespawnListener(), this);
+
+        // 変数の初期化
+        killDeathCounts = new Hashtable<String, int[]>();
+        killDeathUserCounts = new Hashtable<String, int[]>();
+        leaders = new Hashtable<String, ArrayList<String>>();
+        respawnConfig = new RespawnConfiguration();
+        tppointConfig = new TPPointConfiguration();
+        sdhandler = new TeamMemberSaveDataHandler(getDataFolder());
+    }
+
+    /**
+     * Player に設定されている、ColorMe の色設定を取得する。
+     * @param player プレイヤー
+     * @return ColorMeの色
+     */
+    public static Team getPlayerTeam(Player player) {
+
+//        Scoreboard scoreboard = instance.getServer().getScoreboard();
+        Scoreboard scoreboard = null;
+        return scoreboard.getTeamByPlayer(player);
+    }
+
+    public static String getPlayerColor(Player player) {
+
+        Team team = getPlayerTeam(player);
+        if ( team == null ) return "";
+        else return team.getName();
+    }
+
+    /**
+     * Player に、ColorMe の色を設定する。
+     * @param player プレイヤー
+     * @param color ColorMeの色
+     */
+    public static Team addPlayerTeam(Player player, String color) {
+
+//      Scoreboard scoreboard = instance.getServer().getScoreboard();
+        Scoreboard scoreboard = null;
+
+        Team team = scoreboard.getTeam(color);
+        if ( team == null ) {
+            team = scoreboard.createTeam(color, color);
+            team.setColor(Utility.replaceColors(color));
+            team.setFriendlyFire(!ColorTeamingConfig.isFriendlyFireDisabler);
+        }
+        scoreboard.setTeam(player, team);
+
+        return team;
+    }
+
+    /**
+     * Player に設定されている、ColorMe の色設定を削除する。
+     * @param player プレイヤー
+     */
+    public static void leavePlayerTeam(Player player) {
+
+//      Scoreboard scoreboard = instance.getServer().getScoreboard();
+        Scoreboard scoreboard = null;
+
+        scoreboard.setTeam(player, null);
+    }
+
+    public static void setFriendlyFilre(boolean ff) {
+
+//      Scoreboard scoreboard = instance.getServer().getScoreboard();
+        Scoreboard scoreboard = null;
+
+        Set<Team> teams = scoreboard.getTeams();
+        for ( Team t : teams ) {
+            t.setFriendlyFire(ff);
+        }
+    }
+
+    public static void removeTeam(String name) {
+
+//      Scoreboard scoreboard = instance.getServer().getScoreboard();
+        Scoreboard scoreboard = null;
+
+        Team team = scoreboard.getTeam(name);
+        if ( team != null ) {
+            scoreboard.removeTeam(team);
+        }
+    }
+
+    public static void removeAllTeam() {
+
+//      Scoreboard scoreboard = instance.getServer().getScoreboard();
+        Scoreboard scoreboard = null;
+
+        Set<Team> teams = scoreboard.getTeams();
+        for ( Team t : teams ) {
+            scoreboard.removeTeam(t);
+        }
+    }
+
+    /**
+     * ColorMeに設定されている色情報で、ユーザーをグループごとのメンバーに整理して返すメソッド<br>
+     * ignoreGroupに設定されている色グループに所属しているプレーヤーは、除外される。
+     * @return 色をKey メンバーをValueとした Hashtable
+     */
+    public static Hashtable<String, ArrayList<Player>> getAllTeamMembers() {
+
+        Hashtable<String, ArrayList<Player>> result = new Hashtable<String, ArrayList<Player>>();
+//      Scoreboard scoreboard = instance.getServer().getScoreboard();
+        Scoreboard scoreboard = null;
+
+        Set<Team> teams = scoreboard.getTeams();
+        for ( Team t : teams ) {
+            OfflinePlayer[] playersTemp = t.getMembers();
+            ArrayList<Player> players = new ArrayList<Player>();
+            for ( OfflinePlayer p : playersTemp ) {
+                if ( p.isOnline() ) {
+                    players.add(p.getPlayer());
+                }
+            }
+            result.put(t.getName(), players);
+        }
+
+        return result;
+    }
+
+    /**
+     * 全てのプレイヤーを取得する
+     * @return 全てのプレイヤー
+     */
+    public static ArrayList<Player> getAllPlayers() {
+        Player[] temp = instance.getServer().getOnlinePlayers();
+        ArrayList<Player> result = new ArrayList<Player>();
+        for ( Player p : temp ) {
+            result.add(p);
+        }
+        return result;
+    }
+
+    /**
+     * 指定したワールドにいる全てのプレイヤーを取得する。
+     * ただし、指定したワールドが存在しない場合は、空のリストが返される。
+     * @param worldName ワールド名
+     * @return 全てのプレイヤー
+     */
+    public static ArrayList<Player> getAllPlayersOnWorld(String worldName) {
+
+        Player[] temp = instance.getServer().getOnlinePlayers();
+        ArrayList<Player> result = new ArrayList<Player>();
+        World world = getWorld(worldName);
+        if ( world == null ) {
+            return result;
+        }
+        for ( Player p : temp ) {
+            if ( p.getWorld().equals(world) ) {
+                result.add(p);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * メッセージをブロードキャストに送信する。
+     * @param message 送信するメッセージ
+     */
+    public static void sendBroadcast(String message) {
+        instance.getServer().broadcastMessage(message);
+    }
+
+    /**
+     * メッセージをチームチャットに送信する。
+     * @param player 送信元プレイヤー
+     * @param message 送信するメッセージ
+     */
+    public static void sendTeamChat(Player player, String message) {
+
+        Team team = getPlayerTeam(player);
+        String color = team.getName();
+
+        // メッセージを生成
+        String partyMessage = String.format(
+                Utility.replaceColorCode(TEAM_CHAT_FORMAT),
+                Utility.replaceColors(color) + color,
+                player.getDisplayName(),
+                message
+                );
+
+        // チームメンバに送信する
+        ArrayList<Player> playersToSend = getAllTeamMembers().get(color);
+        if ( ColorTeamingConfig.isOPDisplayMode ) {
+            Player[] players = instance.getServer().getOnlinePlayers();
+            for ( Player p : players ) {
+                if ( p.isOp() && !playersToSend.contains(p) ) {
+                    playersToSend.add(p);
+                }
+            }
+        }
+        for ( Player p : playersToSend ) {
+            p.sendMessage(partyMessage);
+        }
+    }
+
+    /**
+     * 情報をチームチャットに送信する。
+     * @param color 送信先のチーム
+     * @param message 送信するメッセージ
+     */
+    public static void sendTeamChat(String color, String message) {
+
+        // メッセージを生成
+        String partyMessage = String.format(
+                Utility.replaceColorCode(TEAM_INFORMATION_FORMAT),
+                Utility.replaceColors(color) + color,
+                message
+                );
+
+        // チームメンバに送信する
+        ArrayList<Player> playersToSend = getAllTeamMembers().get(color);
+        if ( playersToSend != null ) {
+            for ( Player p : playersToSend ) {
+                p.sendMessage(partyMessage);
+            }
+        }
+    }
+
+    /**
+     * プレイヤー名からPlayerインスタンスを返す。
+     * @param name プレイヤー名
+     * @return
+     */
+    public static Player getPlayerExact(String name) {
+        return instance.getServer().getPlayerExact(name);
+    }
+
+    /**
+     * ワールド名からWorldインスタンスを返す。
+     * @param name ワールド名
+     * @return
+     */
+    public static World getWorld(String name) {
+        return instance.getServer().getWorld(name);
+    }
+
+    /**
+     * このプラグインのJarファイル自身を示すFileクラスを返す。
+     * @return
+     */
+    protected static File getPluginJarFile() {
+        return instance.getFile();
+    }
+
+    /**
+     * WorldGuardプラグインをロードする
+     */
+    protected void loadWorldGuard() {
+//        Plugin temp = getServer().getPluginManager().getPlugin("WorldGuard");
+//        if ( temp != null && temp instanceof WorldGuardPlugin ) {
+//            wghandler = new WorldGuardHandler((WorldGuardPlugin)temp);
+//        } else {
+//            logger.warning("WorldGuard がロードされていません。");
+//            logger.warning("protectRespawnPointWithWorldGuard の設定を false に変更します。");
+//            ColorMeTeamingConfig.setConfigValue(
+//                    "protectRespawnPointWithWorldGuard", false);
+//            ColorMeTeamingConfig.protectRespawnPointWithWorldGuard = false;
+//        }
+    }
+}

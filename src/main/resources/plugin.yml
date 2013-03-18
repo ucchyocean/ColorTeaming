@@ -1,20 +1,20 @@
-name: ColorMeTeaming
-main: com.github.ucchyocean.cmt.ColorMeTeaming
-version: 1.4.7
+name: ColorTeaming
+main: com.github.ucchyocean.ct.ColorTeaming
+version: 1.5.0
 authors: [ucchy,owatakun]
 load: startup
 description: 簡易PVPチーミングプラグイン
-depend: [ColorMe]
-softdepend: [TagAPI, WorldGuard]
+depend: []
+softdepend: [WorldGuard]
 commands:
   colorteaming:
-    description: ColorMeTeamingの管理用コマンド
+    description: ColorTeamingの管理用コマンド
     aliases: ct
     usage: |
            /<command> add (group) (player) - playerをgroupに追加します。
            /<command> remove (group) - groupを解散します。
            /<command> removeAll - 全てのグループを解散します。
-           /<command> reload - ColorMeTeaming の config.yml を再読み込みします。
+           /<command> reload - ColorTeaming の config.yml を再読み込みします。
     permission: colorteaming.team
     permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorrandom:
