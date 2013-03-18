@@ -126,5 +126,8 @@ public class PlayerDeathListener implements Listener {
         if ( ColorTeamingConfig.colorRemoveOnDeath ) {
             ColorTeaming.leavePlayerTeam(player);
         }
+
+        // サイドバーを更新する
+        ColorTeaming.refreshSidebarScore();
     }
 }

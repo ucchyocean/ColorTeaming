@@ -94,9 +94,12 @@ public class CRandomCommand implements CommandExecutor {
         }
 
         // 保護領域の更新
-//        if ( ColorMeTeamingConfig.protectRespawnPointWithWorldGuard ) {
-//            ColorMeTeaming.wghandler.refreshGroupMembers();
-//        }
+        if ( ColorTeamingConfig.protectRespawnPointWithWorldGuard ) {
+            ColorTeaming.wghandler.refreshGroupMembers();
+        }
+
+        // サイドバーの更新
+        ColorTeaming.makeSidebar();
 
         // メンバー情報の取得
         Hashtable<String, ArrayList<Player>> members =
@@ -162,9 +165,12 @@ public class CRandomCommand implements CommandExecutor {
         }
 
         // 保護領域の更新
-//        if ( ColorMeTeamingConfig.protectRespawnPointWithWorldGuard ) {
-//            ColorMeTeaming.wghandler.refreshGroupMembers();
-//        }
+        if ( ColorTeamingConfig.protectRespawnPointWithWorldGuard ) {
+            ColorTeaming.wghandler.refreshGroupMembers();
+        }
+
+        // サイドバーの更新
+        ColorTeaming.makeSidebar();
 
         // メンバー情報の取得
         Hashtable<String, ArrayList<Player>> members =

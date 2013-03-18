@@ -15,6 +15,11 @@ commands:
            /<command> remove (group) - groupを解散します。
            /<command> removeAll - 全てのグループを解散します。
            /<command> reload - ColorTeaming の config.yml を再読み込みします。
+           /<command> side kill - サイドバーのスコア表示をキル数に変更します。
+           /<command> side death - サイドバーのスコア表示をデス数に変更します。
+           /<command> side point - サイドバーのスコア表示をポイントに変更します。
+           /<command> side least - サイドバーのスコア表示を残り人数に変更します。
+           /<command> side clear - サイドバーのスコア表示を消去します。
     permission: colorteaming.team
     permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorrandom:

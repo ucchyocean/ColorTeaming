@@ -16,6 +16,7 @@ import org.bukkit.entity.Player;
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingConfig;
 import com.github.ucchyocean.ct.Utility;
+import com.github.ucchyocean.ct.scoreboard.TeamCriteria;
 
 /**
  * @author ucchy
@@ -55,10 +56,10 @@ public class CTeamingCommand implements CommandExecutor {
             }
             sender.sendMessage(PREINFO + "全てのグループが解散しました。");
 
-//            // 保護領域の更新
-//            if ( ColorMeTeamingConfig.protectRespawnPointWithWorldGuard ) {
-//                ColorMeTeaming.wghandler.refreshGroupMembers();
-//            }
+            // 保護領域の更新
+            if ( ColorTeamingConfig.protectRespawnPointWithWorldGuard ) {
+                ColorTeaming.wghandler.refreshGroupMembers();
+            }
 
             return true;
 
@@ -79,9 +80,9 @@ public class CTeamingCommand implements CommandExecutor {
             sender.sendMessage(PREINFO + "グループ " + group + " が解散しました。");
 
             // 保護領域の更新
-//            if ( ColorMeTeamingConfig.protectRespawnPointWithWorldGuard ) {
-//                ColorMeTeaming.wghandler.refreshGroupMembers();
-//            }
+            if ( ColorTeamingConfig.protectRespawnPointWithWorldGuard ) {
+                ColorTeaming.wghandler.refreshGroupMembers();
+            }
 
             return true;
 
@@ -89,7 +90,7 @@ public class CTeamingCommand implements CommandExecutor {
 
             String group = args[1];
             if ( !Utility.isValidColor(group) ) {
-                sender.sendMessage(PREERR + "グループ " + group + " はColorMeに設定できないグループ名です。");
+                sender.sendMessage(PREERR + "グループ " + group + " は設定できないグループ名です。");
                 return true;
             }
 
@@ -99,15 +100,45 @@ public class CTeamingCommand implements CommandExecutor {
                 return true;
             }
 
+            boolean isNewGroup = ! ColorTeaming.getAllTeamMembers().containsKey(group);
             ColorTeaming.addPlayerTeam(player, group);
 
             // メンバー情報をlastdataに保存する
             ColorTeaming.sdhandler.save("lastdata");
 
             // 保護領域の更新
-//            if ( ColorMeTeamingConfig.protectRespawnPointWithWorldGuard ) {
-//                ColorMeTeaming.wghandler.refreshGroupMembers();
-//            }
+            if ( ColorTeamingConfig.protectRespawnPointWithWorldGuard ) {
+                ColorTeaming.wghandler.refreshGroupMembers();
+            }
+
+            // サイドバーの更新 グループが増える場合は、再生成する
+            if ( isNewGroup ) {
+                ColorTeaming.makeSidebar();
+            }
+
+            return true;
+
+        } else if ( args.length >= 2 && args[0].equalsIgnoreCase("side") ) {
+
+            if ( args[1].equalsIgnoreCase("kill") ) {
+                ColorTeamingConfig.teamCriteria = TeamCriteria.KILL_COUNT;
+            } else if ( args[1].equalsIgnoreCase("death") ) {
+                ColorTeamingConfig.teamCriteria = TeamCriteria.DEATH_COUNT;
+            } else if ( args[1].equalsIgnoreCase("point") ) {
+                ColorTeamingConfig.teamCriteria = TeamCriteria.POINT;
+            } else if ( args[1].equalsIgnoreCase("least") ) {
+                ColorTeamingConfig.teamCriteria = TeamCriteria.LEAST_PLAYER;
+            } else if ( args[1].equalsIgnoreCase("clear") ) {
+                ColorTeamingConfig.teamCriteria = TeamCriteria.NONE;
+            } else {
+                return false;
+            }
+
+            // サイドバーの更新
+            ColorTeaming.makeSidebar();
+
+            // 設定の保存
+            ColorTeamingConfig.setConfigValue("teamCriteria", args[1].toLowerCase());
 
             return true;
         }

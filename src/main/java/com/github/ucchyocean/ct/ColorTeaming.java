@@ -9,9 +9,11 @@ import java.util.Hashtable;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
@@ -35,6 +37,9 @@ import com.github.ucchyocean.ct.listener.PlayerChatListener;
 import com.github.ucchyocean.ct.listener.PlayerDeathListener;
 import com.github.ucchyocean.ct.listener.PlayerQuitListener;
 import com.github.ucchyocean.ct.listener.PlayerRespawnListener;
+import com.github.ucchyocean.ct.scoreboard.SidebarDisplay;
+import com.github.ucchyocean.ct.scoreboard.TeamCriteria;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 
 /**
  * @author ucchy
@@ -46,13 +51,13 @@ public class ColorTeaming extends JavaPlugin {
     private static final String TEAM_INFORMATION_FORMAT = "&a[%s&a] %s";
 
     protected static ColorTeaming instance;
-//    private static ColorMe colorme;
-//    public static WorldGuardHandler wghandler;
+    public static WorldGuardHandler wghandler;
     public static TeamMemberSaveDataHandler sdhandler;
 
     public static Logger logger;
     public static RespawnConfiguration respawnConfig;
     public static TPPointConfiguration tppointConfig;
+    public static SidebarDisplay sidebar;
 
     public static Hashtable<String, ArrayList<String>> leaders;
     public static Hashtable<String, int[]> killDeathCounts;
@@ -69,16 +74,6 @@ public class ColorTeaming extends JavaPlugin {
 
         // 設定の読み込み処理
         ColorTeamingConfig.reloadConfig();
-
-        // 前提プラグイン ColorMe の取得
-//        Plugin temp = getServer().getPluginManager().getPlugin("ColorMe");
-//        if ( temp != null && temp instanceof ColorMe ) {
-//            colorme = (ColorMe)temp;
-//        } else {
-//            logger.severe("ColorMe がロードされていません。");
-//            getServer().getPluginManager().disablePlugin(this);
-//            return;
-//        }
 
         // コマンドをサーバーに登録
         CCountCommand ccCommand = new CCountCommand();
@@ -132,14 +127,22 @@ public class ColorTeaming extends JavaPlugin {
     }
 
     /**
+     * スコアボードを返す。
+     * @return スコアボード
+     */
+    public static Scoreboard getScoreboard() {
+//        return instance.getServer().getScoreboard();
+        return null; // TODO:
+    }
+
+    /**
      * Player に設定されている、ColorMe の色設定を取得する。
      * @param player プレイヤー
      * @return ColorMeの色
      */
     public static Team getPlayerTeam(Player player) {
 
-//        Scoreboard scoreboard = instance.getServer().getScoreboard();
-        Scoreboard scoreboard = null;
+        Scoreboard scoreboard = getScoreboard();
         return scoreboard.getTeamByPlayer(player);
     }
 
@@ -157,12 +160,12 @@ public class ColorTeaming extends JavaPlugin {
      */
     public static Team addPlayerTeam(Player player, String color) {
 
-//      Scoreboard scoreboard = instance.getServer().getScoreboard();
-        Scoreboard scoreboard = null;
+        Scoreboard scoreboard = getScoreboard();
 
         Team team = scoreboard.getTeam(color);
         if ( team == null ) {
-            team = scoreboard.createTeam(color, color);
+            team = scoreboard.createTeam(
+                    color, Utility.replaceColorCode(color) + color + ChatColor.RESET);
             team.setColor(Utility.replaceColors(color));
             team.setFriendlyFire(!ColorTeamingConfig.isFriendlyFireDisabler);
         }
@@ -177,16 +180,13 @@ public class ColorTeaming extends JavaPlugin {
      */
     public static void leavePlayerTeam(Player player) {
 
-//      Scoreboard scoreboard = instance.getServer().getScoreboard();
-        Scoreboard scoreboard = null;
-
+        Scoreboard scoreboard = getScoreboard();
         scoreboard.setTeam(player, null);
     }
 
     public static void setFriendlyFilre(boolean ff) {
 
-//      Scoreboard scoreboard = instance.getServer().getScoreboard();
-        Scoreboard scoreboard = null;
+        Scoreboard scoreboard = getScoreboard();
 
         Set<Team> teams = scoreboard.getTeams();
         for ( Team t : teams ) {
@@ -196,8 +196,7 @@ public class ColorTeaming extends JavaPlugin {
 
     public static void removeTeam(String name) {
 
-//      Scoreboard scoreboard = instance.getServer().getScoreboard();
-        Scoreboard scoreboard = null;
+        Scoreboard scoreboard = getScoreboard();
 
         Team team = scoreboard.getTeam(name);
         if ( team != null ) {
@@ -207,8 +206,7 @@ public class ColorTeaming extends JavaPlugin {
 
     public static void removeAllTeam() {
 
-//      Scoreboard scoreboard = instance.getServer().getScoreboard();
-        Scoreboard scoreboard = null;
+        Scoreboard scoreboard = getScoreboard();
 
         Set<Team> teams = scoreboard.getTeams();
         for ( Team t : teams ) {
@@ -224,8 +222,7 @@ public class ColorTeaming extends JavaPlugin {
     public static Hashtable<String, ArrayList<Player>> getAllTeamMembers() {
 
         Hashtable<String, ArrayList<Player>> result = new Hashtable<String, ArrayList<Player>>();
-//      Scoreboard scoreboard = instance.getServer().getScoreboard();
-        Scoreboard scoreboard = null;
+        Scoreboard scoreboard = getScoreboard();
 
         Set<Team> teams = scoreboard.getTeams();
         for ( Team t : teams ) {
@@ -371,15 +368,47 @@ public class ColorTeaming extends JavaPlugin {
      * WorldGuardプラグインをロードする
      */
     protected void loadWorldGuard() {
-//        Plugin temp = getServer().getPluginManager().getPlugin("WorldGuard");
-//        if ( temp != null && temp instanceof WorldGuardPlugin ) {
-//            wghandler = new WorldGuardHandler((WorldGuardPlugin)temp);
-//        } else {
-//            logger.warning("WorldGuard がロードされていません。");
-//            logger.warning("protectRespawnPointWithWorldGuard の設定を false に変更します。");
-//            ColorMeTeamingConfig.setConfigValue(
-//                    "protectRespawnPointWithWorldGuard", false);
-//            ColorMeTeamingConfig.protectRespawnPointWithWorldGuard = false;
-//        }
+        Plugin temp = getServer().getPluginManager().getPlugin("WorldGuard");
+        if ( temp != null && temp instanceof WorldGuardPlugin ) {
+            wghandler = new WorldGuardHandler((WorldGuardPlugin)temp);
+        } else {
+            logger.warning("WorldGuard がロードされていません。");
+            logger.warning("protectRespawnPointWithWorldGuard の設定を false に変更します。");
+            ColorTeamingConfig.setConfigValue(
+                    "protectRespawnPointWithWorldGuard", false);
+            ColorTeamingConfig.protectRespawnPointWithWorldGuard = false;
+        }
+    }
+
+    /**
+     * サイドバーを新しく作る。もともとサイドバーがあった場合は、消去して新しく作り直される。
+     */
+    public static void makeSidebar() {
+
+        removeSidebar();
+        if ( ColorTeamingConfig.teamCriteria != TeamCriteria.NONE ) {
+            sidebar = new SidebarDisplay();
+        }
+    }
+
+    /**
+     * サイドバーを消去する。
+     */
+    public static void removeSidebar() {
+
+        if ( sidebar != null ) {
+            sidebar.remove();
+            sidebar = null;
+        }
+    }
+
+    /**
+     * サイドバーのスコアを更新する。
+     */
+    public static void refreshSidebarScore() {
+
+        if ( sidebar != null ) {
+            sidebar.refreshScore();
+        }
     }
 }

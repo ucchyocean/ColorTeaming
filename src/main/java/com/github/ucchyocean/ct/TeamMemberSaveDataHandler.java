@@ -131,9 +131,9 @@ public class TeamMemberSaveDataHandler {
         }
 
         // 保護領域の更新
-//        if ( ColorMeTeamingConfig.protectRespawnPointWithWorldGuard ) {
-//            ColorMeTeaming.wghandler.refreshGroupMembers();
-//        }
+        if ( ColorTeamingConfig.protectRespawnPointWithWorldGuard ) {
+            ColorTeaming.wghandler.refreshGroupMembers();
+        }
 
         // チームキルデス数の復帰
         ConfigurationSection tksection =

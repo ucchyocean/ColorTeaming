@@ -54,6 +54,9 @@ public class PlayerQuitListener implements Listener {
 
         // 色設定を削除する
         ColorTeaming.leavePlayerTeam(player);
+
+        // サイドバーを更新する
+        ColorTeaming.refreshSidebarScore();
     }
 
 }

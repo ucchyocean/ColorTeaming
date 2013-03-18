@@ -14,6 +14,8 @@ import java.util.Map;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import com.github.ucchyocean.ct.scoreboard.TeamCriteria;
+
 /**
  * @author ucchy
  * ColorMeTeaming の設定ハンドルクラス
@@ -31,8 +33,9 @@ public class ColorTeamingConfig {
     public static boolean colorRemoveOnDeath;
     public static boolean colorRemoveOnQuit;
     public static boolean coloringDeathMessage;
-//    public static boolean protectRespawnPointWithWorldGuard;
-//    public static int protectRespawnPointRange;
+    public static TeamCriteria teamCriteria;
+    public static boolean protectRespawnPointWithWorldGuard;
+    public static int protectRespawnPointRange;
 
     public static int killPoint;
     public static int deathPoint;
@@ -87,14 +90,27 @@ public class ColorTeamingConfig {
 
         coloringDeathMessage = config.getBoolean("coloringDeathMessage", true);
 
-//        protectRespawnPointWithWorldGuard =
-//                config.getBoolean("protectRespawnPointWithWorldGuard", false);
-//        protectRespawnPointRange = config.getInt("protectRespawnPointRange", 3);
+        String criteriaTemp = config.getString("teamCriteria", "least");
+        if ( criteriaTemp.equalsIgnoreCase("kill") ) {
+            teamCriteria = TeamCriteria.KILL_COUNT;
+        } else if ( criteriaTemp.equalsIgnoreCase("death") ) {
+            teamCriteria = TeamCriteria.DEATH_COUNT;
+        } else if ( criteriaTemp.equalsIgnoreCase("point") ) {
+            teamCriteria = TeamCriteria.POINT;
+        } else if ( criteriaTemp.equalsIgnoreCase("least") ) {
+            teamCriteria = TeamCriteria.LEAST_PLAYER;
+        } else {
+            teamCriteria = TeamCriteria.NONE;
+        }
 
-//        // WorldGuardプラグイン連携が true になったら、WorldGaurdをロードする
-//        if ( protectRespawnPointWithWorldGuard && ColorMeTeaming.wghandler == null ) {
-//            ColorMeTeaming.instance.loadWorldGuard();
-//        }
+        protectRespawnPointWithWorldGuard =
+                config.getBoolean("protectRespawnPointWithWorldGuard", false);
+        protectRespawnPointRange = config.getInt("protectRespawnPointRange", 3);
+
+        // WorldGuardプラグイン連携が true になったら、WorldGaurdをロードする
+        if ( protectRespawnPointWithWorldGuard && ColorTeaming.wghandler == null ) {
+            ColorTeaming.instance.loadWorldGuard();
+        }
 
         defaultWorldName = config.getString("world", "world");
     }
