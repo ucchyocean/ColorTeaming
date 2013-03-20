@@ -5,6 +5,8 @@
  */
 package com.github.ucchyocean.ct.scoreboard;
 
+import org.apache.commons.lang.Validate;
+
 /**
  * @author ucchy
  * サイドバーに表示するスコアの種類
@@ -12,17 +14,75 @@ package com.github.ucchyocean.ct.scoreboard;
 public enum TeamCriteria {
 
     /** キル数 */
-    KILL_COUNT,
+    KILL_COUNT("kill"),
 
     /** デス数 */
-    DEATH_COUNT,
+    DEATH_COUNT("death"),
 
     /** ポイント */
-    POINT,
+    POINT("point"),
 
     /** 残り人数 */
-    LEAST_PLAYER,
+    LEAST_PLAYER("least"),
 
     /** 非表示 */
-    NONE,
+    NONE("none");
+
+    private final String criteria;
+
+    /**
+     * コンストラクタ
+     * @param criteria 識別文字列
+     */
+    TeamCriteria (String criteria) {
+        this.criteria = criteria;
+    }
+
+    /**
+     * 識別文字列を返す
+     * @see java.lang.Enum#toString()
+     */
+    @Override
+    public String toString() {
+        return this.criteria;
+    }
+
+    /**
+     * 識別文字列から、TeamCriteriaを作成して返す。
+     * 無効な文字列が指定された場合は、TeamCriteria.NONEが返される。
+     * @param criteria 識別文字列
+     * @return 対応したTeamCriteria
+     */
+    public static TeamCriteria fromString(String criteria) {
+        Validate.notNull(criteria);
+
+        for (TeamCriteria value : TeamCriteria.values()) {
+            if (criteria.equalsIgnoreCase(value.criteria)) {
+                return value;
+            }
+        }
+
+        return TeamCriteria.NONE;
+    }
+
+    /**
+     * サイドバーのタイトル部分に表示する文字列
+     * @return 対応したタイトル文字列
+     */
+    public String getSidebarTitle() {
+
+        switch (this) {
+        case KILL_COUNT:
+            return "スコア(キル数)";
+        case DEATH_COUNT:
+            return "スコア(デス数)";
+        case POINT:
+            return "チームスコア";
+        case LEAST_PLAYER:
+            return "チーム人数";
+        case NONE:
+        default:
+            return "";
+        }
+    }
 }

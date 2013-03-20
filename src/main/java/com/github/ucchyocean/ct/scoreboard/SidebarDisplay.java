@@ -30,6 +30,10 @@ public class SidebarDisplay {
     private Objective objective;
     private Hashtable<String, SidebarTeamScore> teamscores;
 
+    /**
+     * コンストラクタ。コンストラクト時に、現在のチーム状況を取得し、
+     * サイドバーを初期化、表示する。
+     */
     public SidebarDisplay() {
 
         Scoreboard scoreboard = ColorTeaming.getScoreboard();
@@ -57,7 +61,10 @@ public class SidebarDisplay {
         refreshCriteria();
     }
 
-    public void refreshCriteria() {
+    /**
+     * サイドバーのクライテリアを、ColorTeamingConfigから取得し、更新する。
+     */
+    private void refreshCriteria() {
 
         TeamCriteria criteria = ColorTeamingConfig.teamCriteria;
 
@@ -71,11 +78,16 @@ public class SidebarDisplay {
 
         objective.setDisplayName(
                 ChatColor.ITALIC.toString() + ChatColor.BLUE.toString() +
-                getSidebarTitle(criteria) + ChatColor.RESET);
+                criteria.getSidebarTitle() + ChatColor.RESET);
 
         refreshScore();
     }
 
+    /**
+     * スコアを再取得し、表示更新する。
+     * スコアが更新されるタイミング（プレイヤー死亡時、ログアウト時）に、
+     * 本メソッドを呼び出してスコア表示を更新すること。
+     */
     public void refreshScore() {
 
         switch (ColorTeamingConfig.teamCriteria) {
@@ -92,6 +104,10 @@ public class SidebarDisplay {
         }
     }
 
+    /**
+     * キル数、または、デス数による、スコア更新を行う
+     * @param criteria
+     */
     private void refreshScoreByKillOrDeathCount(TeamCriteria criteria) {
 
         int index;
@@ -118,6 +134,9 @@ public class SidebarDisplay {
         }
     }
 
+    /**
+     * ポイントによるスコア更新を行う
+     */
     private void refreshScoreByPoint() {
 
         Hashtable<String, ArrayList<Player>> members = ColorTeaming.getAllTeamMembers();
@@ -140,6 +159,9 @@ public class SidebarDisplay {
         }
     }
 
+    /**
+     * 残り人数によるスコア更新を行う
+     */
     private void refreshScoreByLeastPlayerCount() {
 
         Hashtable<String, ArrayList<Player>> members = ColorTeaming.getAllTeamMembers();
@@ -155,27 +177,13 @@ public class SidebarDisplay {
         }
     }
 
+    /**
+     * サイドバーの表示を消去する。
+     */
     public void remove() {
 
         objective.setDisplaySlot(DISPLAY.NONE);
 
         ColorTeaming.getScoreboard().removeObjective(objective);
-    }
-
-    private String getSidebarTitle(TeamCriteria criteria) {
-
-        switch (criteria) {
-        case KILL_COUNT:
-            return "スコア(キル数)";
-        case DEATH_COUNT:
-            return "スコア(デス数)";
-        case POINT:
-            return "スコア(ポイント)";
-        case LEAST_PLAYER:
-            return "残り人数";
-        case NONE:
-        default:
-            return "";
-        }
     }
 }

@@ -37,52 +37,65 @@ public class SidebarTeamScore implements OfflinePlayer {
 
     // 以下、OfflinePlayerインターフェイスのクラスで、使用しないメソッド。
 
+    @Deprecated
     public boolean isOp() {
         return false;
     }
 
+    @Deprecated
     public void setOp(boolean arg0) {
     }
 
+    @Deprecated
     public Map<String, Object> serialize() {
         return null;
     }
 
+    @Deprecated
     public Location getBedSpawnLocation() {
         return null;
     }
 
+    @Deprecated
     public long getFirstPlayed() {
         return 0;
     }
 
+    @Deprecated
     public long getLastPlayed() {
         return 0;
     }
 
+    @Deprecated
     public Player getPlayer() {
         return null;
     }
 
+    @Deprecated
     public boolean hasPlayedBefore() {
         return false;
     }
 
+    @Deprecated
     public boolean isBanned() {
         return false;
     }
 
+    @Deprecated
     public boolean isOnline() {
         return false;
     }
 
+    @Deprecated
     public boolean isWhitelisted() {
         return true;
     }
 
+    @Deprecated
     public void setBanned(boolean arg0) {
     }
 
+    @Deprecated
     public void setWhitelisted(boolean arg0) {
     }
 }

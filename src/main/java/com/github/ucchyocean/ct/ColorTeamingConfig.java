@@ -91,17 +91,7 @@ public class ColorTeamingConfig {
         coloringDeathMessage = config.getBoolean("coloringDeathMessage", true);
 
         String criteriaTemp = config.getString("teamCriteria", "least");
-        if ( criteriaTemp.equalsIgnoreCase("kill") ) {
-            teamCriteria = TeamCriteria.KILL_COUNT;
-        } else if ( criteriaTemp.equalsIgnoreCase("death") ) {
-            teamCriteria = TeamCriteria.DEATH_COUNT;
-        } else if ( criteriaTemp.equalsIgnoreCase("point") ) {
-            teamCriteria = TeamCriteria.POINT;
-        } else if ( criteriaTemp.equalsIgnoreCase("least") ) {
-            teamCriteria = TeamCriteria.LEAST_PLAYER;
-        } else {
-            teamCriteria = TeamCriteria.NONE;
-        }
+        teamCriteria = TeamCriteria.fromString(criteriaTemp);
 
         protectRespawnPointWithWorldGuard =
                 config.getBoolean("protectRespawnPointWithWorldGuard", false);
