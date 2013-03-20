@@ -64,13 +64,21 @@ colorRemoveOnQuit: true
 # ColorMeの色で表示するかどうかを設定します。
 coloringDeathMessage: true
 
-# サイドバーに表示するスコアの種類を指定します。
+# サイドバーに表示するチームスコアの種類を指定します。
 # kill - キル数
 # death - デス数
 # point - ポイント(上記のpointsの項目を参照)
-# least - 残り人数
+# rest - 残り人数
 # none - 非表示
 teamCriteria: least
+
+# TABキーリストに表示する個人スコアの種類を指定します。
+# kill - キル数
+# death - デス数
+# point - ポイント(上記のpointsの項目を参照)
+# health - 残り体力
+# none - 非表示
+listCriteria: kill
 
 # cspawnコマンドでチームのリスポーンポイントを設定したときに、
 # リスポーンポイントの周囲を、他チームメンバーが進入できないように、

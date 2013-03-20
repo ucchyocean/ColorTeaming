@@ -98,8 +98,9 @@ public class CRandomCommand implements CommandExecutor {
             ColorTeaming.wghandler.refreshGroupMembers();
         }
 
-        // サイドバーの更新
+        // スコアボードの作成
         ColorTeaming.makeSidebar();
+        ColorTeaming.makeTabkeyListScore();
 
         // メンバー情報の取得
         Hashtable<String, ArrayList<Player>> members =
@@ -169,8 +170,10 @@ public class CRandomCommand implements CommandExecutor {
             ColorTeaming.wghandler.refreshGroupMembers();
         }
 
-        // サイドバーの更新
+        // スコアボードの作成
+        // TODO: 要確認。TABキーリストはリフレッシュでいい…はず。
         ColorTeaming.makeSidebar();
+        ColorTeaming.refreshTabkeyListScore();
 
         // メンバー情報の取得
         Hashtable<String, ArrayList<Player>> members =

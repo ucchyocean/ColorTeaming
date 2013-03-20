@@ -25,7 +25,7 @@ import com.github.ucchyocean.ct.Utility;
  * @author ucchy
  * サイドバーにスコアを表示するためのAPIクラス
  */
-public class SidebarDisplay {
+public class SidebarScoreDisplay {
 
     private Objective objective;
     private Hashtable<String, SidebarTeamScore> teamscores;
@@ -34,7 +34,7 @@ public class SidebarDisplay {
      * コンストラクタ。コンストラクト時に、現在のチーム状況を取得し、
      * サイドバーを初期化、表示する。
      */
-    public SidebarDisplay() {
+    public SidebarScoreDisplay() {
 
         Scoreboard scoreboard = ColorTeaming.getScoreboard();
         objective = scoreboard.createObjective(
@@ -69,9 +69,9 @@ public class SidebarDisplay {
         TeamCriteria criteria = ColorTeamingConfig.teamCriteria;
 
         if ( criteria == TeamCriteria.NONE ) {
-            if ( ColorTeaming.sidebar != null ) {
-                ColorTeaming.sidebar.remove();
-                ColorTeaming.sidebar = null;
+            if ( ColorTeaming.sidebarScore != null ) {
+                ColorTeaming.sidebarScore.remove();
+                ColorTeaming.sidebarScore = null;
                 return;
             }
         }
@@ -98,8 +98,8 @@ public class SidebarDisplay {
         case POINT:
             refreshScoreByPoint();
             break;
-        case LEAST_PLAYER:
-            refreshScoreByLeastPlayerCount();
+        case REST_PLAYER:
+            refreshScoreByRestPlayerCount();
             break;
         }
     }
@@ -162,7 +162,7 @@ public class SidebarDisplay {
     /**
      * 残り人数によるスコア更新を行う
      */
-    private void refreshScoreByLeastPlayerCount() {
+    private void refreshScoreByRestPlayerCount() {
 
         Hashtable<String, ArrayList<Player>> members = ColorTeaming.getAllTeamMembers();
         Enumeration<String> keys = members.keys();

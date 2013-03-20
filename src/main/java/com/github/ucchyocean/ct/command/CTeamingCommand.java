@@ -16,6 +16,7 @@ import org.bukkit.entity.Player;
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingConfig;
 import com.github.ucchyocean.ct.Utility;
+import com.github.ucchyocean.ct.scoreboard.TabListCriteria;
 import com.github.ucchyocean.ct.scoreboard.TeamCriteria;
 
 /**
@@ -115,6 +116,8 @@ public class CTeamingCommand implements CommandExecutor {
             if ( isNewGroup ) {
                 ColorTeaming.makeSidebar();
             }
+            ColorTeaming.refreshSidebarScore();
+            ColorTeaming.refreshTabkeyListScore();
 
             return true;
 
@@ -126,9 +129,9 @@ public class CTeamingCommand implements CommandExecutor {
                 ColorTeamingConfig.teamCriteria = TeamCriteria.DEATH_COUNT;
             } else if ( args[1].equalsIgnoreCase("point") ) {
                 ColorTeamingConfig.teamCriteria = TeamCriteria.POINT;
-            } else if ( args[1].equalsIgnoreCase("least") ) {
-                ColorTeamingConfig.teamCriteria = TeamCriteria.LEAST_PLAYER;
-            } else if ( args[1].equalsIgnoreCase("clear") ) {
+            } else if ( args[1].equalsIgnoreCase("rest") ) {
+                ColorTeamingConfig.teamCriteria = TeamCriteria.REST_PLAYER;
+            } else if ( args[1].equalsIgnoreCase("clear") || args[1].equalsIgnoreCase("none") ) {
                 ColorTeamingConfig.teamCriteria = TeamCriteria.NONE;
             } else {
                 return false;
@@ -139,6 +142,30 @@ public class CTeamingCommand implements CommandExecutor {
 
             // 設定の保存
             ColorTeamingConfig.setConfigValue("teamCriteria", args[1].toLowerCase());
+
+            return true;
+
+        } else if ( args.length >= 2 && args[0].equalsIgnoreCase("list") ) {
+
+            if ( args[1].equalsIgnoreCase("kill") ) {
+                ColorTeamingConfig.listCriteria = TabListCriteria.KILL_COUNT;
+            } else if ( args[1].equalsIgnoreCase("death") ) {
+                ColorTeamingConfig.listCriteria = TabListCriteria.DEATH_COUNT;
+            } else if ( args[1].equalsIgnoreCase("point") ) {
+                ColorTeamingConfig.listCriteria = TabListCriteria.POINT;
+            } else if ( args[1].equalsIgnoreCase("health") ) {
+                ColorTeamingConfig.listCriteria = TabListCriteria.HEALTH;
+            } else if ( args[1].equalsIgnoreCase("clear") || args[1].equalsIgnoreCase("none") ) {
+                ColorTeamingConfig.listCriteria = TabListCriteria.NONE;
+            } else {
+                return false;
+            }
+
+            // スコアボードの更新
+            ColorTeaming.makeTabkeyListScore();
+
+            // 設定の保存
+            ColorTeamingConfig.setConfigValue("listCriteria", args[1].toLowerCase());
 
             return true;
         }

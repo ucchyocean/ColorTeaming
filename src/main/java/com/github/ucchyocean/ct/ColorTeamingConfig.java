@@ -14,6 +14,7 @@ import java.util.Map;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import com.github.ucchyocean.ct.scoreboard.TabListCriteria;
 import com.github.ucchyocean.ct.scoreboard.TeamCriteria;
 
 /**
@@ -34,6 +35,7 @@ public class ColorTeamingConfig {
     public static boolean colorRemoveOnQuit;
     public static boolean coloringDeathMessage;
     public static TeamCriteria teamCriteria;
+    public static TabListCriteria listCriteria;
     public static boolean protectRespawnPointWithWorldGuard;
     public static int protectRespawnPointRange;
 
@@ -90,8 +92,10 @@ public class ColorTeamingConfig {
 
         coloringDeathMessage = config.getBoolean("coloringDeathMessage", true);
 
-        String criteriaTemp = config.getString("teamCriteria", "least");
+        String criteriaTemp = config.getString("teamCriteria", "rest");
         teamCriteria = TeamCriteria.fromString(criteriaTemp);
+        criteriaTemp = config.getString("listCriteria", "kill");
+        listCriteria = TabListCriteria.fromString(criteriaTemp);
 
         protectRespawnPointWithWorldGuard =
                 config.getBoolean("protectRespawnPointWithWorldGuard", false);

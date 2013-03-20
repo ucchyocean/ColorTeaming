@@ -127,7 +127,8 @@ public class PlayerDeathListener implements Listener {
             ColorTeaming.leavePlayerTeam(player);
         }
 
-        // サイドバーを更新する
+        // スコア表示を更新する
         ColorTeaming.refreshSidebarScore();
+        ColorTeaming.refreshTabkeyListScore();
     }
 }

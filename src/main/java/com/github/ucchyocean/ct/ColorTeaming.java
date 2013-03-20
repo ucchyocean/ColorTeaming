@@ -37,7 +37,8 @@ import com.github.ucchyocean.ct.listener.PlayerChatListener;
 import com.github.ucchyocean.ct.listener.PlayerDeathListener;
 import com.github.ucchyocean.ct.listener.PlayerQuitListener;
 import com.github.ucchyocean.ct.listener.PlayerRespawnListener;
-import com.github.ucchyocean.ct.scoreboard.SidebarDisplay;
+import com.github.ucchyocean.ct.scoreboard.SidebarScoreDisplay;
+import com.github.ucchyocean.ct.scoreboard.TabListScoreDisplay;
 import com.github.ucchyocean.ct.scoreboard.TeamCriteria;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 
@@ -57,7 +58,8 @@ public class ColorTeaming extends JavaPlugin {
     public static Logger logger;
     public static RespawnConfiguration respawnConfig;
     public static TPPointConfiguration tppointConfig;
-    public static SidebarDisplay sidebar;
+    public static SidebarScoreDisplay sidebarScore;
+    public static TabListScoreDisplay tablistScore;
 
     public static Hashtable<String, ArrayList<String>> leaders;
     public static Hashtable<String, int[]> killDeathCounts;
@@ -387,7 +389,7 @@ public class ColorTeaming extends JavaPlugin {
 
         removeSidebar();
         if ( ColorTeamingConfig.teamCriteria != TeamCriteria.NONE ) {
-            sidebar = new SidebarDisplay();
+            sidebarScore = new SidebarScoreDisplay();
         }
     }
 
@@ -396,9 +398,9 @@ public class ColorTeaming extends JavaPlugin {
      */
     public static void removeSidebar() {
 
-        if ( sidebar != null ) {
-            sidebar.remove();
-            sidebar = null;
+        if ( sidebarScore != null ) {
+            sidebarScore.remove();
+            sidebarScore = null;
         }
     }
 
@@ -407,8 +409,43 @@ public class ColorTeaming extends JavaPlugin {
      */
     public static void refreshSidebarScore() {
 
-        if ( sidebar != null ) {
-            sidebar.refreshScore();
+        if ( sidebarScore != null ) {
+            sidebarScore.refreshScore();
+        }
+    }
+
+    /**
+     * タブキーリストのスコアを新しく作る。
+     * もともとスコアがあった場合は、消去して新しく作り直される。
+     */
+    public static void makeTabkeyListScore() {
+
+        if ( tablistScore != null ) {
+            removeTabkeyListScore();
+            tablistScore = null;
+        }
+
+        tablistScore = new TabListScoreDisplay();
+    }
+
+    /**
+     * タブキーリストのスコアを消去する。
+     */
+    public static void removeTabkeyListScore() {
+
+        if ( tablistScore != null ) {
+            tablistScore.remove();
+            tablistScore = null;
+        }
+    }
+
+    /**
+     * タブキーリストのスコアを更新する。
+     */
+    public static void refreshTabkeyListScore() {
+
+        if ( tablistScore != null ) {
+            tablistScore.refreshScore();
         }
     }
 }

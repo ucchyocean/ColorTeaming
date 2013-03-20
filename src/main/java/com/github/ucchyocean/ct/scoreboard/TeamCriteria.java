@@ -5,8 +5,6 @@
  */
 package com.github.ucchyocean.ct.scoreboard;
 
-import org.apache.commons.lang.Validate;
-
 /**
  * @author ucchy
  * サイドバーに表示するスコアの種類
@@ -23,7 +21,7 @@ public enum TeamCriteria {
     POINT("point"),
 
     /** 残り人数 */
-    LEAST_PLAYER("least"),
+    REST_PLAYER("rest"),
 
     /** 非表示 */
     NONE("none");
@@ -54,7 +52,10 @@ public enum TeamCriteria {
      * @return 対応したTeamCriteria
      */
     public static TeamCriteria fromString(String criteria) {
-        Validate.notNull(criteria);
+
+        if ( criteria == null ) {
+            return TeamCriteria.NONE;
+        }
 
         for (TeamCriteria value : TeamCriteria.values()) {
             if (criteria.equalsIgnoreCase(value.criteria)) {
@@ -78,7 +79,7 @@ public enum TeamCriteria {
             return "スコア(デス数)";
         case POINT:
             return "チームスコア";
-        case LEAST_PLAYER:
+        case REST_PLAYER:
             return "チーム人数";
         case NONE:
         default:

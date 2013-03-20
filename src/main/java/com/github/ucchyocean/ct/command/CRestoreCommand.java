@@ -42,8 +42,9 @@ public class CRestoreCommand implements CommandExecutor {
         if ( result ) {
             sender.sendMessage(PREINFO + "メンバー状況を、" + profileName + " から復帰しました。");
 
-            // サイドバーの更新
+            // スコアボードの作成
             ColorTeaming.makeSidebar();
+            ColorTeaming.makeTabkeyListScore();
 
         } else {
             sender.sendMessage(PREERR + "メンバー状況の復帰に失敗しました。");

@@ -42,6 +42,7 @@ colorRemoveOnQuit: true
 coloringDeathMessage: true
 
 teamCriteria: least
+listCriteria: kill
 
 protectRespawnPointWithWorldGuard: false
 
