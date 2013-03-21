@@ -70,7 +70,7 @@ coloringDeathMessage: true
 # point - ポイント(上記のpointsの項目を参照)
 # rest - 残り人数
 # none - 非表示
-teamCriteria: least
+teamCriteria: rest
 
 # TABキーリストに表示する個人スコアの種類を指定します。
 # kill - キル数
