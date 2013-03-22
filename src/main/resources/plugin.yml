@@ -99,6 +99,7 @@ commands:
     description: インベントリを設定されたアイテムで初期化するためのコマンド
     aliases: cclass
     usage: |
+           /<command> hand - 手に持っているアイテムの情報を表示します。
            /<command> (group) (class) - groupのメンバー全員のアイテムと装備を、config.yml の classes 設定に書かれているクラス設定のアイテムに変更します。
            /<command> (player) (class) - player のアイテムと装備を、config.yml の classes 設定に書かれているクラス設定のアイテムに変更します。
            /<command> all (class) - 全プレイヤーのアイテムと装備を、config.yml の classes 設定に書かれているクラス設定のアイテムに変更します。
