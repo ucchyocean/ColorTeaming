@@ -7,11 +7,13 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -20,6 +22,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentWrapper;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 import com.github.ucchyocean.cmt.ColorMeTeaming;
 import com.github.ucchyocean.cmt.ColorMeTeamingConfig;
@@ -33,7 +36,9 @@ public class CClassCommand implements CommandExecutor {
     private static final String PREERR = ChatColor.RED.toString();
     private static final String PREINFO = ChatColor.GRAY.toString();
 
-    private static final String REGEX_ITEM_PATTERN = "([0-9]+)(?:@([0-9]+))?(?::([0-9]+))?|([0-9]+)((?:\\^[0-9]+-[0-9]+)+(?:@([0-9]+))?)";
+    private static final String REGEX_ITEM_PATTERN =
+            "([0-9]+)(?:@([0-9]+))?(?::([0-9]+))?|" +
+            "([0-9]+)((?:\\^[0-9]+-[0-9]+)*)(?:@([0-9]+))?(?:\\$([0-9A-Fa-f]{6}))?";
     private static final String REGEX_ENCHANT_PATTERN = "\\^([0-9]+)-([0-9]+)";
 
     private static Pattern pattern;
@@ -46,6 +51,19 @@ public class CClassCommand implements CommandExecutor {
     public boolean onCommand(
             CommandSender sender, Command command, String label, String[] args) {
 
+        if ( args.length >= 1 && args[0].equalsIgnoreCase("hand") ) {
+            // cclass hand コマンドの処理
+            if ( !(sender instanceof Player) ) {
+                sender.sendMessage(PREERR + "cclass hand コマンドは、ゲーム内でのみ実行できます。");
+                return true;
+            }
+            Player player = (Player)sender;
+            String message = getItemInfo(player.getItemInHand());
+            sender.sendMessage("アイテム情報 " + message);
+            return true;
+        }
+
+        // ここ以下は引数が2つ以上必要である。
         if ( args.length < 2 ) {
             return false;
         }
@@ -209,6 +227,7 @@ public class CClassCommand implements CommandExecutor {
                     int item = 0;
                     short damage = 0;
                     HashMap<Integer, Integer> enchants = new HashMap<Integer, Integer>();
+                    Color color = null;
 
                     item = Integer.parseInt(matcher.group(4));
                     if ( matcher.group(6) != null ) {
@@ -236,7 +255,16 @@ public class CClassCommand implements CommandExecutor {
                         enchants.put(enchantID, enchantLevel);
                     }
 
-                    items.add(getEnchantedItem(item, enchants, damage));
+                    // 指定カラーの解析
+                    if ( matcher.group(7) != null ) {
+                        String colorID = matcher.group(7);
+                        int red = Integer.decode( "0x" + colorID.substring(0, 2) );
+                        int green = Integer.decode( "0x" + colorID.substring(2, 4) );
+                        int blue = Integer.decode( "0x" + colorID.substring(4, 6) );
+                        color = Color.fromRGB(red, green, blue);
+                    }
+
+                    items.add(getEnchantedItem(item, enchants, damage, color));
 
                 } else {
 
@@ -269,7 +297,7 @@ public class CClassCommand implements CommandExecutor {
      * @param enchants 付与するエンチャントIDと、そのレベルのセット
      * @return ItemStackインスタンス
      */
-    private ItemStack getEnchantedItem(int item, HashMap<Integer, Integer> enchants, short damage) {
+    private ItemStack getEnchantedItem(int item, HashMap<Integer, Integer> enchants, short damage, Color color) {
 
         ItemStack i = getItemStack(item, 1, damage);
 
@@ -279,12 +307,66 @@ public class CClassCommand implements CommandExecutor {
             Enchantment ench = new EnchantmentWrapper(eid);
             if ( level < ench.getStartLevel() ) {
                 level = ench.getStartLevel();
-            } else if ( level > 127 ) {
-                level = 127;
+            } else if ( level > 1000 ) {
+                level = 1000;
             }
             i.addUnsafeEnchantment(ench, level);
         }
 
+        if ( color != null && 298 <= item && item <= 301 ) {
+            LeatherArmorMeta lam = (LeatherArmorMeta)i.getItemMeta();
+            lam.setColor(color);
+            i.setItemMeta(lam);
+        }
+
         return i;
+    }
+
+    /**
+     * アイテムの情報を文字列にして返します。
+     * @param item アイテム
+     * @return アイテムの文字列表現
+     */
+    private String getItemInfo(ItemStack item) {
+
+        StringBuilder message = new StringBuilder();
+
+        String material = item.getType().toString();
+        int itemID = item.getTypeId();
+        int amount = item.getAmount();
+        short durability = item.getDurability();
+        String color = null;
+        if ( 298 <= itemID && itemID <= 301 ) {
+            LeatherArmorMeta lam = (LeatherArmorMeta)item.getItemMeta();
+            Color colorTemp = lam.getColor();
+            if ( colorTemp != null ) {
+                color = convertColorToString(colorTemp);
+            }
+        }
+
+        message.append(material + " : " + itemID);
+        Map<Enchantment, Integer> enchants = item.getEnchantments();
+        Set<Enchantment> keys = enchants.keySet();
+        for ( Enchantment e : keys ) {
+            message.append("^" + e.getId() + "-" + enchants.get(e));
+        }
+        if ( color != null ) {
+            message.append("$" + color);
+        }
+        if ( durability > 1 ) {
+            message.append("@" + durability);
+        }
+        if ( amount > 1 ) {
+            message.append(":" + amount);
+        }
+
+        return message.toString();
+    }
+
+    private String convertColorToString(Color color) {
+        int red = color.getRed();
+        int green = color.getGreen();
+        int blue = color.getBlue();
+        return String.format("%02x%02x%02x", red, green, blue).toUpperCase();
     }
 }

@@ -30,6 +30,14 @@ classes:
   Excalibur:
     items: 276^16-127@1561
     armor: 314,315,316,317
+  RedLeather:
+    armor: 298$993333,299$993333,300$993333,301$993333
+  BlueLeather:
+    armor: 298$334CB2,299$334CB2,300$334CB2,301$334CB2
+  YellowLeather:
+    armor: 298$E5E533,299$E5E533,300$E5E533,301$E5E533
+  GreenLeather:
+    armor: 298$667F33,299$667F33,300$667F33,301$667F33
 
 points:
   killPoint: 1
