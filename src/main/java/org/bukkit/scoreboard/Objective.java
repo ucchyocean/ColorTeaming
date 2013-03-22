@@ -1,5 +1,7 @@
 package org.bukkit.scoreboard;
 
+import net.minecraft.server.v1_5_R2.IScoreboardCriteria;
+
 import org.apache.commons.lang.Validate;
 import org.bukkit.OfflinePlayer;
 
@@ -32,6 +34,23 @@ public interface Objective {
             }
 
             throw new IllegalArgumentException("No valid criteria found for " + criteria);
+        }
+
+        public IScoreboardCriteria toIScoreboardCriteria() {
+
+            switch(this) {
+            case PLAYER_KILL_COUNT:
+                return IScoreboardCriteria.d;
+            case TOTAL_KILL_COUNT:
+                return IScoreboardCriteria.e;
+            case DEATH_COUNT:
+                return IScoreboardCriteria.c;
+            case HEALTH:
+                return IScoreboardCriteria.f;
+            case DUMMY:
+            default:
+                return IScoreboardCriteria.b;
+            }
         }
     }
 

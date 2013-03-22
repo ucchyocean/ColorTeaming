@@ -10,8 +10,8 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
+import org.bukkit.craftbukkit.scoreboard.CraftScoreboard;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -64,6 +64,8 @@ public class ColorTeaming extends JavaPlugin {
     public static Hashtable<String, ArrayList<String>> leaders;
     public static Hashtable<String, int[]> killDeathCounts;
     public static Hashtable<String, int[]> killDeathUserCounts;
+
+    private static Scoreboard scoreboard;
 
     /**
      * @see org.bukkit.plugin.java.JavaPlugin#onEnable()
@@ -134,7 +136,14 @@ public class ColorTeaming extends JavaPlugin {
      */
     public static Scoreboard getScoreboard() {
 //        return instance.getServer().getScoreboard();
-        return null; // TODO:
+        // TODO: This scoreboard is the mock.
+
+        if ( scoreboard == null ) {
+            net.minecraft.server.v1_5_R2.Scoreboard s =
+                    new net.minecraft.server.v1_5_R2.Scoreboard();
+            scoreboard = new CraftScoreboard(s);
+        }
+        return scoreboard;
     }
 
     /**
@@ -228,11 +237,12 @@ public class ColorTeaming extends JavaPlugin {
 
         Set<Team> teams = scoreboard.getTeams();
         for ( Team t : teams ) {
-            OfflinePlayer[] playersTemp = t.getMembers();
+            ArrayList<String> playersTemp = t.getMemberNames();
             ArrayList<Player> players = new ArrayList<Player>();
-            for ( OfflinePlayer p : playersTemp ) {
-                if ( p.isOnline() ) {
-                    players.add(p.getPlayer());
+            for ( String name : playersTemp ) {
+                Player player = getPlayerExact(name);
+                if ( player != null && player.isOnline() ) {
+                    players.add(player);
                 }
             }
             result.put(t.getName(), players);

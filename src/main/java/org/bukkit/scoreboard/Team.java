@@ -1,7 +1,8 @@
 package org.bukkit.scoreboard;
 
+import java.util.ArrayList;
+
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
 
 public interface Team {
 
@@ -12,7 +13,7 @@ public interface Team {
     public void setDisplayName(String name);
 
     // Added by ucchy.
-    public OfflinePlayer[] getMembers();
+    public ArrayList<String> getMemberNames();
 
     /*
      * OPTIONS
