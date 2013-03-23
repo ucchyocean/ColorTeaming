@@ -154,7 +154,14 @@ public class ColorTeaming extends JavaPlugin {
     public static Team getPlayerTeam(Player player) {
 
         Scoreboard scoreboard = getScoreboard();
-        return scoreboard.getTeamByPlayer(player);
+        Set<Team> teams = scoreboard.getTeams();
+        for ( Team team : teams ) {
+            ArrayList<String> names = team.getPlayerNames();
+            if ( names.contains(player.getName()) ) {
+                return team;
+            }
+        }
+        return null;
     }
 
     public static String getPlayerColor(Player player) {
@@ -177,8 +184,8 @@ public class ColorTeaming extends JavaPlugin {
         if ( team == null ) {
             team = scoreboard.createTeam(
                     color, Utility.replaceColorCode(color) + color + ChatColor.RESET);
-            team.setColor(Utility.replaceColors(color));
-            team.setFriendlyFire(!ColorTeamingConfig.isFriendlyFireDisabler);
+            // team.setColor(Utility.replaceColors(color)); //TODO 色を設定できるインターフェイスがない…
+            team.setAllowFriendlyFire(!ColorTeamingConfig.isFriendlyFireDisabler);
         }
         scoreboard.setTeam(player, team);
 
@@ -201,7 +208,7 @@ public class ColorTeaming extends JavaPlugin {
 
         Set<Team> teams = scoreboard.getTeams();
         for ( Team t : teams ) {
-            t.setFriendlyFire(ff);
+            t.setAllowFriendlyFire(ff);
         }
     }
 
@@ -237,7 +244,7 @@ public class ColorTeaming extends JavaPlugin {
 
         Set<Team> teams = scoreboard.getTeams();
         for ( Team t : teams ) {
-            ArrayList<String> playersTemp = t.getMemberNames();
+            ArrayList<String> playersTemp = t.getPlayerNames();
             ArrayList<Player> players = new ArrayList<Player>();
             for ( String name : playersTemp ) {
                 Player player = getPlayerExact(name);
@@ -302,6 +309,9 @@ public class ColorTeaming extends JavaPlugin {
     public static void sendTeamChat(Player player, String message) {
 
         Team team = getPlayerTeam(player);
+        if ( team == null ) {
+            return;
+        }
         String color = team.getName();
 
         // メッセージを生成

@@ -6,18 +6,12 @@ import java.util.Collection;
 import net.minecraft.server.v1_5_R2.ScoreboardTeam;
 
 import org.apache.commons.lang.Validate;
-import org.bukkit.ChatColor;
 import org.bukkit.scoreboard.Team;
 
 public class CraftTeam implements Team {
     private final ScoreboardTeam handle;
 
     public CraftTeam(ScoreboardTeam handle) {
-        if ( handle == null ) { // TODO: でばっぐ
-            System.out.println("ぬるぬる！");
-        } else {
-            System.out.println("ScoreboardTeam : " + handle.getName());
-        }
         this.handle = handle;
     }
 
@@ -55,11 +49,11 @@ public class CraftTeam implements Team {
         this.getHandle().setSuffix(suffix);
     }
 
-    public boolean canFriendlyFire() {
+    public boolean allowFriendlyFire() {
         return this.getHandle().allowFriendlyFire();
     }
 
-    public void setFriendlyFire(boolean friendlyFire) {
+    public void setAllowFriendlyFire(boolean friendlyFire) {
         this.getHandle().setAllowFriendlyFire(friendlyFire);
     }
 
@@ -75,35 +69,12 @@ public class CraftTeam implements Team {
         return this.handle;
     }
 
-    public ArrayList<String> getMemberNames() {
-        Collection collection = this.getHandle().getPlayerNameSet();
+    public ArrayList<String> getPlayerNames() {
+        Collection names = this.getHandle().getPlayerNameSet();
         ArrayList<String> result = new ArrayList<String>();
-        for ( Object name : collection ) {
-            result.add((String)name);
+        for ( Object name : names ) {
+            result.add(name.toString());
         }
         return result;
-    }
-
-    public ChatColor getColor() {
-        // TODO 自動生成されたメソッド・スタブ
-        return null;
-    }
-
-    public void setColor(ChatColor color) {
-        if ( color != null ) {
-            this.getHandle().setPrefix(color.toString());
-            this.getHandle().setSuffix(ChatColor.RESET.toString());
-        } else {
-            this.getHandle().setPrefix("");
-            this.getHandle().setSuffix("");
-        }
-    }
-
-    public boolean getFriendlyFire() {
-        return getHandle().allowFriendlyFire();
-    }
-
-    public boolean getSeeFriendlyInvisibles() {
-        return getHandle().canSeeFriendlyInvisibles();
     }
 }

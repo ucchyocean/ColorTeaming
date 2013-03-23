@@ -14,6 +14,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.Team;
 
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingConfig;
@@ -128,9 +129,10 @@ public class CRandomCommand implements CommandExecutor {
                 ColorTeaming.getAllPlayersOnWorld(ColorTeamingConfig.defaultWorldName);
         ArrayList<Player> players = new ArrayList<Player>();
         for ( Player p : tempPlayers ) {
+            Team team = ColorTeaming.getPlayerTeam(p);
             if ( p.getGameMode() != GameMode.CREATIVE &&
-                    (ColorTeaming.getPlayerTeam(p).equals("") ||
-                     ColorTeaming.getPlayerTeam(p).equals("white")) ) {
+                    (team == null || team.getName().equals("") ||
+                            team.getName().equals("white")) ) {
                 players.add(p);
             }
         }

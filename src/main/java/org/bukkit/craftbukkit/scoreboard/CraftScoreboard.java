@@ -10,7 +10,7 @@ import net.minecraft.server.v1_5_R2.ScoreboardTeam;
 import org.apache.commons.lang.Validate;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Objective.CRITERIA;
+import org.bukkit.scoreboard.Objective.Criteria;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
@@ -34,14 +34,14 @@ public class CraftScoreboard implements Scoreboard {
             team.setDisplayName(displayName);
         }
 
-        return new CraftTeam(team);
+        return convertToBukkit(team);
     }
 
     public Team getTeam(String name) {
         ScoreboardTeam team = this.getHandle().getTeam(name);
 
         if(team != null) {
-            return new CraftTeam(team);
+            return convertToBukkit(team);
         }
 
         return null;
@@ -51,7 +51,7 @@ public class CraftScoreboard implements Scoreboard {
         Set<Team> result = new HashSet<Team>();
 
         for (Object team : this.getHandle().getTeams()) {
-            result.add(new CraftTeam((ScoreboardTeam) team));
+            result.add(convertToBukkit((ScoreboardTeam)team));
         }
 
         return result;
@@ -73,7 +73,7 @@ public class CraftScoreboard implements Scoreboard {
         this.getHandle().removeTeam(((CraftTeam) team).getHandle());
     }
 
-    public Objective createObjective(String name, CRITERIA criteria, String displayName) {
+    public Objective createObjective(String name, Criteria criteria, String displayName) {
         Validate.notNull(name, "Name can not be null");
         Validate.notNull(criteria, "Criteria can not be null");
 
@@ -82,14 +82,15 @@ public class CraftScoreboard implements Scoreboard {
 
         Validate.isTrue(this.getHandle().getObjective(name) == null, "Objective already exists");
 
-        IScoreboardCriteria isc = criteria.toIScoreboardCriteria();
-        ScoreboardObjective objective = this.getHandle().registerObjective(name, isc);
+        IScoreboardCriteria iobjective = (IScoreboardCriteria) IScoreboardCriteria.a.get(criteria.toString());
+
+        ScoreboardObjective objective = this.getHandle().registerObjective(name, iobjective);
 
         if(displayName != null) {
             objective.setDisplayName(displayName);
         }
 
-        return new CraftObjective(getHandle(), objective);
+        return convertToBukkit(this.getHandle(), objective);
     }
 
     public Objective getObjective(String name) {
@@ -99,14 +100,14 @@ public class CraftScoreboard implements Scoreboard {
             return null;
         }
 
-        return new CraftObjective(getHandle(), objective);
+        return convertToBukkit(this.getHandle(), objective);
     }
 
     public Set<Objective> getObjectives() {
         Set<Objective> result = new HashSet<Objective>();
 
         for (Object objective : this.getHandle().getObjectives()) {
-            result.add(new CraftObjective(getHandle(), (ScoreboardObjective)objective));
+            result.add(convertToBukkit(this.getHandle(), (ScoreboardObjective)objective));
         }
 
         return result;
@@ -115,18 +116,24 @@ public class CraftScoreboard implements Scoreboard {
     public void removeObjective(Objective objective) {
         Validate.notNull(objective, "Objective can not be null");
 
-        this.getHandle().registerObjective(objective.getName(), null);
+        this.getHandle().unregisterObjective(((CraftObjective) objective).getHandle());
+    }
+
+    public void resetScores(OfflinePlayer player) {
+        Validate.notNull(player, "Player can not be null");
+
+        this.getHandle().resetPlayerScores(player.getName());
     }
 
     public net.minecraft.server.v1_5_R2.Scoreboard getHandle() {
         return this.handle;
     }
 
-    public Team getTeamByPlayer(OfflinePlayer player) {
-        ScoreboardTeam team = this.getHandle().getPlayerTeam(player.getName());
-        if ( team != null )
-            return new CraftTeam(team);
-        else
-            return null;
+    private Objective convertToBukkit(net.minecraft.server.v1_5_R2.Scoreboard scoreboard, ScoreboardObjective objective) {
+        return new CraftObjective(scoreboard, objective);
+    }
+
+    private Team convertToBukkit(ScoreboardTeam team) {
+        return new CraftTeam(team);
     }
 }

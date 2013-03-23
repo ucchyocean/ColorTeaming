@@ -1,122 +1,85 @@
 package org.bukkit.scoreboard;
 
-import net.minecraft.server.v1_5_R2.IScoreboardCriteria;
-
-import org.apache.commons.lang.Validate;
 import org.bukkit.OfflinePlayer;
 
 public interface Objective {
-    public enum CRITERIA {
-        PLAYER_KILL_COUNT("playerKillCount"),
-        TOTAL_KILL_COUNT("totalKillCount"),
-        DUMMY("dummy"),
-        HEALTH("health"),
-        DEATH_COUNT("deathCount");
+    enum Criteria {
+        HEALTH(true),
+        PLAYER_KILL_COUNT(),
+        TOTAL_KILL_COUNT(),
+        DUMMY(),
+        DEATH_COUNT();
 
-        private final String criteria;
+        private final boolean readOnly;
 
-        CRITERIA(String criteria) {
-            this.criteria = criteria;
+        Criteria() {
+            this.readOnly = false;
         }
 
-        @Override
-        public String toString() {
-            return this.criteria;
+        Criteria(boolean readOnly) {
+            this.readOnly = readOnly;
         }
 
-        public static CRITERIA fromString(String criteria) {
-            Validate.notNull(criteria);
-
-            for(CRITERIA value : CRITERIA.values()) {
-                if(criteria.equalsIgnoreCase(value.criteria)) {
-                    return value;
-                }
-            }
-
-            throw new IllegalArgumentException("No valid criteria found for " + criteria);
-        }
-
-        public IScoreboardCriteria toIScoreboardCriteria() {
-
-            switch(this) {
-            case PLAYER_KILL_COUNT:
-                return IScoreboardCriteria.d;
-            case TOTAL_KILL_COUNT:
-                return IScoreboardCriteria.e;
-            case DEATH_COUNT:
-                return IScoreboardCriteria.c;
-            case HEALTH:
-                return IScoreboardCriteria.f;
-            case DUMMY:
-            default:
-                return IScoreboardCriteria.b;
-            }
+        public boolean isReadOnly() {
+            return this.readOnly;
         }
     }
 
-    static enum DISPLAY {
-        NONE(null, null),
-        LIST("list", 0),
-        SIDEBAR("sidebar", 1),
-        BELOW_NAME("belowName", 2);
-
-        private final String display;
-        private final Integer position;
-
-        DISPLAY(String display, Integer position) {
-            this.display = display;
-            this.position = position;
-        }
-
-        @Override
-        public String toString() {
-            return this.display;
-        }
-
-        public int toInt() {
-            return this.position;
-        }
-
-        public static DISPLAY fromString(String display) {
-            Validate.notNull(display);
-
-            for(DISPLAY value : DISPLAY.values()) {
-                if(display.equalsIgnoreCase(value.display)) {
-                    return value;
-                }
-            }
-
-            throw new IllegalArgumentException("No valid display found for " + display);
-        }
-
-        public static DISPLAY fromInt(int position) {
-            Validate.notNull(position);
-
-            for(DISPLAY value : DISPLAY.values()) {
-                if(position == value.position.intValue()) {
-                    return value;
-                }
-            }
-
-            throw new IllegalArgumentException("No valid display found for " + position);
-        }
+    enum Display {
+        NONE,
+        LIST,
+        SIDEBAR,
+        BELOW_NAME;
     }
 
+    /*
+     * Gets the objective's name
+     *
+     * @return The team's name
+     */
     public String getName();
 
+    /*
+     * Gets the objective's display name
+     *
+     * @return The objective's display name, can be null
+     */
     public String getDisplayName();
 
+    /*
+     * Sets the objective's display name
+     *
+     * @param displayName New display name, can not be null
+     */
     public void setDisplayName(String displayName);
 
-    public DISPLAY getDisplaySlot();
+    /*
+     * Gets the objective's display slot
+     *
+     * @return Where the objective is displayed
+     */
+    public Display getDisplaySlot();
 
-    public void setDisplaySlot(DISPLAY display);
+    /*
+     * Sets the objective's display slot
+     *
+     * @param display New display slot, can not be null
+     */
+    public void setDisplaySlot(Display display);
 
+    /*
+     * Gets the score for a player
+     *
+     * @param player Player to get a score for, can not be null
+     * @return Player's score
+     */
     public int getScore(OfflinePlayer player);
 
     /*
-     * Set a player's score
-     * Passing null will remove the player
+     * Sets the score for a player
+     *
+     * @param player Player to set a score for, can not be null
+     * @param score New score
      */
     public void setScore(OfflinePlayer player, int score);
 }

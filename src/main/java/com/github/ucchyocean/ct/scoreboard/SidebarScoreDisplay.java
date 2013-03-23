@@ -12,8 +12,8 @@ import java.util.Hashtable;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Objective.CRITERIA;
-import org.bukkit.scoreboard.Objective.DISPLAY;
+import org.bukkit.scoreboard.Objective.Criteria;
+import org.bukkit.scoreboard.Objective.Display;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
@@ -38,7 +38,7 @@ public class SidebarScoreDisplay {
 
         Scoreboard scoreboard = ColorTeaming.getScoreboard();
         objective = scoreboard.createObjective(
-                "teamscore", CRITERIA.DUMMY, "チームスコア");
+                "teamscore", Criteria.DUMMY, "チームスコア");
 
         teamscores = new Hashtable<String, SidebarTeamScore>();
 
@@ -56,7 +56,7 @@ public class SidebarScoreDisplay {
             teamscores.put(key, ts);
         }
 
-        objective.setDisplaySlot(DISPLAY.SIDEBAR);
+        objective.setDisplaySlot(Display.SIDEBAR);
 
         refreshCriteria();
     }
@@ -182,7 +182,7 @@ public class SidebarScoreDisplay {
      */
     public void remove() {
 
-        objective.setDisplaySlot(DISPLAY.NONE);
+        objective.setDisplaySlot(Display.NONE);
 
         ColorTeaming.getScoreboard().removeObjective(objective);
     }

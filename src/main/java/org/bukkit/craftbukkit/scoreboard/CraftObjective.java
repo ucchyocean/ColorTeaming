@@ -30,18 +30,22 @@ public class CraftObjective implements Objective {
         this.getHandle().setDisplayName(displayName);
     }
 
-    public DISPLAY getDisplaySlot() {
-        if(this.scoreboard.getObjectiveForSlot(DISPLAY.LIST.toInt()) == this.getHandle()) return DISPLAY.LIST;
-        if(this.scoreboard.getObjectiveForSlot(DISPLAY.SIDEBAR.toInt()) == this.getHandle()) return DISPLAY.SIDEBAR;
-        if(this.scoreboard.getObjectiveForSlot(DISPLAY.BELOW_NAME.toInt()) == this.getHandle()) return DISPLAY.BELOW_NAME;
+    public Display getDisplaySlot() {
+        for(Display display : Display.values()) {
+            if(this.scoreboard.getObjectiveForSlot(CraftObjectiveDisplay.getDisplay(display)) == this.getHandle()) return display;
+        }
 
-        return Objective.DISPLAY.NONE;
+        return Objective.Display.NONE;
     }
 
-    public void setDisplaySlot(DISPLAY display) {
-        if ( display != null ) {
-            this.scoreboard.setDisplaySlot(display.toInt(), this.getHandle());
+    public void setDisplaySlot(Display display) {
+        Validate.notNull(display, "Display slot can not be null");
+
+        if(display == Display.NONE) {
+            this.scoreboard.setDisplaySlot(CraftObjectiveDisplay.getDisplay(this.getDisplaySlot()), null);
+            return;
         }
+        this.scoreboard.setDisplaySlot(CraftObjectiveDisplay.getDisplay(display), this.getHandle());
     }
 
     public int getScore(OfflinePlayer player) {
@@ -54,12 +58,6 @@ public class CraftObjective implements Objective {
         Validate.notNull(player, "Player can not be null");
 
         this.scoreboard.getPlayerScoreForObjective(player.getName(), this.getHandle()).setScore(score);
-    }
-
-    public void removeScore(OfflinePlayer player) {
-        Validate.notNull(player, "Player can not be null");
-
-        this.scoreboard.resetPlayerScores(player.getName());
     }
 
     public ScoreboardObjective getHandle() {

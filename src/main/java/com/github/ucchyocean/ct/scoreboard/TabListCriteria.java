@@ -5,7 +5,7 @@
  */
 package com.github.ucchyocean.ct.scoreboard;
 
-import org.bukkit.scoreboard.Objective.CRITERIA;
+import org.bukkit.scoreboard.Objective.Criteria;
 
 /**
  * @author ucchy
@@ -68,7 +68,7 @@ public enum TabListCriteria {
         return TabListCriteria.NONE;
     }
 
-    public static TabListCriteria convert(CRITERIA criteria) {
+    public static TabListCriteria convert(Criteria criteria) {
 
         switch (criteria) {
         case PLAYER_KILL_COUNT:
@@ -81,16 +81,16 @@ public enum TabListCriteria {
         return TabListCriteria.NONE;
     }
 
-    public static CRITERIA convert(TabListCriteria criteria) {
+    public static Criteria convert(TabListCriteria criteria) {
 
         switch (criteria) {
         case KILL_COUNT:
-            return CRITERIA.PLAYER_KILL_COUNT;
+            return Criteria.PLAYER_KILL_COUNT;
         case DEATH_COUNT:
-            return CRITERIA.DEATH_COUNT;
+            return Criteria.DEATH_COUNT;
         case HEALTH:
-            return CRITERIA.HEALTH;
+            return Criteria.HEALTH;
         }
-        return CRITERIA.DUMMY;
+        return Criteria.DUMMY;
     }
 }
