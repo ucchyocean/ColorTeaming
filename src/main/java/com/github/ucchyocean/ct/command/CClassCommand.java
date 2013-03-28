@@ -350,11 +350,11 @@ public class CClassCommand implements CommandExecutor {
         for ( Enchantment e : keys ) {
             message.append("^" + e.getId() + "-" + enchants.get(e));
         }
-        if ( color != null ) {
-            message.append("$" + color);
-        }
         if ( durability > 1 ) {
             message.append("@" + durability);
+        }
+        if ( color != null ) {
+            message.append("$" + color);
         }
         if ( amount > 1 ) {
             message.append(":" + amount);
