@@ -11,7 +11,6 @@ import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.scoreboard.CraftScoreboard;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -64,8 +63,6 @@ public class ColorTeaming extends JavaPlugin {
     public static Hashtable<String, ArrayList<String>> leaders;
     public static Hashtable<String, int[]> killDeathCounts;
     public static Hashtable<String, int[]> killDeathUserCounts;
-
-    private static Scoreboard scoreboard;
 
     /**
      * @see org.bukkit.plugin.java.JavaPlugin#onEnable()
@@ -135,15 +132,7 @@ public class ColorTeaming extends JavaPlugin {
      * @return スコアボード
      */
     public static Scoreboard getScoreboard() {
-//        return instance.getServer().getScoreboard();
-        // TODO: This scoreboard is the mock.
-
-        if ( scoreboard == null ) {
-            net.minecraft.server.v1_5_R2.Scoreboard s =
-                    new net.minecraft.server.v1_5_R2.Scoreboard();
-            scoreboard = new CraftScoreboard(s);
-        }
-        return scoreboard;
+        return instance.getServer().getScoreboard();
     }
 
     /**
@@ -184,7 +173,8 @@ public class ColorTeaming extends JavaPlugin {
         if ( team == null ) {
             team = scoreboard.createTeam(
                     color, Utility.replaceColorCode(color) + color + ChatColor.RESET);
-            // team.setColor(Utility.replaceColors(color)); //TODO 色を設定できるインターフェイスがない…
+            team.setPrefix(Utility.replaceColorCode(color));
+            team.setSuffix(ChatColor.RESET.toString());
             team.setAllowFriendlyFire(!ColorTeamingConfig.isFriendlyFireDisabler);
         }
         scoreboard.setTeam(player, team);

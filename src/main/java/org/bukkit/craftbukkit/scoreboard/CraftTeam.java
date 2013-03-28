@@ -70,7 +70,7 @@ public class CraftTeam implements Team {
     }
 
     public ArrayList<String> getPlayerNames() {
-        Collection names = this.getHandle().getPlayerNameSet();
+        Collection<?> names = this.getHandle().getPlayerNameSet();
         ArrayList<String> result = new ArrayList<String>();
         for ( Object name : names ) {
             result.add(name.toString());
