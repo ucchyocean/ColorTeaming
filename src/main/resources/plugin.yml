@@ -1,6 +1,6 @@
 name: ColorMeTeaming
 main: com.github.ucchyocean.cmt.ColorMeTeaming
-version: 1.4.8
+version: 1.4.9
 authors: [ucchy,owatakun]
 load: startup
 description: 簡易PVPチーミングプラグイン

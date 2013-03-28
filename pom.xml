@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.github.ucchyocean</groupId>
   <artifactId>ColorMeTeaming</artifactId>
-  <version>1.4.8</version>
+  <version>1.4.9</version>
 
   <repositories>
     <repository>
@@ -26,12 +26,12 @@
     <dependency>
       <groupId>com.sk89q</groupId>
       <artifactId>worldguard</artifactId>
-      <version>5.7.1</version>
+      <version>5.7.3</version>
     </dependency>
     <dependency>
       <groupId>com.sk89q</groupId>
       <artifactId>worldedit</artifactId>
-      <version>5.5.1</version>
+      <version>5.5.4</version>
     </dependency>
   </dependencies>
 
