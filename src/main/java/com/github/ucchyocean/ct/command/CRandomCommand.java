@@ -103,6 +103,10 @@ public class CRandomCommand implements CommandExecutor {
         ColorTeaming.makeSidebar();
         ColorTeaming.makeTabkeyListScore();
 
+        // キルデス情報のクリア
+        ColorTeaming.killDeathCounts.clear();
+        ColorTeaming.killDeathUserCounts.clear();
+
         // メンバー情報の取得
         Hashtable<String, ArrayList<Player>> members =
                 ColorTeaming.getAllTeamMembers();

@@ -52,6 +52,8 @@ coloringDeathMessage: true
 teamCriteria: rest
 listCriteria: kill
 
+killTrophy: 0
+
 protectRespawnPointWithWorldGuard: false
 
 protectRespawnPointRange: 3

@@ -65,6 +65,9 @@ public class PlayerDeathListener implements Listener {
                     color, player.getName());
             ColorTeaming.sendBroadcast(message);
             ColorTeaming.leaders.get(color).remove(player.getName());
+            if ( ColorTeaming.leaders.get(color).size() <= 0 ) {
+                ColorTeaming.leaders.remove(color);
+            }
 
             if ( ColorTeaming.leaders.get(color).size() >= 1 ) {
                 message = String.format(PRENOTICE + "%s チームの残り大将は、あと %d 人です。",
@@ -119,6 +122,18 @@ public class PlayerDeathListener implements Listener {
                     ColorTeaming.killDeathUserCounts.get(killer.getName())[2]++;
                 else
                     ColorTeaming.killDeathUserCounts.get(killer.getName())[0]++;
+
+                // killTrophyが設定されていたら、超えたかどうかを判定する
+                if ( ColorTeamingConfig.killTrophy > 0 &&
+                        ColorTeaming.leaders.size() > 0 ) {
+                    if ( ColorTeaming.killDeathCounts.get(colorKiller)[0] ==
+                            ColorTeamingConfig.killTrophy ) {
+                        String message = String.format(
+                                PRENOTICE + "%s チームは、%d キルを達成しました！",
+                                colorKiller, ColorTeamingConfig.killTrophy);
+                        ColorTeaming.sendBroadcast(message);
+                    }
+                }
             }
         }
 

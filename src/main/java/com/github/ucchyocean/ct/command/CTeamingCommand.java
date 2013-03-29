@@ -87,6 +87,35 @@ public class CTeamingCommand implements CommandExecutor {
 
             return true;
 
+        } else if ( args.length >= 2 && args[0].equalsIgnoreCase("trophy") ) {
+
+            if ( !Utility.tryIntParse(args[1]) && !args[1].equalsIgnoreCase("off") ) {
+                sender.sendMessage(PREERR + "キル数 " + args[1] + " は、数値として解釈できません。");
+                return true;
+            }
+
+            int amount;
+            if ( args[1].equalsIgnoreCase("off") ) {
+                amount = 0;
+            } else {
+                amount = Integer.parseInt(args[1]);
+            }
+
+            if ( amount < 0 ) {
+                sender.sendMessage(PREERR + "ct trophy コマンドには、マイナス値を指定できません。");
+                return true;
+            }
+
+            ColorTeamingConfig.killTrophy = amount;
+            ColorTeamingConfig.setConfigValue("killTrophy", amount);
+
+            if ( amount == 0 ) {
+                sender.sendMessage(PREINFO + "キル数達成時の通知機能をオフにしました。");
+            } else {
+                sender.sendMessage(PREINFO + "キル数達成時の通知機能を、" + amount + "キル数に設定します。");
+            }
+            return true;
+
         } else if ( args.length >= 3 && args[0].equalsIgnoreCase("add") ) {
 
             String group = args[1];
