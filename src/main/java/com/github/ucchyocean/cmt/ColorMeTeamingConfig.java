@@ -38,6 +38,8 @@ public class ColorMeTeamingConfig {
     public static int deathPoint;
     public static int tkPoint;
 
+    public static int killTrophy;
+
     /**
      * config.ymlの読み出し処理。
      * @throws IOException
@@ -90,6 +92,8 @@ public class ColorMeTeamingConfig {
         protectRespawnPointWithWorldGuard =
                 config.getBoolean("protectRespawnPointWithWorldGuard", false);
         protectRespawnPointRange = config.getInt("protectRespawnPointRange", 3);
+
+        killTrophy = config.getInt("killTrophy", 0);
 
         // WorldGuardプラグイン連携が true になったら、WorldGaurdをロードする
         if ( protectRespawnPointWithWorldGuard && ColorMeTeaming.wghandler == null ) {

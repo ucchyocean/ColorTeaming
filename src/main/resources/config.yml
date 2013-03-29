@@ -49,6 +49,8 @@ colorRemoveOnQuit: true
 
 coloringDeathMessage: true
 
+killTrophy: 0
+
 protectRespawnPointWithWorldGuard: false
 
 protectRespawnPointRange: 3

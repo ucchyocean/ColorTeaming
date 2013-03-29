@@ -95,6 +95,10 @@ public class CRandomCommand implements CommandExecutor {
             ColorMeTeaming.wghandler.refreshGroupMembers();
         }
 
+        // キルデス情報のクリア
+        ColorMeTeaming.killDeathCounts.clear();
+        ColorMeTeaming.killDeathUserCounts.clear();
+
         // メンバー情報の取得
         Hashtable<String, ArrayList<Player>> members =
                 ColorMeTeaming.getAllColorMembers();

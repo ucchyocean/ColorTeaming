@@ -11,10 +11,11 @@ commands:
     description: ColorMeTeamingの管理用コマンド
     aliases: ct
     usage: |
+           /<command> reload - ColorMeTeaming の config.yml を再読み込みします。
            /<command> add (group) (player) - playerをgroupに追加します。
            /<command> remove (group) - groupを解散します。
            /<command> removeAll - 全てのグループを解散します。
-           /<command> reload - ColorMeTeaming の config.yml を再読み込みします。
+           /<command> trophy (amount) - キル数達成時の通知を設定します。
     permission: colorteaming.team
     permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorrandom:
