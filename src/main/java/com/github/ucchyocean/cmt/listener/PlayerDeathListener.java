@@ -125,7 +125,8 @@ public class PlayerDeathListener implements Listener {
 
                 // killTrophyが設定されていたら、超えたかどうかを判定する
                 if ( ColorMeTeamingConfig.killTrophy > 0 &&
-                        ColorMeTeaming.leaders.size() > 0 ) {
+                        ColorMeTeaming.leaders.size() == 0 ) {
+
                     if ( ColorMeTeaming.killDeathCounts.get(colorKiller)[0] ==
                             ColorMeTeamingConfig.killTrophy ) {
                         String message = String.format(
