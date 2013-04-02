@@ -8,9 +8,8 @@ package com.github.ucchyocean.ct.scoreboard;
 import java.util.ArrayList;
 
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Objective.Criteria;
-import org.bukkit.scoreboard.Objective.Display;
 import org.bukkit.scoreboard.Scoreboard;
 
 import com.github.ucchyocean.ct.ColorTeaming;
@@ -30,10 +29,10 @@ public class TabListScoreDisplay {
     public TabListScoreDisplay() {
 
         Scoreboard scoreboard = ColorTeaming.getScoreboard();
-        Criteria criteria = TabListCriteria.convert(ColorTeamingConfig.listCriteria);
-        objective =
-                scoreboard.createObjective("listscore", criteria, "listscore");
-        objective.setDisplaySlot(Display.LIST);
+        String criteria = TabListCriteria.convert(ColorTeamingConfig.listCriteria);
+
+        objective = scoreboard.registerNewObjective("listscore", criteria);
+        objective.setDisplaySlot(DisplaySlot.PLAYER_LIST);
 
         refreshScore();
     }
@@ -58,9 +57,9 @@ public class TabListScoreDisplay {
                 int point = data[0] * ColorTeamingConfig.killPoint +
                         data[1] * ColorTeamingConfig.deathPoint +
                         data[2] * ColorTeamingConfig.tkPoint;
-                objective.setScore(player, point);
+                objective.getScore(player).setScore(point);
             } else {
-                objective.setScore(player, 0);
+                objective.getScore(player).setScore(0);
             }
         }
     }
@@ -70,8 +69,7 @@ public class TabListScoreDisplay {
      */
     public void remove() {
 
-        objective.setDisplaySlot(Display.NONE);
-
-        ColorTeaming.getScoreboard().removeObjective(objective);
+        ColorTeaming.getScoreboard().clearSlot(DisplaySlot.PLAYER_LIST);
+        objective.unregister();
     }
 }

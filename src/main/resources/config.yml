@@ -5,12 +5,11 @@
 
 world: 'world'
 
-partyChatMode: false
+teamChatMode: false
+
 opDisplayMode: false
 
 firelyFireDisabler: true
-
-ignoreGroups: ['', 'white', 'gold']
 
 classes:
   Knight:
@@ -28,7 +27,7 @@ classes:
     items: 267^16-5^17-5^18-5^19-2^20-2^34-3,282:10
     armor: 306^0-4^1-4^3-4^4-4,307^0-4^1-4^3-4^4-4,308^0-4^1-4^3-4^4-4,309^0-4^1-4^3-4^4-4
   Excalibur:
-    items: 276^16-127@1561
+    items: 276^16-300@1561
     armor: 314,315,316,317
   RedLeather:
     armor: 298$993333,299$993333,300$993333,301$993333
@@ -45,15 +44,13 @@ points:
   tkPoint: -3
 
 colorRemoveOnDeath: true
+
 colorRemoveOnQuit: true
 
 coloringDeathMessage: true
 
 teamCriteria: rest
+
 listCriteria: kill
 
 killTrophy: 0
-
-protectRespawnPointWithWorldGuard: false
-
-protectRespawnPointRange: 3

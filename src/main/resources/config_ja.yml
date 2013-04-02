@@ -17,10 +17,6 @@ opDisplayMode: false
 # 同じチームメンバー同士の攻撃（剣などの直接攻撃と、弓矢）を無効にします。
 firelyFireDisabler: true
 
-# teamChatMode、firelyFireDisabler、大将選出などの対象外とするグループを設定します。
-# 管理者や、観客用のグループを設定してください。
-ignoreGroups: ['', 'white', 'gold']
-
 # クラスごとのインベントリーの内容を設定します。
 # アイテムの設定形式は2種類あります。
 # 通常のアイテム → (アイテムID)[@(ダメージ値)][:(個数)]
@@ -69,7 +65,7 @@ colorRemoveOnDeath: true
 colorRemoveOnQuit: true
 
 # デスメッセージ（死んだときに表示されるメッセージ）の名前を、
-# ColorMeの色で表示するかどうかを設定します。
+# 色づけして表示するかどうかを設定します。
 coloringDeathMessage: true
 
 # サイドバーに表示するチームスコアの種類を指定します。
@@ -92,15 +88,3 @@ listCriteria: kill
 # 30を指定した場合は、30キル達成で通知します。0の場合は通知オフとなります。
 # clコマンドで大将を選出している場合は、本設定は無視されることに注意してください。
 killTrophy: 0
-
-# cspawnコマンドでチームのリスポーンポイントを設定したときに、
-# リスポーンポイントの周囲を、他チームメンバーが進入できないように、
-# WorldGuard を使って保護するかどうかを設定します。
-# WorldGuard がロードされている必要があります。
-protectRespawnPointWithWorldGuard: false
-
-# protectRespawnPointWithWorldGuard が true のときに、
-# リスポーンポイントから前後上下左右に何マスまでを保護領域にするかを設定します。
-# 例）3を設定した場合、前後上下左右に3マス（7マス四方の立方体）で保護されます。
-protectRespawnPointRange: 3
-

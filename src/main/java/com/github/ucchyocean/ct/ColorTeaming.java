@@ -10,9 +10,9 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
@@ -39,7 +39,6 @@ import com.github.ucchyocean.ct.listener.PlayerRespawnListener;
 import com.github.ucchyocean.ct.scoreboard.SidebarScoreDisplay;
 import com.github.ucchyocean.ct.scoreboard.TabListScoreDisplay;
 import com.github.ucchyocean.ct.scoreboard.TeamCriteria;
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 
 /**
  * @author ucchy
@@ -51,7 +50,6 @@ public class ColorTeaming extends JavaPlugin {
     private static final String TEAM_INFORMATION_FORMAT = "&a[%s&a] %s";
 
     protected static ColorTeaming instance;
-    public static WorldGuardHandler wghandler;
     public static TeamMemberSaveDataHandler sdhandler;
 
     public static Logger logger;
@@ -132,7 +130,7 @@ public class ColorTeaming extends JavaPlugin {
      * @return スコアボード
      */
     public static Scoreboard getScoreboard() {
-        return instance.getServer().getScoreboard();
+        return instance.getServer().getScoreboardManager().getMainScoreboard();
     }
 
     /**
@@ -145,9 +143,10 @@ public class ColorTeaming extends JavaPlugin {
         Scoreboard scoreboard = getScoreboard();
         Set<Team> teams = scoreboard.getTeams();
         for ( Team team : teams ) {
-            ArrayList<String> names = team.getPlayerNames();
-            if ( names.contains(player.getName()) ) {
-                return team;
+            for ( OfflinePlayer p : team.getPlayers() ) {
+                if ( p.getName().equalsIgnoreCase(player.getName()) ) {
+                    return team;
+                }
             }
         }
         return null;
@@ -171,13 +170,13 @@ public class ColorTeaming extends JavaPlugin {
 
         Team team = scoreboard.getTeam(color);
         if ( team == null ) {
-            team = scoreboard.createTeam(
-                    color, Utility.replaceColorCode(color) + color + ChatColor.RESET);
+            team = scoreboard.registerNewTeam(color);
+            team.setDisplayName(Utility.replaceColorCode(color) + color + ChatColor.RESET);
             team.setPrefix(Utility.replaceColorCode(color));
             team.setSuffix(ChatColor.RESET.toString());
             team.setAllowFriendlyFire(!ColorTeamingConfig.isFriendlyFireDisabler);
         }
-        scoreboard.setTeam(player, team);
+        team.addPlayer(player);
 
         return team;
     }
@@ -188,8 +187,8 @@ public class ColorTeaming extends JavaPlugin {
      */
     public static void leavePlayerTeam(Player player) {
 
-        Scoreboard scoreboard = getScoreboard();
-        scoreboard.setTeam(player, null);
+        Team team = getPlayerTeam(player);
+        team.removePlayer(player);
     }
 
     public static void setFriendlyFilre(boolean ff) {
@@ -208,7 +207,7 @@ public class ColorTeaming extends JavaPlugin {
 
         Team team = scoreboard.getTeam(name);
         if ( team != null ) {
-            scoreboard.removeTeam(team);
+            team.unregister();
         }
     }
 
@@ -217,14 +216,13 @@ public class ColorTeaming extends JavaPlugin {
         Scoreboard scoreboard = getScoreboard();
 
         Set<Team> teams = scoreboard.getTeams();
-        for ( Team t : teams ) {
-            scoreboard.removeTeam(t);
+        for ( Team team : teams ) {
+            team.unregister();
         }
     }
 
     /**
      * ColorMeに設定されている色情報で、ユーザーをグループごとのメンバーに整理して返すメソッド<br>
-     * ignoreGroupに設定されている色グループに所属しているプレーヤーは、除外される。
      * @return 色をKey メンバーをValueとした Hashtable
      */
     public static Hashtable<String, ArrayList<Player>> getAllTeamMembers() {
@@ -233,16 +231,15 @@ public class ColorTeaming extends JavaPlugin {
         Scoreboard scoreboard = getScoreboard();
 
         Set<Team> teams = scoreboard.getTeams();
-        for ( Team t : teams ) {
-            ArrayList<String> playersTemp = t.getPlayerNames();
+        for ( Team team : teams ) {
+            Set<OfflinePlayer> playersTemp = team.getPlayers();
             ArrayList<Player> players = new ArrayList<Player>();
-            for ( String name : playersTemp ) {
-                Player player = getPlayerExact(name);
+            for ( OfflinePlayer player : playersTemp ) {
                 if ( player != null && player.isOnline() ) {
-                    players.add(player);
+                    players.add(player.getPlayer());
                 }
             }
-            result.put(t.getName(), players);
+            result.put(team.getName(), players);
         }
 
         return result;
@@ -374,22 +371,6 @@ public class ColorTeaming extends JavaPlugin {
      */
     protected static File getPluginJarFile() {
         return instance.getFile();
-    }
-
-    /**
-     * WorldGuardプラグインをロードする
-     */
-    protected void loadWorldGuard() {
-        Plugin temp = getServer().getPluginManager().getPlugin("WorldGuard");
-        if ( temp != null && temp instanceof WorldGuardPlugin ) {
-            wghandler = new WorldGuardHandler((WorldGuardPlugin)temp);
-        } else {
-            logger.warning("WorldGuard がロードされていません。");
-            logger.warning("protectRespawnPointWithWorldGuard の設定を false に変更します。");
-            ColorTeamingConfig.setConfigValue(
-                    "protectRespawnPointWithWorldGuard", false);
-            ColorTeamingConfig.protectRespawnPointWithWorldGuard = false;
-        }
     }
 
     /**

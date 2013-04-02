@@ -5,7 +5,8 @@
  */
 package com.github.ucchyocean.ct.scoreboard;
 
-import org.bukkit.scoreboard.Objective.Criteria;
+import org.bukkit.scoreboard.Criterias;
+
 
 /**
  * @author ucchy
@@ -15,6 +16,9 @@ public enum TabListCriteria {
 
     /** キル数 */
     KILL_COUNT("kill"),
+
+    /** キル数(MOB含む) */
+    TOTAL_KILL_COUNT("total_kill"),
 
     /** デス数 */
     DEATH_COUNT("death"),
@@ -68,29 +72,34 @@ public enum TabListCriteria {
         return TabListCriteria.NONE;
     }
 
-    public static TabListCriteria convert(Criteria criteria) {
+    public static TabListCriteria convert(Criterias criteria) {
 
-        switch (criteria) {
-        case PLAYER_KILL_COUNT:
+        if ( criteria == null ) {
+            return TabListCriteria.NONE;
+        } else if ( Criterias.PLAYER_KILLS.equals(criteria) ) {
             return TabListCriteria.KILL_COUNT;
-        case DEATH_COUNT:
+        } else if ( Criterias.TOTAL_KILLS.equals(criteria) ) {
+            return TabListCriteria.TOTAL_KILL_COUNT;
+        } else if ( Criterias.DEATHS.equals(criteria) ) {
             return TabListCriteria.DEATH_COUNT;
-        case HEALTH:
+        } else if ( Criterias.HEALTH.equals(criteria) ) {
             return TabListCriteria.HEALTH;
         }
         return TabListCriteria.NONE;
     }
 
-    public static Criteria convert(TabListCriteria criteria) {
+    public static String convert(TabListCriteria criteria) {
 
         switch (criteria) {
         case KILL_COUNT:
-            return Criteria.PLAYER_KILL_COUNT;
+            return Criterias.PLAYER_KILLS;
+        case TOTAL_KILL_COUNT:
+            return Criterias.TOTAL_KILLS;
         case DEATH_COUNT:
-            return Criteria.DEATH_COUNT;
+            return Criterias.DEATHS;
         case HEALTH:
-            return Criteria.HEALTH;
+            return Criterias.HEALTH;
         }
-        return Criteria.DUMMY;
+        return "";
     }
 }

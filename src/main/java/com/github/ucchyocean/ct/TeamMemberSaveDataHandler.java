@@ -130,11 +130,6 @@ public class TeamMemberSaveDataHandler {
             }
         }
 
-        // 保護領域の更新
-        if ( ColorTeamingConfig.protectRespawnPointWithWorldGuard ) {
-            ColorTeaming.wghandler.refreshGroupMembers();
-        }
-
         // チームキルデス数の復帰
         ConfigurationSection tksection =
                 config.getConfigurationSection("killDeathCounts");

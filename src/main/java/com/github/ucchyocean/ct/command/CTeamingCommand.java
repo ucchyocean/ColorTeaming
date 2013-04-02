@@ -57,11 +57,6 @@ public class CTeamingCommand implements CommandExecutor {
             }
             sender.sendMessage(PREINFO + "全てのグループが解散しました。");
 
-            // 保護領域の更新
-            if ( ColorTeamingConfig.protectRespawnPointWithWorldGuard ) {
-                ColorTeaming.wghandler.refreshGroupMembers();
-            }
-
             return true;
 
         } else if ( args.length >= 2 && args[0].equalsIgnoreCase("remove") ) {
@@ -79,11 +74,6 @@ public class CTeamingCommand implements CommandExecutor {
             }
             ColorTeaming.removeTeam(group);
             sender.sendMessage(PREINFO + "グループ " + group + " が解散しました。");
-
-            // 保護領域の更新
-            if ( ColorTeamingConfig.protectRespawnPointWithWorldGuard ) {
-                ColorTeaming.wghandler.refreshGroupMembers();
-            }
 
             return true;
 
@@ -135,11 +125,6 @@ public class CTeamingCommand implements CommandExecutor {
 
             // メンバー情報をlastdataに保存する
             ColorTeaming.sdhandler.save("lastdata");
-
-            // 保護領域の更新
-            if ( ColorTeamingConfig.protectRespawnPointWithWorldGuard ) {
-                ColorTeaming.wghandler.refreshGroupMembers();
-            }
 
             // サイドバーの更新 グループが増える場合は、再生成する
             if ( isNewGroup ) {

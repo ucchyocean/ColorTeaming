@@ -11,15 +11,13 @@ import java.util.Hashtable;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Objective.Criteria;
-import org.bukkit.scoreboard.Objective.Display;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingConfig;
-import com.github.ucchyocean.ct.Utility;
 
 /**
  * @author ucchy
@@ -37,8 +35,8 @@ public class SidebarScoreDisplay {
     public SidebarScoreDisplay() {
 
         Scoreboard scoreboard = ColorTeaming.getScoreboard();
-        objective = scoreboard.createObjective(
-                "teamscore", Criteria.DUMMY, "チームスコア");
+        objective = scoreboard.registerNewObjective("teamscore", "");
+        objective.setDisplayName("チームスコア");
 
         teamscores = new Hashtable<String, SidebarTeamScore>();
 
@@ -47,16 +45,12 @@ public class SidebarScoreDisplay {
         while ( keys.hasMoreElements() ) {
             String key = keys.nextElement();
             Team team = scoreboard.getTeam(key);
-            if ( team == null ) {
-                team = scoreboard.createTeam(
-                        key, Utility.replaceColorCode(key) + key + ChatColor.RESET);
-            }
             SidebarTeamScore ts = new SidebarTeamScore(team);
-            objective.setScore(ts, 0);
+            objective.getScore(ts).setScore(0);
             teamscores.put(key, ts);
         }
 
-        objective.setDisplaySlot(Display.SIDEBAR);
+        objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
         refreshCriteria();
     }
@@ -126,9 +120,9 @@ public class SidebarScoreDisplay {
                 SidebarTeamScore team = teamscores.get(key);
                 if ( ColorTeaming.killDeathCounts.containsKey(key) ) {
                     int[] data = ColorTeaming.killDeathCounts.get(key);
-                    objective.setScore(team, data[index]);
+                    objective.getScore(team).setScore(data[index]);
                 } else {
-                    objective.setScore(team, 0);
+                    objective.getScore(team).setScore(0);
                 }
             }
         }
@@ -151,9 +145,9 @@ public class SidebarScoreDisplay {
                     int point = data[0] * ColorTeamingConfig.killPoint +
                             data[1] * ColorTeamingConfig.deathPoint +
                             data[2] * ColorTeamingConfig.tkPoint;
-                    objective.setScore(team, point);
+                    objective.getScore(team).setScore(point);
                 } else {
-                    objective.setScore(team, 0);
+                    objective.getScore(team).setScore(0);
                 }
             }
         }
@@ -171,8 +165,8 @@ public class SidebarScoreDisplay {
 
             if ( teamscores.containsKey(key) ) {
                 SidebarTeamScore team = teamscores.get(key);
-                int least = members.get(key).size();
-                objective.setScore(team, least);
+                int rest = members.get(key).size();
+                objective.getScore(team).setScore(rest);
             }
         }
     }
@@ -182,8 +176,7 @@ public class SidebarScoreDisplay {
      */
     public void remove() {
 
-        objective.setDisplaySlot(Display.NONE);
-
-        ColorTeaming.getScoreboard().removeObjective(objective);
+        ColorTeaming.getScoreboard().clearSlot(DisplaySlot.SIDEBAR);
+        objective.unregister();
     }
 }

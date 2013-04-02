@@ -181,20 +181,6 @@ public class CSpawnCommand implements CommandExecutor {
                 group, x_actual, y_actual, z_actual);
         sender.sendMessage(PREINFO + message);
 
-        // WorldGuard連携の場合は、保護領域を作成する
-        if ( ColorTeamingConfig.protectRespawnPointWithWorldGuard ) {
-            if ( !location.getWorld().getName().equals(ColorTeamingConfig.defaultWorldName) ) {
-                sender.sendMessage(PREERR + "config.yml の設定[" +
-                        ColorTeamingConfig.defaultWorldName +
-                        "]と、指定したポイントのワールド[" +
-                        location.getWorld().getName() +
-                        "が異なるため、保護領域の作成に失敗しました。");
-            } else {
-                int range = ColorTeamingConfig.protectRespawnPointRange;
-                ColorTeaming.wghandler.makeTeamRegion(group, location, range);
-            }
-        }
-
         return true;
     }
 

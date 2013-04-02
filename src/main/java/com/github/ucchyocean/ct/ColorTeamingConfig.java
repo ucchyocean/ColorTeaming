@@ -105,11 +105,6 @@ public class ColorTeamingConfig {
 
         killTrophy = config.getInt("killTrophy", 0);
 
-        // WorldGuardプラグイン連携が true になったら、WorldGaurdをロードする
-        if ( protectRespawnPointWithWorldGuard && ColorTeaming.wghandler == null ) {
-            ColorTeaming.instance.loadWorldGuard();
-        }
-
         defaultWorldName = config.getString("world", "world");
     }
 

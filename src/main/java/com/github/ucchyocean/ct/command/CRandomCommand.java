@@ -94,11 +94,6 @@ public class CRandomCommand implements CommandExecutor {
                     " グループになりました。");
         }
 
-        // 保護領域の更新
-        if ( ColorTeamingConfig.protectRespawnPointWithWorldGuard ) {
-            ColorTeaming.wghandler.refreshGroupMembers();
-        }
-
         // スコアボードの作成
         ColorTeaming.makeSidebar();
         ColorTeaming.makeTabkeyListScore();
@@ -169,11 +164,6 @@ public class CRandomCommand implements CommandExecutor {
                         ChatColor.GREEN +
                         " グループになりました。");
             }
-        }
-
-        // 保護領域の更新
-        if ( ColorTeamingConfig.protectRespawnPointWithWorldGuard ) {
-            ColorTeaming.wghandler.refreshGroupMembers();
         }
 
         // スコアボードの作成
