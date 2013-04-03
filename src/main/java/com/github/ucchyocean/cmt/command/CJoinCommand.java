@@ -60,10 +60,20 @@ public class CJoinCommand implements CommandExecutor {
                         group +
                         ChatColor.GREEN +
                         " グループになりました。");
+
+                // 保護領域の更新
+                if ( ColorMeTeamingConfig.protectRespawnPointWithWorldGuard ) {
+                    ColorMeTeaming.wghandler.refreshGroupMembers();
+                }
+
+                // メンバー情報をlastdataに保存する
+                ColorMeTeaming.sdhandler.save("lastdata");
+
                 return true;
+
             } else {
                 sender.sendMessage(
-                        PREERR + "設定できるグループが無いようです。");
+                        PREERR + "参加できるグループが無いようです。");
                 return true;
             }
 
@@ -81,6 +91,7 @@ public class CJoinCommand implements CommandExecutor {
                 sender.sendMessage(PREERR + "グループ " + group + " は設定できないグループ名です。");
                 return true;
             }
+
             ColorMeTeaming.setPlayerColor(player, group);
             player.sendMessage(
                     ChatColor.GREEN + "あなたは " +
@@ -88,11 +99,18 @@ public class CJoinCommand implements CommandExecutor {
                     group +
                     ChatColor.GREEN +
                     " グループになりました。");
-            return true;
 
+            // 保護領域の更新
+            if ( ColorMeTeamingConfig.protectRespawnPointWithWorldGuard ) {
+                ColorMeTeaming.wghandler.refreshGroupMembers();
+            }
+
+            // メンバー情報をlastdataに保存する
+            ColorMeTeaming.sdhandler.save("lastdata");
+
+            return true;
         }
     }
-
 
     /**
      * メンバー人数が最小のグループを返す。

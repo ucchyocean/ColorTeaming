@@ -197,6 +197,9 @@ public class CTeamingCommand implements CommandExecutor {
                 ColorMeTeaming.wghandler.refreshGroupMembers();
             }
 
+            // メンバー情報をlastdataに保存する
+            ColorMeTeaming.sdhandler.save("lastdata");
+
             return true;
 
         }
