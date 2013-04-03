@@ -123,6 +123,21 @@ public class PlayerDeathListener implements Listener {
                 else
                     ColorMeTeaming.killDeathUserCounts.get(killer.getName())[0]++;
 
+                // killReachTrophyが設定されていたら、超えたかどうかを判定する
+                if ( ColorMeTeamingConfig.killReachTrophy > 0 &&
+                        ColorMeTeaming.leaders.size() == 0 ) {
+
+                    if ( ColorMeTeaming.killDeathCounts.get(colorKiller)[0] ==
+                            ColorMeTeamingConfig.killReachTrophy ) {
+                        int least = ColorMeTeamingConfig.killTrophy -
+                                ColorMeTeamingConfig.killReachTrophy;
+                        String message = String.format(
+                                PRENOTICE + "%s チームは、あと %d キルで %d キルです。",
+                                colorKiller, least, ColorMeTeamingConfig.killTrophy);
+                        ColorMeTeaming.sendBroadcast(message);
+                    }
+                }
+
                 // killTrophyが設定されていたら、超えたかどうかを判定する
                 if ( ColorMeTeamingConfig.killTrophy > 0 &&
                         ColorMeTeaming.leaders.size() == 0 ) {

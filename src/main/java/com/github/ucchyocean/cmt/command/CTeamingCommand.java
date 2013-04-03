@@ -85,12 +85,18 @@ public class CTeamingCommand implements CommandExecutor {
 
         } else if ( args.length >= 2 && args[0].equalsIgnoreCase("trophy") ) {
 
-            if ( !Utility.tryIntParse(args[1]) ) {
+            if ( !Utility.tryIntParse(args[1]) && !args[1].equalsIgnoreCase("off") ) {
                 sender.sendMessage(PREERR + "キル数 " + args[1] + " は、数値として解釈できません。");
                 return true;
             }
 
-            int amount = Integer.parseInt(args[1]);
+            int amount;
+            if ( args[1].equalsIgnoreCase("off") ) {
+                amount = 0;
+            } else {
+                amount = Integer.parseInt(args[1]);
+            }
+
             if ( amount < 0 ) {
                 sender.sendMessage(PREERR + "ct trophy コマンドには、マイナス値を指定できません。");
                 return true;
@@ -103,6 +109,38 @@ public class CTeamingCommand implements CommandExecutor {
                 sender.sendMessage(PREINFO + "キル数達成時の通知機能をオフにしました。");
             } else {
                 sender.sendMessage(PREINFO + "キル数達成時の通知機能を、" + amount + "キル数に設定します。");
+            }
+            return true;
+
+        } else if ( args.length >= 2 && args[0].equalsIgnoreCase("reachTrophy") ) {
+
+            if ( !Utility.tryIntParse(args[1]) && !args[1].equalsIgnoreCase("off") ) {
+                sender.sendMessage(PREERR + "キル数 " + args[1] + " は、数値として解釈できません。");
+                return true;
+            }
+
+            int amount;
+            if ( args[1].equalsIgnoreCase("off") ) {
+                amount = 0;
+            } else {
+                amount = Integer.parseInt(args[1]);
+            }
+
+            if ( amount < 0 ) {
+                sender.sendMessage(PREERR + "ct reachTrophy コマンドには、マイナス値を指定できません。");
+                return true;
+            } else if ( ColorMeTeamingConfig.killTrophy < amount ) {
+                sender.sendMessage(PREERR + "killTrophyの設定値より大きな値は指定できません。");
+                return true;
+            }
+
+            ColorMeTeamingConfig.killReachTrophy = amount;
+            ColorMeTeamingConfig.setConfigValue("killReachTrophy", amount);
+
+            if ( amount == 0 ) {
+                sender.sendMessage(PREINFO + "キル数リーチ時の通知機能をオフにしました。");
+            } else {
+                sender.sendMessage(PREINFO + "キル数リーチ時の通知機能を、" + amount + "キル数に設定します。");
             }
             return true;
 
