@@ -60,9 +60,9 @@ public class SidebarScoreDisplay {
      */
     private void refreshCriteria() {
 
-        TeamCriteria criteria = ColorTeamingConfig.teamCriteria;
+        SidebarCriteria criteria = ColorTeamingConfig.teamCriteria;
 
-        if ( criteria == TeamCriteria.NONE ) {
+        if ( criteria == SidebarCriteria.NONE ) {
             if ( ColorTeaming.sidebarScore != null ) {
                 ColorTeaming.sidebarScore.remove();
                 ColorTeaming.sidebarScore = null;
@@ -102,10 +102,10 @@ public class SidebarScoreDisplay {
      * キル数、または、デス数による、スコア更新を行う
      * @param criteria
      */
-    private void refreshScoreByKillOrDeathCount(TeamCriteria criteria) {
+    private void refreshScoreByKillOrDeathCount(SidebarCriteria criteria) {
 
         int index;
-        if ( criteria == TeamCriteria.KILL_COUNT ) {
+        if ( criteria == SidebarCriteria.KILL_COUNT ) {
             index = 0;
         } else {
             index = 1;

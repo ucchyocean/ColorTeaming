@@ -17,7 +17,7 @@ import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingConfig;
 import com.github.ucchyocean.ct.Utility;
 import com.github.ucchyocean.ct.scoreboard.TabListCriteria;
-import com.github.ucchyocean.ct.scoreboard.TeamCriteria;
+import com.github.ucchyocean.ct.scoreboard.SidebarCriteria;
 
 /**
  * @author ucchy
@@ -138,15 +138,15 @@ public class CTeamingCommand implements CommandExecutor {
         } else if ( args.length >= 2 && args[0].equalsIgnoreCase("side") ) {
 
             if ( args[1].equalsIgnoreCase("kill") ) {
-                ColorTeamingConfig.teamCriteria = TeamCriteria.KILL_COUNT;
+                ColorTeamingConfig.teamCriteria = SidebarCriteria.KILL_COUNT;
             } else if ( args[1].equalsIgnoreCase("death") ) {
-                ColorTeamingConfig.teamCriteria = TeamCriteria.DEATH_COUNT;
+                ColorTeamingConfig.teamCriteria = SidebarCriteria.DEATH_COUNT;
             } else if ( args[1].equalsIgnoreCase("point") ) {
-                ColorTeamingConfig.teamCriteria = TeamCriteria.POINT;
+                ColorTeamingConfig.teamCriteria = SidebarCriteria.POINT;
             } else if ( args[1].equalsIgnoreCase("rest") ) {
-                ColorTeamingConfig.teamCriteria = TeamCriteria.REST_PLAYER;
+                ColorTeamingConfig.teamCriteria = SidebarCriteria.REST_PLAYER;
             } else if ( args[1].equalsIgnoreCase("clear") || args[1].equalsIgnoreCase("none") ) {
-                ColorTeamingConfig.teamCriteria = TeamCriteria.NONE;
+                ColorTeamingConfig.teamCriteria = SidebarCriteria.NONE;
             } else {
                 return false;
             }

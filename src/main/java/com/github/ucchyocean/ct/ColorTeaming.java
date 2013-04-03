@@ -38,11 +38,11 @@ import com.github.ucchyocean.ct.listener.PlayerQuitListener;
 import com.github.ucchyocean.ct.listener.PlayerRespawnListener;
 import com.github.ucchyocean.ct.scoreboard.SidebarScoreDisplay;
 import com.github.ucchyocean.ct.scoreboard.TabListScoreDisplay;
-import com.github.ucchyocean.ct.scoreboard.TeamCriteria;
+import com.github.ucchyocean.ct.scoreboard.SidebarCriteria;
 
 /**
  * @author ucchy
- * ColorMe を使用した、簡易PVPチーミングプラグイン
+ * 簡易PVPチーミングプラグイン
  */
 public class ColorTeaming extends JavaPlugin {
 
@@ -379,7 +379,7 @@ public class ColorTeaming extends JavaPlugin {
     public static void makeSidebar() {
 
         removeSidebar();
-        if ( ColorTeamingConfig.teamCriteria != TeamCriteria.NONE ) {
+        if ( ColorTeamingConfig.teamCriteria != SidebarCriteria.NONE ) {
             sidebarScore = new SidebarScoreDisplay();
         }
     }
