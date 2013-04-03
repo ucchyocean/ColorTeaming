@@ -132,8 +132,8 @@ public class PlayerDeathListener implements Listener {
                         int least = ColorMeTeamingConfig.killTrophy -
                                 ColorMeTeamingConfig.killReachTrophy;
                         String message = String.format(
-                                PRENOTICE + "%s チームは、あと %d キルで %d キルです。",
-                                colorKiller, least, ColorMeTeamingConfig.killTrophy);
+                                PRENOTICE + "%s チームが、%d キルまでもう少しです。（あと %d キル）",
+                                colorKiller, ColorMeTeamingConfig.killTrophy, least);
                         ColorMeTeaming.sendBroadcast(message);
                     }
                 }
