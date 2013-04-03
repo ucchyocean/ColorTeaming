@@ -106,6 +106,38 @@ public class CTeamingCommand implements CommandExecutor {
             }
             return true;
 
+        } else if ( args.length >= 2 && args[0].equalsIgnoreCase("allowJoinAny") ) {
+
+            if ( args[1].equalsIgnoreCase("on") ) {
+                ColorMeTeamingConfig.allowPlayerJoinAny = true;
+                sender.sendMessage(ChatColor.GRAY + "一般プレイヤーの /cjoin (group) の使用が可能になりました。");
+                ColorMeTeamingConfig.setConfigValue("allowPlayerJoinAny", true);
+                return true;
+            } else if ( args[1].equalsIgnoreCase("off") ) {
+                ColorMeTeamingConfig.allowPlayerJoinAny = false;
+                sender.sendMessage(ChatColor.GRAY + "一般プレイヤーの /cjoin (group) の使用が不可になりました。");
+                ColorMeTeamingConfig.setConfigValue("allowPlayerJoinAny", false);
+                return true;
+            }
+
+            return false;
+
+        } else if ( args.length >= 2 && args[0].equalsIgnoreCase("allowJoinRandom") ) {
+
+            if ( args[1].equalsIgnoreCase("on") ) {
+                ColorMeTeamingConfig.allowPlayerJoinRandom = true;
+                sender.sendMessage(ChatColor.GRAY + "一般プレイヤーの /cjoin の使用が可能になりました。");
+                ColorMeTeamingConfig.setConfigValue("allowPlayerJoinRandom", true);
+                return true;
+            } else if ( args[1].equalsIgnoreCase("off") ) {
+                ColorMeTeamingConfig.allowPlayerJoinRandom = false;
+                sender.sendMessage(ChatColor.GRAY + "一般プレイヤーの /cjoin の使用が不可になりました。");
+                ColorMeTeamingConfig.setConfigValue("allowPlayerJoinRandom", false);
+                return true;
+            }
+
+            return false;
+
         } else if ( args.length >= 3 && args[0].equalsIgnoreCase("add") ) {
 
             String group = args[1];

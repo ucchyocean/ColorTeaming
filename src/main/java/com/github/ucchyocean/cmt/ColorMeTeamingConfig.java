@@ -31,6 +31,8 @@ public class ColorMeTeamingConfig {
     public static boolean colorRemoveOnDeath;
     public static boolean colorRemoveOnQuit;
     public static boolean coloringDeathMessage;
+    public static boolean allowPlayerJoinAny;
+    public static boolean allowPlayerJoinRandom;
     public static boolean protectRespawnPointWithWorldGuard;
     public static int protectRespawnPointRange;
 
@@ -88,6 +90,9 @@ public class ColorMeTeamingConfig {
         colorRemoveOnQuit = config.getBoolean("colorRemoveOnQuit", colorRemoveOnDeath);
 
         coloringDeathMessage = config.getBoolean("coloringDeathMessage", true);
+
+        allowPlayerJoinAny = config.getBoolean("allowPlayerJoinAny", false);
+        allowPlayerJoinRandom = config.getBoolean("allowPlayerJoinRandom", true);
 
         protectRespawnPointWithWorldGuard =
                 config.getBoolean("protectRespawnPointWithWorldGuard", false);

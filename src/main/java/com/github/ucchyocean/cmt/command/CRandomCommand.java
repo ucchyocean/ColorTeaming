@@ -4,7 +4,7 @@
 package com.github.ucchyocean.cmt.command;
 
 import java.util.ArrayList;
-import java.util.Enumeration;
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Random;
 
@@ -155,10 +155,14 @@ public class CRandomCommand implements CommandExecutor {
                 ColorMeTeaming.setPlayerColor(players.get(i), color);
                 players.get(i).sendMessage(
                         ChatColor.GREEN + "あなたは " +
-                        Utility.replaceColors(GROUP_COLORS[i]) +
-                        GROUP_COLORS[i] +
+                        Utility.replaceColors(color) +
+                        color +
                         ChatColor.GREEN +
                         " グループになりました。");
+            } else {
+                sender.sendMessage(
+                        PREERR + "設定できるグループが無いようです。");
+                return true;
             }
         }
 
@@ -191,12 +195,14 @@ public class CRandomCommand implements CommandExecutor {
         int least = 999;
         String leastGroup = null;
 
-        Enumeration<String> keys = members.keys();
-        while ( keys.hasMoreElements() ) {
-            String key = keys.nextElement();
-            if ( least > members.get(key).size() ) {
-                least = members.get(key).size();
-                leastGroup = key;
+        ArrayList<String> groups = new ArrayList<String>(members.keySet());
+        // ランダム要素を入れるため、グループ名をシャッフルする
+        Collections.shuffle(groups);
+
+        for ( String group : groups ) {
+            if ( least > members.get(group).size() ) {
+                least = members.get(group).size();
+                leastGroup = group;
             }
         }
 

@@ -20,6 +20,7 @@ import com.github.ucchyocean.cmt.command.CClassCommand;
 import com.github.ucchyocean.cmt.command.CCountCommand;
 import com.github.ucchyocean.cmt.command.CExplodeCommand;
 import com.github.ucchyocean.cmt.command.CFriendlyFireCommand;
+import com.github.ucchyocean.cmt.command.CJoinCommand;
 import com.github.ucchyocean.cmt.command.CKillCommand;
 import com.github.ucchyocean.cmt.command.CLeaderCommand;
 import com.github.ucchyocean.cmt.command.CRandomCommand;
@@ -113,6 +114,8 @@ public class ColorMeTeaming extends JavaPlugin {
         getCommand("colorsave").setExecutor(new CSaveCommand());
 
         getCommand("colorrestore").setExecutor(new CRestoreCommand());
+
+        getCommand("colorjoin").setExecutor(new CJoinCommand());
 
         getCommand("colorteaming").setExecutor(new CTeamingCommand());
 

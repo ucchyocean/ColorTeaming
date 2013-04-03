@@ -1,4 +1,4 @@
-# ColorMe Teaming Plugin 1.4.9
+# ColorMe Teaming Plugin 1.4.10
 # @author     ucchy
 # @license    GPLv3
 # @copyright  Copyright ucchy 2013
@@ -72,10 +72,26 @@ colorRemoveOnQuit: true
 # ColorMeの色で表示するかどうかを設定します。
 coloringDeathMessage: true
 
+# 一般プレイヤーが、cjoin コマンドを使用して、グループを作ったり参加したりすることが
+# できるようにするかを、設定します。
+# allowPlayerJoinAny: true なら、/cjoin (group)  コマンドで、自由に参加するgroupを、
+# 一般プレイヤーが作成したり参加したりすることができます。
+# allowPlayerJoinRandom: true なら、/cjoin コマンドで、ランダムに人数の少ないグループに
+# 参加することができるようになります。
+allowPlayerJoinAny: false
+allowPlayerJoinRandom: true
+
 # いずれかのチームが指定のキル数に達したときに、通知を行うかどうかを設定します。
 # 30を指定した場合は、30キル達成で通知します。0の場合は通知オフとなります。
 # clコマンドで大将を選出している場合は、本設定は無視されることに注意してください。
 killTrophy: 0
+
+# いずれかのチームが指定のキル数に達したときに、通知を行うかどうかを設定します。
+# 25を指定した場合は、25キル達成で「red チームは、あと 5キルで 30キルです！」と通知します。
+# 0の場合は通知オフとなります。
+# killTrophyが 0 の場合や、killTrophy より killReachTrophy が大きい場合は、この設定は無視されます。
+# clコマンドで大将を選出している場合も、本設定は無視されます。
+killReachTrophy: 0
 
 # cspawnコマンドでチームのリスポーンポイントを設定したときに、
 # リスポーンポイントの周囲を、他チームメンバーが進入できないように、

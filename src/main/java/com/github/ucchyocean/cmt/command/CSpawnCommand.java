@@ -157,7 +157,7 @@ public class CSpawnCommand implements CommandExecutor {
 
         // 有効なグループ名が指定されたか確認する
         if ( !Utility.isValidColor(group) ) {
-            sender.sendMessage(PREERR + "グループ " + group + " はColorMeに設定できないグループ名です。");
+            sender.sendMessage(PREERR + "グループ " + group + " は設定できないグループ名です。");
             return true;
         }
         if ( ColorMeTeamingConfig.ignoreGroups.contains(group) ) {

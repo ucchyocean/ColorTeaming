@@ -1,6 +1,6 @@
 name: ColorMeTeaming
 main: com.github.ucchyocean.cmt.ColorMeTeaming
-version: 1.4.9
+version: 1.4.10
 authors: [ucchy,owatakun]
 load: startup
 description: 簡易PVPチーミングプラグイン
@@ -16,6 +16,9 @@ commands:
            /<command> remove (group) - groupを解散します。
            /<command> removeAll - 全てのグループを解散します。
            /<command> trophy (amount) - キル数達成時の通知を設定します。
+           /<command> reachTrophy (amount) - キル数リーチ時の通知を設定します。
+           /<command> allowJoinAny (on|off) - 一般プレイヤーの「/cjoin (color)」コマンドの使用可否を設定します。
+           /<command> allowJoinRandom (on|off) - 一般プレイヤーの「/cjoin」コマンドの使用可否を設定します。
     permission: colorteaming.team
     permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorrandom:
@@ -155,6 +158,15 @@ commands:
            /<command> (player) - playerが爆発して死亡します。
     permission: colorteaming.explode
     permission-message: パーミッション "<permission>" が無いため、実行できません。
+  colorjoin:
+    description: 一般プレイヤーが、任意のグループへ参加するためのコマンド
+    aliases: cjoin
+    usage: |
+           /<command> (group) - groupに参加します。
+           /<command> - 人数が少ないチームへ参加します。
+           /<command> random - /<command> と同様です。
+    permission: colorteaming.join
+    permission-message: パーミッション "<permission>" が無いため、実行できません。
 permissions:
   colorteaming.team:
     description: colorteaming(ct)コマンドの使用権限
@@ -217,4 +229,7 @@ permissions:
     description: ColorTeamingプラグインの管理系コマンド全ての使用権限
   colorteaming.global:
     description: colorglobal(g)コマンドの使用権限
+    default: true
+  colorteaming.join:
+    description: colorjoin(cjoin)コマンドの使用権限
     default: true

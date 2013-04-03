@@ -82,8 +82,8 @@ public class WorldGuardHandler {
         // メンバーを設定する
         region.setMembers(makeDomain(members.get(group)));
 
-        // メンバー以外の進入を拒否に設定する、PVPを不可にする
-        region.setFlag(DefaultFlag.ENTRY, StateFlag.State.DENY);
+        // PVPを不可にする
+        //region.setFlag(DefaultFlag.ENTRY, StateFlag.State.DENY);
         region.setFlag(DefaultFlag.PVP, StateFlag.State.DENY);
 
         // WorldGuardのsaveを実行する
