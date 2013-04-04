@@ -71,7 +71,7 @@ public class SidebarScoreDisplay {
         }
 
         objective.setDisplayName(
-                ChatColor.ITALIC.toString() + ChatColor.BLUE.toString() +
+                ChatColor.ITALIC.toString() + ChatColor.YELLOW.toString() +
                 criteria.getSidebarTitle() + ChatColor.RESET);
 
         refreshScore();

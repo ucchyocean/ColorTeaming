@@ -36,9 +36,9 @@ import com.github.ucchyocean.ct.listener.PlayerChatListener;
 import com.github.ucchyocean.ct.listener.PlayerDeathListener;
 import com.github.ucchyocean.ct.listener.PlayerQuitListener;
 import com.github.ucchyocean.ct.listener.PlayerRespawnListener;
+import com.github.ucchyocean.ct.scoreboard.SidebarCriteria;
 import com.github.ucchyocean.ct.scoreboard.SidebarScoreDisplay;
 import com.github.ucchyocean.ct.scoreboard.TabListScoreDisplay;
-import com.github.ucchyocean.ct.scoreboard.SidebarCriteria;
 
 /**
  * @author ucchy
@@ -171,8 +171,8 @@ public class ColorTeaming extends JavaPlugin {
         Team team = scoreboard.getTeam(color);
         if ( team == null ) {
             team = scoreboard.registerNewTeam(color);
-            team.setDisplayName(Utility.replaceColorCode(color) + color + ChatColor.RESET);
-            team.setPrefix(Utility.replaceColorCode(color));
+            team.setDisplayName(Utility.replaceColors(color) + color + ChatColor.RESET);
+            team.setPrefix(Utility.replaceColors(color).toString());
             team.setSuffix(ChatColor.RESET.toString());
             team.setAllowFriendlyFire(!ColorTeamingConfig.isFriendlyFireDisabler);
         }
@@ -188,7 +188,8 @@ public class ColorTeaming extends JavaPlugin {
     public static void leavePlayerTeam(Player player) {
 
         Team team = getPlayerTeam(player);
-        team.removePlayer(player);
+        if ( team != null )
+            team.removePlayer(player);
     }
 
     public static void setFriendlyFilre(boolean ff) {
