@@ -29,13 +29,13 @@ public class CFriendlyFireCommand implements CommandExecutor {
 
         if ( args[0].equalsIgnoreCase("on") ) {
             ColorTeamingConfig.isFriendlyFireDisabler = true;
-            ColorTeaming.setFriendlyFilre(true);
+            //ColorTeaming.setFriendlyFilre(false);
             sender.sendMessage(ChatColor.GRAY + "仲間同士の攻撃が無効になりました。");
             ColorTeamingConfig.setConfigValue("firelyFireDisabler", true);
             return true;
         } else if ( args[0].equalsIgnoreCase("off") ) {
             ColorTeamingConfig.isFriendlyFireDisabler = false;
-            ColorTeaming.setFriendlyFilre(false);
+            //ColorTeaming.setFriendlyFilre(true);
             sender.sendMessage(ChatColor.GRAY + "仲間同士の攻撃が有効になりました。");
             ColorTeamingConfig.setConfigValue("firelyFireDisabler", false);
             return true;

@@ -86,7 +86,7 @@ public class CRandomCommand implements CommandExecutor {
 
         // 各グループに、通知メッセージを出す
         for ( int i=0; i<numberOfGroups; i++ ) {
-            ColorTeaming.sendTeamChat(GROUP_COLORS[i],
+            ColorTeaming.sendInfoToTeamChat(GROUP_COLORS[i],
                     "あなたは " +
                     Utility.replaceColors(GROUP_COLORS[i]) +
                     GROUP_COLORS[i] +

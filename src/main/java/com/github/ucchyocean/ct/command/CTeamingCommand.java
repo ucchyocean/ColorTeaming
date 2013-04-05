@@ -138,15 +138,15 @@ public class CTeamingCommand implements CommandExecutor {
         } else if ( args.length >= 2 && args[0].equalsIgnoreCase("side") ) {
 
             if ( args[1].equalsIgnoreCase("kill") ) {
-                ColorTeamingConfig.teamCriteria = SidebarCriteria.KILL_COUNT;
+                ColorTeamingConfig.sideCriteria = SidebarCriteria.KILL_COUNT;
             } else if ( args[1].equalsIgnoreCase("death") ) {
-                ColorTeamingConfig.teamCriteria = SidebarCriteria.DEATH_COUNT;
+                ColorTeamingConfig.sideCriteria = SidebarCriteria.DEATH_COUNT;
             } else if ( args[1].equalsIgnoreCase("point") ) {
-                ColorTeamingConfig.teamCriteria = SidebarCriteria.POINT;
+                ColorTeamingConfig.sideCriteria = SidebarCriteria.POINT;
             } else if ( args[1].equalsIgnoreCase("rest") ) {
-                ColorTeamingConfig.teamCriteria = SidebarCriteria.REST_PLAYER;
+                ColorTeamingConfig.sideCriteria = SidebarCriteria.REST_PLAYER;
             } else if ( args[1].equalsIgnoreCase("clear") || args[1].equalsIgnoreCase("none") ) {
-                ColorTeamingConfig.teamCriteria = SidebarCriteria.NONE;
+                ColorTeamingConfig.sideCriteria = SidebarCriteria.NONE;
             } else {
                 return false;
             }

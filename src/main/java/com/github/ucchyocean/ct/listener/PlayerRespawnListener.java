@@ -20,7 +20,7 @@ import com.github.ucchyocean.ct.ColorTeamingConfig;
 public class PlayerRespawnListener implements Listener {
 
     /**
-     * Playerがログアウトしたときに発生するイベント
+     * Playerがリスポーンしたときに発生するイベント
      * @param event
      */
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)

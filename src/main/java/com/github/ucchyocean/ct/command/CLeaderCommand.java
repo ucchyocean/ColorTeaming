@@ -133,7 +133,7 @@ public class CLeaderCommand implements CommandExecutor {
                     l.append(name);
                 }
                 String message = String.format("%s チームの大将に、%s が選ばれました。", key, l);
-                ColorTeaming.sendTeamChat(key, message);
+                ColorTeaming.sendInfoToTeamChat(key, message);
                 sender.sendMessage(String.format(PREINFO + "%s チームの大将を、%d 人設定しました。", key, numberOfLeaders));
             }
 
@@ -167,7 +167,7 @@ public class CLeaderCommand implements CommandExecutor {
                 ColorTeaming.leaders.get(group).add(newLeader);
 
                 String message = String.format("%s チームの大将に、%s が選ばれました。", group, newLeader);
-                ColorTeaming.sendTeamChat(group, message);
+                ColorTeaming.sendInfoToTeamChat(group, message);
                 sender.sendMessage(String.format(PREINFO + "%s チームの大将を、1 人設定しました。", group));
 
                 return true;
@@ -184,7 +184,7 @@ public class CLeaderCommand implements CommandExecutor {
                 ColorTeaming.leaders.get(group).add(user);
 
                 String message = String.format("%s チームの大将に、%s が選ばれました。", group, user);
-                ColorTeaming.sendTeamChat(group, message);
+                ColorTeaming.sendInfoToTeamChat(group, message);
                 sender.sendMessage(PRENOTICE + message);
 
                 return true;

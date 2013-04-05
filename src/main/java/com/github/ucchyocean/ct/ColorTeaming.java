@@ -32,9 +32,10 @@ import com.github.ucchyocean.ct.command.CSaveCommand;
 import com.github.ucchyocean.ct.command.CSpawnCommand;
 import com.github.ucchyocean.ct.command.CTPCommand;
 import com.github.ucchyocean.ct.command.CTeamingCommand;
+import com.github.ucchyocean.ct.listener.EntityDamageListener;
 import com.github.ucchyocean.ct.listener.PlayerChatListener;
 import com.github.ucchyocean.ct.listener.PlayerDeathListener;
-import com.github.ucchyocean.ct.listener.PlayerQuitListener;
+import com.github.ucchyocean.ct.listener.PlayerJoinQuitListener;
 import com.github.ucchyocean.ct.listener.PlayerRespawnListener;
 import com.github.ucchyocean.ct.scoreboard.SidebarCriteria;
 import com.github.ucchyocean.ct.scoreboard.SidebarScoreDisplay;
@@ -112,9 +113,11 @@ public class ColorTeaming extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new PlayerDeathListener(), this);
 
-        getServer().getPluginManager().registerEvents(new PlayerQuitListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerJoinQuitListener(), this);
 
         getServer().getPluginManager().registerEvents(new PlayerRespawnListener(), this);
+
+        getServer().getPluginManager().registerEvents(new EntityDamageListener(), this);
 
         // 変数の初期化
         killDeathCounts = new Hashtable<String, int[]>();
@@ -134,9 +137,9 @@ public class ColorTeaming extends JavaPlugin {
     }
 
     /**
-     * Player に設定されている、ColorMe の色設定を取得する。
+     * Player に設定されている、チームを取得する。
      * @param player プレイヤー
-     * @return ColorMeの色
+     * @return チーム
      */
     public static Team getPlayerTeam(Player player) {
 
@@ -152,6 +155,11 @@ public class ColorTeaming extends JavaPlugin {
         return null;
     }
 
+    /**
+     * Player に設定されている、チームのチーム名を取得する。
+     * @param player
+     * @return
+     */
     public static String getPlayerColor(Player player) {
 
         Team team = getPlayerTeam(player);
@@ -160,9 +168,9 @@ public class ColorTeaming extends JavaPlugin {
     }
 
     /**
-     * Player に、ColorMe の色を設定する。
+     * Player にチームを設定する。
      * @param player プレイヤー
-     * @param color ColorMeの色
+     * @param color チームの色
      */
     public static Team addPlayerTeam(Player player, String color) {
 
@@ -177,12 +185,14 @@ public class ColorTeaming extends JavaPlugin {
             team.setAllowFriendlyFire(!ColorTeamingConfig.isFriendlyFireDisabler);
         }
         team.addPlayer(player);
+        player.setDisplayName(
+                Utility.replaceColors(color) + player.getName() + ChatColor.RESET);
 
         return team;
     }
 
     /**
-     * Player に設定されている、ColorMe の色設定を削除する。
+     * Player に設定されているチームを削除する。
      * @param player プレイヤー
      */
     public static void leavePlayerTeam(Player player) {
@@ -190,40 +200,60 @@ public class ColorTeaming extends JavaPlugin {
         Team team = getPlayerTeam(player);
         if ( team != null )
             team.removePlayer(player);
+
+        player.setDisplayName(player.getName());
     }
 
+    /**
+     * @deprecated
+     * フレンドリーファイアの設定。
+     * CB1.5.1-R0.2 では、setAllowFriendlyFire は正しく動作しない。
+     * @param ff trueならフレンドリーファイア有効、falseなら無効
+     */
     public static void setFriendlyFilre(boolean ff) {
 
-        Scoreboard scoreboard = getScoreboard();
-
-        Set<Team> teams = scoreboard.getTeams();
-        for ( Team t : teams ) {
-            t.setAllowFriendlyFire(ff);
-        }
+        // 封印☆   CB1.5.1-R0.2 では、setAllowFriendlyFire は正しく動作しない。
+//        Scoreboard scoreboard = getScoreboard();
+//
+//        Set<Team> teams = scoreboard.getTeams();
+//        for ( Team t : teams ) {
+//            t.setAllowFriendlyFire(ff);
+//        }
     }
 
+    /**
+     * 指定したチーム名のチームを削除する
+     * @param name
+     */
     public static void removeTeam(String name) {
 
         Scoreboard scoreboard = getScoreboard();
-
         Team team = scoreboard.getTeam(name);
         if ( team != null ) {
+            for ( OfflinePlayer player : team.getPlayers() ) {
+                if ( player.getPlayer() != null && player.isOnline() ) {
+                    leavePlayerTeam(player.getPlayer());
+                }
+            }
             team.unregister();
         }
     }
 
+    /**
+     * 全てのチームを削除する
+     */
     public static void removeAllTeam() {
 
         Scoreboard scoreboard = getScoreboard();
 
         Set<Team> teams = scoreboard.getTeams();
         for ( Team team : teams ) {
-            team.unregister();
+            removeTeam(team.getName());
         }
     }
 
     /**
-     * ColorMeに設定されている色情報で、ユーザーをグループごとのメンバーに整理して返すメソッド<br>
+     * ユーザーをチームごとのメンバーに整理して返すメソッド
      * @return 色をKey メンバーをValueとした Hashtable
      */
     public static Hashtable<String, ArrayList<Player>> getAllTeamMembers() {
@@ -330,7 +360,7 @@ public class ColorTeaming extends JavaPlugin {
      * @param color 送信先のチーム
      * @param message 送信するメッセージ
      */
-    public static void sendTeamChat(String color, String message) {
+    public static void sendInfoToTeamChat(String color, String message) {
 
         // メッセージを生成
         String partyMessage = String.format(
@@ -380,7 +410,7 @@ public class ColorTeaming extends JavaPlugin {
     public static void makeSidebar() {
 
         removeSidebar();
-        if ( ColorTeamingConfig.teamCriteria != SidebarCriteria.NONE ) {
+        if ( ColorTeamingConfig.sideCriteria != SidebarCriteria.NONE ) {
             sidebarScore = new SidebarScoreDisplay();
         }
     }

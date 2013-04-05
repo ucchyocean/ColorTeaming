@@ -60,7 +60,7 @@ public class SidebarScoreDisplay {
      */
     private void refreshCriteria() {
 
-        SidebarCriteria criteria = ColorTeamingConfig.teamCriteria;
+        SidebarCriteria criteria = ColorTeamingConfig.sideCriteria;
 
         if ( criteria == SidebarCriteria.NONE ) {
             if ( ColorTeaming.sidebarScore != null ) {
@@ -84,10 +84,10 @@ public class SidebarScoreDisplay {
      */
     public void refreshScore() {
 
-        switch (ColorTeamingConfig.teamCriteria) {
+        switch (ColorTeamingConfig.sideCriteria) {
         case KILL_COUNT:
         case DEATH_COUNT:
-            refreshScoreByKillOrDeathCount(ColorTeamingConfig.teamCriteria);
+            refreshScoreByKillOrDeathCount(ColorTeamingConfig.sideCriteria);
             break;
         case POINT:
             refreshScoreByPoint();

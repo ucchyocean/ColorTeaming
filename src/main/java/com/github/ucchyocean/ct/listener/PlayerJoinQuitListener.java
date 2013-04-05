@@ -7,18 +7,35 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingConfig;
+import com.github.ucchyocean.ct.scoreboard.SidebarCriteria;
 
 /**
  * @author ucchy
  * プレイヤーがログアウトしたときに、通知を受け取って処理するクラス
  */
-public class PlayerQuitListener implements Listener {
+public class PlayerJoinQuitListener implements Listener {
 
     private static final String PRENOTICE = ChatColor.LIGHT_PURPLE.toString();
+
+    /**
+     * プレイヤーがログインしたときに発生するイベント
+     * @param event
+     */
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+
+        // クライテリアが残り人数に設定されているなら、
+        if ( ColorTeamingConfig.sideCriteria == SidebarCriteria.REST_PLAYER ) {
+            // サイドバーを更新する
+            ColorTeaming.refreshSidebarScore();
+        }
+    }
+
 
     /**
      * Playerがログアウトしたときに発生するイベント

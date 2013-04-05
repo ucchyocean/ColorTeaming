@@ -72,7 +72,7 @@ public class CChatCommand implements CommandExecutor {
             }
 
             // 送信
-            ColorTeaming.sendTeamChat(group, message.toString());
+            ColorTeaming.sendInfoToTeamChat(group, message.toString());
         }
 
         return false;

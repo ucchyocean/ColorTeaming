@@ -34,7 +34,7 @@ public class ColorTeamingConfig {
     public static boolean colorRemoveOnDeath;
     public static boolean colorRemoveOnQuit;
     public static boolean coloringDeathMessage;
-    public static SidebarCriteria teamCriteria;
+    public static SidebarCriteria sideCriteria;
     public static TabListCriteria listCriteria;
     public static boolean protectRespawnPointWithWorldGuard;
     public static int protectRespawnPointRange;
@@ -94,8 +94,8 @@ public class ColorTeamingConfig {
 
         coloringDeathMessage = config.getBoolean("coloringDeathMessage", true);
 
-        String criteriaTemp = config.getString("teamCriteria", "rest");
-        teamCriteria = SidebarCriteria.fromString(criteriaTemp);
+        String criteriaTemp = config.getString("sideCriteria", "rest");
+        sideCriteria = SidebarCriteria.fromString(criteriaTemp);
         criteriaTemp = config.getString("listCriteria", "kill");
         listCriteria = TabListCriteria.fromString(criteriaTemp);
 

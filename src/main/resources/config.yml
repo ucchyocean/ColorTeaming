@@ -49,7 +49,7 @@ colorRemoveOnQuit: true
 
 coloringDeathMessage: true
 
-teamCriteria: rest
+sideCriteria: rest
 
 listCriteria: kill
 
