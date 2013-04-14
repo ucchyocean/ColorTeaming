@@ -58,20 +58,24 @@ public class CJoinCommand implements CommandExecutor {
             }
 
             group = getLeastGroup();
-            if ( group != null ) {
-                ColorTeaming.addPlayerTeam(player, group);
-                player.sendMessage(
-                        ChatColor.GREEN + "あなたは " +
-                        Utility.replaceColors(group) +
-                        group +
-                        ChatColor.GREEN +
-                        " グループになりました。");
-                return true;
-            } else {
+            if ( group == null ) {
                 sender.sendMessage(
-                        PREERR + "設定できるグループが無いようです。");
+                        PREERR + "参加できるグループが無いようです。");
                 return true;
             }
+
+            ColorTeaming.addPlayerTeam(player, group);
+            player.sendMessage(
+                    ChatColor.GREEN + "あなたは " +
+                    Utility.replaceColors(group) +
+                    group +
+                    ChatColor.GREEN +
+                    " グループになりました。");
+
+            // メンバー情報をlastdataに保存する
+            ColorTeaming.sdhandler.save("lastdata");
+
+            return true;
 
         } else {
 
@@ -100,6 +104,10 @@ public class CJoinCommand implements CommandExecutor {
                     group +
                     ChatColor.GREEN +
                     " グループになりました。");
+
+            // メンバー情報をlastdataに保存する
+            ColorTeaming.sdhandler.save("lastdata");
+
             return true;
 
         }

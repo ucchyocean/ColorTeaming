@@ -159,6 +159,15 @@ commands:
            /<command> (player) - playerが爆発して死亡します。
     permission: colorteaming.explode
     permission-message: パーミッション "<permission>" が無いため、実行できません。
+  colorjoin:
+    description: 一般プレイヤーが、任意のグループへ参加するためのコマンド
+    aliases: cjoin
+    usage: |
+           /<command> (group) - groupに参加します。
+           /<command> - 人数が少ないチームへ参加します。
+           /<command> random - /<command> と同様です。
+    permission: colorteaming.join
+    permission-message: パーミッション "<permission>" が無いため、実行できません。
 permissions:
   colorteaming.team:
     description: colorteaming(ct)コマンドの使用権限
@@ -221,4 +230,7 @@ permissions:
     description: ColorTeamingプラグインの管理系コマンド全ての使用権限
   colorteaming.global:
     description: colorglobal(g)コマンドの使用権限
+    default: true
+  colorteaming.join:
+    description: colorjoin(cjoin)コマンドの使用権限
     default: true
