@@ -7,7 +7,6 @@ package com.github.ucchyocean.ct.scoreboard;
 
 import java.util.ArrayList;
 
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -37,8 +36,8 @@ public class TabListScoreDisplay {
             objective = scoreboard.registerNewObjective("listscore", criteria);
         } else {
             // スコアを消去して使いまわす
-            for ( OfflinePlayer team : scoreboard.getPlayers() ) {
-                scoreboard.resetScores(team);
+            for ( Player player : ColorTeaming.getAllPlayers() ) {
+                scoreboard.resetScores(player);
             }
         }
 
@@ -79,8 +78,13 @@ public class TabListScoreDisplay {
      * スコア表示を削除する。
      */
     public void remove() {
+        // スコアを消去して使いまわす
+        Scoreboard scoreboard = ColorTeaming.getScoreboard();
+        for ( Player player : ColorTeaming.getAllPlayers() ) {
+            scoreboard.resetScores(player);
+        }
 
-        ColorTeaming.getScoreboard().clearSlot(DisplaySlot.PLAYER_LIST);
-        objective.unregister();
+//        ColorTeaming.getScoreboard().clearSlot(DisplaySlot.PLAYER_LIST);
+//        objective.unregister();
     }
 }

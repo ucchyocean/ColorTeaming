@@ -44,6 +44,26 @@ public class CSpawnCommand implements CommandExecutor {
             }
 
             return true;
+
+        } else if ( args.length >= 1 && args[0].equalsIgnoreCase("world") ) {
+            // cspawn world の実行
+
+            if ( !(sender instanceof Player) ) {
+                sender.sendMessage(PREERR + "cspawn の world 指定は、コンソールからは実行できません。");
+                return true;
+            }
+
+            Location location = ((Player)sender).getLocation();
+            int x = location.getBlockX();
+            int y = location.getBlockY();
+            int z = location.getBlockZ();
+            location.getWorld().setSpawnLocation(x, y, z);
+
+            String message = String.format(
+                    "ワールドの初期リスポーンポイントを (%d, %d, %d) に設定しました。",
+                    x, y, z);
+            sender.sendMessage(PREINFO + message);
+            return true;
         }
 
         // 以下、引数2つ以上が必要になるので、1つしか指定されていなければここで終わる.

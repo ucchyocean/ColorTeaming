@@ -95,6 +95,8 @@ public class CRandomCommand implements CommandExecutor {
         // スコアボードの作成
         ColorTeaming.makeSidebar();
         ColorTeaming.makeTabkeyListScore();
+        ColorTeaming.refreshSidebarScore();
+        ColorTeaming.refreshTabkeyListScore();
 
         // キルデス情報のクリア
         ColorTeaming.killDeathCounts.clear();

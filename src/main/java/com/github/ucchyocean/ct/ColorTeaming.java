@@ -41,6 +41,7 @@ import com.github.ucchyocean.ct.listener.PlayerJoinQuitListener;
 import com.github.ucchyocean.ct.listener.PlayerRespawnListener;
 import com.github.ucchyocean.ct.scoreboard.SidebarCriteria;
 import com.github.ucchyocean.ct.scoreboard.SidebarScoreDisplay;
+import com.github.ucchyocean.ct.scoreboard.TabListCriteria;
 import com.github.ucchyocean.ct.scoreboard.TabListScoreDisplay;
 
 /**
@@ -413,13 +414,17 @@ public class ColorTeaming extends JavaPlugin {
     }
 
     /**
-     * サイドバーを新しく作る。もともとサイドバーがあった場合は、消去して新しく作り直される。
+     * サイドバーを新しく作る。
+     * もともとサイドバーがあった場合は、そのまま使いまわされる。
      */
     public static void makeSidebar() {
 
         removeSidebar();
         if ( ColorTeamingConfig.sideCriteria != SidebarCriteria.NONE ) {
-            sidebarScore = new SidebarScoreDisplay();
+            if ( sidebarScore == null )
+                sidebarScore = new SidebarScoreDisplay();
+            else
+                sidebarScore.refreshScore();
         }
     }
 
@@ -430,7 +435,6 @@ public class ColorTeaming extends JavaPlugin {
 
         if ( sidebarScore != null ) {
             sidebarScore.remove();
-            sidebarScore = null;
         }
     }
 
@@ -446,16 +450,17 @@ public class ColorTeaming extends JavaPlugin {
 
     /**
      * タブキーリストのスコアを新しく作る。
-     * もともとスコアがあった場合は、消去して新しく作り直される。
+     * もともとスコアがあった場合は、そのまま使いまわされる。
      */
     public static void makeTabkeyListScore() {
 
-        if ( tablistScore != null ) {
-            removeTabkeyListScore();
-            tablistScore = null;
+        removeTabkeyListScore();
+        if ( ColorTeamingConfig.listCriteria != TabListCriteria.NONE ) {
+            if ( tablistScore == null )
+                tablistScore = new TabListScoreDisplay();
+            else
+                tablistScore.refreshScore();
         }
-
-        tablistScore = new TabListScoreDisplay();
     }
 
     /**
@@ -465,7 +470,6 @@ public class ColorTeaming extends JavaPlugin {
 
         if ( tablistScore != null ) {
             tablistScore.remove();
-            tablistScore = null;
         }
     }
 

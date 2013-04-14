@@ -55,6 +55,10 @@ public class CTeamingCommand implements CommandExecutor {
                 }
                 ColorTeaming.removeTeam(group);
             }
+
+            ColorTeaming.refreshSidebarScore();
+            ColorTeaming.refreshTabkeyListScore();
+
             sender.sendMessage(PREINFO + "全てのグループが解散しました。");
 
             return true;

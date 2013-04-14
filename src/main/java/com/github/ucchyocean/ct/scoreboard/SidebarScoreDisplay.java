@@ -41,27 +41,26 @@ public class SidebarScoreDisplay {
         if ( objective == null ) {
             objective = scoreboard.registerNewObjective("teamscore", "");
             objective.setDisplayName("チームスコア");
-        } else {
-            // スコアを消去して使いまわす
-            for ( OfflinePlayer team : scoreboard.getPlayers() ) {
-                scoreboard.resetScores(team);
-            }
+        }
+        objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+
+        // スコアを消去
+        for ( OfflinePlayer team : scoreboard.getPlayers() ) {
+            scoreboard.resetScores(team);
         }
 
         teamscores = new Hashtable<String, SidebarTeamScore>();
 
         Hashtable<String, ArrayList<Player>> members = ColorTeaming.getAllTeamMembers();
-        Enumeration<String> keys = members.keys();
-        while ( keys.hasMoreElements() ) {
-            String key = keys.nextElement();
-            Team team = scoreboard.getTeam(key);
-            SidebarTeamScore ts = new SidebarTeamScore(team);
-            objective.getScore(ts).setScore(0);
-            teamscores.put(key, ts);
+        for ( String key : members.keySet() ) {
+            if ( !teamscores.containsKey(key) ) {
+                Team team = scoreboard.getTeam(key);
+                SidebarTeamScore ts = new SidebarTeamScore(team);
+                objective.getScore(ts).setScore(0);
+                teamscores.put(key, ts);
+            }
         }
-
-        objective.setDisplaySlot(DisplaySlot.SIDEBAR);
-
+        
         refreshCriteria();
     }
 
@@ -184,8 +183,13 @@ public class SidebarScoreDisplay {
      * サイドバーの表示を消去する。
      */
     public void remove() {
+        // スコアを消去して使いまわす
+        Scoreboard scoreboard = ColorTeaming.getScoreboard();
+        for ( OfflinePlayer team : scoreboard.getPlayers() ) {
+            scoreboard.resetScores(team);
+        }
 
-        ColorTeaming.getScoreboard().clearSlot(DisplaySlot.SIDEBAR);
-        objective.unregister();
+//        ColorTeaming.getScoreboard().clearSlot(DisplaySlot.SIDEBAR);
+//        objective.unregister();
     }
 }
