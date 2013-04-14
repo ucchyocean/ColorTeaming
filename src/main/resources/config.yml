@@ -3,14 +3,10 @@
 # @license    GPLv3
 # @copyright  Copyright ucchy 2013
 
-world: 'world'
-
+worlds: ['world']
 teamChatMode: false
-
 opDisplayMode: false
-
 firelyFireDisabler: true
-
 classes:
   Knight:
     items: 267,320:5
@@ -37,20 +33,12 @@ classes:
     armor: 298$E5E533,299$E5E533,300$E5E533,301$E5E533
   GreenLeather:
     armor: 298$667F33,299$667F33,300$667F33,301$667F33
-
 points:
   killPoint: 1
   deathPoint: -1
   tkPoint: -3
-
-colorRemoveOnDeath: true
-
-colorRemoveOnQuit: true
-
-coloringDeathMessage: true
-
+colorRemoveOnDeath: false
+colorRemoveOnQuit: false
 sideCriteria: rest
-
 listCriteria: kill
-
 killTrophy: 0

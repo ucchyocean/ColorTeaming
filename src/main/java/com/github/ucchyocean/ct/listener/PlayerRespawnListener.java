@@ -11,7 +11,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
 import com.github.ucchyocean.ct.ColorTeaming;
-import com.github.ucchyocean.ct.ColorTeamingConfig;
 
 /**
  * @author ucchy
@@ -30,12 +29,10 @@ public class PlayerRespawnListener implements Listener {
         String color = ColorTeaming.getPlayerColor(player);
 
         // リスポーンポイントを設定
-        if ( !ColorTeamingConfig.ignoreGroups.contains(color) ) {
-            Location respawn = ColorTeaming.respawnConfig.get(color);
-            if ( respawn != null ) {
-                respawn = respawn.add(0.5, 0, 0.5);
-                event.setRespawnLocation(respawn);
-            }
+        Location respawn = ColorTeaming.respawnConfig.get(color);
+        if ( respawn != null ) {
+            respawn = respawn.add(0.5, 0, 0.5);
+            event.setRespawnLocation(respawn);
         }
     }
 }

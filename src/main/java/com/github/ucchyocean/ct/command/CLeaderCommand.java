@@ -15,7 +15,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.github.ucchyocean.ct.ColorTeaming;
-import com.github.ucchyocean.ct.ColorTeamingConfig;
 
 /**
  * @author ucchy
@@ -105,11 +104,6 @@ public class CLeaderCommand implements CommandExecutor {
             while ( keys.hasMoreElements() ) {
 
                 String key = keys.nextElement();
-
-                // ignore group の場合は、無視
-                if ( ColorTeamingConfig.ignoreGroups.contains(key) ) {
-                    continue;
-                }
 
                 // 人数が少なすぎるグループは無視
                 if ( numberOfLeaders > members.get(key).size() ) {

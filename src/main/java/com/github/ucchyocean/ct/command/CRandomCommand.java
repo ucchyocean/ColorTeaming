@@ -50,7 +50,7 @@ public class CRandomCommand implements CommandExecutor {
 
         // ゲームモードがクリエイティブの人は除外する
         ArrayList<Player> tempPlayers =
-                ColorTeaming.getAllPlayersOnWorld(ColorTeamingConfig.defaultWorldName);
+                ColorTeaming.getAllPlayersOnWorld(ColorTeamingConfig.worldNames);
         ArrayList<Player> players = new ArrayList<Player>();
         for ( Player p : tempPlayers ) {
             if ( p.getGameMode() != GameMode.CREATIVE ) {
@@ -59,9 +59,7 @@ public class CRandomCommand implements CommandExecutor {
         }
         if ( players.size() == 0 ) {
             sender.sendMessage(
-                    PREERR + "ワールド " +
-                    ColorTeamingConfig.defaultWorldName +
-                    " に、誰も居ないようです。");
+                    PREERR + "対象のワールドに、誰も居ないようです。");
             return true;
         }
 
@@ -125,7 +123,7 @@ public class CRandomCommand implements CommandExecutor {
 
         // ゲームモードがクリエイティブの人や、既に色が設定されている人は除外する
         ArrayList<Player> tempPlayers =
-                ColorTeaming.getAllPlayersOnWorld(ColorTeamingConfig.defaultWorldName);
+                ColorTeaming.getAllPlayersOnWorld(ColorTeamingConfig.worldNames);
         ArrayList<Player> players = new ArrayList<Player>();
         for ( Player p : tempPlayers ) {
             Team team = ColorTeaming.getPlayerTeam(p);
@@ -137,9 +135,7 @@ public class CRandomCommand implements CommandExecutor {
         }
         if ( players.size() == 0 ) {
             sender.sendMessage(
-                    PREERR + "ワールド " +
-                    ColorTeamingConfig.defaultWorldName +
-                    " に、対象プレイヤーがいないようです。");
+                    PREERR + "設定されたワールドに、対象プレイヤーがいないようです。");
             return true;
         }
 

@@ -14,7 +14,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.github.ucchyocean.ct.ColorTeaming;
-import com.github.ucchyocean.ct.ColorTeamingConfig;
 import com.github.ucchyocean.ct.Utility;
 
 /**
@@ -85,7 +84,7 @@ public class CSpawnCommand implements CommandExecutor {
         }
 
         String group;
-        String world = ColorTeamingConfig.defaultWorldName;
+        String world = "world";
         int x_actual, y_actual, z_actual;
 
         group = args[0];
@@ -157,12 +156,7 @@ public class CSpawnCommand implements CommandExecutor {
 
         // 有効なグループ名が指定されたか確認する
         if ( !Utility.isValidColor(group) ) {
-            sender.sendMessage(PREERR + "グループ " + group + " はColorMeに設定できないグループ名です。");
-            return true;
-        }
-        if ( ColorTeamingConfig.ignoreGroups.contains(group) ) {
-            sender.sendMessage(PREERR + "グループ " + group + " は" +
-                    "config.ymlでignoreGroupsに指定されているグループなので、使用できません。");
+            sender.sendMessage(PREERR + "グループ " + group + " は設定できないグループ名です。");
             return true;
         }
 

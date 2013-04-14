@@ -17,7 +17,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 import com.github.ucchyocean.ct.ColorTeaming;
-import com.github.ucchyocean.ct.ColorTeamingConfig;
 
 /**
  * @author ucchy
@@ -256,7 +255,7 @@ public class CTPCommand implements CommandExecutor {
      */
     private Location checkAndGetLocation(CommandSender sender, String[] args, int fromIndex) {
 
-        String world = ColorTeamingConfig.defaultWorldName;
+        String world = "world";
         String x_str, y_str, z_str;
 
         if ( args.length >= fromIndex + 4 ) {

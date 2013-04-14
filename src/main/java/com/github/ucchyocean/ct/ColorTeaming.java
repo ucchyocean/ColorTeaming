@@ -6,6 +6,7 @@ package com.github.ucchyocean.ct;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -292,19 +293,19 @@ public class ColorTeaming extends JavaPlugin {
     /**
      * 指定したワールドにいる全てのプレイヤーを取得する。
      * ただし、指定したワールドが存在しない場合は、空のリストが返される。
-     * @param worldName ワールド名
+     * @param worldNames 対象にするワールド名
      * @return 全てのプレイヤー
      */
-    public static ArrayList<Player> getAllPlayersOnWorld(String worldName) {
+    public static ArrayList<Player> getAllPlayersOnWorld(List<String> worldNames) {
+
+        if ( worldNames == null ) {
+            return null;
+        }
 
         Player[] temp = instance.getServer().getOnlinePlayers();
         ArrayList<Player> result = new ArrayList<Player>();
-        World world = getWorld(worldName);
-        if ( world == null ) {
-            return result;
-        }
         for ( Player p : temp ) {
-            if ( p.getWorld().equals(world) ) {
+            if ( worldNames.contains(p.getWorld().getName()) ) {
                 result.add(p);
             }
         }

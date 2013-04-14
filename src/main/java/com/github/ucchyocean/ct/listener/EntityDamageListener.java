@@ -51,9 +51,8 @@ public class EntityDamageListener implements Listener {
             String attackerColor = ColorTeaming.getPlayerColor((Player)attacker);
             String defenderColor = ColorTeaming.getPlayerColor((Player)defender);
 
-            // 同じ色で、ignoreGroupsでなければ、
-            if ( attackerColor.equalsIgnoreCase(defenderColor) &&
-                    !ColorTeamingConfig.ignoreGroups.contains(attackerColor) ) {
+            // 同じ色ならば、
+            if ( attackerColor.equalsIgnoreCase(defenderColor) ) {
                 // 攻撃イベントをキャンセルしちゃう。
                 event.setCancelled(true);
             }
@@ -71,9 +70,8 @@ public class EntityDamageListener implements Listener {
                 String attackerColor = ColorTeaming.getPlayerColor((Player)shooter);
                 String defenderColor = ColorTeaming.getPlayerColor((Player)defender);
 
-                // 同じ色で、ignoreGroupsでなければ、
-                if ( attackerColor.equalsIgnoreCase(defenderColor) &&
-                        !ColorTeamingConfig.ignoreGroups.contains(attackerColor) ) {
+                // 同じ色ならば、
+                if ( attackerColor.equalsIgnoreCase(defenderColor) ) {
                     // 攻撃イベントをキャンセルしちゃう。
                     event.setCancelled(true);
                 }

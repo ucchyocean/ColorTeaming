@@ -2,25 +2,45 @@
 # @author     ucchy
 # @license    GPLv3
 # @copyright  Copyright ucchy 2013
+#
+# worlds: PVPを実施するworld名を設定してください。複数指定可能です。
+# teamChatMode: サーバー起動時のチームチャットモードを設定します。
+#               trueになっている場合は、チャットの発言がチーム内のみになります。
+# opDisplayMode: teamChatMode が有効のときに、OPメンバーの画面にもチームチャットの内容を
+#                表示するかどうかを設定します。
+# firelyFireDisabler: 同じチームメンバー同士の攻撃（剣などの直接攻撃と、弓矢）を無効にします。
+# classes: クラスごとのインベントリーの内容を設定します。
+#          アイテムの設定形式は2種類あります。
+#          通常のアイテム → (アイテムID)[@(ダメージ値)][:(個数)]
+#          エンチャント付きアイテム → (アイテムID)^(エンチャントID)-(エンチャントレベル)
+#          armor の方は、(頭)、(胸)、(レギンス)、(足) の順に指定します。
+#          0 を指定すると、その部分は装備しません。
+# points: ckillコマンド用の得点設定。
+#         killPoint - 他のチームのプレイヤーを倒したときの獲得点数。
+#         deathPoint - 誰かに倒されたときの獲得点数。
+#         tkPoint - 自分のチームのプレイヤーを倒したときの獲得点数。
+# colorRemoveOnDeath: 死んでリスポンしたときに、グループから自動で抜けるかどうかを設定します。
+# colorRemoveOnQuit: ログアウトしたときに、グループから自動で抜けるかどうかを設定します。
+# sideCriteria: サイドバーに表示するチームスコアの種類を指定します。
+#               kill - キル数
+#               death - デス数
+#               point - ポイント(上記のpointsの項目を参照)
+#               rest - 残り人数
+#               none - 非表示
+# listCriteria: TABキーリストに表示する個人スコアの種類を指定します。
+#               kill - キル数
+#               death - デス数
+#               point - ポイント(上記のpointsの項目を参照)
+#               health - 残り体力
+#               none - 非表示
+# killTrophy: いずれかのチームが指定のキル数に達したときに、通知を行うかどうかを設定します。
+#             30を指定した場合は、30キル達成で通知します。0の場合は通知オフとなります。
+#             clコマンドで大将を選出している場合は、本設定は無視されることに注意してください。
 
-# PVPを実施するworld名を設定してください。
-world: 'world'
-
-# サーバー起動時のチームチャットモードを設定します。
-# trueになっている場合は、チャットの発言がチーム内のみになります。
+worlds: ['world']
 teamChatMode: false
-
-# teamChatMode が有効のときに、OPメンバーの画面にもチームチャットの内容を
-# 表示するかどうかを設定します。
 opDisplayMode: false
-
-# 同じチームメンバー同士の攻撃（剣などの直接攻撃と、弓矢）を無効にします。
 firelyFireDisabler: true
-
-# クラスごとのインベントリーの内容を設定します。
-# アイテムの設定形式は2種類あります。
-# 通常のアイテム → (アイテムID)[@(ダメージ値)][:(個数)]
-# エンチャント付きアイテム → (アイテムID)^(エンチャントID)-(エンチャントレベル)
 classes:
   Knight:
     items: 267,320:5
@@ -47,44 +67,12 @@ classes:
     armor: 298$E5E533,299$E5E533,300$E5E533,301$E5E533
   GreenLeather:
     armor: 298$667F33,299$667F33,300$667F33,301$667F33
-
-# ckillコマンド用の得点設定。
-# killPoint - 他のチームのプレイヤーを倒したときの獲得点数。
-# deathPoint - 誰かに倒されたときの獲得点数。
-# tkPoint - 自分のチームのプレイヤーを倒したときの獲得点数。
-#           cffがonで、チームメンバーへのダメージがないなら、設定の意味は無い。
 points:
   killPoint: 1
   deathPoint: -1
   tkPoint: -3
-
-# 死んでリスポンしたときに、グループから自動で抜けるかどうかを設定します。
-colorRemoveOnDeath: true
-
-# ログアウトしたときに、グループから自動で抜けるかどうかを設定します。
-colorRemoveOnQuit: true
-
-# デスメッセージ（死んだときに表示されるメッセージ）の名前を、
-# 色づけして表示するかどうかを設定します。
-coloringDeathMessage: true
-
-# サイドバーに表示するチームスコアの種類を指定します。
-# kill - キル数
-# death - デス数
-# point - ポイント(上記のpointsの項目を参照)
-# rest - 残り人数
-# none - 非表示
+colorRemoveOnDeath: false
+colorRemoveOnQuit: false
 sideCriteria: rest
-
-# TABキーリストに表示する個人スコアの種類を指定します。
-# kill - キル数
-# death - デス数
-# point - ポイント(上記のpointsの項目を参照)
-# health - 残り体力
-# none - 非表示
 listCriteria: kill
-
-# いずれかのチームが指定のキル数に達したときに、通知を行うかどうかを設定します。
-# 30を指定した場合は、30キル達成で通知します。0の場合は通知オフとなります。
-# clコマンドで大将を選出している場合は、本設定は無視されることに注意してください。
 killTrophy: 0

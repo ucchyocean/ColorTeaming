@@ -14,8 +14,8 @@ import java.util.Map;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import com.github.ucchyocean.ct.scoreboard.TabListCriteria;
 import com.github.ucchyocean.ct.scoreboard.SidebarCriteria;
+import com.github.ucchyocean.ct.scoreboard.TabListCriteria;
 
 /**
  * @author ucchy
@@ -23,9 +23,7 @@ import com.github.ucchyocean.ct.scoreboard.SidebarCriteria;
  */
 public class ColorTeamingConfig {
 
-    public static String defaultWorldName;
-
-    public static List<String> ignoreGroups;
+    public static List<String> worldNames;
     public static boolean isTeamChatMode;
     public static boolean isOPDisplayMode;
     public static boolean isFriendlyFireDisabler;
@@ -33,17 +31,13 @@ public class ColorTeamingConfig {
     public static Map<String, String> classArmors;
     public static boolean colorRemoveOnDeath;
     public static boolean colorRemoveOnQuit;
-    public static boolean coloringDeathMessage;
-    public static SidebarCriteria sideCriteria;
-    public static TabListCriteria listCriteria;
-    public static boolean protectRespawnPointWithWorldGuard;
-    public static int protectRespawnPointRange;
-
     public static int killPoint;
     public static int deathPoint;
     public static int tkPoint;
-
+    public static SidebarCriteria sideCriteria;
+    public static TabListCriteria listCriteria;
     public static int killTrophy;
+    public static int killReachTrophy;
 
     /**
      * config.ymlの読み出し処理。
@@ -60,15 +54,14 @@ public class ColorTeamingConfig {
         ColorTeaming.instance.reloadConfig();
         FileConfiguration config = ColorTeaming.instance.getConfig();
 
+        worldNames = config.getStringList("worlds");
+        if ( worldNames == null ) {
+            worldNames = new ArrayList<String>();
+        }
+
         isTeamChatMode = config.getBoolean("teamChatMode", false);
         isOPDisplayMode = config.getBoolean("opDisplayMode", false);
-
         isFriendlyFireDisabler = config.getBoolean("firelyFireDisabler", true);
-
-        ignoreGroups = config.getStringList("ignoreGroups");
-        if ( ignoreGroups == null ) {
-            ignoreGroups = new ArrayList<String>();
-        }
 
         classItems = new HashMap<String, String>();
         classArmors = new HashMap<String, String>();
@@ -84,28 +77,27 @@ public class ColorTeamingConfig {
             }
         }
 
+        colorRemoveOnDeath = config.getBoolean("colorRemoveOnDeath", false);
+        colorRemoveOnQuit = config.getBoolean("colorRemoveOnQuit", false);
+
         killPoint = config.getInt("points.killPoint", 1);
         deathPoint = config.getInt("points.deathPoint", -1);
         tkPoint = config.getInt("points.tkPoint", -3);
-
-        colorRemoveOnDeath = config.getBoolean("autoColorRemove", true);
-        colorRemoveOnDeath = config.getBoolean("colorRemoveOnDeath", colorRemoveOnDeath);
-        colorRemoveOnQuit = config.getBoolean("colorRemoveOnQuit", colorRemoveOnDeath);
-
-        coloringDeathMessage = config.getBoolean("coloringDeathMessage", true);
 
         String criteriaTemp = config.getString("sideCriteria", "rest");
         sideCriteria = SidebarCriteria.fromString(criteriaTemp);
         criteriaTemp = config.getString("listCriteria", "kill");
         listCriteria = TabListCriteria.fromString(criteriaTemp);
 
-        protectRespawnPointWithWorldGuard =
-                config.getBoolean("protectRespawnPointWithWorldGuard", false);
-        protectRespawnPointRange = config.getInt("protectRespawnPointRange", 3);
-
         killTrophy = config.getInt("killTrophy", 0);
-
-        defaultWorldName = config.getString("world", "world");
+        if ( killTrophy > 0 ) {
+            killReachTrophy = config.getInt("killReachTrophy", 0);
+            if ( killReachTrophy > killTrophy ) {
+                killReachTrophy = 0;
+            }
+        } else {
+            killReachTrophy = 0;
+        }
     }
 
     /**

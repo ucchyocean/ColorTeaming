@@ -3,6 +3,7 @@
  */
 package com.github.ucchyocean.ct.listener;
 
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -41,10 +42,9 @@ public class PlayerChatListener implements Listener {
         }
 
         Player player = event.getPlayer();
-        String color = ColorTeaming.getPlayerColor(player);
 
-        // 所属する色が無効グループなら、何もせずに抜ける
-        if ( ColorTeamingConfig.ignoreGroups.contains(color) ) {
+        // プレイヤーのゲームモードがクリエイティブなら、何もせずに抜ける
+        if ( player.getGameMode() == GameMode.CREATIVE ) {
             return;
         }
 
