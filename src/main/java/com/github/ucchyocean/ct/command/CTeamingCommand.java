@@ -197,6 +197,9 @@ public class CTeamingCommand implements CommandExecutor {
             ColorTeaming.refreshSidebarScore();
             ColorTeaming.refreshTabkeyListScore();
 
+            sender.sendMessage(PREINFO + "プレイヤー " + player.getName() + " をグループ " +
+                    group + " に追加しました。");
+
             return true;
 
         } else if ( args.length >= 2 && args[0].equalsIgnoreCase("side") ) {
@@ -221,6 +224,8 @@ public class CTeamingCommand implements CommandExecutor {
             // 設定の保存
             ColorTeamingConfig.setConfigValue("teamCriteria", args[1].toLowerCase());
 
+            sender.sendMessage(PREINFO + "サイドバーの表示を" + args[1].toLowerCase() + "にしました。");
+
             return true;
 
         } else if ( args.length >= 2 && args[0].equalsIgnoreCase("list") ) {
@@ -244,6 +249,8 @@ public class CTeamingCommand implements CommandExecutor {
 
             // 設定の保存
             ColorTeamingConfig.setConfigValue("listCriteria", args[1].toLowerCase());
+
+            sender.sendMessage(PREINFO + "リストの表示を" + args[1].toLowerCase() + "にしました。");
 
             return true;
         }

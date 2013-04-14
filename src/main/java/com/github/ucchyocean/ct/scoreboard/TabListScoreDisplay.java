@@ -7,6 +7,7 @@ package com.github.ucchyocean.ct.scoreboard;
 
 import java.util.ArrayList;
 
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -31,7 +32,16 @@ public class TabListScoreDisplay {
         Scoreboard scoreboard = ColorTeaming.getScoreboard();
         String criteria = TabListCriteria.convert(ColorTeamingConfig.listCriteria);
 
-        objective = scoreboard.registerNewObjective("listscore", criteria);
+        objective = scoreboard.getObjective("listscore");
+        if ( objective == null ) {
+            objective = scoreboard.registerNewObjective("listscore", criteria);
+        } else {
+            // スコアを消去して使いまわす
+            for ( OfflinePlayer team : scoreboard.getPlayers() ) {
+                scoreboard.resetScores(team);
+            }
+        }
+
         objective.setDisplaySlot(DisplaySlot.PLAYER_LIST);
 
         refreshScore();

@@ -10,6 +10,7 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -34,9 +35,18 @@ public class SidebarScoreDisplay {
      */
     public SidebarScoreDisplay() {
 
+        // Scoreboardからobjective取得。null の場合は再作成する。
         Scoreboard scoreboard = ColorTeaming.getScoreboard();
-        objective = scoreboard.registerNewObjective("teamscore", "");
-        objective.setDisplayName("チームスコア");
+        objective = scoreboard.getObjective("teamscore");
+        if ( objective == null ) {
+            objective = scoreboard.registerNewObjective("teamscore", "");
+            objective.setDisplayName("チームスコア");
+        } else {
+            // スコアを消去して使いまわす
+            for ( OfflinePlayer team : scoreboard.getPlayers() ) {
+                scoreboard.resetScores(team);
+            }
+        }
 
         teamscores = new Hashtable<String, SidebarTeamScore>();
 

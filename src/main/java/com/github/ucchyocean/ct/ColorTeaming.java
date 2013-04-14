@@ -52,6 +52,7 @@ public class ColorTeaming extends JavaPlugin {
     private static final String TEAM_CHAT_FORMAT = "&a[%s&a]<%s&r&a> %s";
     private static final String TEAM_INFORMATION_FORMAT = "&a[%s&a] %s";
 
+    private static Scoreboard sb;
     protected static ColorTeaming instance;
     public static TeamMemberSaveDataHandler sdhandler;
 
@@ -137,7 +138,10 @@ public class ColorTeaming extends JavaPlugin {
      * @return スコアボード
      */
     public static Scoreboard getScoreboard() {
-        return instance.getServer().getScoreboardManager().getMainScoreboard();
+        if ( sb == null ) {
+            sb = instance.getServer().getScoreboardManager().getMainScoreboard();
+        }
+        return sb;
     }
 
     /**
