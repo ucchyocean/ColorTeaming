@@ -69,6 +69,7 @@ public class TabListScoreDisplay {
                         data[2] * ColorTeamingConfig.tkPoint;
                 objective.getScore(player).setScore(point);
             } else {
+                objective.getScore(player).setScore(1);
                 objective.getScore(player).setScore(0);
             }
         }

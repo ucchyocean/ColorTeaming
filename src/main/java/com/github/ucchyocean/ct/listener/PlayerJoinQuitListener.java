@@ -44,7 +44,10 @@ public class PlayerJoinQuitListener implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
 
-        // colorRemoveOnQuitがfalseなら、ここでは何もしない。
+        // サイドバーを更新する
+        ColorTeaming.refreshSidebarScore();
+
+        // colorRemoveOnQuitがfalseなら、以降の処理は何もしない。
         if ( !ColorTeamingConfig.colorRemoveOnQuit ) {
             return;
         }
@@ -71,9 +74,6 @@ public class PlayerJoinQuitListener implements Listener {
 
         // 色設定を削除する
         ColorTeaming.leavePlayerTeam(player);
-
-        // サイドバーを更新する
-        ColorTeaming.refreshSidebarScore();
     }
 
 }

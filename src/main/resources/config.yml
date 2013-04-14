@@ -1,4 +1,4 @@
-# Color Teaming Plugin 1.5.1
+# Color Teaming Plugin 1.5.2
 # @author     ucchy
 # @license    GPLv3
 # @copyright  Copyright ucchy 2013
@@ -39,8 +39,10 @@ points:
   tkPoint: -3
 colorRemoveOnDeath: false
 colorRemoveOnQuit: false
+noDamageSeconds: 5
 allowPlayerJoinAny: false
 allowPlayerJoinRandom: true
 sideCriteria: rest
-listCriteria: kill
+listCriteria: point
 killTrophy: 0
+killReachTrophy: 0

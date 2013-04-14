@@ -31,6 +31,7 @@ public class ColorTeamingConfig {
     public static Map<String, String> classArmors;
     public static boolean colorRemoveOnDeath;
     public static boolean colorRemoveOnQuit;
+    public static int noDamageSeconds;
     public static boolean allowPlayerJoinAny;
     public static boolean allowPlayerJoinRandom;
     public static int killPoint;
@@ -81,6 +82,7 @@ public class ColorTeamingConfig {
 
         colorRemoveOnDeath = config.getBoolean("colorRemoveOnDeath", false);
         colorRemoveOnQuit = config.getBoolean("colorRemoveOnQuit", false);
+        noDamageSeconds = config.getInt("noDamageSeconds", 5);
 
         allowPlayerJoinAny = config.getBoolean("allowPlayerJoinAny", false);
         allowPlayerJoinRandom = config.getBoolean("allowPlayerJoinRandom", true);
@@ -91,7 +93,7 @@ public class ColorTeamingConfig {
 
         String criteriaTemp = config.getString("sideCriteria", "rest");
         sideCriteria = SidebarCriteria.fromString(criteriaTemp);
-        criteriaTemp = config.getString("listCriteria", "kill");
+        criteriaTemp = config.getString("listCriteria", "point");
         listCriteria = TabListCriteria.fromString(criteriaTemp);
 
         killTrophy = config.getInt("killTrophy", 0);

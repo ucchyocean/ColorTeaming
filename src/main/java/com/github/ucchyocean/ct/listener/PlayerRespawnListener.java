@@ -11,6 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
 import com.github.ucchyocean.ct.ColorTeaming;
+import com.github.ucchyocean.ct.ColorTeamingConfig;
 
 /**
  * @author ucchy
@@ -33,6 +34,7 @@ public class PlayerRespawnListener implements Listener {
         if ( respawn != null ) {
             respawn = respawn.add(0.5, 0, 0.5);
             event.setRespawnLocation(respawn);
+            player.setNoDamageTicks(ColorTeamingConfig.noDamageSeconds * 20);
         }
     }
 }

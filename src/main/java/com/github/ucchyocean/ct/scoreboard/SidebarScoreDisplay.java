@@ -167,7 +167,6 @@ public class SidebarScoreDisplay {
      * 残り人数によるスコア更新を行う
      */
     private void refreshScoreByRestPlayerCount() {
-
         Hashtable<String, ArrayList<Player>> members = ColorTeaming.getAllTeamMembers();
         Enumeration<String> keys = members.keys();
         while ( keys.hasMoreElements() ) {
