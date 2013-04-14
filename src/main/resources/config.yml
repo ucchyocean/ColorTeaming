@@ -39,6 +39,8 @@ points:
   tkPoint: -3
 colorRemoveOnDeath: false
 colorRemoveOnQuit: false
+allowPlayerJoinAny: false
+allowPlayerJoinRandom: true
 sideCriteria: rest
 listCriteria: kill
 killTrophy: 0

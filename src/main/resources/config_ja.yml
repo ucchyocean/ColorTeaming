@@ -21,6 +21,10 @@
 #         tkPoint - 自分のチームのプレイヤーを倒したときの獲得点数。
 # colorRemoveOnDeath: 死んでリスポンしたときに、グループから自動で抜けるかどうかを設定します。
 # colorRemoveOnQuit: ログアウトしたときに、グループから自動で抜けるかどうかを設定します。
+# allowPlayerJoinAny: 一般プレイヤーが、/cjoin (group) コマンドを使用して、
+#                     グループを作ったり参加したりすることができるようにするかを、設定します。
+# allowPlayerJoinRandom: 一般プレイヤーが、/cjoin コマンドで、ランダムに人数の少ないグループに
+#                        参加することができるようになります。
 # sideCriteria: サイドバーに表示するチームスコアの種類を指定します。
 #               kill - キル数
 #               death - デス数
@@ -73,6 +77,8 @@ points:
   tkPoint: -3
 colorRemoveOnDeath: false
 colorRemoveOnQuit: false
+allowPlayerJoinAny: false
+allowPlayerJoinRandom: true
 sideCriteria: rest
 listCriteria: kill
 killTrophy: 0

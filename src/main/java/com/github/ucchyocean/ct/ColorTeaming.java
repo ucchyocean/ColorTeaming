@@ -24,6 +24,7 @@ import com.github.ucchyocean.ct.command.CClassCommand;
 import com.github.ucchyocean.ct.command.CCountCommand;
 import com.github.ucchyocean.ct.command.CExplodeCommand;
 import com.github.ucchyocean.ct.command.CFriendlyFireCommand;
+import com.github.ucchyocean.ct.command.CJoinCommand;
 import com.github.ucchyocean.ct.command.CKillCommand;
 import com.github.ucchyocean.ct.command.CLeaderCommand;
 import com.github.ucchyocean.ct.command.CRandomCommand;
@@ -106,6 +107,8 @@ public class ColorTeaming extends JavaPlugin {
         getCommand("colorsave").setExecutor(new CSaveCommand());
 
         getCommand("colorrestore").setExecutor(new CRestoreCommand());
+
+        getCommand("colorjoin").setExecutor(new CJoinCommand());
 
         getCommand("colorteaming").setExecutor(new CTeamingCommand());
 
