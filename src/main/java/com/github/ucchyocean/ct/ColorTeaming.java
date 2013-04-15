@@ -15,6 +15,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
@@ -430,6 +431,7 @@ public class ColorTeaming extends JavaPlugin {
      */
     public static void removeSidebar() {
 
+        getScoreboard().clearSlot(DisplaySlot.SIDEBAR);
         if ( sidebarScore != null ) {
             sidebarScore.remove();
         }
@@ -462,6 +464,7 @@ public class ColorTeaming extends JavaPlugin {
      */
     public static void removeTabkeyListScore() {
 
+        getScoreboard().clearSlot(DisplaySlot.PLAYER_LIST);
         if ( tablistScore != null ) {
             tablistScore.remove();
         }

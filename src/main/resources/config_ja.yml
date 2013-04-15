@@ -2,6 +2,7 @@
 # @author     ucchy
 # @license    GPLv3
 # @copyright  Copyright ucchy 2013
+#
 # worlds: PVPを実施するworld名を設定してください。複数指定可能です。
 # teamChatMode: サーバー起動時のチームチャットモードを設定します。
 #               trueになっている場合は、チャットの発言がチーム内のみになります。
@@ -47,6 +48,9 @@
 #             0の場合は通知オフとなります。
 #             killTrophyが 0 の場合や、killTrophy より killReachTrophy が大きい場合は、この設定は無視されます。
 #             clコマンドで大将を選出している場合も、本設定は無視されます。
+# worldSpawn: チーム無所属の人がサーバーに参加したときに、
+#             ワールドのリスポーン地点へリスポーンするようになります。
+#             ワールドのリスポーン地点は、/cspawn world コマンドを使用してください。
 
 worlds: ['world']
 teamChatMode: false
@@ -91,3 +95,4 @@ sideCriteria: rest
 listCriteria: point
 killTrophy: 0
 killReachTrophy: 0
+worldSpawn: false

@@ -4,11 +4,13 @@
 package com.github.ucchyocean.ct.listener;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingConfig;
@@ -33,6 +35,17 @@ public class PlayerJoinQuitListener implements Listener {
         if ( ColorTeamingConfig.sideCriteria == SidebarCriteria.REST_PLAYER ) {
             // サイドバーを更新する
             ColorTeaming.refreshSidebarScore();
+        }
+
+        // worldRespawn が設定されていて、チームに所属していないプレイヤーは
+        // ワールドリスポーン地点に飛ばす
+        Player player = event.getPlayer();
+        if ( ColorTeamingConfig.worldSpawn &&
+                ColorTeaming.getPlayerColor(player).equals("") ) {
+            Location location = player.getWorld().getSpawnLocation();
+            if ( location != null ) {
+                player.teleport(location, TeleportCause.PLUGIN);
+            }
         }
     }
 

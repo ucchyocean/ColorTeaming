@@ -46,3 +46,4 @@ sideCriteria: rest
 listCriteria: point
 killTrophy: 0
 killReachTrophy: 0
+worldSpawn: false

@@ -48,12 +48,10 @@ public class SidebarScoreDisplay {
 
         Hashtable<String, ArrayList<Player>> members = ColorTeaming.getAllTeamMembers();
         for ( String key : members.keySet() ) {
-            if ( !teamscores.containsKey(key) ) {
-                Team team = scoreboard.getTeam(key);
-                SidebarTeamScore ts = new SidebarTeamScore(team);
-                objective.getScore(ts).setScore(0);
-                teamscores.put(key, ts);
-            }
+            Team team = scoreboard.getTeam(key);
+            SidebarTeamScore ts = new SidebarTeamScore(team);
+            objective.getScore(ts).setScore(0);
+            teamscores.put(key, ts);
         }
 
         // スコアを消去
@@ -185,9 +183,6 @@ public class SidebarScoreDisplay {
      * サイドバーの表示を消去する。
      */
     public void remove() {
-        // スコアを消去して使いまわす
-        for ( String key : teamscores.keySet() ) {
-            objective.getScore(teamscores.get(key)).setScore(0);
-        }
+        objective.unregister();
     }
 }

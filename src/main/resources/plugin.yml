@@ -124,6 +124,7 @@ commands:
            /<command> (group) here - groupのメンバー全員のリスポーンポイントを、コマンドを実行した人の場所に設定します。
            /<command> remove (group) - groupのリスポーンポイント設定を削除します。
            /<command> remove all - 全てのグループのリスポーン設定を削除します。
+           /<command> world - ワールドのリスポーンポイントを設定します。
            /<command> list - リスポーン設定を一覧表示します。
     permission: colorteaming.spawn
     permission-message: パーミッション "<permission>" が無いため、実行できません。

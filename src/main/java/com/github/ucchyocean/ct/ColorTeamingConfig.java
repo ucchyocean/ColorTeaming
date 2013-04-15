@@ -41,6 +41,7 @@ public class ColorTeamingConfig {
     public static TabListCriteria listCriteria;
     public static int killTrophy;
     public static int killReachTrophy;
+    public static boolean worldSpawn;
 
     /**
      * config.ymlの読み出し処理。
@@ -105,6 +106,8 @@ public class ColorTeamingConfig {
         } else {
             killReachTrophy = 0;
         }
+
+        worldSpawn = config.getBoolean("worldSpawn", false);
     }
 
     /**
