@@ -37,7 +37,7 @@ public class TabListScoreDisplay {
         } else {
             // スコアを消去して使いまわす
             for ( Player player : ColorTeaming.getAllPlayers() ) {
-                scoreboard.resetScores(player);
+                objective.getScore(player).setScore(0);
             }
         }
 
@@ -79,12 +79,8 @@ public class TabListScoreDisplay {
      */
     public void remove() {
         // スコアを消去して使いまわす
-        Scoreboard scoreboard = ColorTeaming.getScoreboard();
         for ( Player player : ColorTeaming.getAllPlayers() ) {
-            scoreboard.resetScores(player);
+            objective.getScore(player).setScore(0);
         }
-
-//        ColorTeaming.getScoreboard().clearSlot(DisplaySlot.PLAYER_LIST);
-//        objective.unregister();
     }
 }

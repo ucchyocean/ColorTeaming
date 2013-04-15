@@ -92,15 +92,13 @@ public class CRandomCommand implements CommandExecutor {
                     " グループになりました。");
         }
 
-        // スコアボードの作成
-        ColorTeaming.makeSidebar();
-        ColorTeaming.makeTabkeyListScore();
-        ColorTeaming.refreshSidebarScore();
-        ColorTeaming.refreshTabkeyListScore();
-
         // キルデス情報のクリア
         ColorTeaming.killDeathCounts.clear();
         ColorTeaming.killDeathUserCounts.clear();
+
+        // スコアボードの作成
+        ColorTeaming.makeSidebar();
+        ColorTeaming.makeTabkeyListScore();
 
         // メンバー情報の取得
         Hashtable<String, ArrayList<Player>> members =

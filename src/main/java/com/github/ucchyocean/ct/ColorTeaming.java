@@ -421,10 +421,7 @@ public class ColorTeaming extends JavaPlugin {
 
         removeSidebar();
         if ( ColorTeamingConfig.sideCriteria != SidebarCriteria.NONE ) {
-            if ( sidebarScore == null )
-                sidebarScore = new SidebarScoreDisplay();
-            else
-                sidebarScore.refreshScore();
+            sidebarScore = new SidebarScoreDisplay();
         }
     }
 
@@ -456,10 +453,7 @@ public class ColorTeaming extends JavaPlugin {
 
         removeTabkeyListScore();
         if ( ColorTeamingConfig.listCriteria != TabListCriteria.NONE ) {
-            if ( tablistScore == null )
-                tablistScore = new TabListScoreDisplay();
-            else
-                tablistScore.refreshScore();
+            tablistScore = new TabListScoreDisplay();
         }
     }
 

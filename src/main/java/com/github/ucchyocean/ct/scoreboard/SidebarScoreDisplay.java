@@ -10,7 +10,6 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -44,11 +43,7 @@ public class SidebarScoreDisplay {
         }
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
-        // スコアを消去
-        for ( OfflinePlayer team : scoreboard.getPlayers() ) {
-            scoreboard.resetScores(team);
-        }
-
+        // 項目を初期化
         teamscores = new Hashtable<String, SidebarTeamScore>();
 
         Hashtable<String, ArrayList<Player>> members = ColorTeaming.getAllTeamMembers();
@@ -60,7 +55,14 @@ public class SidebarScoreDisplay {
                 teamscores.put(key, ts);
             }
         }
-        
+
+        // スコアを消去
+        // NOTE: 全部0を設定すると非表示になってしまうので、1を設定してから0を設定する
+        for ( String key : teamscores.keySet() ) {
+            objective.getScore(teamscores.get(key)).setScore(1);
+            objective.getScore(teamscores.get(key)).setScore(0);
+        }
+
         refreshCriteria();
     }
 
@@ -184,12 +186,8 @@ public class SidebarScoreDisplay {
      */
     public void remove() {
         // スコアを消去して使いまわす
-        Scoreboard scoreboard = ColorTeaming.getScoreboard();
-        for ( OfflinePlayer team : scoreboard.getPlayers() ) {
-            scoreboard.resetScores(team);
+        for ( String key : teamscores.keySet() ) {
+            objective.getScore(teamscores.get(key)).setScore(0);
         }
-
-//        ColorTeaming.getScoreboard().clearSlot(DisplaySlot.SIDEBAR);
-//        objective.unregister();
     }
 }
