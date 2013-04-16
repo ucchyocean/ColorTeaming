@@ -16,6 +16,7 @@ commands:
            /<command> remove (group) - groupを解散します。
            /<command> removeAll - 全てのグループを解散します。
            /<command> trophy (amount) - キル数達成時の通知を設定します。
+           /<command> reachTrophy (amount) - キル数リーチ時の通知を設定します。
            /<command> side (kill|death|point|rest) - サイドバーのスコア表示を変更します。
            /<command> side clear - サイドバーのスコア表示を消去します。
            /<command> list (kill|death|point|health) - TABキーリストのスコア表示を変更します。
@@ -44,8 +45,8 @@ commands:
     description: メンバーを一覧表示するコマンド
     aliases: ccsay
     usage: |
-           /<command> - 各色グループのメンバーの一覧を、サーバー全体メッセージで表示します。
-           /<command> all - 全てのプレイヤー（ignoreGroups込み）のメンバーを一覧表示します。
+           /<command> - 各色グループのメンバーを、サーバー全体メッセージで表示します。
+           /<command> all - 全てのプレイヤー（ignoreGroups込み）のメンバーを、サーバー全体メッセージで表示します。
     permission: colorteaming.count
     permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorfriendlyfire:
@@ -88,8 +89,8 @@ commands:
            /<command> (group) here - groupのメンバー全員を、コマンドを実行した人の場所にテレポートします。
            /<command> (group) spawn - groupのメンバー全員を、グループのリスポーンポイントにテレポートします。
            /<command> (group) (point) - groupのメンバー全員を、指定されたポイントにテレポートします。
-           /<command> set (point) [(world)] (x) (y) (z) - 新しいポイントを、(world):(x),(y),(z) の場所に登録します。
-           /<command> set (point) here - 新しいポイントを、この場所に登録します。
+           /<command> set (point) [(world)] (x) (y) (z) - (world):(x),(y),(z) の場所に、新しいポイントを登録します。
+           /<command> set (point) here - コマンドを実行した人の場所に、新しいポイントを登録します。
            /<command> remove (point) - 登録されたポイントを削除します。
            /<command> all spawn - 全てのプレイヤーを、グループのリスポーンポイントにテレポートします。
            /<command> all (point) - 全てのプレイヤーを、指定されたポイントにテレポートします。
@@ -113,7 +114,6 @@ commands:
            /<command> - 全てのグループごとのキルデス数カウントを参照します。
            /<command> say - 全てのグループごとのキルデス数カウントを、サーバー全体メッセージで表示します。
            /<command> clear - 全てのグループごとのキルデス数カウントを初期化して0にします。
-
     permission: colorteaming.kill
     permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorspawn:

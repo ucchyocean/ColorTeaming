@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -64,6 +65,37 @@ public class CSpawnCommand implements CommandExecutor {
                     x, y, z);
             sender.sendMessage(PREINFO + message);
             return true;
+
+        } else if ( args.length == 1 ) {
+            // cspawn (group) の実行
+
+            String group = args[0];
+
+            // 有効なグループ名が指定されたか確認する
+            if ( !Utility.isValidColor(group) ) {
+                sender.sendMessage(PREERR + "グループ " + group + " は設定できないグループ名です。");
+                return true;
+            }
+
+            Location location;
+            if ( sender instanceof Player ) {
+                location = ((Player)sender).getLocation();
+            } else if ( sender instanceof BlockCommandSender ) {
+                location = ((BlockCommandSender)sender).getBlock().getLocation();
+            } else {
+                sender.sendMessage(PREERR + "cspawn の here 指定は、コンソールからは実行できません。");
+                return true;
+            }
+
+            // spawnpoint設定を行う
+            ColorTeaming.respawnConfig.set(group, location);
+
+            String message = String.format(
+                    "グループ %s のリスポーンポイントを (%d, %d, %d) に設定しました。",
+                    group, location.getBlockX(), location.getBlockY(), location.getBlockZ());
+            sender.sendMessage(PREINFO + message);
+
+            return true;
         }
 
         // 以下、引数2つ以上が必要になるので、1つしか指定されていなければここで終わる.
@@ -85,7 +117,7 @@ public class CSpawnCommand implements CommandExecutor {
 
                 return true;
 
-            } else {
+            } else if ( args.length == 2 ) {
                 // cspawn remove (group) の実行
 
                 String group = args[1];
@@ -100,28 +132,67 @@ public class CSpawnCommand implements CommandExecutor {
                 sender.sendMessage(PREINFO + "グループ " + group + " のリスポーン設定を削除しました。");
 
                 return true;
+
+            } else {
+                // cspawn remove (group) (map) の実行
+
+                String group = args[1];
+                String map = args[2];
+
+                if ( ColorTeaming.respawnConfig.get(group, map) == null ) {
+                    sender.sendMessage(PREERR + "グループ " + group + "、マップ " + map + " のリスポーン設定がありません。");
+                    return true;
+                }
+
+                ColorTeaming.respawnConfig.set(group, map, null);
+
+                sender.sendMessage(PREINFO + "グループ " + group + "、マップ " + map + " のリスポーン設定を削除しました。");
+
+                return true;
             }
+
+        } else if ( args[0].equalsIgnoreCase("switch") ) {
+            // cspawn switch (map) の実行
+
+            String map = args[1];
+
+            if ( !isValidMapName(map) ) {
+                sender.sendMessage(PREINFO + "マップ名 " + map + " は指定不可能な文字を含んでいます。");
+                return true;
+            }
+
+            ColorTeaming.respawnMapName = map;
+            sender.sendMessage(PREINFO + "リスポーン設定を、マップ " + map + " 用に切り替えました。");
+
+            // 切り替えたマップのリスポーン地点一覧を表示する
+            ArrayList<String> list = ColorTeaming.respawnConfig.list(map);
+            for ( String l : list ) {
+                sender.sendMessage(PREINFO + l);
+            }
+
+            return true;
         }
 
+
         String group;
-        String world = "world";
-        int x_actual, y_actual, z_actual;
+        String map;
+        Location location;
 
         group = args[0];
+        map = args[1];
 
-        if ( args[1].equalsIgnoreCase("here") ) {
-            // cspawn (group) here の実行
+        if ( args.length <= 3 ) {
+            // cspawn (group) (map) の実行
+
+            if ( !isValidMapName(map) ) {
+                sender.sendMessage(PREINFO + "マップ名 " + map + " は指定不可能な文字を含んでいます。");
+                return true;
+            }
 
             if ( sender instanceof Player ) {
-                x_actual = ((Player)sender).getLocation().getBlockX();
-                y_actual = ((Player)sender).getLocation().getBlockY();
-                z_actual = ((Player)sender).getLocation().getBlockZ();
-                world = ((Player)sender).getWorld().getName();
+                location = ((Player)sender).getLocation();
             } else if ( sender instanceof BlockCommandSender ) {
-                x_actual = ((BlockCommandSender)sender).getBlock().getX();
-                y_actual = ((BlockCommandSender)sender).getBlock().getY()+1;
-                z_actual = ((BlockCommandSender)sender).getBlock().getZ();
-                world = ((BlockCommandSender)sender).getBlock().getWorld().getName();
+                location = ((BlockCommandSender)sender).getBlock().getLocation();
             } else {
                 sender.sendMessage(PREERR + "cspawn の here 指定は、コンソールからは実行できません。");
                 return true;
@@ -129,6 +200,8 @@ public class CSpawnCommand implements CommandExecutor {
 
         } else if ( args.length == 4 ) {
             // cspawn (group) (x) (y) (z) の実行
+
+            map = "";
 
             // 有効な座標が指定されたか確認する
             if ( !checkXYZ(sender, args[1]) ||
@@ -138,20 +211,25 @@ public class CSpawnCommand implements CommandExecutor {
             }
 
             // 実行者がプレイヤーかコマンドブロックなら、worldを取得して設定する
+            World world = ColorTeaming.getWorld("world");
             if ( sender instanceof BlockCommandSender ) {
                 BlockCommandSender block = (BlockCommandSender)sender;
-                world = block.getBlock().getWorld().getName();
+                world = block.getBlock().getWorld();
             } else if ( sender instanceof Player ) {
                 Player player = (Player)sender;
-                world = player.getWorld().getName();
+                world = player.getWorld();
             }
 
-            x_actual = Integer.parseInt(args[1]);
-            y_actual = Integer.parseInt(args[2]);
-            z_actual = Integer.parseInt(args[3]);
+            location = new Location(world, Integer.parseInt(args[1]),
+                    Integer.parseInt(args[2]), Integer.parseInt(args[3]));
 
-        } else if ( args.length >= 5 ) {
-            // cspawn (group) (world) (x) (y) (z) の実行
+        } else {
+            // cspawn (group) (point) (x) (y) (z) の実行
+
+            if ( !isValidMapName(map) ) {
+                sender.sendMessage(PREINFO + "マップ名 " + map + " は指定不可能な文字を含んでいます。");
+                return true;
+            }
 
             // 有効な座標が指定されたか確認する
             if ( !checkXYZ(sender, args[2]) ||
@@ -160,19 +238,19 @@ public class CSpawnCommand implements CommandExecutor {
                 return true;
             }
 
-            world = args[1];
-            x_actual = Integer.parseInt(args[2]);
-            y_actual = Integer.parseInt(args[3]);
-            z_actual = Integer.parseInt(args[4]);
+            // 実行者がプレイヤーかコマンドブロックなら、worldを取得して設定する
+            World world = ColorTeaming.getWorld("world");
+            if ( sender instanceof BlockCommandSender ) {
+                BlockCommandSender block = (BlockCommandSender)sender;
+                world = block.getBlock().getWorld();
+            } else if ( sender instanceof Player ) {
+                Player player = (Player)sender;
+                world = player.getWorld();
+            }
 
-        } else {
-            // 引数指定不足
-            return false;
+            location = new Location(world, Integer.parseInt(args[2]),
+                    Integer.parseInt(args[3]), Integer.parseInt(args[4]));
         }
-
-        double x = (double)x_actual + 0.5;
-        double y = (double)y_actual;
-        double z = (double)z_actual + 0.5;
 
         // 有効なグループ名が指定されたか確認する
         if ( !Utility.isValidColor(group) ) {
@@ -180,19 +258,12 @@ public class CSpawnCommand implements CommandExecutor {
             return true;
         }
 
-        // 有効なワールド名が指定されたか確認する
-        if ( ColorTeaming.getWorld(world) == null ) {
-            sender.sendMessage(PREERR + "ワールド " + world + " が存在しません。");
-            return true;
-        }
-
         // spawnpoint設定を行う
-        Location location = new Location(ColorTeaming.getWorld(world), x, y, z);
-        ColorTeaming.respawnConfig.set(group, location);
+        ColorTeaming.respawnConfig.set(group, map, location);
 
         String message = String.format(
                 "グループ %s のリスポーンポイントを (%d, %d, %d) に設定しました。",
-                group, x_actual, y_actual, z_actual);
+                group, location.getBlockX(), location.getBlockY(), location.getBlockZ() );
         sender.sendMessage(PREINFO + message);
 
         return true;
@@ -215,5 +286,9 @@ public class CSpawnCommand implements CommandExecutor {
         }
 
         return true;
+    }
+
+    private boolean isValidMapName(String name) {
+        return name.matches("[a-zA-Z]{1,10}");
     }
 }

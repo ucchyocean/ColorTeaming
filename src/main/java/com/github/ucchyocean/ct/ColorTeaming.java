@@ -68,6 +68,8 @@ public class ColorTeaming extends JavaPlugin {
     public static Hashtable<String, int[]> killDeathCounts;
     public static Hashtable<String, int[]> killDeathUserCounts;
 
+    public static String respawnMapName;
+
     /**
      * @see org.bukkit.plugin.java.JavaPlugin#onEnable()
      */
@@ -318,6 +320,22 @@ public class ColorTeaming extends JavaPlugin {
                 result.add(p);
             }
         }
+        return result;
+    }
+
+    /**
+     * 全てのチーム名（＝全ての色）を取得する
+     * @return 全てのチーム名
+     */
+    public static ArrayList<String> getAllColors() {
+
+        ArrayList<String> result = new ArrayList<String>();
+        Set<Team> teams = getScoreboard().getTeams();
+
+        for ( Team team : teams ) {
+            result.add(team.getName());
+        }
+
         return result;
     }
 

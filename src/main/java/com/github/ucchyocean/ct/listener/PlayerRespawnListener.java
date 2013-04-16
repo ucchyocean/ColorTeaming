@@ -30,8 +30,8 @@ public class PlayerRespawnListener implements Listener {
         String color = ColorTeaming.getPlayerColor(player);
 
         // リスポーンポイントを設定
-        Location respawn = ColorTeaming.respawnConfig.get(color);
-        if ( respawn == null ) {
+        Location respawn = ColorTeaming.respawnConfig.get(color, ColorTeaming.respawnMapName);
+        if ( respawn == null && ColorTeamingConfig.worldSpawn ) {
             // チームリスポーンがない場合は、ワールドリスポーンを取得する
             respawn = player.getWorld().getSpawnLocation();
         }

@@ -25,6 +25,9 @@ public abstract class PointConfigAbst {
     private static final String KEY_LOCX = "x";
     private static final String KEY_LOCY = "y";
     private static final String KEY_LOCZ = "z";
+    private static final String KEY_YAW = "yaw";
+    private static final String KEY_PITCH = "pitch";
+
 
     private File file;
     private YamlConfiguration config;
@@ -74,7 +77,9 @@ public abstract class PointConfigAbst {
         int x = section.getInt(KEY_LOCX, 0);
         int y = section.getInt(KEY_LOCY, 65);
         int z = section.getInt(KEY_LOCZ, 0);
-        return new Location(world, x, y, z);
+        float yaw = (float)section.getDouble(KEY_YAW, 0);
+        float pitch = (float)section.getDouble(KEY_PITCH, 0);
+        return new Location(world, x, y, z, yaw, pitch);
     }
 
     /**
@@ -89,14 +94,18 @@ public abstract class PointConfigAbst {
             int x = location.getBlockX();
             int y = location.getBlockY();
             int z = location.getBlockZ();
+            float yaw = location.getYaw();
+            float pitch = location.getPitch();
 
             config.set(name + "." + KEY_WORLD, world);
             config.set(name + "." + KEY_LOCX, x);
             config.set(name + "." + KEY_LOCY, y);
             config.set(name + "." + KEY_LOCZ, z);
+            config.set(name + "." + KEY_YAW, yaw);
+            config.set(name + "." + KEY_PITCH, pitch);
 
         } else {
-
+            // 指定した値の消去
             config.set(name, null);
         }
 
@@ -147,6 +156,34 @@ public abstract class PointConfigAbst {
             int z = section.getInt(KEY_LOCZ, 0);
 
             results.add(name + " : " + w + "-(" + x + ", " + y + ", " + z + ")");
+        }
+
+        return results;
+    }
+
+    /**
+     * 指定されたキーのリストを取得する
+     * @param keys キー
+     * @return リスト
+     */
+    public ArrayList<String> list(ArrayList<String> keys) {
+
+        ArrayList<String> results = new ArrayList<String>();
+
+        // 取得する前にリロードする
+        config = YamlConfiguration.loadConfiguration(file);
+
+        for ( String name : keys ) {
+
+            ConfigurationSection section = config.getConfigurationSection(name);
+            if ( section != null ) {
+                String w = section.getString(KEY_WORLD, "world");
+                int x = section.getInt(KEY_LOCX, 0);
+                int y = section.getInt(KEY_LOCY, 65);
+                int z = section.getInt(KEY_LOCZ, 0);
+
+                results.add(name + " : " + w + "-(" + x + ", " + y + ", " + z + ")");
+            }
         }
 
         return results;
