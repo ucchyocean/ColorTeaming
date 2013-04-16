@@ -217,20 +217,17 @@ public class ColorTeaming extends JavaPlugin {
     }
 
     /**
-     * @deprecated
      * フレンドリーファイアの設定。
-     * CB1.5.1-R0.2 では、setAllowFriendlyFire は正しく動作しない。
      * @param ff trueならフレンドリーファイア有効、falseなら無効
      */
     public static void setFriendlyFilre(boolean ff) {
 
-        // 封印☆   CB1.5.1-R0.2 では、setAllowFriendlyFire は正しく動作しない。
-//        Scoreboard scoreboard = getScoreboard();
-//
-//        Set<Team> teams = scoreboard.getTeams();
-//        for ( Team t : teams ) {
-//            t.setAllowFriendlyFire(ff);
-//        }
+        Scoreboard scoreboard = getScoreboard();
+
+        Set<Team> teams = scoreboard.getTeams();
+        for ( Team t : teams ) {
+            t.setAllowFriendlyFire(ff);
+        }
     }
 
     /**
