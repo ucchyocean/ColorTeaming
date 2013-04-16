@@ -66,7 +66,7 @@ public abstract class PointConfigAbst {
         config = YamlConfiguration.loadConfiguration(file);
 
         ConfigurationSection section = config.getConfigurationSection(name);
-        if ( section == null ) {
+        if ( section == null || !isLocationSection(section) ) {
             return null;
         }
         String w = section.getString(KEY_WORLD, "world");
@@ -187,5 +187,10 @@ public abstract class PointConfigAbst {
         }
 
         return results;
+    }
+
+    private boolean isLocationSection(ConfigurationSection section) {
+        return section.contains(KEY_WORLD) && section.contains(KEY_LOCX) &&
+                section.contains(KEY_LOCY) && section.contains(KEY_LOCZ);
     }
 }
