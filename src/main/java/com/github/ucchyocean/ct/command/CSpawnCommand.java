@@ -35,67 +35,83 @@ public class CSpawnCommand implements CommandExecutor {
     public boolean onCommand(
             CommandSender sender, Command command, String label, String[] args) {
 
-        if ( args.length >= 1 && args[0].equalsIgnoreCase("list") ) {
-            // cspawn list の実行
+        if ( args.length == 1 ) {
+            if ( args[0].equalsIgnoreCase("list") ) {
+                // cspawn list の実行
 
-            sender.sendMessage(PREINFO + PRE_LINE_MESSAGE);
-            ArrayList<String> list = ColorTeaming.respawnConfig.list();
-            for ( String l : list ) {
-                sender.sendMessage(PREINFO + l);
-            }
+                sender.sendMessage(PREINFO + PRE_LINE_MESSAGE);
+                ArrayList<String> list = ColorTeaming.respawnConfig.list();
+                for ( String l : list ) {
+                    sender.sendMessage(PREINFO + l);
+                }
 
-            return true;
-
-        } else if ( args.length >= 1 && args[0].equalsIgnoreCase("world") ) {
-            // cspawn world の実行
-
-            if ( !(sender instanceof Player) ) {
-                sender.sendMessage(PREERR + "cspawn の world 指定は、コンソールからは実行できません。");
                 return true;
-            }
 
-            Location location = ((Player)sender).getLocation();
-            int x = location.getBlockX();
-            int y = location.getBlockY();
-            int z = location.getBlockZ();
-            location.getWorld().setSpawnLocation(x, y, z);
+            } else if ( args[0].equalsIgnoreCase("world") ) {
+                // cspawn world の実行
 
-            String message = String.format(
-                    "ワールドの初期リスポーンポイントを (%d, %d, %d) に設定しました。",
-                    x, y, z);
-            sender.sendMessage(PREINFO + message);
-            return true;
+                if ( !(sender instanceof Player) ) {
+                    sender.sendMessage(PREERR + "cspawn の world 指定は、コンソールからは実行できません。");
+                    return true;
+                }
 
-        } else if ( args.length == 1 ) {
-            // cspawn (group) の実行
+                Location location = ((Player)sender).getLocation();
+                int x = location.getBlockX();
+                int y = location.getBlockY();
+                int z = location.getBlockZ();
+                location.getWorld().setSpawnLocation(x, y, z);
 
-            String group = args[0];
-
-            // 有効なグループ名が指定されたか確認する
-            if ( !Utility.isValidColor(group) ) {
-                sender.sendMessage(PREERR + "グループ " + group + " は設定できないグループ名です。");
+                String message = String.format(
+                        "ワールドの初期リスポーンポイントを (%d, %d, %d) に設定しました。",
+                        x, y, z);
+                sender.sendMessage(PREINFO + message);
                 return true;
-            }
 
-            Location location;
-            if ( sender instanceof Player ) {
-                location = ((Player)sender).getLocation();
-            } else if ( sender instanceof BlockCommandSender ) {
-                location = ((BlockCommandSender)sender).getBlock().getLocation();
+            } else if ( args[0].equalsIgnoreCase("switch") ) {
+                // cspawn switch の実行
+
+                ColorTeaming.respawnMapName = "";
+                sender.sendMessage(PREINFO + "リスポーン設定を、デフォルトに切り替えました。");
+
+                // 切り替えたマップのリスポーン地点一覧を表示する
+                ArrayList<String> list = ColorTeaming.respawnConfig.list("");
+                for ( String l : list ) {
+                    sender.sendMessage(PREINFO + l);
+                }
+
+                return true;
+
             } else {
-                sender.sendMessage(PREERR + "cspawn の here 指定は、コンソールからは実行できません。");
+                // cspawn (group) の実行
+
+                String group = args[0];
+
+                // 有効なグループ名が指定されたか確認する
+                if ( !Utility.isValidColor(group) ) {
+                    sender.sendMessage(PREERR + "グループ " + group + " は設定できないグループ名です。");
+                    return true;
+                }
+
+                Location location;
+                if ( sender instanceof Player ) {
+                    location = ((Player)sender).getLocation();
+                } else if ( sender instanceof BlockCommandSender ) {
+                    location = ((BlockCommandSender)sender).getBlock().getLocation();
+                } else {
+                    sender.sendMessage(PREERR + "cspawn の here 指定は、コンソールからは実行できません。");
+                    return true;
+                }
+
+                // spawnpoint設定を行う
+                ColorTeaming.respawnConfig.set(group, location);
+
+                String message = String.format(
+                        "グループ %s のリスポーンポイントを (%d, %d, %d) に設定しました。",
+                        group, location.getBlockX(), location.getBlockY(), location.getBlockZ());
+                sender.sendMessage(PREINFO + message);
+
                 return true;
             }
-
-            // spawnpoint設定を行う
-            ColorTeaming.respawnConfig.set(group, location);
-
-            String message = String.format(
-                    "グループ %s のリスポーンポイントを (%d, %d, %d) に設定しました。",
-                    group, location.getBlockX(), location.getBlockY(), location.getBlockZ());
-            sender.sendMessage(PREINFO + message);
-
-            return true;
         }
 
         // 以下、引数2つ以上が必要になるので、1つしか指定されていなければここで終わる.
@@ -261,10 +277,17 @@ public class CSpawnCommand implements CommandExecutor {
         // spawnpoint設定を行う
         ColorTeaming.respawnConfig.set(group, map, location);
 
-        String message = String.format(
-                "グループ %s のリスポーンポイントを (%d, %d, %d) に設定しました。",
-                group, location.getBlockX(), location.getBlockY(), location.getBlockZ() );
-        sender.sendMessage(PREINFO + message);
+        if ( map == null || map.equals("") ) {
+            String message = String.format(
+                    "グループ %s のリスポーンポイントを (%d, %d, %d) に設定しました。",
+                    group, location.getBlockX(), location.getBlockY(), location.getBlockZ() );
+            sender.sendMessage(PREINFO + message);
+        } else {
+            String message = String.format(
+                    "グループ %s、マップ %s のリスポーンポイントを (%d, %d, %d) に設定しました。",
+                    group, map, location.getBlockX(), location.getBlockY(), location.getBlockZ() );
+            sender.sendMessage(PREINFO + message);
+       }
 
         return true;
     }

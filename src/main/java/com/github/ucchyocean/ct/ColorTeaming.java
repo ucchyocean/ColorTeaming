@@ -431,7 +431,7 @@ public class ColorTeaming extends JavaPlugin {
 
     /**
      * サイドバーを新しく作る。
-     * もともとサイドバーがあった場合は、そのまま使いまわされる。
+     * もともとサイドバーがあった場合は、削除して再作成される。
      */
     public static void makeSidebar() {
 
@@ -464,7 +464,7 @@ public class ColorTeaming extends JavaPlugin {
 
     /**
      * タブキーリストのスコアを新しく作る。
-     * もともとスコアがあった場合は、そのまま使いまわされる。
+     * もともとスコアがあった場合は、削除して再作成される。
      */
     public static void makeTabkeyListScore() {
 

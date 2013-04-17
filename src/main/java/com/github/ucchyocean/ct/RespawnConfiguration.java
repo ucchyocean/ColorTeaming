@@ -62,9 +62,17 @@ public class RespawnConfiguration extends PointConfigAbst {
 
         ArrayList<String> mkeys = new ArrayList<String>();
         ArrayList<String> keys = keys();
-        for ( String key : keys ) {
-            if ( key.startsWith(map + "-") ) {
-                mkeys.add(key);
+        if ( map == null || map.equals("") ) {
+            for ( String key : keys ) {
+                if ( !key.contains("-") ) {
+                    mkeys.add(key);
+                }
+            }
+        } else {
+            for ( String key : keys ) {
+                if ( key.startsWith(map + "-") ) {
+                    mkeys.add(key);
+                }
             }
         }
 

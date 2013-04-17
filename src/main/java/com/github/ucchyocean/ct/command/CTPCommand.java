@@ -70,7 +70,7 @@ public class CTPCommand implements CommandExecutor {
                 while ( keys.hasMoreElements() ) {
                     String group = keys.nextElement();
 
-                    Location location = ColorTeaming.respawnConfig.get(group);
+                    Location location = ColorTeaming.respawnConfig.get(group, ColorTeaming.respawnMapName);
                     if ( location == null ) {
                         sender.sendMessage(PREERR +
                                 "グループ " + group + " にリスポーンポイントが指定されていません。");
@@ -203,7 +203,7 @@ public class CTPCommand implements CommandExecutor {
                 // ctp (group) spawn
 
                 // グループのリスポーンポイントを取得、登録されていなければ終了
-                location = ColorTeaming.respawnConfig.get(group);
+                location = ColorTeaming.respawnConfig.get(group, ColorTeaming.respawnMapName);
                 if ( location == null ) {
                     sender.sendMessage(PREERR +
                             "グループ " + group + " にリスポーンポイントが指定されていません。");
