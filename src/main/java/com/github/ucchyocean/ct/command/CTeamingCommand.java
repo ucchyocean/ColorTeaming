@@ -56,7 +56,8 @@ public class CTeamingCommand implements CommandExecutor {
                 ColorTeaming.removeTeam(group);
             }
 
-            ColorTeaming.refreshSidebarScore();
+            // サイドバー削除、タブキーリスト更新
+            ColorTeaming.removeSidebar();
             ColorTeaming.refreshTabkeyListScore();
 
             sender.sendMessage(PREINFO + "全てのグループが解散しました。");
@@ -77,6 +78,11 @@ public class CTeamingCommand implements CommandExecutor {
                 p.sendMessage(PREINFO + "グループ " + group + " が解散しました。");
             }
             ColorTeaming.removeTeam(group);
+
+            // サイドバー再作成、タブキーリスト更新
+            ColorTeaming.makeSidebar();
+            ColorTeaming.refreshTabkeyListScore();
+
             sender.sendMessage(PREINFO + "グループ " + group + " が解散しました。");
 
             return true;

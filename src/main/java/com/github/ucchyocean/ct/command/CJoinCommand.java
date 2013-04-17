@@ -105,6 +105,10 @@ public class CJoinCommand implements CommandExecutor {
                     ChatColor.GREEN +
                     " グループになりました。");
 
+            // サイドバー更新、タブキーリスト更新
+            ColorTeaming.makeSidebar();
+            ColorTeaming.refreshTabkeyListScore();
+
             // メンバー情報をlastdataに保存する
             ColorTeaming.sdhandler.save("lastdata");
 
