@@ -1,6 +1,6 @@
 name: ColorTeaming
 main: com.github.ucchyocean.ct.ColorTeaming
-version: 1.5.4
+version: 1.5.5
 authors: [ucchy,owatakun]
 load: startup
 description: 簡易PVPチーミングプラグイン
@@ -63,12 +63,6 @@ commands:
            /<command> (opon|opoff) - 各チームのチームチャットを、OPが傍聴するかどうかを設定します。
     permission: colorteaming.chat
     permission-message: パーミッション "<permission>" が無いため、実行できません。
-  colorglobal:
-    description: チームチャット有効時にグローバルへ発言するためのコマンド
-    aliases: [cg,g]
-    usage: /<command> (message) - チームチャットが設定されている状態で、通常のチャット発言を行います。
-    permission: colorteaming.global
-    permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorleader:
     description: 各グループから大将を選出するコマンド
     aliases: cl
@@ -120,8 +114,11 @@ commands:
     description: チームごとのリスポーンポイントを設定するためのコマンド
     aliases: [cspawn,cs]
     usage: |
-           /<command> (group) [(world)] (x) (y) (z) - groupのメンバー全員のリスポーンポイントを、(world):(x),(y),(z) の場所に設定します。
-           /<command> (group) here - groupのメンバー全員のリスポーンポイントを、コマンドを実行した人の場所に設定します。
+           /<command> (group) - groupのメンバーのリスポーンポイントを、コマンドを実行した人の場所に設定します。
+           /<command> (group) (MapName) - マップMapNameにおけるgroupのメンバーのリスポーンポイントを、コマンドを実行した人の場所に設定します。
+           /<command> (group) (x) (y) (z) - groupのメンバー全員のリスポーンポイントを、(x),(y),(z) の場所に設定します。
+           /<command> switch (MapName) - リスポーンポイントの設定を、MapNameに変更します。
+           /<command> switch - リスポーンポイントの設定を、デフォルトに戻します。
            /<command> remove (group) - groupのリスポーンポイント設定を削除します。
            /<command> remove all - 全てのグループのリスポーン設定を削除します。
            /<command> world - ワールドのリスポーンポイントを設定します。
@@ -159,6 +156,12 @@ commands:
            /<command> (group) - groupのメンバー全員が爆発して死亡します。
            /<command> (player) - playerが爆発して死亡します。
     permission: colorteaming.explode
+    permission-message: パーミッション "<permission>" が無いため、実行できません。
+  colorglobal:
+    description: チームチャット有効時にグローバルへ発言するためのコマンド
+    aliases: [cg,g]
+    usage: /<command> (message) - チームチャットが設定されている状態で、通常のチャット発言を行います。
+    permission: colorteaming.global
     permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorjoin:
     description: 一般プレイヤーが、任意のグループへ参加するためのコマンド
