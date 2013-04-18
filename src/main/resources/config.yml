@@ -1,17 +1,12 @@
-# ColorMe Teaming Plugin 1.4.10
+# Color Teaming Plugin 1.5.5
 # @author     ucchy
 # @license    GPLv3
 # @copyright  Copyright ucchy 2013
 
-world: 'world'
-
-partyChatMode: false
+worlds: ['world']
+teamChatMode: false
 opDisplayMode: false
-
 firelyFireDisabler: true
-
-ignoreGroups: ['', 'white', 'gold']
-
 classes:
   Knight:
     items: 267,320:5
@@ -28,7 +23,7 @@ classes:
     items: 267^16-5^17-5^18-5^19-2^20-2^34-3,282:10
     armor: 306^0-4^1-4^3-4^4-4,307^0-4^1-4^3-4^4-4,308^0-4^1-4^3-4^4-4,309^0-4^1-4^3-4^4-4
   Excalibur:
-    items: 276^16-127@1561
+    items: 276^16-300@1561
     armor: 314,315,316,317
   RedLeather:
     armor: 298$993333,299$993333,300$993333,301$993333
@@ -38,23 +33,17 @@ classes:
     armor: 298$E5E533,299$E5E533,300$E5E533,301$E5E533
   GreenLeather:
     armor: 298$667F33,299$667F33,300$667F33,301$667F33
-
 points:
   killPoint: 1
   deathPoint: -1
   tkPoint: -3
-
-colorRemoveOnDeath: true
-colorRemoveOnQuit: true
-
-coloringDeathMessage: true
-
+colorRemoveOnDeath: false
+colorRemoveOnQuit: false
+noDamageSeconds: 5
 allowPlayerJoinAny: false
 allowPlayerJoinRandom: true
-
+sideCriteria: rest
+listCriteria: point
 killTrophy: 0
 killReachTrophy: 0
-
-protectRespawnPointWithWorldGuard: false
-
-protectRespawnPointRange: 3
+worldSpawn: false

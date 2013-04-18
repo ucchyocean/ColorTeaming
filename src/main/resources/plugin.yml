@@ -1,14 +1,14 @@
-name: ColorMeTeaming
-main: com.github.ucchyocean.cmt.ColorMeTeaming
-version: 1.4.10
+name: ColorTeaming
+main: com.github.ucchyocean.ct.ColorTeaming
+version: 1.5.5
 authors: [ucchy,owatakun]
 load: startup
 description: 簡易PVPチーミングプラグイン
-depend: [ColorMe]
-softdepend: [TagAPI, WorldGuard]
+depend: []
+softdepend: [WorldGuard]
 commands:
   colorteaming:
-    description: ColorMeTeamingの管理用コマンド
+    description: ColorTeamingの管理用コマンド
     aliases: ct
     usage: |
            /<command> reload - ColorMeTeaming の config.yml を再読み込みします。
@@ -17,8 +17,10 @@ commands:
            /<command> removeAll - 全てのグループを解散します。
            /<command> trophy (amount) - キル数達成時の通知を設定します。
            /<command> reachTrophy (amount) - キル数リーチ時の通知を設定します。
-           /<command> allowJoinAny (on|off) - 一般プレイヤーの「/cjoin (color)」コマンドの使用可否を設定します。
-           /<command> allowJoinRandom (on|off) - 一般プレイヤーの「/cjoin」コマンドの使用可否を設定します。
+           /<command> side (kill|death|point|rest) - サイドバーのスコア表示を変更します。
+           /<command> side clear - サイドバーのスコア表示を消去します。
+           /<command> list (kill|death|point|health) - TABキーリストのスコア表示を変更します。
+           /<command> list clear - TABキーリストのスコア表示を消去します。
     permission: colorteaming.team
     permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorrandom:
@@ -43,8 +45,8 @@ commands:
     description: メンバーを一覧表示するコマンド
     aliases: ccsay
     usage: |
-           /<command> - 各色グループのメンバーの一覧を、サーバー全体メッセージで表示します。
-           /<command> all - 全てのプレイヤー（ignoreGroups込み）のメンバーを一覧表示します。
+           /<command> - 各色グループのメンバーを、サーバー全体メッセージで表示します。
+           /<command> all - 全てのプレイヤー（ignoreGroups込み）のメンバーを、サーバー全体メッセージで表示します。
     permission: colorteaming.count
     permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorfriendlyfire:
@@ -60,12 +62,6 @@ commands:
            /<command> (on|off) - 各色グループのメンバーのチャットを、onでチームチャットに、offで通常チャットに設定します。
            /<command> (opon|opoff) - 各チームのチームチャットを、OPが傍聴するかどうかを設定します。
     permission: colorteaming.chat
-    permission-message: パーミッション "<permission>" が無いため、実行できません。
-  colorglobal:
-    description: チームチャット有効時にグローバルへ発言するためのコマンド
-    aliases: [cg,g]
-    usage: /<command> (message) - チームチャットが設定されている状態で、通常のチャット発言を行います。
-    permission: colorteaming.global
     permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorleader:
     description: 各グループから大将を選出するコマンド
@@ -87,8 +83,8 @@ commands:
            /<command> (group) here - groupのメンバー全員を、コマンドを実行した人の場所にテレポートします。
            /<command> (group) spawn - groupのメンバー全員を、グループのリスポーンポイントにテレポートします。
            /<command> (group) (point) - groupのメンバー全員を、指定されたポイントにテレポートします。
-           /<command> set (point) [(world)] (x) (y) (z) - 新しいポイントを、(world):(x),(y),(z) の場所に登録します。
-           /<command> set (point) here - 新しいポイントを、この場所に登録します。
+           /<command> set (point) [(world)] (x) (y) (z) - (world):(x),(y),(z) の場所に、新しいポイントを登録します。
+           /<command> set (point) here - コマンドを実行した人の場所に、新しいポイントを登録します。
            /<command> remove (point) - 登録されたポイントを削除します。
            /<command> all spawn - 全てのプレイヤーを、グループのリスポーンポイントにテレポートします。
            /<command> all (point) - 全てのプレイヤーを、指定されたポイントにテレポートします。
@@ -112,17 +108,20 @@ commands:
            /<command> - 全てのグループごとのキルデス数カウントを参照します。
            /<command> say - 全てのグループごとのキルデス数カウントを、サーバー全体メッセージで表示します。
            /<command> clear - 全てのグループごとのキルデス数カウントを初期化して0にします。
-
     permission: colorteaming.kill
     permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorspawn:
     description: チームごとのリスポーンポイントを設定するためのコマンド
     aliases: [cspawn,cs]
     usage: |
-           /<command> (group) [(world)] (x) (y) (z) - groupのメンバー全員のリスポーンポイントを、(world):(x),(y),(z) の場所に設定します。
-           /<command> (group) here - groupのメンバー全員のリスポーンポイントを、コマンドを実行した人の場所に設定します。
+           /<command> (group) - groupのメンバーのリスポーンポイントを、コマンドを実行した人の場所に設定します。
+           /<command> (group) (MapName) - マップMapNameにおけるgroupのメンバーのリスポーンポイントを、コマンドを実行した人の場所に設定します。
+           /<command> (group) (x) (y) (z) - groupのメンバー全員のリスポーンポイントを、(x),(y),(z) の場所に設定します。
+           /<command> switch (MapName) - リスポーンポイントの設定を、MapNameに変更します。
+           /<command> switch - リスポーンポイントの設定を、デフォルトに戻します。
            /<command> remove (group) - groupのリスポーンポイント設定を削除します。
            /<command> remove all - 全てのグループのリスポーン設定を削除します。
+           /<command> world - ワールドのリスポーンポイントを設定します。
            /<command> list - リスポーン設定を一覧表示します。
     permission: colorteaming.spawn
     permission-message: パーミッション "<permission>" が無いため、実行できません。
@@ -157,6 +156,12 @@ commands:
            /<command> (group) - groupのメンバー全員が爆発して死亡します。
            /<command> (player) - playerが爆発して死亡します。
     permission: colorteaming.explode
+    permission-message: パーミッション "<permission>" が無いため、実行できません。
+  colorglobal:
+    description: チームチャット有効時にグローバルへ発言するためのコマンド
+    aliases: [cg,g]
+    usage: /<command> (message) - チームチャットが設定されている状態で、通常のチャット発言を行います。
+    permission: colorteaming.global
     permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorjoin:
     description: 一般プレイヤーが、任意のグループへ参加するためのコマンド
