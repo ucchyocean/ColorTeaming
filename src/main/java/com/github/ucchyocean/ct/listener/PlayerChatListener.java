@@ -12,6 +12,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingConfig;
+import com.github.ucchyocean.ct.KanaConverter;
 
 /**
  * @author ucchy
@@ -32,8 +33,16 @@ public class PlayerChatListener implements Listener {
         // GLOBALマーカーを取り除いてから抜ける。
         if ( event.getMessage().startsWith(GLOBAL_CHAT_MARKER) ) {
             String newMessage = event.getMessage().substring(GLOBAL_CHAT_MARKER.length());
+            if ( ColorTeamingConfig.showJapanizeGlobalChat ) {
+                newMessage = addJapanize(newMessage); // Japanize化
+            }
             event.setMessage(newMessage);
             return;
+        }
+
+        // 設定に応じて、Japanize化する
+        if ( ColorTeamingConfig.showJapanizeGlobalChat ) {
+            event.setMessage( addJapanize(event.getMessage()) );
         }
 
         // チームチャット無効なら、何もせずに抜ける
@@ -53,5 +62,19 @@ public class PlayerChatListener implements Listener {
 
         // 元のイベントをキャンセル
         event.setCancelled(true);
+    }
+    
+    /**
+     * ローマ字をかな変換して、うしろにくっつける
+     * @param message 変換元
+     * @return 変換後
+     */
+    private String addJapanize(String message) {
+        // 2byteコードを含まない場合にのみ、処理を行う
+        if ( message.getBytes().length == message.length() ) {
+            String kana = KanaConverter.conv(message);
+            message = message + "(" + kana + ")";
+        }
+        return message;
     }
 }

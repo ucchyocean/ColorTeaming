@@ -1,4 +1,4 @@
-# Color Teaming Plugin 1.5.5
+# Color Teaming Plugin 1.5.6
 # @author     ucchy
 # @license    GPLv3
 # @copyright  Copyright ucchy 2013
@@ -47,3 +47,5 @@ listCriteria: point
 killTrophy: 0
 killReachTrophy: 0
 worldSpawn: false
+showJapanizeGlobalChat: false 
+showJapanizeTeamChat: true

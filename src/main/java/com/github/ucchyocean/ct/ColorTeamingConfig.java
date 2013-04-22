@@ -42,6 +42,8 @@ public class ColorTeamingConfig {
     public static int killTrophy;
     public static int killReachTrophy;
     public static boolean worldSpawn;
+    public static boolean showJapanizeGlobalChat;
+    public static boolean showJapanizeTeamChat;
 
     /**
      * config.ymlの読み出し処理。
@@ -108,6 +110,9 @@ public class ColorTeamingConfig {
         }
 
         worldSpawn = config.getBoolean("worldSpawn", false);
+
+        showJapanizeGlobalChat = config.getBoolean("showJapanizeGlobalChat", false);
+        showJapanizeTeamChat = config.getBoolean("showJapanizeTeamChat", true);
     }
 
     /**

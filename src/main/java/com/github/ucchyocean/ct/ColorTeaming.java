@@ -357,6 +357,15 @@ public class ColorTeaming extends JavaPlugin {
         }
         String color = team.getName();
 
+        // 設定に応じて、Japanize化する
+        if ( ColorTeamingConfig.showJapanizeTeamChat ) {
+            // 2byteコードを含まない場合にのみ、処理を行う
+            if ( message.getBytes().length == message.length() ) {
+                String kana = KanaConverter.conv(message);
+                message = message + "(" + kana + ")";
+            }
+        }
+        
         // メッセージを生成
         String partyMessage = String.format(
                 Utility.replaceColorCode(TEAM_CHAT_FORMAT),

@@ -1,4 +1,4 @@
-# Color Teaming Plugin 1.5.5
+# Color Teaming Plugin 1.5.6
 # @author     ucchy
 # @license    GPLv3
 # @copyright  Copyright ucchy 2013
@@ -51,6 +51,8 @@
 # worldSpawn: チーム無所属の人がサーバーに参加したときに、
 #             ワールドのリスポーン地点へリスポーンするようになります。
 #             ワールドのリスポーン地点は、/cspawn world コマンドを使用してください。
+# showJapanizeGlobalChat: 通常のチャットをJapanize化する。
+# showJapanizeTeamChat: チームチャットをJapanize化する。
 
 worlds: ['world']
 teamChatMode: false
@@ -96,3 +98,5 @@ listCriteria: point
 killTrophy: 0
 killReachTrophy: 0
 worldSpawn: false
+showJapanizeGlobalChat: false 
+showJapanizeTeamChat: true
