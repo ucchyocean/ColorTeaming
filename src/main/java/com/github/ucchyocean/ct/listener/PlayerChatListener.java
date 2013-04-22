@@ -56,6 +56,11 @@ public class PlayerChatListener implements Listener {
         if ( player.getGameMode() == GameMode.CREATIVE ) {
             return;
         }
+        
+        // チームに所属していなければ、何もせずに抜ける
+        if ( ColorTeaming.getPlayerColor(player).equals("") ) {
+            return;
+        }
 
         // チームメンバに送信する
         ColorTeaming.sendTeamChat(player, event.getMessage());
