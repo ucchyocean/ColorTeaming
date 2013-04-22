@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright ucchy 2013
  */
 package com.github.ucchyocean.ct.command;

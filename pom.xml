@@ -4,6 +4,24 @@
   <artifactId>ColorTeaming</artifactId>
   <version>1.5.5</version>
 
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <build>
+    <finalName>${project.artifactId}</finalName>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.0</version>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
   <repositories>
     <repository>
       <id>bukkit-repo</id>
@@ -19,9 +37,4 @@
       <version>1.5.1-R0.3-SNAPSHOT</version>
     </dependency>
   </dependencies>
-
-  <build>
-    <finalName>${project.artifactId}</finalName>
-  </build>
-
 </project>

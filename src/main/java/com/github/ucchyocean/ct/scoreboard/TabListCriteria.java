@@ -99,6 +99,9 @@ public enum TabListCriteria {
             return Criterias.DEATHS;
         case HEALTH:
             return Criterias.HEALTH;
+        case POINT:
+        case NONE:
+            return ""; // return dummy.
         }
         return "";
     }

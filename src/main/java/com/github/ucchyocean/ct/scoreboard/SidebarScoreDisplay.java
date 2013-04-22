@@ -104,6 +104,8 @@ public class SidebarScoreDisplay {
         case REST_PLAYER:
             refreshScoreByRestPlayerCount();
             break;
+        case NONE:
+            break; // do nothing.
         }
     }
 
