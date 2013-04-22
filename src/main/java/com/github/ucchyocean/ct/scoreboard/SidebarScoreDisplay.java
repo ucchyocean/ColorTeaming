@@ -185,6 +185,8 @@ public class SidebarScoreDisplay {
      * サイドバーの表示を消去する。
      */
     public void remove() {
-        objective.unregister();
+        if ( ColorTeaming.getScoreboard().getObjective("teamscore") != null ) {
+            objective.unregister();
+        }
     }
 }

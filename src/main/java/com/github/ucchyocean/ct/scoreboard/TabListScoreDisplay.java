@@ -78,6 +78,8 @@ public class TabListScoreDisplay {
      * スコア表示を削除する。
      */
     public void remove() {
-        objective.unregister();
+        if ( ColorTeaming.getScoreboard().getObjective("listscore") != null ) {
+            objective.unregister();
+        }
     }
 }
