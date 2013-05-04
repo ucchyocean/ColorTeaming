@@ -10,9 +10,9 @@ import org.bukkit.scoreboard.Criterias;
 
 /**
  * @author ucchy
- * TabListに表示するスコアの種類
+ * Playerに表示するスコアの種類
  */
-public enum TabListCriteria {
+public enum PlayerCriteria {
 
     /** キル数 */
     KILL_COUNT("kill"),
@@ -38,7 +38,7 @@ public enum TabListCriteria {
      * コンストラクタ
      * @param criteria 識別文字列
      */
-    TabListCriteria (String criteria) {
+    PlayerCriteria (String criteria) {
         this.criteria = criteria;
     }
 
@@ -57,52 +57,81 @@ public enum TabListCriteria {
      * @param criteria 識別文字列
      * @return 対応したTabListCriteria
      */
-    public static TabListCriteria fromString(String criteria) {
+    public static PlayerCriteria fromString(String criteria) {
 
         if ( criteria == null ) {
-            return TabListCriteria.NONE;
+            return PlayerCriteria.NONE;
         }
 
-        for (TabListCriteria value : TabListCriteria.values()) {
+        for (PlayerCriteria value : PlayerCriteria.values()) {
             if (criteria.equalsIgnoreCase(value.criteria)) {
                 return value;
             }
         }
 
-        return TabListCriteria.NONE;
+        return PlayerCriteria.NONE;
     }
 
-    public static TabListCriteria convert(Criterias criteria) {
+    /**
+     * CraftBukkitのCriteriasから、TabListCriteriaへ変換する
+     * @param criteria
+     * @return
+     */
+    public static PlayerCriteria convert(Criterias criteria) {
 
         if ( criteria == null ) {
-            return TabListCriteria.NONE;
+            return PlayerCriteria.NONE;
         } else if ( Criterias.PLAYER_KILLS.equals(criteria) ) {
-            return TabListCriteria.KILL_COUNT;
+            return PlayerCriteria.KILL_COUNT;
         } else if ( Criterias.TOTAL_KILLS.equals(criteria) ) {
-            return TabListCriteria.TOTAL_KILL_COUNT;
+            return PlayerCriteria.TOTAL_KILL_COUNT;
         } else if ( Criterias.DEATHS.equals(criteria) ) {
-            return TabListCriteria.DEATH_COUNT;
+            return PlayerCriteria.DEATH_COUNT;
         } else if ( Criterias.HEALTH.equals(criteria) ) {
-            return TabListCriteria.HEALTH;
+            return PlayerCriteria.HEALTH;
         }
-        return TabListCriteria.NONE;
+        return PlayerCriteria.NONE;
     }
 
-    public static String convert(TabListCriteria criteria) {
+    /**
+     * TabListCriteriaから、CraftBukkitのCriteriasへ変換する。
+     * @param criteria
+     * @return
+     */
+    public static String convert(PlayerCriteria criteria) {
 
         switch (criteria) {
-        case KILL_COUNT:
-            return Criterias.PLAYER_KILLS;
         case TOTAL_KILL_COUNT:
             return Criterias.TOTAL_KILLS;
-        case DEATH_COUNT:
-            return Criterias.DEATHS;
         case HEALTH:
             return Criterias.HEALTH;
+        case KILL_COUNT:
+        case DEATH_COUNT:
         case POINT:
         case NONE:
             return ""; // return dummy.
         }
         return "";
+    }
+
+    /**
+     * 名前下の表示名部分に表示する文字列
+     * @return 対応した文字列
+     */
+    public String getBelowNameTitle() {
+
+        switch (this) {
+        case KILL_COUNT:
+            return "kill";
+        case DEATH_COUNT:
+            return "death";
+        case POINT:
+            return "point";
+        case HEALTH:
+            return "/ 20";
+        case NONE:
+        default:
+            return "";
+        }
     }
 }

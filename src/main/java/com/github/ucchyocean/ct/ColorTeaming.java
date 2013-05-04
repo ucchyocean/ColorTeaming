@@ -40,9 +40,10 @@ import com.github.ucchyocean.ct.listener.PlayerChatListener;
 import com.github.ucchyocean.ct.listener.PlayerDeathListener;
 import com.github.ucchyocean.ct.listener.PlayerJoinQuitListener;
 import com.github.ucchyocean.ct.listener.PlayerRespawnListener;
+import com.github.ucchyocean.ct.scoreboard.BelowNameScoreDisplay;
 import com.github.ucchyocean.ct.scoreboard.SidebarCriteria;
 import com.github.ucchyocean.ct.scoreboard.SidebarScoreDisplay;
-import com.github.ucchyocean.ct.scoreboard.TabListCriteria;
+import com.github.ucchyocean.ct.scoreboard.PlayerCriteria;
 import com.github.ucchyocean.ct.scoreboard.TabListScoreDisplay;
 
 /**
@@ -63,6 +64,7 @@ public class ColorTeaming extends JavaPlugin {
     public static TPPointConfiguration tppointConfig;
     public static SidebarScoreDisplay sidebarScore;
     public static TabListScoreDisplay tablistScore;
+    public static BelowNameScoreDisplay belownameScore;
 
     public static Hashtable<String, ArrayList<String>> leaders;
     public static Hashtable<String, int[]> killDeathCounts;
@@ -365,7 +367,7 @@ public class ColorTeaming extends JavaPlugin {
                 message = message + "(" + kana + ")";
             }
         }
-        
+
         // メッセージを生成
         String partyMessage = String.format(
                 Utility.replaceColorCode(TEAM_CHAT_FORMAT),
@@ -478,7 +480,7 @@ public class ColorTeaming extends JavaPlugin {
     public static void makeTabkeyListScore() {
 
         removeTabkeyListScore();
-        if ( ColorTeamingConfig.listCriteria != TabListCriteria.NONE ) {
+        if ( ColorTeamingConfig.listCriteria != PlayerCriteria.NONE ) {
             tablistScore = new TabListScoreDisplay();
         }
     }
@@ -501,6 +503,39 @@ public class ColorTeaming extends JavaPlugin {
 
         if ( tablistScore != null ) {
             tablistScore.refreshScore();
+        }
+    }
+
+    /**
+     * 名前下のスコアを新しく作る。
+     * もともとスコアがあった場合は、削除して再作成される。
+     */
+    public static void makeBelowNameScore() {
+
+        removeBelowNameScore();
+        if ( ColorTeamingConfig.belowCriteria != PlayerCriteria.NONE ) {
+            belownameScore = new BelowNameScoreDisplay();
+        }
+    }
+
+    /**
+     * 名前下のスコアを消去する。
+     */
+    public static void removeBelowNameScore() {
+
+        getScoreboard().clearSlot(DisplaySlot.BELOW_NAME);
+        if ( belownameScore != null ) {
+            belownameScore.remove();
+        }
+    }
+
+    /**
+     * 名前下のスコアを更新する。
+     */
+    public static void refreshBelowNameScore() {
+
+        if ( belownameScore != null ) {
+            belownameScore.refreshScore();
         }
     }
 }

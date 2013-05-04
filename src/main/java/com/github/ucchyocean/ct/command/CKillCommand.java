@@ -162,6 +162,7 @@ public class CKillCommand implements CommandExecutor {
             ColorTeaming.killDeathUserCounts.clear();
             ColorTeaming.refreshSidebarScore();
             ColorTeaming.refreshTabkeyListScore();
+            ColorTeaming.refreshBelowNameScore();
             sender.sendMessage(ChatColor.GRAY + "KillDeath数をリセットしました。");
             return true;
         }

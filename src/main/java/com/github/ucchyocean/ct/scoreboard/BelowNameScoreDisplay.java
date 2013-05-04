@@ -11,18 +11,18 @@ import com.github.ucchyocean.ct.ColorTeamingConfig;
 
 /**
  * @author ucchy
- * TABキーリストのスコア表示を管理するクラス
+ * 名前下のスコア表示を管理するクラス
  */
-public class TabListScoreDisplay extends ScoreDisplayBase {
+public class BelowNameScoreDisplay extends ScoreDisplayBase {
 
-    private static final String NAME = "listscore";
+    private static final String NAME = "belowscore";
 
     /**
      * @see com.github.ucchyocean.ct.scoreboard.ScoreDisplayBase#getConfigData()
      */
     @Override
     public PlayerCriteria getConfigData() {
-        return ColorTeamingConfig.listCriteria;
+        return ColorTeamingConfig.belowCriteria;
     }
 
     /**
@@ -38,7 +38,7 @@ public class TabListScoreDisplay extends ScoreDisplayBase {
      */
     @Override
     public DisplaySlot getDisplaySlot() {
-        return DisplaySlot.PLAYER_LIST;
+        return DisplaySlot.BELOW_NAME;
     }
 
     /**
@@ -46,6 +46,7 @@ public class TabListScoreDisplay extends ScoreDisplayBase {
      */
     @Override
     public void refreshDisplayName() {
-        // do nothing.
+        String title = getConfigData().getBelowNameTitle();
+        objective.setDisplayName(title);
     }
 }

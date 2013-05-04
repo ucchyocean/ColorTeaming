@@ -1,4 +1,4 @@
-# Color Teaming Plugin 1.5.6
+# Color Teaming Plugin 1.5.7
 # @author     ucchy
 # @license    GPLv3
 # @copyright  Copyright ucchy 2013
@@ -44,6 +44,7 @@ allowPlayerJoinAny: false
 allowPlayerJoinRandom: true
 sideCriteria: rest
 listCriteria: point
+belowCriteria: none
 killTrophy: 0
 killReachTrophy: 0
 worldSpawn: false

@@ -108,6 +108,7 @@ public class CJoinCommand implements CommandExecutor {
             // サイドバー更新、タブキーリスト更新
             ColorTeaming.makeSidebar();
             ColorTeaming.refreshTabkeyListScore();
+            ColorTeaming.refreshBelowNameScore();
 
             // メンバー情報をlastdataに保存する
             ColorTeaming.sdhandler.save("lastdata");

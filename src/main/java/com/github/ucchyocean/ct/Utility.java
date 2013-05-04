@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 
@@ -159,5 +160,64 @@ public class Utility {
             }
         }
         return false;
+    }
+
+    /**
+     * Jarファイル内から指定したファイルを直接読み込み、内容を返すメソッド
+     * @return ファイルの内容
+     */
+    public static ArrayList<String> getContentsFromJar(String name) {
+
+        ArrayList<String> contents = new ArrayList<String>();
+        JarFile jarFile = null;
+        InputStream inputStream = null;
+        try {
+            jarFile = new JarFile(ColorTeaming.getPluginJarFile());
+            ZipEntry zipEntry = jarFile.getEntry(name);
+            inputStream = jarFile.getInputStream(zipEntry);
+            BufferedReader reader =
+                    new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+            String line;
+            while ( (line = reader.readLine()) != null ) {
+                contents.add(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if ( jarFile != null ) {
+                try {
+                    jarFile.close();
+                } catch (IOException e) {
+                    // do nothing.
+                }
+            }
+            if ( inputStream != null ) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    // do nothing.
+                }
+            }
+        }
+
+        return contents;
+    }
+
+    /**
+     * YamlファイルをJarの中から読み込んで、ヘッダー部分を返す
+     * @param name 読み込むファイル
+     * @return ヘッダー部分
+     */
+    public static String getYamlHeader(String name) {
+
+        ArrayList<String> contents = getContentsFromJar(name);
+        StringBuilder results = new StringBuilder();
+        for ( String line : contents ) {
+            if ( !line.startsWith("#") ) {
+                break;
+            }
+            results.append(line + "\n");
+        }
+        return results.toString();
     }
 }

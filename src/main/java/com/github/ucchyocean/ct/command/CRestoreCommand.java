@@ -45,6 +45,7 @@ public class CRestoreCommand implements CommandExecutor {
             // スコアボードの作成
             ColorTeaming.makeSidebar();
             ColorTeaming.makeTabkeyListScore();
+            ColorTeaming.makeBelowNameScore();
 
         } else {
             sender.sendMessage(PREERR + "メンバー状況の復帰に失敗しました。");

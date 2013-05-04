@@ -99,6 +99,7 @@ public class CRandomCommand implements CommandExecutor {
         // スコアボードの作成
         ColorTeaming.makeSidebar();
         ColorTeaming.makeTabkeyListScore();
+        ColorTeaming.makeBelowNameScore();
 
         // メンバー情報の取得
         Hashtable<String, ArrayList<Player>> members =
@@ -170,6 +171,7 @@ public class CRandomCommand implements CommandExecutor {
         // TODO: 要確認。TABキーリストはリフレッシュでいい…はず。
         ColorTeaming.makeSidebar();
         ColorTeaming.refreshTabkeyListScore();
+        ColorTeaming.refreshBelowNameScore();
 
         // メンバー情報の取得
         Hashtable<String, ArrayList<Player>> members =

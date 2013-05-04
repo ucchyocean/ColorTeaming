@@ -1,6 +1,6 @@
 name: ColorTeaming
 main: com.github.ucchyocean.ct.ColorTeaming
-version: 1.5.6
+version: 1.5.7
 authors: [ucchy,owatakun]
 load: startup
 description: 簡易PVPチーミングプラグイン
@@ -21,6 +21,8 @@ commands:
            /<command> side clear - サイドバーのスコア表示を消去します。
            /<command> list (kill|death|point|health) - TABキーリストのスコア表示を変更します。
            /<command> list clear - TABキーリストのスコア表示を消去します。
+           /<command> below (kill|death|point|health) - 名前下のスコア表示を変更します。
+           /<command> below clear - 名前下のスコア表示を消去します。
     permission: colorteaming.team
     permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorrandom:

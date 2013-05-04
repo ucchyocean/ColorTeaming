@@ -14,8 +14,8 @@ import java.util.Map;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import com.github.ucchyocean.ct.scoreboard.PlayerCriteria;
 import com.github.ucchyocean.ct.scoreboard.SidebarCriteria;
-import com.github.ucchyocean.ct.scoreboard.TabListCriteria;
 
 /**
  * @author ucchy
@@ -38,7 +38,8 @@ public class ColorTeamingConfig {
     public static int deathPoint;
     public static int tkPoint;
     public static SidebarCriteria sideCriteria;
-    public static TabListCriteria listCriteria;
+    public static PlayerCriteria listCriteria;
+    public static PlayerCriteria belowCriteria;
     public static int killTrophy;
     public static int killReachTrophy;
     public static boolean worldSpawn;
@@ -52,11 +53,13 @@ public class ColorTeamingConfig {
      */
     public static void reloadConfig() {
 
+        // config.yml が無い場合に、デフォルトを読み出し
         File configFile = new File(ColorTeaming.instance.getDataFolder(), "config.yml");
         if ( !configFile.exists() ) {
             Utility.copyFileFromJar(ColorTeaming.getPluginJarFile(), configFile, "config_ja.yml", false);
         }
 
+        // config取得
         ColorTeaming.instance.reloadConfig();
         FileConfiguration config = ColorTeaming.instance.getConfig();
 
@@ -97,7 +100,9 @@ public class ColorTeamingConfig {
         String criteriaTemp = config.getString("sideCriteria", "rest");
         sideCriteria = SidebarCriteria.fromString(criteriaTemp);
         criteriaTemp = config.getString("listCriteria", "point");
-        listCriteria = TabListCriteria.fromString(criteriaTemp);
+        listCriteria = PlayerCriteria.fromString(criteriaTemp);
+        criteriaTemp = config.getString("belowCriteria", "none");
+        belowCriteria = PlayerCriteria.fromString(criteriaTemp);
 
         killTrophy = config.getInt("killTrophy", 0);
         if ( killTrophy > 0 ) {
@@ -124,6 +129,11 @@ public class ColorTeamingConfig {
 
         FileConfiguration config = ColorTeaming.instance.getConfig();
         config.set(key, value);
+
+        // ヘッダー再設定
+        String header = Utility.getYamlHeader("config_ja.yml");
+        config.options().header(header);
+
         ColorTeaming.instance.saveConfig();
     }
 }

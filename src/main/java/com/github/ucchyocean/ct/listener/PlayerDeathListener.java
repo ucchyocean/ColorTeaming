@@ -143,5 +143,6 @@ public class PlayerDeathListener implements Listener {
         // スコア表示を更新する
         ColorTeaming.refreshSidebarScore();
         ColorTeaming.refreshTabkeyListScore();
+        ColorTeaming.refreshBelowNameScore();
     }
 }
