@@ -153,11 +153,21 @@ commands:
     permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorexplode:
     description: チームを爆発させるコマンド（爆発オチ用）
-    aliases: ce
+    aliases: [ce,cexplode]
     usage: |
            /<command> (group) - groupのメンバー全員が爆発して死亡します。
            /<command> (player) - playerが爆発して死亡します。
     permission: colorteaming.explode
+    permission-message: パーミッション "<permission>" が無いため、実行できません。
+  colorgive:
+    description: チームメンバーのインベントリに、アイテムを追加するコマンド
+    aliases: cgive
+    usage: |
+           /<command> (group) (item-id) - 指定したIDのアイテムを、groupのメンバー全員に配布します。
+           /<command> (player) (item-id) - 指定したIDのアイテムを、playerに配布します。
+           /<command> (group) hand - 手に持ったアイテムを、groupのメンバー全員に配布します。
+           /<command> (player) hand - 手に持ったアイテムを、playerに配布します。
+    permission: colorteaming.join
     permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorglobal:
     description: チームチャット有効時にグローバルへ発言するためのコマンド

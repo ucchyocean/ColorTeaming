@@ -25,6 +25,7 @@ import com.github.ucchyocean.ct.command.CClassCommand;
 import com.github.ucchyocean.ct.command.CCountCommand;
 import com.github.ucchyocean.ct.command.CExplodeCommand;
 import com.github.ucchyocean.ct.command.CFriendlyFireCommand;
+import com.github.ucchyocean.ct.command.CGiveCommand;
 import com.github.ucchyocean.ct.command.CJoinCommand;
 import com.github.ucchyocean.ct.command.CKillCommand;
 import com.github.ucchyocean.ct.command.CLeaderCommand;
@@ -41,9 +42,9 @@ import com.github.ucchyocean.ct.listener.PlayerDeathListener;
 import com.github.ucchyocean.ct.listener.PlayerJoinQuitListener;
 import com.github.ucchyocean.ct.listener.PlayerRespawnListener;
 import com.github.ucchyocean.ct.scoreboard.BelowNameScoreDisplay;
+import com.github.ucchyocean.ct.scoreboard.PlayerCriteria;
 import com.github.ucchyocean.ct.scoreboard.SidebarCriteria;
 import com.github.ucchyocean.ct.scoreboard.SidebarScoreDisplay;
-import com.github.ucchyocean.ct.scoreboard.PlayerCriteria;
 import com.github.ucchyocean.ct.scoreboard.TabListScoreDisplay;
 
 /**
@@ -114,6 +115,8 @@ public class ColorTeaming extends JavaPlugin {
         getCommand("colorsave").setExecutor(new CSaveCommand());
 
         getCommand("colorrestore").setExecutor(new CRestoreCommand());
+
+        getCommand("colorgive").setExecutor(new CGiveCommand());
 
         getCommand("colorjoin").setExecutor(new CJoinCommand());
 
