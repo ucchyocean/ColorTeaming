@@ -127,10 +127,15 @@ public class PlayerDeathListener implements Listener {
 
                 if ( ColorTeaming.killDeathCounts.get(colorKiller)[0] ==
                         ColorTeamingConfig.killTrophy ) {
+
+                    // 全体通知
                     String message = String.format(
                             PRENOTICE + "%s チームは、%d キルを達成しました！",
                             colorKiller, ColorTeamingConfig.killTrophy);
                     ColorTeaming.sendBroadcast(message);
+
+                    // ゲーム終了が設定されていたら、ゲーム終了する
+                    // TODO:
                 }
             }
         }

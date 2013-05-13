@@ -1,4 +1,4 @@
-# Color Teaming Plugin 1.5.7
+# Color Teaming Plugin 1.5.8
 # @author     ucchy
 # @license    GPLv3
 # @copyright  Copyright ucchy 2013
@@ -8,7 +8,10 @@
 #               trueになっている場合は、チャットの発言がチーム内のみになります。
 # opDisplayMode: teamChatMode が有効のときに、OPメンバーの画面にもチームチャットの内容を
 #                表示するかどうかを設定します。
-# firelyFireDisabler: 同じチームメンバー同士の攻撃（剣などの直接攻撃と、弓矢）を無効にします。
+# teamChatLogMode: チームチャットの内容を、コンソールに表示します。
+#                  同時に、server.log にも記録されます。
+# friendlyFireDisabler: 同じチームメンバー同士の攻撃（剣などの直接攻撃と、弓矢）を無効にします。
+# seeFriendlyInvisible: 透明化した同じチームメンバーが、見えるようにするかどうかを設定します。
 # classes: クラスごとのインベントリーの内容を設定します。
 #          アイテムの設定形式は2種類あります。
 #          通常のアイテム → (アイテムID)[@(ダメージ値)][:(個数)]
@@ -59,7 +62,9 @@
 worlds: ['world']
 teamChatMode: false
 opDisplayMode: false
-firelyFireDisabler: true
+teamChatLogMode: true
+friendlyFireDisabler: true
+seeFriendlyInvisible: true
 classes:
   Knight:
     items: 267,320:5

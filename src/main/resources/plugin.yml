@@ -1,6 +1,6 @@
 name: ColorTeaming
 main: com.github.ucchyocean.ct.ColorTeaming
-version: 1.5.7
+version: 1.5.8
 authors: [ucchy,owatakun]
 load: startup
 description: 簡易PVPチーミングプラグイン
@@ -23,6 +23,7 @@ commands:
            /<command> list clear - TABキーリストのスコア表示を消去します。
            /<command> below (kill|death|point|health) - 名前下のスコア表示を変更します。
            /<command> below clear - 名前下のスコア表示を消去します。
+           /<command> goal (defeat|kill) - ゲーム終了条件を設定します。
     permission: colorteaming.team
     permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorrandom:
@@ -63,6 +64,7 @@ commands:
     usage: |
            /<command> (on|off) - 各色グループのメンバーのチャットを、onでチームチャットに、offで通常チャットに設定します。
            /<command> (opon|opoff) - 各チームのチームチャットを、OPが傍聴するかどうかを設定します。
+           /<command> (logon|logoff) - 各チームのチームチャットを、server.logに記録します。
     permission: colorteaming.chat
     permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorleader:

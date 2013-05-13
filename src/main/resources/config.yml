@@ -1,4 +1,4 @@
-# Color Teaming Plugin 1.5.7
+# Color Teaming Plugin 1.5.8
 # @author     ucchy
 # @license    GPLv3
 # @copyright  Copyright ucchy 2013
@@ -6,7 +6,9 @@
 worlds: ['world']
 teamChatMode: false
 opDisplayMode: false
-firelyFireDisabler: true
+teamChatLogMode: true
+friendlyFireDisabler: true
+seeFriendlyInvisible: true
 classes:
   Knight:
     items: 267,320:5

@@ -53,6 +53,16 @@ public class CChatCommand implements CommandExecutor {
             sender.sendMessage(ChatColor.RED + "チームチャットのOPへの表示をオフにします。");
             ColorTeamingConfig.setConfigValue("opDisplayMode", false);
             return true;
+        } else if ( args[0].equalsIgnoreCase("logon") ) {
+            ColorTeamingConfig.isTeamChatLogMode = true;
+            sender.sendMessage(ChatColor.RED + "チームチャットのログ記録を有効にします。");
+            ColorTeamingConfig.setConfigValue("teamChatLogMode", true);
+            return true;
+        } else if ( args[0].equalsIgnoreCase("logoff") ) {
+            ColorTeamingConfig.isTeamChatLogMode = false;
+            sender.sendMessage(ChatColor.RED + "チームチャットのログ記録を無効にします。");
+            ColorTeamingConfig.setConfigValue("teamChatLogMode", false);
+            return true;
         } else if ( args.length >= 2 ){
             // グループにメッセージ送信
             String group = args[0];

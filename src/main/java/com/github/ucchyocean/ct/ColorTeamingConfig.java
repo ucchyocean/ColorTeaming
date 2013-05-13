@@ -23,28 +23,80 @@ import com.github.ucchyocean.ct.scoreboard.SidebarCriteria;
  */
 public class ColorTeamingConfig {
 
+    /** 対象とするワールドの名前 */
     public static List<String> worldNames;
+
+    /** チームチャットのオンオフ */
     public static boolean isTeamChatMode;
+
+    /** チームチャットのOP傍聴オンオフ */
     public static boolean isOPDisplayMode;
+
+    /** チームチャットのロギング オンオフ */
+    public static boolean isTeamChatLogMode;
+
+    /** FriendlyFire無効機能の オンオフ */
     public static boolean isFriendlyFireDisabler;
+
+    /** 仲間の透明が見えるかどうか のオンオフ */
+    public static boolean canSeeFriendlyInvisibles;
+
+    /** クラスのアイテム設定 */
     public static Map<String, String> classItems;
+
+    /** クラスのアーマー設定 */
     public static Map<String, String> classArmors;
+
+    /** 死亡時のチーム離脱 オンオフ */
     public static boolean colorRemoveOnDeath;
+
+    /** ログアウト時のチーム離脱 オンオフ */
     public static boolean colorRemoveOnQuit;
+
+    /** リスポーン後の無敵時間(秒) */
     public static int noDamageSeconds;
+
+    /** /cjoin (group) を一般ユーザーに使用させるかどうか */
     public static boolean allowPlayerJoinAny;
+
+    /** /cjoin  を一般ユーザーに使用させるかどうか */
     public static boolean allowPlayerJoinRandom;
+
+    /** キル時のポイント設定 */
     public static int killPoint;
+
+    /** デス時のポイント設定 */
     public static int deathPoint;
+
+    /** チームメンバーキル時のポイント設定 */
     public static int tkPoint;
+
+    /** サイドバーのスコア設定 */
     public static SidebarCriteria sideCriteria;
+
+    /** Tabキーリストのスコア設定 */
     public static PlayerCriteria listCriteria;
+
+    /** 名前下のスコア設定 */
     public static PlayerCriteria belowCriteria;
+
+    /** キル数目標の設定 */
     public static int killTrophy;
+
+    /** キル数リーチの設定 */
     public static int killReachTrophy;
+
+    /** ワールドのリスポーン地点への初期リスポーン設定 */
     public static boolean worldSpawn;
+
+    /** グローバルチャットをローマ字かな変換するかどうか */
     public static boolean showJapanizeGlobalChat;
+
+    /** チームチャットをローマ字かな変換するかどうか */
     public static boolean showJapanizeTeamChat;
+
+    /** ゲーム終了条件設定 */
+    public static GameGoalKind gameGoal;
 
     /**
      * config.ymlの読み出し処理。
@@ -70,7 +122,9 @@ public class ColorTeamingConfig {
 
         isTeamChatMode = config.getBoolean("teamChatMode", false);
         isOPDisplayMode = config.getBoolean("opDisplayMode", false);
-        isFriendlyFireDisabler = config.getBoolean("firelyFireDisabler", true);
+        isTeamChatLogMode = config.getBoolean("teamChatLogMode", true);
+        isFriendlyFireDisabler = config.getBoolean("friendlyFireDisabler", true);
+        canSeeFriendlyInvisibles = config.getBoolean("seeFriendlyInvisible", true);
 
         classItems = new HashMap<String, String>();
         classArmors = new HashMap<String, String>();
@@ -118,6 +172,20 @@ public class ColorTeamingConfig {
 
         showJapanizeGlobalChat = config.getBoolean("showJapanizeGlobalChat", false);
         showJapanizeTeamChat = config.getBoolean("showJapanizeTeamChat", true);
+
+        String gameGoalTemp = config.getString("gameGoal", "none");
+        gameGoal = GameGoalKind.fromString(gameGoalTemp);
+        if ( gameGoal == GameGoalKind.DEFEAT ) {
+            // DEFEAT の場合は、colorRemoveOnDeath が true である必要がある
+            if ( !colorRemoveOnDeath ) {
+                gameGoal = GameGoalKind.NONE;
+            }
+        } else if ( gameGoal == GameGoalKind.KILL ) {
+            // KILL の場合は、killTrophy が設定されている必要がある
+            if ( killTrophy <= 0 ) {
+                gameGoal = GameGoalKind.NONE;
+            }
+        }
     }
 
     /**

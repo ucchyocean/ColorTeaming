@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.github.ucchyocean</groupId>
   <artifactId>ColorTeaming</artifactId>
-  <version>1.5.7</version>
+  <version>1.5.8</version>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -17,6 +17,19 @@
         <configuration>
           <source>1.6</source>
           <target>1.6</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>1.9</version>
+        <configuration>
+          <author>true</author>
+          <source>1.6</source>
+          <showPackage>false</showPackage>
+          <showPrivate>false</showPrivate>
+          <encoding>UTF-8</encoding>
+          <charset>UTF-8</charset>
+          <docencoding>UTF-8</docencoding>
         </configuration>
       </plugin>
     </plugins>

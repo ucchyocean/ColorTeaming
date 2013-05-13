@@ -199,7 +199,8 @@ public class ColorTeaming extends JavaPlugin {
             team.setDisplayName(Utility.replaceColors(color) + color + ChatColor.RESET);
             team.setPrefix(Utility.replaceColors(color).toString());
             team.setSuffix(ChatColor.RESET.toString());
-            team.setAllowFriendlyFire(!ColorTeamingConfig.isFriendlyFireDisabler);
+            team.setCanSeeFriendlyInvisibles(ColorTeamingConfig.canSeeFriendlyInvisibles);
+//            team.setAllowFriendlyFire(!ColorTeamingConfig.isFriendlyFireDisabler);
         }
         team.addPlayer(player);
         player.setDisplayName(
@@ -224,6 +225,7 @@ public class ColorTeaming extends JavaPlugin {
     /**
      * フレンドリーファイアの設定。
      * @param ff trueならフレンドリーファイア有効、falseなら無効
+     * @deprecated 本メソッドは seeFriendlyInvisibles と同時設定できないため、使用不可とする。
      */
     public static void setFriendlyFilre(boolean ff) {
 
@@ -232,6 +234,20 @@ public class ColorTeaming extends JavaPlugin {
         Set<Team> teams = scoreboard.getTeams();
         for ( Team t : teams ) {
             t.setAllowFriendlyFire(ff);
+        }
+    }
+
+    /**
+     * 仲間の可視化の設定。
+     * @param fi trueならフレンドリーファイア有効、falseなら無効
+     */
+    public static void setSeeFriendlyInvisibles(boolean fi) {
+
+        Scoreboard scoreboard = getScoreboard();
+
+        Set<Team> teams = scoreboard.getTeams();
+        for ( Team t : teams ) {
+            t.setCanSeeFriendlyInvisibles(fi);
         }
     }
 
@@ -391,6 +407,11 @@ public class ColorTeaming extends JavaPlugin {
         }
         for ( Player p : playersToSend ) {
             p.sendMessage(partyMessage);
+        }
+
+        // ログ記録する
+        if ( ColorTeamingConfig.isTeamChatLogMode ) {
+            logger.info(partyMessage);
         }
     }
 
