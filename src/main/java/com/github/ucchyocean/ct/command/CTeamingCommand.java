@@ -329,10 +329,10 @@ public class CTeamingCommand implements CommandExecutor {
             // 制約条件の確認 - ここまで
 
             // 設定の保存
-            String gamegoal = ColorTeamingConfig.gameGoal.toJapaneseString();
-            ColorTeamingConfig.setConfigValue("gameGoal", gamegoal);
+            ColorTeamingConfig.gameGoal = goal;
+            ColorTeamingConfig.setConfigValue("gameGoal", goal.toString());
 
-            sender.sendMessage(PREINFO + "ゲーム終了条件を" + gamegoal + "にしました。");
+            sender.sendMessage(PREINFO + "ゲーム終了条件を" + goal.toJapaneseString() + "にしました。");
 
             return true;
         }

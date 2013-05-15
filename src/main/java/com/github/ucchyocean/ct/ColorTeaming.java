@@ -14,6 +14,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
@@ -560,6 +561,23 @@ public class ColorTeaming extends JavaPlugin {
 
         if ( belownameScore != null ) {
             belownameScore.refreshScore();
+        }
+    }
+
+    /**
+     * ゲームを終了し、残ったメンバーを初期リスポンへ移動する
+     */
+    public static void endGame() {
+
+        Hashtable<String, ArrayList<Player>> members = getAllTeamMembers();
+        for ( String group : members.keySet() ) {
+            for ( Player player : members.get(group) ) {
+                if ( player.isOnline() ) {
+                    player.teleport(player.getWorld().getSpawnLocation(), TeleportCause.PLUGIN);
+                } else {
+                    System.out.println(player.getName() + " is offline.");
+                }
+            }
         }
     }
 }
