@@ -23,7 +23,6 @@ commands:
            /<command> list clear - TABキーリストのスコア表示を消去します。
            /<command> below (kill|death|point|health) - 名前下のスコア表示を変更します。
            /<command> below clear - 名前下のスコア表示を消去します。
-           /<command> goal (defeat|kill) - ゲーム終了条件を設定します。
     permission: colorteaming.team
     permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorrandom:

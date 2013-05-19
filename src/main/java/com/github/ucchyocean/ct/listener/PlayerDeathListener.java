@@ -3,9 +3,6 @@
  */
 package com.github.ucchyocean.ct.listener;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
-
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -20,7 +17,6 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingConfig;
-import com.github.ucchyocean.ct.GameGoalKind;
 
 /**
  * @author ucchy
@@ -39,7 +35,6 @@ public class PlayerDeathListener implements Listener {
 
         Player player = event.getEntity();
         String color = ColorTeaming.getPlayerColor(player);
-        boolean isGameEnd = false;
 
         // Death数を加算
 
@@ -71,16 +66,6 @@ public class PlayerDeathListener implements Listener {
                 ColorTeaming.sendBroadcast(message);
 
                 ColorTeaming.leaders.remove(color);
-
-                // ゲーム終了が設定されていたら、ゲーム終了する
-                if ( ColorTeamingConfig.gameGoal == GameGoalKind.LEADER &&
-                        (ColorTeaming.leaders.size() == 1) ) {
-
-                    message = String.format(PRENOTICE + "%s チームの勝利です！",
-                            ColorTeaming.leaders.keys().nextElement());
-                    ColorTeaming.sendBroadcast(message);
-                    isGameEnd = true;
-                }
             }
 
         }
@@ -149,13 +134,6 @@ public class PlayerDeathListener implements Listener {
                             PRENOTICE + "%s チームは、%d キルを達成しました！",
                             colorKiller, ColorTeamingConfig.killTrophy);
                     ColorTeaming.sendBroadcast(message);
-
-                    // ゲーム終了が設定されていたら、ゲーム終了する
-                    if ( ColorTeamingConfig.gameGoal == GameGoalKind.KILL ) {
-                        message = String.format(PRENOTICE + "%s チームの勝利です！", colorKiller);
-                        ColorTeaming.sendBroadcast(message);
-                        isGameEnd = true;
-                    }
                 }
             }
         }
@@ -169,29 +147,5 @@ public class PlayerDeathListener implements Listener {
         ColorTeaming.refreshSidebarScore();
         ColorTeaming.refreshTabkeyListScore();
         ColorTeaming.refreshBelowNameScore();
-
-        // チームが全滅したかどうかを確認する
-        if ( ColorTeamingConfig.gameGoal == GameGoalKind.DEFEAT ) {
-            Hashtable<String, ArrayList<Player>> members = ColorTeaming.getAllTeamMembers();
-            int teamNum = 0;
-            String teamName = "";
-            for ( String group : members.keySet() ) {
-                if ( members.get(group).size() >= 1 ) {
-                    teamNum++;
-                    teamName = group;
-                }
-            }
-            if ( teamNum == 1 ) {
-
-                String message = String.format(PRENOTICE + "%s チームの勝利です！", teamName);
-                ColorTeaming.sendBroadcast(message);
-                isGameEnd = true;
-            }
-        }
-
-        // ゲームの終了を実行する
-        if ( isGameEnd ) {
-            ColorTeaming.endGame();
-        }
     }
 }

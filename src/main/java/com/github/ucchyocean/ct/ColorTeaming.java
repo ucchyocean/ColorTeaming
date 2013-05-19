@@ -14,7 +14,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
@@ -201,7 +200,12 @@ public class ColorTeaming extends JavaPlugin {
             team.setPrefix(Utility.replaceColors(color).toString());
             team.setSuffix(ChatColor.RESET.toString());
             team.setCanSeeFriendlyInvisibles(ColorTeamingConfig.canSeeFriendlyInvisibles);
-//            team.setAllowFriendlyFire(!ColorTeamingConfig.isFriendlyFireDisabler);
+            team.setAllowFriendlyFire(
+                    ColorTeamingConfig.canSeeFriendlyInvisibles ||
+                    !ColorTeamingConfig.isFriendlyFireDisabler);
+            System.out.println("team : " + team.getDisplayName() + " - " + (
+                    ColorTeamingConfig.canSeeFriendlyInvisibles ||
+                    !ColorTeamingConfig.isFriendlyFireDisabler));
         }
         team.addPlayer(player);
         player.setDisplayName(
@@ -224,9 +228,10 @@ public class ColorTeaming extends JavaPlugin {
     }
 
     /**
-     * フレンドリーファイアの設定。
+     * フレンドリーファイアの設定。<br>
+     * NOTE: 本メソッドは、透明可視化が設定されている場合は、
+     * 強制的にfalseになることに注意
      * @param ff trueならフレンドリーファイア有効、falseなら無効
-     * @deprecated 本メソッドは seeFriendlyInvisibles と同時設定できないため、使用不可とする。
      */
     public static void setFriendlyFilre(boolean ff) {
 
@@ -234,12 +239,14 @@ public class ColorTeaming extends JavaPlugin {
 
         Set<Team> teams = scoreboard.getTeams();
         for ( Team t : teams ) {
-            t.setAllowFriendlyFire(ff);
+            boolean invisible = t.canSeeFriendlyInvisibles();
+            System.out.println("setff : " + (invisible || ff));
+            t.setAllowFriendlyFire(invisible || ff);
         }
     }
 
     /**
-     * 仲間の可視化の設定。
+     * 仲間の可視化の設定。<br>
      * @param fi trueならフレンドリーファイア有効、falseなら無効
      */
     public static void setSeeFriendlyInvisibles(boolean fi) {
@@ -561,23 +568,6 @@ public class ColorTeaming extends JavaPlugin {
 
         if ( belownameScore != null ) {
             belownameScore.refreshScore();
-        }
-    }
-
-    /**
-     * ゲームを終了し、残ったメンバーを初期リスポンへ移動する
-     */
-    public static void endGame() {
-
-        Hashtable<String, ArrayList<Player>> members = getAllTeamMembers();
-        for ( String group : members.keySet() ) {
-            for ( Player player : members.get(group) ) {
-                if ( player.isOnline() ) {
-                    player.teleport(player.getWorld().getSpawnLocation(), TeleportCause.PLUGIN);
-                } else {
-                    System.out.println(player.getName() + " is offline.");
-                }
-            }
         }
     }
 }

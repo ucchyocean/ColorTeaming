@@ -95,9 +95,6 @@ public class ColorTeamingConfig {
     /** チームチャットをローマ字かな変換するかどうか */
     public static boolean showJapanizeTeamChat;
 
-    /** ゲーム終了条件設定 */
-    public static GameGoalKind gameGoal;
-
     /**
      * config.ymlの読み出し処理。
      * @throws IOException
@@ -172,20 +169,6 @@ public class ColorTeamingConfig {
 
         showJapanizeGlobalChat = config.getBoolean("showJapanizeGlobalChat", false);
         showJapanizeTeamChat = config.getBoolean("showJapanizeTeamChat", true);
-
-        String gameGoalTemp = config.getString("gameGoal", "none");
-        gameGoal = GameGoalKind.fromString(gameGoalTemp);
-        if ( gameGoal == GameGoalKind.DEFEAT ) {
-            // DEFEAT の場合は、colorRemoveOnDeath が true である必要がある
-            if ( !colorRemoveOnDeath ) {
-                gameGoal = GameGoalKind.NONE;
-            }
-        } else if ( gameGoal == GameGoalKind.KILL ) {
-            // KILL の場合は、killTrophy が設定されている必要がある
-            if ( killTrophy <= 0 ) {
-                gameGoal = GameGoalKind.NONE;
-            }
-        }
     }
 
     /**

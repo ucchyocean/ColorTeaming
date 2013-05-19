@@ -15,7 +15,6 @@ import org.bukkit.entity.Player;
 
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingConfig;
-import com.github.ucchyocean.ct.GameGoalKind;
 import com.github.ucchyocean.ct.Utility;
 import com.github.ucchyocean.ct.scoreboard.PlayerCriteria;
 import com.github.ucchyocean.ct.scoreboard.SidebarCriteria;
@@ -296,45 +295,6 @@ public class CTeamingCommand implements CommandExecutor {
 
             return true;
 
-        } else if ( args.length >= 2 && args[0].equalsIgnoreCase("goal") ) {
-
-            GameGoalKind goal;
-
-            if ( args[1].equalsIgnoreCase("defeat") ) {
-                goal = GameGoalKind.DEFEAT;
-            } else if ( args[1].equalsIgnoreCase("kill") ) {
-                goal = GameGoalKind.KILL;
-            } else if ( args[1].equalsIgnoreCase("clear") || args[1].equalsIgnoreCase("none") ) {
-                goal = GameGoalKind.NONE;
-            } else {
-                return false;
-            }
-
-            // 制約条件の確認 - ここから
-
-            // DEFEAT の場合は、colorRemoveOnDeathがtrueである必要がある
-            if ( goal == GameGoalKind.DEFEAT && !ColorTeamingConfig.colorRemoveOnDeath ) {
-                sender.sendMessage(PREERR + "colorRemoveOnDeath がオフなので、DEFEATを設定できません。");
-                sender.sendMessage(PREERR + "先に、/cr death on を実行して、死亡時のチーム離脱を設定してください。");
-                return true;
-            }
-
-            // KILL の場合は、killTrophyが設定されている必要がある。
-            if ( goal == GameGoalKind.KILL && ColorTeamingConfig.killTrophy <= 0 ) {
-                sender.sendMessage(PREERR + "killTrophy が設定されていないので、KILLを設定できません。");
-                sender.sendMessage(PREERR + "先に、/ct trophy (amount) を実行して、キル数目標を設定してください。");
-                return true;
-            }
-
-            // 制約条件の確認 - ここまで
-
-            // 設定の保存
-            ColorTeamingConfig.gameGoal = goal;
-            ColorTeamingConfig.setConfigValue("gameGoal", goal.toString());
-
-            sender.sendMessage(PREINFO + "ゲーム終了条件を" + goal.toJapaneseString() + "にしました。");
-
-            return true;
         }
 
         return false;
