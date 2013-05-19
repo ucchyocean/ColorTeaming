@@ -54,7 +54,9 @@ commands:
   colorfriendlyfire:
     description: メンバー間の攻撃の有効無効を切り替えるコマンド
     aliases: cff
-    usage: /<command> (on|off) - 各色グループのメンバー間の攻撃を、onで無効に、offで有効に設定します。
+    usage: |
+           /<command> (on|off) - 各色グループのメンバー間の攻撃を、onで無効に、offで有効に設定します。
+           /<command> invisible (on|off) - 各色グループの透明なメンバーを、onで見えるように、offで見えないようにします。
     permission: colorteaming.friendlyfire
     permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorchat:
