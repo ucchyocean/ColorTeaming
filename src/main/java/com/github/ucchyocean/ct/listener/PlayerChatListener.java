@@ -40,13 +40,11 @@ public class PlayerChatListener implements Listener {
             return;
         }
 
-        // 設定に応じて、Japanize化する
-        if ( ColorTeamingConfig.showJapanizeGlobalChat ) {
-            event.setMessage( addJapanize(event.getMessage()) );
-        }
-
         // チームチャット無効なら、何もせずに抜ける
         if ( !ColorTeamingConfig.isTeamChatMode ) {
+            if ( ColorTeamingConfig.showJapanizeGlobalChat ) {
+                event.setMessage( addJapanize(event.getMessage()) ); // Japanize化
+            }
             return;
         }
 
@@ -54,9 +52,12 @@ public class PlayerChatListener implements Listener {
 
         // プレイヤーのゲームモードがクリエイティブなら、何もせずに抜ける
         if ( player.getGameMode() == GameMode.CREATIVE ) {
+            if ( ColorTeamingConfig.showJapanizeGlobalChat ) {
+                event.setMessage( addJapanize(event.getMessage()) ); // Japanize化
+            }
             return;
         }
-        
+
         // チームに所属していなければ、何もせずに抜ける
         if ( ColorTeaming.getPlayerColor(player).equals("") ) {
             return;
@@ -68,7 +69,7 @@ public class PlayerChatListener implements Listener {
         // 元のイベントをキャンセル
         event.setCancelled(true);
     }
-    
+
     /**
      * ローマ字をかな変換して、うしろにくっつける
      * @param message 変換元
