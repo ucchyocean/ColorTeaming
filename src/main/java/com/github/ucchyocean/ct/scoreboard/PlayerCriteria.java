@@ -29,10 +29,15 @@ public enum PlayerCriteria {
     /** 残り体力 */
     HEALTH("health"),
 
+    /** カスタム 他のプラグインからの連携用 */
+    CUSTOM("custom"),
+
     /** 非表示 */
     NONE("none");
 
     private final String criteria;
+
+    private String custom;
 
     /**
      * コンストラクタ
@@ -49,6 +54,14 @@ public enum PlayerCriteria {
     @Override
     public String toString() {
         return this.criteria;
+    }
+
+    /**
+     * カスタム指定時に、表示する文字列
+     * @param custom
+     */
+    public void setCustomString(String custom) {
+        this.custom = custom;
     }
 
     /**
@@ -108,6 +121,7 @@ public enum PlayerCriteria {
         case KILL_COUNT:
         case DEATH_COUNT:
         case POINT:
+        case CUSTOM:
         case NONE:
             return ""; // return dummy.
         }
@@ -129,6 +143,8 @@ public enum PlayerCriteria {
             return "point";
         case HEALTH:
             return "/ 20";
+        case CUSTOM:
+            return custom;
         case NONE:
         default:
             return "";

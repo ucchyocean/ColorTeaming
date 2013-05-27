@@ -15,7 +15,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.github.ucchyocean.ct.ColorTeaming;
-import com.github.ucchyocean.ct.ColorTeamingConfig;
 import com.github.ucchyocean.ct.KitHandler;
 
 /**
@@ -78,14 +77,14 @@ public class CClassCommand implements CommandExecutor {
         }
 
         // 有効なクラス名が指定されたか確認する
-        if ( !ColorTeamingConfig.classItems.containsKey(clas) ) {
+        if ( !ColorTeaming.getCTConfig().getClassItems().containsKey(clas) ) {
             sender.sendMessage(PREERR + "クラス " + clas + " が存在しません。");
             return true;
         }
 
         // クラス設定を実行する
-        String items = ColorTeamingConfig.classItems.get(clas);
-        String armor = ColorTeamingConfig.classArmors.get(clas);
+        String items = ColorTeaming.getCTConfig().getClassItems().get(clas);
+        String armor = ColorTeaming.getCTConfig().getClassArmors().get(clas);
 
         ArrayList<ItemStack> itemData = handler.convertToItemStack(items);
         ArrayList<ItemStack> armorData = null;

@@ -16,7 +16,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.github.ucchyocean.ct.ColorTeaming;
-import com.github.ucchyocean.ct.ColorTeamingConfig;
 import com.github.ucchyocean.ct.Utility;
 
 /**
@@ -44,7 +43,7 @@ public class CJoinCommand implements CommandExecutor {
         String group = "";
         if ( args.length == 0 || args[0].equalsIgnoreCase("random") ) {
 
-            if ( !ColorTeamingConfig.allowPlayerJoinRandom ) {
+            if ( !ColorTeaming.getCTConfig().isAllowPlayerJoinRandom() ) {
                 player.sendMessage(
                         PREERR +
                         "cjoinコマンドによるランダム参加は、許可されておりません。");
@@ -79,7 +78,7 @@ public class CJoinCommand implements CommandExecutor {
 
         } else {
 
-            if ( !ColorTeamingConfig.allowPlayerJoinAny ) {
+            if ( !ColorTeaming.getCTConfig().isAllowPlayerJoinAny() ) {
                 player.sendMessage(
                         PREERR +
                         "cjoin (group) コマンドによる任意グループへの参加は、許可されておりません。");

@@ -13,7 +13,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 import com.github.ucchyocean.ct.ColorTeaming;
-import com.github.ucchyocean.ct.ColorTeamingConfig;
 import com.github.ucchyocean.ct.scoreboard.SidebarCriteria;
 
 /**
@@ -32,7 +31,7 @@ public class PlayerJoinQuitListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
 
         // クライテリアが残り人数に設定されているなら、
-        if ( ColorTeamingConfig.sideCriteria == SidebarCriteria.REST_PLAYER ) {
+        if ( ColorTeaming.getCTConfig().getSideCriteria() == SidebarCriteria.REST_PLAYER ) {
             // サイドバーを更新する
             ColorTeaming.refreshSidebarScore();
         }
@@ -40,7 +39,7 @@ public class PlayerJoinQuitListener implements Listener {
         // worldRespawn が設定されていて、チームに所属していないプレイヤーは
         // ワールドリスポーン地点に飛ばす
         Player player = event.getPlayer();
-        if ( ColorTeamingConfig.worldSpawn &&
+        if ( ColorTeaming.getCTConfig().isWorldSpawn() &&
                 ColorTeaming.getPlayerColor(player).equals("") ) {
             Location location = player.getWorld().getSpawnLocation();
             if ( location != null ) {
@@ -61,7 +60,7 @@ public class PlayerJoinQuitListener implements Listener {
         ColorTeaming.refreshSidebarScore();
 
         // colorRemoveOnQuitがfalseなら、以降の処理は何もしない。
-        if ( !ColorTeamingConfig.colorRemoveOnQuit ) {
+        if ( !ColorTeaming.getCTConfig().isColorRemoveOnQuit() ) {
             return;
         }
 

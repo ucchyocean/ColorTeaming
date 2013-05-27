@@ -17,7 +17,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Team;
 
 import com.github.ucchyocean.ct.ColorTeaming;
-import com.github.ucchyocean.ct.ColorTeamingConfig;
 import com.github.ucchyocean.ct.Utility;
 
 /**
@@ -50,7 +49,7 @@ public class CRandomCommand implements CommandExecutor {
 
         // ゲームモードがクリエイティブの人は除外する
         ArrayList<Player> tempPlayers =
-                ColorTeaming.getAllPlayersOnWorld(ColorTeamingConfig.worldNames);
+                ColorTeaming.getAllPlayersOnWorld(ColorTeaming.getCTConfig().getWorldNames());
         ArrayList<Player> players = new ArrayList<Player>();
         for ( Player p : tempPlayers ) {
             if ( p.getGameMode() != GameMode.CREATIVE ) {
@@ -124,7 +123,7 @@ public class CRandomCommand implements CommandExecutor {
 
         // ゲームモードがクリエイティブの人や、既に色が設定されている人は除外する
         ArrayList<Player> tempPlayers =
-                ColorTeaming.getAllPlayersOnWorld(ColorTeamingConfig.worldNames);
+                ColorTeaming.getAllPlayersOnWorld(ColorTeaming.getCTConfig().getWorldNames());
         ArrayList<Player> players = new ArrayList<Player>();
         for ( Player p : tempPlayers ) {
             Team team = ColorTeaming.getPlayerTeam(p);

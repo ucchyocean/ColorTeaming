@@ -33,35 +33,31 @@ public class CChatCommand implements CommandExecutor {
             return false;
         }
 
+        ColorTeamingConfig config = ColorTeaming.getCTConfig();
+
         if ( args[0].equalsIgnoreCase("on") ) {
-            ColorTeamingConfig.isTeamChatMode = true;
+            config.setTeamChatMode(true);
             sender.sendMessage(ChatColor.RED + "チームチャットモードになりました。");
-            ColorTeamingConfig.setConfigValue("teamChatMode", true);
             return true;
         } else if ( args[0].equalsIgnoreCase("off") ) {
-            ColorTeamingConfig.isTeamChatMode = false;
-            sender.sendMessage(ChatColor.RED + "チームチャットを一時的に無効にしました。");
-            ColorTeamingConfig.setConfigValue("teamChatMode", false);
+            config.setTeamChatMode(false);
+            sender.sendMessage(ChatColor.RED + "チームチャットを無効にしました。");
             return true;
         } else if ( args[0].equalsIgnoreCase("opon") || args[0].equalsIgnoreCase("opcopyon") ) {
-            ColorTeamingConfig.isOPDisplayMode = true;
+            config.setOPDisplayMode(true);
             sender.sendMessage(ChatColor.RED + "チームチャットをOPにも表示します。");
-            ColorTeamingConfig.setConfigValue("opDisplayMode", true);
             return true;
         } else if ( args[0].equalsIgnoreCase("opoff") || args[0].equalsIgnoreCase("opcopyoff") ) {
-            ColorTeamingConfig.isOPDisplayMode = false;
+            config.setOPDisplayMode(false);
             sender.sendMessage(ChatColor.RED + "チームチャットのOPへの表示をオフにします。");
-            ColorTeamingConfig.setConfigValue("opDisplayMode", false);
             return true;
         } else if ( args[0].equalsIgnoreCase("logon") ) {
-            ColorTeamingConfig.isTeamChatLogMode = true;
+            config.setTeamChatLogMode(true);
             sender.sendMessage(ChatColor.RED + "チームチャットのログ記録を有効にします。");
-            ColorTeamingConfig.setConfigValue("teamChatLogMode", true);
             return true;
         } else if ( args[0].equalsIgnoreCase("logoff") ) {
-            ColorTeamingConfig.isTeamChatLogMode = false;
+            config.setTeamChatLogMode(false);
             sender.sendMessage(ChatColor.RED + "チームチャットのログ記録を無効にします。");
-            ColorTeamingConfig.setConfigValue("teamChatLogMode", false);
             return true;
         } else if ( args.length >= 2 ){
             // グループにメッセージ送信

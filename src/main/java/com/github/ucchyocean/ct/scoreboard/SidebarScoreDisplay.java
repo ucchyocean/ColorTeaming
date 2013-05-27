@@ -17,7 +17,6 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
 import com.github.ucchyocean.ct.ColorTeaming;
-import com.github.ucchyocean.ct.ColorTeamingConfig;
 
 /**
  * @author ucchy
@@ -69,7 +68,7 @@ public class SidebarScoreDisplay {
      */
     private void refreshCriteria() {
 
-        SidebarCriteria criteria = ColorTeamingConfig.sideCriteria;
+        SidebarCriteria criteria = ColorTeaming.getCTConfig().getSideCriteria();
 
         if ( criteria == SidebarCriteria.NONE ) {
             if ( ColorTeaming.sidebarScore != null ) {
@@ -93,10 +92,12 @@ public class SidebarScoreDisplay {
      */
     public void refreshScore() {
 
-        switch (ColorTeamingConfig.sideCriteria) {
+        switch (ColorTeaming.getCTConfig().getSideCriteria()) {
         case KILL_COUNT:
+            refreshScoreByKillOrDeathCount(SidebarCriteria.KILL_COUNT);
+            break;
         case DEATH_COUNT:
-            refreshScoreByKillOrDeathCount(ColorTeamingConfig.sideCriteria);
+            refreshScoreByKillOrDeathCount(SidebarCriteria.DEATH_COUNT);
             break;
         case POINT:
             refreshScoreByPoint();
@@ -153,9 +154,9 @@ public class SidebarScoreDisplay {
                 SidebarTeamScore team = teamscores.get(key);
                 if ( ColorTeaming.killDeathCounts.containsKey(key) ) {
                     int[] data = ColorTeaming.killDeathCounts.get(key);
-                    int point = data[0] * ColorTeamingConfig.killPoint +
-                            data[1] * ColorTeamingConfig.deathPoint +
-                            data[2] * ColorTeamingConfig.tkPoint;
+                    int point = data[0] * ColorTeaming.getCTConfig().getKillPoint() +
+                                data[1] * ColorTeaming.getCTConfig().getDeathPoint() +
+                                data[2] * ColorTeaming.getCTConfig().getTkPoint();
                     objective.getScore(team).setScore(point);
                 } else {
                     objective.getScore(team).setScore(0);

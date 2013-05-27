@@ -13,7 +13,6 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 
 import com.github.ucchyocean.ct.ColorTeaming;
-import com.github.ucchyocean.ct.ColorTeamingConfig;
 
 /**
  * @author ucchy
@@ -22,6 +21,7 @@ import com.github.ucchyocean.ct.ColorTeamingConfig;
 public abstract class ScoreDisplayBase {
 
     protected Objective objective;
+    private CTScoreInterface customScore;
 
     /**
      * コンストラクタ。
@@ -60,6 +60,14 @@ public abstract class ScoreDisplayBase {
             return;
         }
 
+        // Customは、customScoreの更新メソッドを呼び出す。
+        if ( getConfigData() == PlayerCriteria.CUSTOM ) {
+            if ( customScore != null ) {
+                customScore.refreshScore(objective);
+            }
+            return;
+        }
+
         ArrayList<Player> players = ColorTeaming.getAllPlayers();
         for ( Player player : players ) {
 
@@ -71,9 +79,9 @@ public abstract class ScoreDisplayBase {
                 } else if ( getConfigData() == PlayerCriteria.DEATH_COUNT ) {
                     point = data[1];
                 } else if ( getConfigData() == PlayerCriteria.POINT ) {
-                    point = data[0] * ColorTeamingConfig.killPoint +
-                            data[1] * ColorTeamingConfig.deathPoint +
-                            data[2] * ColorTeamingConfig.tkPoint;
+                    point = data[0] * ColorTeaming.getCTConfig().getKillPoint() +
+                            data[1] * ColorTeaming.getCTConfig().getDeathPoint() +
+                            data[2] * ColorTeaming.getCTConfig().getTkPoint();
                 }
             }
             if ( point == 0 ) {
@@ -91,6 +99,10 @@ public abstract class ScoreDisplayBase {
         if ( ColorTeaming.getScoreboard().getObjective(getObjectiveName()) != null ) {
             objective.unregister();
         }
+    }
+
+    public void setCustomScore(CTScoreInterface customScore) {
+        this.customScore = customScore;
     }
 
     public abstract PlayerCriteria getConfigData();

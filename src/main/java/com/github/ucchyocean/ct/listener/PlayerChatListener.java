@@ -11,7 +11,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import com.github.ucchyocean.ct.ColorTeaming;
-import com.github.ucchyocean.ct.ColorTeamingConfig;
 import com.github.ucchyocean.ct.KanaConverter;
 
 /**
@@ -33,7 +32,7 @@ public class PlayerChatListener implements Listener {
         // GLOBALマーカーを取り除いてから抜ける。
         if ( event.getMessage().startsWith(GLOBAL_CHAT_MARKER) ) {
             String newMessage = event.getMessage().substring(GLOBAL_CHAT_MARKER.length());
-            if ( ColorTeamingConfig.showJapanizeGlobalChat ) {
+            if ( ColorTeaming.getCTConfig().isShowJapanizeGlobalChat() ) {
                 newMessage = addJapanize(newMessage); // Japanize化
             }
             event.setMessage(newMessage);
@@ -41,8 +40,8 @@ public class PlayerChatListener implements Listener {
         }
 
         // チームチャット無効なら、何もせずに抜ける
-        if ( !ColorTeamingConfig.isTeamChatMode ) {
-            if ( ColorTeamingConfig.showJapanizeGlobalChat ) {
+        if ( !ColorTeaming.getCTConfig().isTeamChatMode() ) {
+            if ( ColorTeaming.getCTConfig().isShowJapanizeGlobalChat() ) {
                 event.setMessage( addJapanize(event.getMessage()) ); // Japanize化
             }
             return;
@@ -52,7 +51,7 @@ public class PlayerChatListener implements Listener {
 
         // プレイヤーのゲームモードがクリエイティブなら、何もせずに抜ける
         if ( player.getGameMode() == GameMode.CREATIVE ) {
-            if ( ColorTeamingConfig.showJapanizeGlobalChat ) {
+            if ( ColorTeaming.getCTConfig().isShowJapanizeGlobalChat() ) {
                 event.setMessage( addJapanize(event.getMessage()) ); // Japanize化
             }
             return;

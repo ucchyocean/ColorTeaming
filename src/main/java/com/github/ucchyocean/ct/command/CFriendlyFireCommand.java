@@ -27,32 +27,30 @@ public class CFriendlyFireCommand implements CommandExecutor {
             return false;
         }
 
+        ColorTeamingConfig config = ColorTeaming.getCTConfig();
+
         if ( args[0].equalsIgnoreCase("on") ) {
-            ColorTeamingConfig.isFriendlyFireDisabler = true;
+            config.setFriendlyFireDisabler(true);
             ColorTeaming.setFriendlyFilre(false);
             sender.sendMessage(ChatColor.GRAY + "仲間同士の攻撃が無効になりました。");
-            ColorTeamingConfig.setConfigValue("friendlyFireDisabler", true);
             return true;
         } else if ( args[0].equalsIgnoreCase("off") ) {
-            ColorTeamingConfig.isFriendlyFireDisabler = false;
+            config.setFriendlyFireDisabler(false);
             ColorTeaming.setFriendlyFilre(true);
             sender.sendMessage(ChatColor.GRAY + "仲間同士の攻撃が有効になりました。");
-            ColorTeamingConfig.setConfigValue("friendlyFireDisabler", false);
             return true;
         }
 
         if ( args.length >= 2 && args[0].equalsIgnoreCase("invisible") ) {
             if ( args[1].equalsIgnoreCase("on") ) {
-                ColorTeamingConfig.canSeeFriendlyInvisibles = true;
+                config.setCanSeeFriendlyInvisibles(true);
                 ColorTeaming.setSeeFriendlyInvisibles(true);
                 sender.sendMessage(ChatColor.GRAY + "仲間同士の透明化が見えるようになりました。");
-                ColorTeamingConfig.setConfigValue("seeFriendlyInvisible", true);
                 return true;
             } else if ( args[1].equalsIgnoreCase("off") ) {
-                ColorTeamingConfig.canSeeFriendlyInvisibles = false;
+                config.setCanSeeFriendlyInvisibles(false);
                 ColorTeaming.setSeeFriendlyInvisibles(false);
                 sender.sendMessage(ChatColor.GRAY + "仲間同士の透明化が見えないようになりました。");
-                ColorTeamingConfig.setConfigValue("seeFriendlyInvisible", false);
                 return true;
             }
         }

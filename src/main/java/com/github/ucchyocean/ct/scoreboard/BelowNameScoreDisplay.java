@@ -7,7 +7,7 @@ package com.github.ucchyocean.ct.scoreboard;
 
 import org.bukkit.scoreboard.DisplaySlot;
 
-import com.github.ucchyocean.ct.ColorTeamingConfig;
+import com.github.ucchyocean.ct.ColorTeaming;
 
 /**
  * @author ucchy
@@ -22,7 +22,7 @@ public class BelowNameScoreDisplay extends ScoreDisplayBase {
      */
     @Override
     public PlayerCriteria getConfigData() {
-        return ColorTeamingConfig.belowCriteria;
+        return ColorTeaming.getCTConfig().getBelowCriteria();
     }
 
     /**

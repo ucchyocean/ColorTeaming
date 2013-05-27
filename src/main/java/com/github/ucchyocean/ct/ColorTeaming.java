@@ -61,6 +61,7 @@ public class ColorTeaming extends JavaPlugin {
     public static TeamMemberSaveDataHandler sdhandler;
 
     public static Logger logger;
+    protected static ColorTeamingConfig ctconfig;
     public static RespawnConfiguration respawnConfig;
     public static TPPointConfiguration tppointConfig;
     public static SidebarScoreDisplay sidebarScore;
@@ -83,7 +84,7 @@ public class ColorTeaming extends JavaPlugin {
         logger = getLogger();
 
         // 設定の読み込み処理
-        ColorTeamingConfig.reloadConfig();
+        reloadCTConfig();
 
         // コマンドをサーバーに登録
         CCountCommand ccCommand = new CCountCommand();
@@ -199,13 +200,13 @@ public class ColorTeaming extends JavaPlugin {
             team.setDisplayName(Utility.replaceColors(color) + color + ChatColor.RESET);
             team.setPrefix(Utility.replaceColors(color).toString());
             team.setSuffix(ChatColor.RESET.toString());
-            team.setCanSeeFriendlyInvisibles(ColorTeamingConfig.canSeeFriendlyInvisibles);
+            team.setCanSeeFriendlyInvisibles(ctconfig.isCanSeeFriendlyInvisibles());
             team.setAllowFriendlyFire(
-                    ColorTeamingConfig.canSeeFriendlyInvisibles ||
-                    !ColorTeamingConfig.isFriendlyFireDisabler);
+                    ctconfig.isCanSeeFriendlyInvisibles() ||
+                    !ctconfig.isFriendlyFireDisabler());
             System.out.println("team : " + team.getDisplayName() + " - " + (
-                    ColorTeamingConfig.canSeeFriendlyInvisibles ||
-                    !ColorTeamingConfig.isFriendlyFireDisabler));
+                    ctconfig.isCanSeeFriendlyInvisibles() ||
+                    !ctconfig.isFriendlyFireDisabler()));
         }
         team.addPlayer(player);
         player.setDisplayName(
@@ -387,7 +388,7 @@ public class ColorTeaming extends JavaPlugin {
         String color = team.getName();
 
         // 設定に応じて、Japanize化する
-        if ( ColorTeamingConfig.showJapanizeTeamChat ) {
+        if ( ctconfig.isShowJapanizeTeamChat() ) {
             // 2byteコードを含まない場合にのみ、処理を行う
             if ( message.getBytes().length == message.length() ) {
                 String kana = KanaConverter.conv(message);
@@ -405,7 +406,7 @@ public class ColorTeaming extends JavaPlugin {
 
         // チームメンバに送信する
         ArrayList<Player> playersToSend = getAllTeamMembers().get(color);
-        if ( ColorTeamingConfig.isOPDisplayMode ) {
+        if ( ctconfig.isOPDisplayMode() ) {
             Player[] players = instance.getServer().getOnlinePlayers();
             for ( Player p : players ) {
                 if ( p.isOp() && !playersToSend.contains(p) ) {
@@ -418,7 +419,7 @@ public class ColorTeaming extends JavaPlugin {
         }
 
         // ログ記録する
-        if ( ColorTeamingConfig.isTeamChatLogMode ) {
+        if ( ctconfig.isTeamChatLogMode() ) {
             logger.info(partyMessage);
         }
     }
@@ -479,7 +480,7 @@ public class ColorTeaming extends JavaPlugin {
     public static void makeSidebar() {
 
         removeSidebar();
-        if ( ColorTeamingConfig.sideCriteria != SidebarCriteria.NONE ) {
+        if ( ctconfig.getSideCriteria() != SidebarCriteria.NONE ) {
             sidebarScore = new SidebarScoreDisplay();
         }
     }
@@ -512,7 +513,7 @@ public class ColorTeaming extends JavaPlugin {
     public static void makeTabkeyListScore() {
 
         removeTabkeyListScore();
-        if ( ColorTeamingConfig.listCriteria != PlayerCriteria.NONE ) {
+        if ( ctconfig.getListCriteria() != PlayerCriteria.NONE ) {
             tablistScore = new TabListScoreDisplay();
         }
     }
@@ -545,7 +546,7 @@ public class ColorTeaming extends JavaPlugin {
     public static void makeBelowNameScore() {
 
         removeBelowNameScore();
-        if ( ColorTeamingConfig.belowCriteria != PlayerCriteria.NONE ) {
+        if ( ctconfig.getBelowCriteria() != PlayerCriteria.NONE ) {
             belownameScore = new BelowNameScoreDisplay();
         }
     }
@@ -569,5 +570,20 @@ public class ColorTeaming extends JavaPlugin {
         if ( belownameScore != null ) {
             belownameScore.refreshScore();
         }
+    }
+
+    /**
+     * ColorTeamingConfig を取得する
+     * @return ColorTeamingConfig
+     */
+    public static ColorTeamingConfig getCTConfig() {
+        return ctconfig;
+    }
+
+    /**
+     * ColorTeamingConfig を更新する
+     */
+    public static void reloadCTConfig() {
+        ctconfig = ColorTeamingConfig.loadConfig();
     }
 }

@@ -11,7 +11,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
 import com.github.ucchyocean.ct.ColorTeaming;
-import com.github.ucchyocean.ct.ColorTeamingConfig;
 
 /**
  * @author ucchy
@@ -31,7 +30,7 @@ public class PlayerRespawnListener implements Listener {
 
         // リスポーンポイントを設定
         Location respawn = ColorTeaming.respawnConfig.get(color, ColorTeaming.respawnMapName);
-        if ( respawn == null && ColorTeamingConfig.worldSpawn ) {
+        if ( respawn == null && ColorTeaming.getCTConfig().isWorldSpawn() ) {
             // チームリスポーンがない場合は、ワールドリスポーンを取得する
             respawn = player.getWorld().getSpawnLocation();
         }
@@ -39,7 +38,7 @@ public class PlayerRespawnListener implements Listener {
         if ( respawn != null ) {
             respawn = respawn.add(0.5, 0, 0.5);
             event.setRespawnLocation(respawn);
-            player.setNoDamageTicks(ColorTeamingConfig.noDamageSeconds * 20);
+            player.setNoDamageTicks(ColorTeaming.getCTConfig().getNoDamageSeconds() * 20);
         }
     }
 }
