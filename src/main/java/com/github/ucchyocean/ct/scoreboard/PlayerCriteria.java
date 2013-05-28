@@ -37,8 +37,6 @@ public enum PlayerCriteria {
 
     private final String criteria;
 
-    private String custom;
-
     /**
      * コンストラクタ
      * @param criteria 識別文字列
@@ -54,14 +52,6 @@ public enum PlayerCriteria {
     @Override
     public String toString() {
         return this.criteria;
-    }
-
-    /**
-     * カスタム指定時に、表示する文字列
-     * @param custom
-     */
-    public void setCustomString(String custom) {
-        this.custom = custom;
     }
 
     /**
@@ -140,11 +130,10 @@ public enum PlayerCriteria {
         case DEATH_COUNT:
             return "death";
         case POINT:
+        case CUSTOM:
             return "point";
         case HEALTH:
             return "/ 20";
-        case CUSTOM:
-            return custom;
         case NONE:
         default:
             return "";

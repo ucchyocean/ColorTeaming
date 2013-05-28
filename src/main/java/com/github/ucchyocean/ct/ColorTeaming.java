@@ -42,6 +42,7 @@ import com.github.ucchyocean.ct.listener.PlayerDeathListener;
 import com.github.ucchyocean.ct.listener.PlayerJoinQuitListener;
 import com.github.ucchyocean.ct.listener.PlayerRespawnListener;
 import com.github.ucchyocean.ct.scoreboard.BelowNameScoreDisplay;
+import com.github.ucchyocean.ct.scoreboard.CTScoreInterface;
 import com.github.ucchyocean.ct.scoreboard.PlayerCriteria;
 import com.github.ucchyocean.ct.scoreboard.SidebarCriteria;
 import com.github.ucchyocean.ct.scoreboard.SidebarScoreDisplay;
@@ -73,6 +74,8 @@ public class ColorTeaming extends JavaPlugin {
     public static Hashtable<String, int[]> killDeathUserCounts;
 
     public static String respawnMapName;
+
+    public static CTScoreInterface customScore;
 
     /**
      * @see org.bukkit.plugin.java.JavaPlugin#onEnable()
@@ -593,6 +596,14 @@ public class ColorTeaming extends JavaPlugin {
     public void clearKillDeathPoints() {
         killDeathCounts.clear();
         killDeathUserCounts.clear();
+    }
+
+    /**
+     * カスタムスコアを設定する
+     * @param score カスタムスコア
+     */
+    public void setCustomScore(CTScoreInterface score) {
+        customScore = score;
     }
 
     /**

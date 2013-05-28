@@ -14,4 +14,5 @@ import org.bukkit.scoreboard.Objective;
 public interface CTScoreInterface {
 
     public void refreshScore(Objective objective);
+    public String getUnit();
 }

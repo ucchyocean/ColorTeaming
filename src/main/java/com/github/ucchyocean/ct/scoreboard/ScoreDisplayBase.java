@@ -21,7 +21,6 @@ import com.github.ucchyocean.ct.ColorTeaming;
 public abstract class ScoreDisplayBase {
 
     protected Objective objective;
-    private CTScoreInterface customScore;
 
     /**
      * コンストラクタ。
@@ -62,8 +61,8 @@ public abstract class ScoreDisplayBase {
 
         // Customは、customScoreの更新メソッドを呼び出す。
         if ( getConfigData() == PlayerCriteria.CUSTOM ) {
-            if ( customScore != null ) {
-                customScore.refreshScore(objective);
+            if ( ColorTeaming.customScore != null ) {
+                ColorTeaming.customScore.refreshScore(objective);
             }
             return;
         }
@@ -99,10 +98,6 @@ public abstract class ScoreDisplayBase {
         if ( ColorTeaming.instance.getScoreboard().getObjective(getObjectiveName()) != null ) {
             objective.unregister();
         }
-    }
-
-    public void setCustomScore(CTScoreInterface customScore) {
-        this.customScore = customScore;
     }
 
     public abstract PlayerCriteria getConfigData();
