@@ -5,6 +5,7 @@ package com.github.ucchyocean.ct.command;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Hashtable;
 
 import org.bukkit.ChatColor;
@@ -14,9 +15,9 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 import com.github.ucchyocean.ct.ColorTeaming;
+import com.github.ucchyocean.ct.DelayedTeleportTask;
 
 /**
  * @author ucchy
@@ -68,6 +69,7 @@ public class CTPCommand implements CommandExecutor {
 
                 // テレポート実行
                 Enumeration<String> keys = members.keys();
+                HashMap<Player, Location> map = new HashMap<Player, Location>();
                 while ( keys.hasMoreElements() ) {
                     String group = keys.nextElement();
 
@@ -78,12 +80,16 @@ public class CTPCommand implements CommandExecutor {
                     } else {
                         location = location.add(0.5, 0, 0.5);
                         for ( Player p : members.get(group) ) {
-                            p.teleport(location, TeleportCause.COMMAND);
+                            map.put(p, location);
                         }
                         sender.sendMessage(PREINFO +
-                                "グループ " + group + " のプレイヤーを全員テレポートしました。");
+                                "グループ " + group + " のプレイヤーを全員テレポートします。");
                     }
                 }
+
+                DelayedTeleportTask task = new DelayedTeleportTask(map,
+                        ColorTeaming.instance.getCTConfig().getTeleportDelay());
+                task.startTask();
 
             } else {
                 // ctp all (point) の実行
@@ -100,14 +106,19 @@ public class CTPCommand implements CommandExecutor {
 
                 // テレポート実行
                 Enumeration<String> keys = members.keys();
+                HashMap<Player, Location> map = new HashMap<Player, Location>();
                 while ( keys.hasMoreElements() ) {
                     String group = keys.nextElement();
                     for ( Player p : members.get(group) ) {
-                        p.teleport(location, TeleportCause.COMMAND);
+                        map.put(p, location);
                     }
                     sender.sendMessage(PREINFO +
-                            "グループ " + group + " のプレイヤーを全員テレポートしました。");
+                            "グループ " + group + " のプレイヤーを全員テレポートします。");
                 }
+
+                DelayedTeleportTask task = new DelayedTeleportTask(map,
+                        ColorTeaming.instance.getCTConfig().getTeleportDelay());
+                task.startTask();
             }
 
             return true;
@@ -238,11 +249,16 @@ public class CTPCommand implements CommandExecutor {
             }
 
             // テレポートの実行
+            HashMap<Player, Location> map = new HashMap<Player, Location>();
             for ( Player p : members.get(group) ) {
-                p.teleport(location, TeleportCause.COMMAND);
+                map.put(p, location);
             }
 
-            sender.sendMessage(PREINFO + "グループ " + group + " のプレイヤーを全員テレポートしました。");
+            DelayedTeleportTask task = new DelayedTeleportTask(map,
+                    ColorTeaming.instance.getCTConfig().getTeleportDelay());
+            task.startTask();
+
+            sender.sendMessage(PREINFO + "グループ " + group + " のプレイヤーを全員テレポートします。");
 
             return true;
         }

@@ -95,6 +95,9 @@ public class ColorTeamingConfig {
     /** チームチャットをローマ字かな変換するかどうか */
     private boolean showJapanizeTeamChat;
 
+    /** テレポート実行時のディレイ間隔 */
+    private int teleportDelay;
+
     /**
      * config.ymlの読み出し処理。
      * @throws IOException
@@ -173,6 +176,7 @@ public class ColorTeamingConfig {
 
         ctconfig.showJapanizeGlobalChat = config.getBoolean("showJapanizeGlobalChat", false);
         ctconfig.showJapanizeTeamChat = config.getBoolean("showJapanizeTeamChat", true);
+        ctconfig.teleportDelay = config.getInt("teleportDelay", 3);
 
         return ctconfig;
     }
@@ -290,6 +294,10 @@ public class ColorTeamingConfig {
         return showJapanizeTeamChat;
     }
 
+    public int getTeleportDelay() {
+        return teleportDelay;
+    }
+
     public void setTeamChatMode(boolean isTeamChatMode) {
         this.isTeamChatMode = isTeamChatMode;
         setConfigValue("teamChatMode", isTeamChatMode);
@@ -315,14 +323,6 @@ public class ColorTeamingConfig {
         setConfigValue("seeFriendlyInvisible", canSeeFriendlyInvisibles);
     }
 
-    public void setClassItems(Map<String, String> classItems) {
-        this.classItems = classItems;
-    }
-
-    public void setClassArmors(Map<String, String> classArmors) {
-        this.classArmors = classArmors;
-    }
-
     public void setColorRemoveOnDeath(boolean colorRemoveOnDeath) {
         this.colorRemoveOnDeath = colorRemoveOnDeath;
         setConfigValue("colorRemoveOnDeath", colorRemoveOnDeath);
@@ -335,6 +335,7 @@ public class ColorTeamingConfig {
 
     public void setNoDamageSeconds(int noDamageSeconds) {
         this.noDamageSeconds = noDamageSeconds;
+        setConfigValue("noDamageSeconds", noDamageSeconds);
     }
 
     public void setAllowPlayerJoinAny(boolean allowPlayerJoinAny) {
@@ -345,18 +346,6 @@ public class ColorTeamingConfig {
     public void setAllowPlayerJoinRandom(boolean allowPlayerJoinRandom) {
         this.allowPlayerJoinRandom = allowPlayerJoinRandom;
         setConfigValue("allowPlayerJoinRandom", allowPlayerJoinRandom);
-    }
-
-    public void setKillPoint(int killPoint) {
-        this.killPoint = killPoint;
-    }
-
-    public void setDeathPoint(int deathPoint) {
-        this.deathPoint = deathPoint;
-    }
-
-    public void setTkPoint(int tkPoint) {
-        this.tkPoint = tkPoint;
     }
 
     public void setSideCriteria(SidebarCriteria sideCriteria) {
@@ -382,17 +371,5 @@ public class ColorTeamingConfig {
     public void setKillReachTrophy(int killReachTrophy) {
         this.killReachTrophy = killReachTrophy;
         setConfigValue("killReachTrophy", killReachTrophy);
-    }
-
-    public void setWorldSpawn(boolean worldSpawn) {
-        this.worldSpawn = worldSpawn;
-    }
-
-    public void setShowJapanizeGlobalChat(boolean showJapanizeGlobalChat) {
-        this.showJapanizeGlobalChat = showJapanizeGlobalChat;
-    }
-
-    public void setShowJapanizeTeamChat(boolean showJapanizeTeamChat) {
-        this.showJapanizeTeamChat = showJapanizeTeamChat;
     }
 }

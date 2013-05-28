@@ -36,13 +36,16 @@ public class PlayerJoinQuitListener implements Listener {
             ColorTeaming.instance.refreshSidebarScore();
         }
 
-        // worldRespawn が設定されていて、チームに所属していないプレイヤーは
+        // worldRespawn が設定されていて、初参加のプレイヤーや、
+        // チームが無くてベッドリスポーンが設定されていないプレイヤーは、
         // ワールドリスポーン地点に飛ばす
         Player player = event.getPlayer();
-        if ( ColorTeaming.instance.getCTConfig().isWorldSpawn() &&
-                ColorTeaming.instance.getPlayerColor(player).equals("") ) {
-            Location location = player.getWorld().getSpawnLocation();
-            if ( location != null ) {
+        if ( ColorTeaming.instance.getCTConfig().isWorldSpawn() ) {
+
+            if ( !player.hasPlayedBefore() ||
+                    (ColorTeaming.instance.getPlayerColor(player).equals("") &&
+                            player.getBedSpawnLocation() == null) ) {
+                Location location = player.getWorld().getSpawnLocation();
                 player.teleport(location, TeleportCause.PLUGIN);
             }
         }

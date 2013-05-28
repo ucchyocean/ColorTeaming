@@ -56,8 +56,9 @@
 # worldSpawn: チーム無所属の人がサーバーに参加したときに、
 #             ワールドのリスポーン地点へリスポーンするようになります。
 #             ワールドのリスポーン地点は、/cspawn world コマンドを使用してください。
-# showJapanizeGlobalChat: 通常のチャットをJapanize化する。
-# showJapanizeTeamChat: チームチャットをJapanize化する。
+# showJapanizeGlobalChat: 通常のチャットをJapanize化します。
+# showJapanizeTeamChat: チームチャットをJapanize化します。
+# teleportDelay: テレポート実行時の、ディレイ間隔を指定します。単位はtick（1秒=20tick）
 
 worlds: ['world']
 teamChatMode: false
@@ -108,3 +109,4 @@ killReachTrophy: 0
 worldSpawn: false
 showJapanizeGlobalChat: false 
 showJapanizeTeamChat: true
+teleportDelay: 3

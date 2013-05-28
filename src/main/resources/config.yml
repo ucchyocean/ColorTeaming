@@ -52,3 +52,4 @@ killReachTrophy: 0
 worldSpawn: false
 showJapanizeGlobalChat: false 
 showJapanizeTeamChat: true
+teleportDelay: 3
