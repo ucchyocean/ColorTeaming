@@ -91,7 +91,8 @@ public class CLeaderCommand implements CommandExecutor {
         } else if ( group.equalsIgnoreCase("all") ) {
             // all 指定の場合。
 
-            Hashtable<String, ArrayList<Player>> members = ColorTeaming.getAllTeamMembers();
+            Hashtable<String, ArrayList<Player>> members =
+                    ColorTeaming.instance.getAllTeamMembers();
 
             int numberOfLeaders = 1;
             if ( args.length >= 2 && args[1].matches("[1-9]") ) {
@@ -127,7 +128,7 @@ public class CLeaderCommand implements CommandExecutor {
                     l.append(name);
                 }
                 String message = String.format("%s チームの大将に、%s が選ばれました。", key, l);
-                ColorTeaming.sendInfoToTeamChat(key, message);
+                ColorTeaming.instance.sendInfoToTeamChat(key, message);
                 sender.sendMessage(String.format(PREINFO + "%s チームの大将を、%d 人設定しました。", key, numberOfLeaders));
             }
 
@@ -136,7 +137,8 @@ public class CLeaderCommand implements CommandExecutor {
         } else {
             // group 指定処理の場合
 
-            Hashtable<String, ArrayList<Player>> members = ColorTeaming.getAllTeamMembers();
+            Hashtable<String, ArrayList<Player>> members =
+                    ColorTeaming.instance.getAllTeamMembers();
 
             if ( !members.containsKey(group) ) {
                 sender.sendMessage(PREERR + group + " グループは存在しないようです。");
@@ -149,7 +151,7 @@ public class CLeaderCommand implements CommandExecutor {
             }
 
             String user = args[1];
-            Player player = ColorTeaming.getPlayerExact(user);
+            Player player = ColorTeaming.instance.getPlayerExact(user);
 
             if ( user.equalsIgnoreCase("random") ) {
 
@@ -161,7 +163,7 @@ public class CLeaderCommand implements CommandExecutor {
                 ColorTeaming.leaders.get(group).add(newLeader);
 
                 String message = String.format("%s チームの大将に、%s が選ばれました。", group, newLeader);
-                ColorTeaming.sendInfoToTeamChat(group, message);
+                ColorTeaming.instance.sendInfoToTeamChat(group, message);
                 sender.sendMessage(String.format(PREINFO + "%s チームの大将を、1 人設定しました。", group));
 
                 return true;
@@ -178,7 +180,7 @@ public class CLeaderCommand implements CommandExecutor {
                 ColorTeaming.leaders.get(group).add(user);
 
                 String message = String.format("%s チームの大将に、%s が選ばれました。", group, user);
-                ColorTeaming.sendInfoToTeamChat(group, message);
+                ColorTeaming.instance.sendInfoToTeamChat(group, message);
                 sender.sendMessage(PRENOTICE + message);
 
                 return true;

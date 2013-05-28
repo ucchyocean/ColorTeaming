@@ -35,7 +35,7 @@ public class EntityDamageListener implements Listener {
         }
 
         // 無効状態なら、何もしない
-        if (!ColorTeaming.getCTConfig().isFriendlyFireDisabler()) {
+        if (!ColorTeaming.instance.getCTConfig().isFriendlyFireDisabler()) {
             return;
         }
 
@@ -47,8 +47,8 @@ public class EntityDamageListener implements Listener {
         if ( attacker instanceof Player && defender instanceof Player ) {
 
             // ColorMe のカラーを取得し、同じ色かどうか確認する
-            String attackerColor = ColorTeaming.getPlayerColor((Player)attacker);
-            String defenderColor = ColorTeaming.getPlayerColor((Player)defender);
+            String attackerColor = ColorTeaming.instance.getPlayerColor((Player)attacker);
+            String defenderColor = ColorTeaming.instance.getPlayerColor((Player)defender);
 
             // どちらかがチーム無所属なら抜ける
             if ( attackerColor.equals("") || defenderColor.equals("") ) {
@@ -71,8 +71,8 @@ public class EntityDamageListener implements Listener {
             if ( shooter instanceof Player ) {
 
                 // ColorMe のカラーを取得し、同じ色かどうか確認する
-                String attackerColor = ColorTeaming.getPlayerColor((Player)shooter);
-                String defenderColor = ColorTeaming.getPlayerColor((Player)defender);
+                String attackerColor = ColorTeaming.instance.getPlayerColor((Player)shooter);
+                String defenderColor = ColorTeaming.instance.getPlayerColor((Player)defender);
 
                 // どちらかがチーム無所属なら抜ける
                 if ( attackerColor.equals("") || defenderColor.equals("") ) {

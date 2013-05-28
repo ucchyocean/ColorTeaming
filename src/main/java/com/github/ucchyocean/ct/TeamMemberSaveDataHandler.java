@@ -49,7 +49,7 @@ public class TeamMemberSaveDataHandler {
 
         // メンバー情報の保存
         Hashtable<String, ArrayList<Player>> members =
-                ColorTeaming.getAllTeamMembers();
+                ColorTeaming.instance.getAllTeamMembers();
 
         Enumeration<String> keys = members.keys();
         while ( keys.hasMoreElements() ) {
@@ -123,9 +123,9 @@ public class TeamMemberSaveDataHandler {
 
             List<String> groupMembers = msection.getStringList(group);
             for ( String pname : groupMembers ) {
-                Player player = ColorTeaming.getPlayerExact(pname);
+                Player player = ColorTeaming.instance.getPlayerExact(pname);
                 if ( player != null ) {
-                    ColorTeaming.addPlayerTeam(player, group);
+                    ColorTeaming.instance.addPlayerTeam(player, group);
                 }
             }
         }
@@ -185,12 +185,12 @@ public class TeamMemberSaveDataHandler {
      */
     private void clearAllUsers() {
 
-        Hashtable<String, ArrayList<Player>> members = ColorTeaming.getAllTeamMembers();
+        Hashtable<String, ArrayList<Player>> members = ColorTeaming.instance.getAllTeamMembers();
         Enumeration<String> keys = members.keys();
         while ( keys.hasMoreElements() ) {
             String group = keys.nextElement();
             for ( Player p : members.get(group) ) {
-                ColorTeaming.leavePlayerTeam(p);
+                ColorTeaming.instance.leavePlayerTeam(p);
             }
         }
     }

@@ -172,7 +172,7 @@ public class Utility {
         JarFile jarFile = null;
         InputStream inputStream = null;
         try {
-            jarFile = new JarFile(ColorTeaming.getPluginJarFile());
+            jarFile = new JarFile(ColorTeaming.instance.getPluginJarFile());
             ZipEntry zipEntry = jarFile.getEntry(name);
             inputStream = jarFile.getInputStream(zipEntry);
             BufferedReader reader =

@@ -60,7 +60,8 @@ public class CTPCommand implements CommandExecutor {
 
         if ( args[0].equalsIgnoreCase("all") ) {
 
-            Hashtable<String, ArrayList<Player>> members = ColorTeaming.getAllTeamMembers();
+            Hashtable<String, ArrayList<Player>> members =
+                    ColorTeaming.instance.getAllTeamMembers();
 
             if ( args[1].equalsIgnoreCase("spawn") ) {
                 // ctp all spawn の実行
@@ -175,7 +176,8 @@ public class CTPCommand implements CommandExecutor {
             // ctp (group) ほにゃらら の実行
 
             String group = args[0];
-            Hashtable<String, ArrayList<Player>> members = ColorTeaming.getAllTeamMembers();
+            Hashtable<String, ArrayList<Player>> members =
+                    ColorTeaming.instance.getAllTeamMembers();
 
             // 有効なグループ名が指定されたか確認する
             if ( !members.containsKey(group) ) {
@@ -287,7 +289,7 @@ public class CTPCommand implements CommandExecutor {
         }
 
         // 有効なワールド名が指定されたか確認する
-        if ( ColorTeaming.getWorld(world) == null ) {
+        if ( ColorTeaming.instance.getWorld(world) == null ) {
             sender.sendMessage(PREERR + "ワールド " + world + " が存在しません。");
             return null;
         }
@@ -297,7 +299,7 @@ public class CTPCommand implements CommandExecutor {
         double y = Integer.parseInt(y_str);
         double z = Integer.parseInt(z_str) + 0.5;
 
-        return new Location(ColorTeaming.getWorld(world), x, y, z);
+        return new Location(ColorTeaming.instance.getWorld(world), x, y, z);
     }
 
     /**

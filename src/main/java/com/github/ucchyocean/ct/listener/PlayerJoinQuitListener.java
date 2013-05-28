@@ -31,16 +31,16 @@ public class PlayerJoinQuitListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
 
         // クライテリアが残り人数に設定されているなら、
-        if ( ColorTeaming.getCTConfig().getSideCriteria() == SidebarCriteria.REST_PLAYER ) {
+        if ( ColorTeaming.instance.getCTConfig().getSideCriteria() == SidebarCriteria.REST_PLAYER ) {
             // サイドバーを更新する
-            ColorTeaming.refreshSidebarScore();
+            ColorTeaming.instance.refreshSidebarScore();
         }
 
         // worldRespawn が設定されていて、チームに所属していないプレイヤーは
         // ワールドリスポーン地点に飛ばす
         Player player = event.getPlayer();
-        if ( ColorTeaming.getCTConfig().isWorldSpawn() &&
-                ColorTeaming.getPlayerColor(player).equals("") ) {
+        if ( ColorTeaming.instance.getCTConfig().isWorldSpawn() &&
+                ColorTeaming.instance.getPlayerColor(player).equals("") ) {
             Location location = player.getWorld().getSpawnLocation();
             if ( location != null ) {
                 player.teleport(location, TeleportCause.PLUGIN);
@@ -57,15 +57,15 @@ public class PlayerJoinQuitListener implements Listener {
     public void onPlayerQuit(PlayerQuitEvent event) {
 
         // サイドバーを更新する
-        ColorTeaming.refreshSidebarScore();
+        ColorTeaming.instance.refreshSidebarScore();
 
         // colorRemoveOnQuitがfalseなら、以降の処理は何もしない。
-        if ( !ColorTeaming.getCTConfig().isColorRemoveOnQuit() ) {
+        if ( !ColorTeaming.instance.getCTConfig().isColorRemoveOnQuit() ) {
             return;
         }
 
         Player player = event.getPlayer();
-        String color = ColorTeaming.getPlayerColor(player);
+        String color = ColorTeaming.instance.getPlayerColor(player);
 
         // ログアウトしたプレイヤーが、大将だった場合、逃げたことを全体に通知する。
         if ( ColorTeaming.leaders.containsKey(color) &&
@@ -85,7 +85,7 @@ public class PlayerJoinQuitListener implements Listener {
         }
 
         // 色設定を削除する
-        ColorTeaming.leavePlayerTeam(player);
+        ColorTeaming.instance.leavePlayerTeam(player);
     }
 
 }

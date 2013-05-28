@@ -26,11 +26,11 @@ public class PlayerRespawnListener implements Listener {
     public void onPlayerRespawn(PlayerRespawnEvent event) {
 
         Player player = event.getPlayer();
-        String color = ColorTeaming.getPlayerColor(player);
+        String color = ColorTeaming.instance.getPlayerColor(player);
 
         // リスポーンポイントを設定
         Location respawn = ColorTeaming.respawnConfig.get(color, ColorTeaming.respawnMapName);
-        if ( respawn == null && ColorTeaming.getCTConfig().isWorldSpawn() ) {
+        if ( respawn == null && ColorTeaming.instance.getCTConfig().isWorldSpawn() ) {
             // チームリスポーンがない場合は、ワールドリスポーンを取得する
             respawn = player.getWorld().getSpawnLocation();
         }
@@ -38,7 +38,7 @@ public class PlayerRespawnListener implements Listener {
         if ( respawn != null ) {
             respawn = respawn.add(0.5, 0, 0.5);
             event.setRespawnLocation(respawn);
-            player.setNoDamageTicks(ColorTeaming.getCTConfig().getNoDamageSeconds() * 20);
+            player.setNoDamageTicks(ColorTeaming.instance.getCTConfig().getNoDamageSeconds() * 20);
         }
     }
 }

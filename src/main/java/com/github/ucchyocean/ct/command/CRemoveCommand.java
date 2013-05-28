@@ -59,7 +59,7 @@ public class CRemoveCommand implements CommandExecutor {
      * @param enable 有効/無効
      */
     private void setColorRemoveOnDeath(CommandSender sender, boolean enable) {
-        ColorTeaming.getCTConfig().setColorRemoveOnDeath(enable);
+        ColorTeaming.instance.getCTConfig().setColorRemoveOnDeath(enable);
         String msg = enable ? "有効" : "無効";
         sender.sendMessage(ChatColor.GRAY +
                 "死亡時のチーム離脱が" + msg + "になりました。");
@@ -71,7 +71,7 @@ public class CRemoveCommand implements CommandExecutor {
      * @param enable 有効/無効
      */
     private void setColorRemoveOnQuit(CommandSender sender, boolean enable) {
-        ColorTeaming.getCTConfig().setColorRemoveOnQuit(enable);
+        ColorTeaming.instance.getCTConfig().setColorRemoveOnQuit(enable);
         String msg = enable ? "有効" : "無効";
         sender.sendMessage(ChatColor.GRAY +
                 "ログアウト時のチーム離脱が" + msg + "になりました。");

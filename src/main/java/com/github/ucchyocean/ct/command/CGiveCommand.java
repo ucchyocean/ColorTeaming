@@ -47,20 +47,20 @@ public class CGiveCommand implements CommandExecutor {
         String targetDesc = "";
 
         Hashtable<String, ArrayList<Player>> members =
-                ColorTeaming.getAllTeamMembers();
+                ColorTeaming.instance.getAllTeamMembers();
         ArrayList<Player> playersForGive = new ArrayList<Player>();
 
         if ( target.equalsIgnoreCase("all") ) {
             // 全員を対象とする
-            playersForGive = ColorTeaming.getAllPlayers();
+            playersForGive = ColorTeaming.instance.getAllPlayers();
             targetDesc = "全員";
         } else if ( members.containsKey(target) ) {
             // target はグループである場合
             playersForGive = members.get(target);
             targetDesc = "グループ" + target;
-        } else if ( ColorTeaming.getPlayerExact(target) != null ) {
+        } else if ( ColorTeaming.instance.getPlayerExact(target) != null ) {
             // target はプレイヤーである場合
-            playersForGive.add(ColorTeaming.getPlayerExact(target));
+            playersForGive.add(ColorTeaming.instance.getPlayerExact(target));
             targetDesc = target;
         } else {
             sender.sendMessage(PREERR + target +

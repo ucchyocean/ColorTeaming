@@ -227,7 +227,7 @@ public class CSpawnCommand implements CommandExecutor {
             }
 
             // 実行者がプレイヤーかコマンドブロックなら、worldを取得して設定する
-            World world = ColorTeaming.getWorld("world");
+            World world = ColorTeaming.instance.getWorld("world");
             if ( sender instanceof BlockCommandSender ) {
                 BlockCommandSender block = (BlockCommandSender)sender;
                 world = block.getBlock().getWorld();
@@ -255,7 +255,7 @@ public class CSpawnCommand implements CommandExecutor {
             }
 
             // 実行者がプレイヤーかコマンドブロックなら、worldを取得して設定する
-            World world = ColorTeaming.getWorld("world");
+            World world = ColorTeaming.instance.getWorld("world");
             if ( sender instanceof BlockCommandSender ) {
                 BlockCommandSender block = (BlockCommandSender)sender;
                 world = block.getBlock().getWorld();

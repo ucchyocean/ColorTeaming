@@ -33,7 +33,7 @@ public class CChatCommand implements CommandExecutor {
             return false;
         }
 
-        ColorTeamingConfig config = ColorTeaming.getCTConfig();
+        ColorTeamingConfig config = ColorTeaming.instance.getCTConfig();
 
         if ( args[0].equalsIgnoreCase("on") ) {
             config.setTeamChatMode(true);
@@ -63,7 +63,7 @@ public class CChatCommand implements CommandExecutor {
             // グループにメッセージ送信
             String group = args[0];
 
-            Hashtable<String, ArrayList<Player>> members = ColorTeaming.getAllTeamMembers();
+            Hashtable<String, ArrayList<Player>> members = ColorTeaming.instance.getAllTeamMembers();
 
             // 有効なグループ名が指定されたか確認する
             if ( !members.containsKey(group) ) {
@@ -78,7 +78,7 @@ public class CChatCommand implements CommandExecutor {
             }
 
             // 送信
-            ColorTeaming.sendInfoToTeamChat(group, message.toString());
+            ColorTeaming.instance.sendInfoToTeamChat(group, message.toString());
         }
 
         return false;

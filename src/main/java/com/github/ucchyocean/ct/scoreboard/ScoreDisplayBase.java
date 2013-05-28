@@ -28,7 +28,7 @@ public abstract class ScoreDisplayBase {
      */
     public ScoreDisplayBase() {
 
-        Scoreboard scoreboard = ColorTeaming.getScoreboard();
+        Scoreboard scoreboard = ColorTeaming.instance.getScoreboard();
         String criteria = PlayerCriteria.convert(getConfigData());
 
         objective = scoreboard.getObjective(getObjectiveName());
@@ -36,7 +36,7 @@ public abstract class ScoreDisplayBase {
             objective = scoreboard.registerNewObjective(getObjectiveName(), criteria);
         } else {
             // スコアを消去して使いまわす
-            for ( Player player : ColorTeaming.getAllPlayers() ) {
+            for ( Player player : ColorTeaming.instance.getAllPlayers() ) {
                 objective.getScore(player).setScore(0);
             }
         }
@@ -68,7 +68,7 @@ public abstract class ScoreDisplayBase {
             return;
         }
 
-        ArrayList<Player> players = ColorTeaming.getAllPlayers();
+        ArrayList<Player> players = ColorTeaming.instance.getAllPlayers();
         for ( Player player : players ) {
 
             int point = 0;
@@ -79,9 +79,9 @@ public abstract class ScoreDisplayBase {
                 } else if ( getConfigData() == PlayerCriteria.DEATH_COUNT ) {
                     point = data[1];
                 } else if ( getConfigData() == PlayerCriteria.POINT ) {
-                    point = data[0] * ColorTeaming.getCTConfig().getKillPoint() +
-                            data[1] * ColorTeaming.getCTConfig().getDeathPoint() +
-                            data[2] * ColorTeaming.getCTConfig().getTkPoint();
+                    point = data[0] * ColorTeaming.instance.getCTConfig().getKillPoint() +
+                            data[1] * ColorTeaming.instance.getCTConfig().getDeathPoint() +
+                            data[2] * ColorTeaming.instance.getCTConfig().getTkPoint();
                 }
             }
             if ( point == 0 ) {
@@ -96,7 +96,7 @@ public abstract class ScoreDisplayBase {
      * スコア表示を削除する。
      */
     public void remove() {
-        if ( ColorTeaming.getScoreboard().getObjective(getObjectiveName()) != null ) {
+        if ( ColorTeaming.instance.getScoreboard().getObjective(getObjectiveName()) != null ) {
             objective.unregister();
         }
     }

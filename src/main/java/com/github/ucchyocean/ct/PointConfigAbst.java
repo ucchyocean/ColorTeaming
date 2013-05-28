@@ -70,7 +70,7 @@ public abstract class PointConfigAbst {
             return null;
         }
         String w = section.getString(KEY_WORLD, "world");
-        World world = ColorTeaming.getWorld(w);
+        World world = ColorTeaming.instance.getWorld(w);
         if ( world == null ) {
             return null;
         }

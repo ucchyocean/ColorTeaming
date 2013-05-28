@@ -34,7 +34,7 @@ public class SidebarScoreDisplay {
     public SidebarScoreDisplay() {
 
         // Scoreboardからobjective取得。null の場合は再作成する。
-        Scoreboard scoreboard = ColorTeaming.getScoreboard();
+        Scoreboard scoreboard = ColorTeaming.instance.getScoreboard();
         objective = scoreboard.getObjective("teamscore");
         if ( objective == null ) {
             objective = scoreboard.registerNewObjective("teamscore", "");
@@ -45,7 +45,7 @@ public class SidebarScoreDisplay {
         // 項目を初期化
         teamscores = new Hashtable<String, SidebarTeamScore>();
 
-        Hashtable<String, ArrayList<Player>> members = ColorTeaming.getAllTeamMembers();
+        Hashtable<String, ArrayList<Player>> members = ColorTeaming.instance.getAllTeamMembers();
         for ( String key : members.keySet() ) {
             Team team = scoreboard.getTeam(key);
             SidebarTeamScore ts = new SidebarTeamScore(team);
@@ -68,7 +68,7 @@ public class SidebarScoreDisplay {
      */
     private void refreshCriteria() {
 
-        SidebarCriteria criteria = ColorTeaming.getCTConfig().getSideCriteria();
+        SidebarCriteria criteria = ColorTeaming.instance.getCTConfig().getSideCriteria();
 
         if ( criteria == SidebarCriteria.NONE ) {
             if ( ColorTeaming.sidebarScore != null ) {
@@ -92,7 +92,7 @@ public class SidebarScoreDisplay {
      */
     public void refreshScore() {
 
-        switch (ColorTeaming.getCTConfig().getSideCriteria()) {
+        switch (ColorTeaming.instance.getCTConfig().getSideCriteria()) {
         case KILL_COUNT:
             refreshScoreByKillOrDeathCount(SidebarCriteria.KILL_COUNT);
             break;
@@ -123,7 +123,8 @@ public class SidebarScoreDisplay {
             index = 1;
         }
 
-        Hashtable<String, ArrayList<Player>> members = ColorTeaming.getAllTeamMembers();
+        Hashtable<String, ArrayList<Player>> members =
+                ColorTeaming.instance.getAllTeamMembers();
         Enumeration<String> keys = members.keys();
         while ( keys.hasMoreElements() ) {
             String key = keys.nextElement();
@@ -145,7 +146,8 @@ public class SidebarScoreDisplay {
      */
     private void refreshScoreByPoint() {
 
-        Hashtable<String, ArrayList<Player>> members = ColorTeaming.getAllTeamMembers();
+        Hashtable<String, ArrayList<Player>> members =
+                ColorTeaming.instance.getAllTeamMembers();
         Enumeration<String> keys = members.keys();
         while ( keys.hasMoreElements() ) {
             String key = keys.nextElement();
@@ -154,9 +156,9 @@ public class SidebarScoreDisplay {
                 SidebarTeamScore team = teamscores.get(key);
                 if ( ColorTeaming.killDeathCounts.containsKey(key) ) {
                     int[] data = ColorTeaming.killDeathCounts.get(key);
-                    int point = data[0] * ColorTeaming.getCTConfig().getKillPoint() +
-                                data[1] * ColorTeaming.getCTConfig().getDeathPoint() +
-                                data[2] * ColorTeaming.getCTConfig().getTkPoint();
+                    int point = data[0] * ColorTeaming.instance.getCTConfig().getKillPoint() +
+                                data[1] * ColorTeaming.instance.getCTConfig().getDeathPoint() +
+                                data[2] * ColorTeaming.instance.getCTConfig().getTkPoint();
                     objective.getScore(team).setScore(point);
                 } else {
                     objective.getScore(team).setScore(0);
@@ -169,7 +171,7 @@ public class SidebarScoreDisplay {
      * 残り人数によるスコア更新を行う
      */
     private void refreshScoreByRestPlayerCount() {
-        Hashtable<String, ArrayList<Player>> members = ColorTeaming.getAllTeamMembers();
+        Hashtable<String, ArrayList<Player>> members = ColorTeaming.instance.getAllTeamMembers();
         Enumeration<String> keys = members.keys();
         while ( keys.hasMoreElements() ) {
             String key = keys.nextElement();
@@ -186,7 +188,7 @@ public class SidebarScoreDisplay {
      * サイドバーの表示を消去する。
      */
     public void remove() {
-        if ( ColorTeaming.getScoreboard().getObjective("teamscore") != null ) {
+        if ( ColorTeaming.instance.getScoreboard().getObjective("teamscore") != null ) {
             objective.unregister();
         }
     }

@@ -22,7 +22,7 @@ public class TabListScoreDisplay extends ScoreDisplayBase {
      */
     @Override
     public PlayerCriteria getConfigData() {
-        return ColorTeaming.getCTConfig().getListCriteria();
+        return ColorTeaming.instance.getCTConfig().getListCriteria();
     }
 
     /**

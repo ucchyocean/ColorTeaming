@@ -58,7 +58,7 @@ public class CClassCommand implements CommandExecutor {
         String group = args[0];
         String clas = args[1];
 
-        Hashtable<String, ArrayList<Player>> members = ColorTeaming.getAllTeamMembers();
+        Hashtable<String, ArrayList<Player>> members = ColorTeaming.instance.getAllTeamMembers();
 
         // 有効なグループ名かユーザー名か'all'が指定されたかを確認する
         boolean isAll = false;
@@ -69,7 +69,7 @@ public class CClassCommand implements CommandExecutor {
         } else if ( members.containsKey(group)  ) {
             // グループ指定
             isGroup = true;
-        } else if ( ColorTeaming.getAllPlayers().contains(ColorTeaming.getPlayerExact(group)) ) {
+        } else if ( ColorTeaming.instance.getAllPlayers().contains(ColorTeaming.instance.getPlayerExact(group)) ) {
             // ユーザー指定
         } else {
             sender.sendMessage(PREERR + "グループまたはプレイヤー " + group + " が存在しません。");
@@ -77,14 +77,14 @@ public class CClassCommand implements CommandExecutor {
         }
 
         // 有効なクラス名が指定されたか確認する
-        if ( !ColorTeaming.getCTConfig().getClassItems().containsKey(clas) ) {
+        if ( !ColorTeaming.instance.getCTConfig().getClassItems().containsKey(clas) ) {
             sender.sendMessage(PREERR + "クラス " + clas + " が存在しません。");
             return true;
         }
 
         // クラス設定を実行する
-        String items = ColorTeaming.getCTConfig().getClassItems().get(clas);
-        String armor = ColorTeaming.getCTConfig().getClassArmors().get(clas);
+        String items = ColorTeaming.instance.getCTConfig().getClassItems().get(clas);
+        String armor = ColorTeaming.instance.getCTConfig().getClassArmors().get(clas);
 
         ArrayList<ItemStack> itemData = handler.convertToItemStack(items);
         ArrayList<ItemStack> armorData = null;
@@ -101,7 +101,7 @@ public class CClassCommand implements CommandExecutor {
         } else if ( isGroup ) {
             playersToSet = members.get(group);
         } else {
-            playersToSet.add(ColorTeaming.getPlayerExact(group));
+            playersToSet.add(ColorTeaming.instance.getPlayerExact(group));
         }
 
         for ( Player p : playersToSet ) {

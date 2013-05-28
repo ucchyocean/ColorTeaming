@@ -33,7 +33,7 @@ public class PlayerDeathListener implements Listener {
     public void onPlayerDeath(PlayerDeathEvent event) {
 
         Player player = event.getEntity();
-        String color = ColorTeaming.getPlayerColor(player);
+        String color = ColorTeaming.instance.getPlayerColor(player);
 
         // Death数を加算
 
@@ -85,7 +85,7 @@ public class PlayerDeathListener implements Listener {
         }
 
         if ( killer != null ) {
-            String colorKiller = ColorTeaming.getPlayerColor(killer);
+            String colorKiller = ColorTeaming.instance.getPlayerColor(killer);
 
             // Kill数を加算
 
@@ -107,44 +107,44 @@ public class PlayerDeathListener implements Listener {
                 ColorTeaming.killDeathUserCounts.get(killer.getName())[0]++;
 
             // killReachTrophyが設定されていたら、超えたかどうかを判定する
-            if ( ColorTeaming.getCTConfig().getKillReachTrophy() > 0 &&
+            if ( ColorTeaming.instance.getCTConfig().getKillReachTrophy() > 0 &&
                     ColorTeaming.leaders.size() == 0 ) {
 
                 if ( ColorTeaming.killDeathCounts.get(colorKiller)[0] ==
-                        ColorTeaming.getCTConfig().getKillReachTrophy() ) {
-                    int rest = ColorTeaming.getCTConfig().getKillTrophy() -
-                            ColorTeaming.getCTConfig().getKillReachTrophy();
+                        ColorTeaming.instance.getCTConfig().getKillReachTrophy() ) {
+                    int rest = ColorTeaming.instance.getCTConfig().getKillTrophy() -
+                            ColorTeaming.instance.getCTConfig().getKillReachTrophy();
                     String message = String.format(
                             PRENOTICE + "%s チームが、%d キルまでもう少しです(あと %d キル)。",
-                            colorKiller, ColorTeaming.getCTConfig().getKillTrophy(), rest);
+                            colorKiller, ColorTeaming.instance.getCTConfig().getKillTrophy(), rest);
                     ColorTeaming.sendBroadcast(message);
                 }
             }
 
             // killTrophyが設定されていたら、超えたかどうかを判定する
-            if ( ColorTeaming.getCTConfig().getKillTrophy() > 0 &&
+            if ( ColorTeaming.instance.getCTConfig().getKillTrophy() > 0 &&
                     ColorTeaming.leaders.size() == 0 ) {
 
                 if ( ColorTeaming.killDeathCounts.get(colorKiller)[0] ==
-                        ColorTeaming.getCTConfig().getKillTrophy() ) {
+                        ColorTeaming.instance.getCTConfig().getKillTrophy() ) {
 
                     // 全体通知
                     String message = String.format(
                             PRENOTICE + "%s チームは、%d キルを達成しました！",
-                            colorKiller, ColorTeaming.getCTConfig().getKillTrophy());
+                            colorKiller, ColorTeaming.instance.getCTConfig().getKillTrophy());
                     ColorTeaming.sendBroadcast(message);
                 }
             }
         }
 
         // 色設定を削除する
-        if ( ColorTeaming.getCTConfig().isColorRemoveOnDeath() ) {
-            ColorTeaming.leavePlayerTeam(player);
+        if ( ColorTeaming.instance.getCTConfig().isColorRemoveOnDeath() ) {
+            ColorTeaming.instance.leavePlayerTeam(player);
         }
 
         // スコア表示を更新する
-        ColorTeaming.refreshSidebarScore();
-        ColorTeaming.refreshTabkeyListScore();
-        ColorTeaming.refreshBelowNameScore();
+        ColorTeaming.instance.refreshSidebarScore();
+        ColorTeaming.instance.refreshTabkeyListScore();
+        ColorTeaming.instance.refreshBelowNameScore();
     }
 }

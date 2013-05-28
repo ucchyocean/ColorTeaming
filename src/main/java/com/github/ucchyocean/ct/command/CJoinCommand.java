@@ -43,14 +43,14 @@ public class CJoinCommand implements CommandExecutor {
         String group = "";
         if ( args.length == 0 || args[0].equalsIgnoreCase("random") ) {
 
-            if ( !ColorTeaming.getCTConfig().isAllowPlayerJoinRandom() ) {
+            if ( !ColorTeaming.instance.getCTConfig().isAllowPlayerJoinRandom() ) {
                 player.sendMessage(
                         PREERR +
                         "cjoinコマンドによるランダム参加は、許可されておりません。");
                 return true;
             }
 
-            if ( !ColorTeaming.getPlayerColor(player).equals("") ) {
+            if ( !ColorTeaming.instance.getPlayerColor(player).equals("") ) {
                 player.sendMessage(
                         PREERR + "あなたは既に、チームに所属しています。");
                 return true;
@@ -63,7 +63,7 @@ public class CJoinCommand implements CommandExecutor {
                 return true;
             }
 
-            ColorTeaming.addPlayerTeam(player, group);
+            ColorTeaming.instance.addPlayerTeam(player, group);
             player.sendMessage(
                     ChatColor.GREEN + "あなたは " +
                     Utility.replaceColors(group) +
@@ -78,14 +78,14 @@ public class CJoinCommand implements CommandExecutor {
 
         } else {
 
-            if ( !ColorTeaming.getCTConfig().isAllowPlayerJoinAny() ) {
+            if ( !ColorTeaming.instance.getCTConfig().isAllowPlayerJoinAny() ) {
                 player.sendMessage(
                         PREERR +
                         "cjoin (group) コマンドによる任意グループへの参加は、許可されておりません。");
                 return true;
             }
 
-            if ( !ColorTeaming.getPlayerColor(player).equals("") ) {
+            if ( !ColorTeaming.instance.getPlayerColor(player).equals("") ) {
                 player.sendMessage(
                         PREERR + "あなたは既に、チームに所属しています。");
                 return true;
@@ -96,7 +96,7 @@ public class CJoinCommand implements CommandExecutor {
                 sender.sendMessage(PREERR + "グループ " + group + " は設定できないグループ名です。");
                 return true;
             }
-            ColorTeaming.addPlayerTeam(player, group);
+            ColorTeaming.instance.addPlayerTeam(player, group);
             player.sendMessage(
                     ChatColor.GREEN + "あなたは " +
                     Utility.replaceColors(group) +
@@ -105,9 +105,9 @@ public class CJoinCommand implements CommandExecutor {
                     " グループになりました。");
 
             // サイドバー更新、タブキーリスト更新
-            ColorTeaming.makeSidebar();
-            ColorTeaming.refreshTabkeyListScore();
-            ColorTeaming.refreshBelowNameScore();
+            ColorTeaming.instance.makeSidebar();
+            ColorTeaming.instance.refreshTabkeyListScore();
+            ColorTeaming.instance.refreshBelowNameScore();
 
             // メンバー情報をlastdataに保存する
             ColorTeaming.sdhandler.save("lastdata");
@@ -125,7 +125,7 @@ public class CJoinCommand implements CommandExecutor {
     private String getLeastGroup() {
 
         Hashtable<String, ArrayList<Player>> members =
-                ColorTeaming.getAllTeamMembers();
+                ColorTeaming.instance.getAllTeamMembers();
         int least = 999;
         String leastGroup = null;
 

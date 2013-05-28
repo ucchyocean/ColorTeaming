@@ -39,26 +39,27 @@ public class CTeamingCommand implements CommandExecutor {
 
         if ( args[0].equalsIgnoreCase("reload") ) {
 
-            ColorTeaming.reloadCTConfig();
+            ColorTeaming.instance.reloadCTConfig();
             sender.sendMessage("config.ymlの再読み込みを行いました。");
             return true;
 
         } else if ( args[0].equalsIgnoreCase("removeall") ) {
 
-            Hashtable<String, ArrayList<Player>> members = ColorTeaming.getAllTeamMembers();
+            Hashtable<String, ArrayList<Player>> members =
+                    ColorTeaming.instance.getAllTeamMembers();
             Enumeration<String> keys = members.keys();
             while ( keys.hasMoreElements() ) {
                 String group = keys.nextElement();
                 for ( Player p : members.get(group) ) {
-                    ColorTeaming.leavePlayerTeam(p);
+                    ColorTeaming.instance.leavePlayerTeam(p);
                 }
-                ColorTeaming.removeTeam(group);
+                ColorTeaming.instance.removeTeam(group);
             }
 
             // サイドバー削除、タブキーリスト更新
-            ColorTeaming.removeSidebar();
-            ColorTeaming.refreshTabkeyListScore();
-            ColorTeaming.refreshBelowNameScore();
+            ColorTeaming.instance.removeSidebar();
+            ColorTeaming.instance.refreshTabkeyListScore();
+            ColorTeaming.instance.refreshBelowNameScore();
 
             sender.sendMessage(PREINFO + "全てのグループが解散しました。");
 
@@ -66,7 +67,8 @@ public class CTeamingCommand implements CommandExecutor {
 
         } else if ( args.length >= 2 && args[0].equalsIgnoreCase("remove") ) {
 
-            Hashtable<String, ArrayList<Player>> members = ColorTeaming.getAllTeamMembers();
+            Hashtable<String, ArrayList<Player>> members =
+                    ColorTeaming.instance.getAllTeamMembers();
             String group = args[1];
             if ( !members.containsKey(group) ) {
                 sender.sendMessage(PREERR + "グループ " + group + " は存在しません。");
@@ -74,15 +76,15 @@ public class CTeamingCommand implements CommandExecutor {
             }
 
             for ( Player p : members.get(group) ) {
-                ColorTeaming.leavePlayerTeam(p);
+                ColorTeaming.instance.leavePlayerTeam(p);
                 p.sendMessage(PREINFO + "グループ " + group + " が解散しました。");
             }
-            ColorTeaming.removeTeam(group);
+            ColorTeaming.instance.removeTeam(group);
 
             // サイドバー再作成、タブキーリスト更新
-            ColorTeaming.makeSidebar();
-            ColorTeaming.refreshTabkeyListScore();
-            ColorTeaming.refreshBelowNameScore();
+            ColorTeaming.instance.makeSidebar();
+            ColorTeaming.instance.refreshTabkeyListScore();
+            ColorTeaming.instance.refreshBelowNameScore();
 
             sender.sendMessage(PREINFO + "グループ " + group + " が解散しました。");
 
@@ -107,7 +109,7 @@ public class CTeamingCommand implements CommandExecutor {
                 return true;
             }
 
-            ColorTeaming.getCTConfig().setKillTrophy(amount);
+            ColorTeaming.instance.getCTConfig().setKillTrophy(amount);
 
             if ( amount == 0 ) {
                 sender.sendMessage(PREINFO + "キル数達成時の通知機能をオフにしました。");
@@ -133,12 +135,12 @@ public class CTeamingCommand implements CommandExecutor {
             if ( amount < 0 ) {
                 sender.sendMessage(PREERR + "ct reachTrophy コマンドには、マイナス値を指定できません。");
                 return true;
-            } else if ( ColorTeaming.getCTConfig().getKillTrophy() < amount ) {
+            } else if ( ColorTeaming.instance.getCTConfig().getKillTrophy() < amount ) {
                 sender.sendMessage(PREERR + "killTrophyの設定値より大きな値は指定できません。");
                 return true;
             }
 
-            ColorTeaming.getCTConfig().setKillReachTrophy(amount);
+            ColorTeaming.instance.getCTConfig().setKillReachTrophy(amount);
 
             if ( amount == 0 ) {
                 sender.sendMessage(PREINFO + "キル数リーチ時の通知機能をオフにしました。");
@@ -150,11 +152,11 @@ public class CTeamingCommand implements CommandExecutor {
         } else if ( args.length >= 2 && args[0].equalsIgnoreCase("allowJoinAny") ) {
 
             if ( args[1].equalsIgnoreCase("on") ) {
-                ColorTeaming.getCTConfig().setAllowPlayerJoinAny(true);
+                ColorTeaming.instance.getCTConfig().setAllowPlayerJoinAny(true);
                 sender.sendMessage(ChatColor.GRAY + "一般プレイヤーの /cjoin (group) の使用が可能になりました。");
                 return true;
             } else if ( args[1].equalsIgnoreCase("off") ) {
-                ColorTeaming.getCTConfig().setAllowPlayerJoinAny(false);
+                ColorTeaming.instance.getCTConfig().setAllowPlayerJoinAny(false);
                 sender.sendMessage(ChatColor.GRAY + "一般プレイヤーの /cjoin (group) の使用が不可になりました。");
                 return true;
             }
@@ -164,11 +166,11 @@ public class CTeamingCommand implements CommandExecutor {
         } else if ( args.length >= 2 && args[0].equalsIgnoreCase("allowJoinRandom") ) {
 
             if ( args[1].equalsIgnoreCase("on") ) {
-                ColorTeaming.getCTConfig().setAllowPlayerJoinRandom(true);
+                ColorTeaming.instance.getCTConfig().setAllowPlayerJoinRandom(true);
                 sender.sendMessage(ChatColor.GRAY + "一般プレイヤーの /cjoin の使用が可能になりました。");
                 return true;
             } else if ( args[1].equalsIgnoreCase("off") ) {
-                ColorTeaming.getCTConfig().setAllowPlayerJoinRandom(false);
+                ColorTeaming.instance.getCTConfig().setAllowPlayerJoinRandom(false);
                 sender.sendMessage(ChatColor.GRAY + "一般プレイヤーの /cjoin の使用が不可になりました。");
                 return true;
             }
@@ -183,25 +185,25 @@ public class CTeamingCommand implements CommandExecutor {
                 return true;
             }
 
-            Player player = ColorTeaming.getPlayerExact(args[2]);
+            Player player = ColorTeaming.instance.getPlayerExact(args[2]);
             if ( player == null ) {
                 sender.sendMessage(PREERR + "プレイヤー " + args[2] + " は存在しません。");
                 return true;
             }
 
-            boolean isNewGroup = ! ColorTeaming.getAllTeamMembers().containsKey(group);
-            ColorTeaming.addPlayerTeam(player, group);
+            boolean isNewGroup = ! ColorTeaming.instance.getAllTeamMembers().containsKey(group);
+            ColorTeaming.instance.addPlayerTeam(player, group);
 
             // メンバー情報をlastdataに保存する
             ColorTeaming.sdhandler.save("lastdata");
 
             // サイドバーの更新 グループが増える場合は、再生成する
             if ( isNewGroup ) {
-                ColorTeaming.makeSidebar();
+                ColorTeaming.instance.makeSidebar();
             }
-            ColorTeaming.refreshSidebarScore();
-            ColorTeaming.refreshTabkeyListScore();
-            ColorTeaming.refreshBelowNameScore();
+            ColorTeaming.instance.refreshSidebarScore();
+            ColorTeaming.instance.refreshTabkeyListScore();
+            ColorTeaming.instance.refreshBelowNameScore();
 
             sender.sendMessage(PREINFO + "プレイヤー " + player.getName() + " をグループ " +
                     group + " に追加しました。");
@@ -211,23 +213,23 @@ public class CTeamingCommand implements CommandExecutor {
         } else if ( args.length >= 2 && args[0].equalsIgnoreCase("side") ) {
 
             if ( args[1].equalsIgnoreCase("kill") ) {
-                ColorTeaming.getCTConfig().setSideCriteria(SidebarCriteria.KILL_COUNT);
+                ColorTeaming.instance.getCTConfig().setSideCriteria(SidebarCriteria.KILL_COUNT);
             } else if ( args[1].equalsIgnoreCase("death") ) {
-                ColorTeaming.getCTConfig().setSideCriteria(SidebarCriteria.DEATH_COUNT);
+                ColorTeaming.instance.getCTConfig().setSideCriteria(SidebarCriteria.DEATH_COUNT);
             } else if ( args[1].equalsIgnoreCase("point") ) {
-                ColorTeaming.getCTConfig().setSideCriteria(SidebarCriteria.POINT);
+                ColorTeaming.instance.getCTConfig().setSideCriteria(SidebarCriteria.POINT);
             } else if ( args[1].equalsIgnoreCase("rest") ) {
-                ColorTeaming.getCTConfig().setSideCriteria(SidebarCriteria.REST_PLAYER);
+                ColorTeaming.instance.getCTConfig().setSideCriteria(SidebarCriteria.REST_PLAYER);
             } else if ( args[1].equalsIgnoreCase("clear") || args[1].equalsIgnoreCase("none") ) {
-                ColorTeaming.getCTConfig().setSideCriteria(SidebarCriteria.NONE);
+                ColorTeaming.instance.getCTConfig().setSideCriteria(SidebarCriteria.NONE);
             } else {
                 return false;
             }
 
             // サイドバーの更新
-            ColorTeaming.makeSidebar();
+            ColorTeaming.instance.makeSidebar();
 
-            String criteria = ColorTeaming.getCTConfig().getSideCriteria().toString();
+            String criteria = ColorTeaming.instance.getCTConfig().getSideCriteria().toString();
             sender.sendMessage(PREINFO + "サイドバーの表示を" + criteria + "にしました。");
 
             return true;
@@ -235,25 +237,25 @@ public class CTeamingCommand implements CommandExecutor {
         } else if ( args.length >= 2 && args[0].equalsIgnoreCase("list") ) {
 
             if ( args[1].equalsIgnoreCase("kill") ) {
-                ColorTeaming.getCTConfig().setListCriteria(PlayerCriteria.KILL_COUNT);
+                ColorTeaming.instance.getCTConfig().setListCriteria(PlayerCriteria.KILL_COUNT);
             } else if ( args[1].equalsIgnoreCase("death") ) {
-                ColorTeaming.getCTConfig().setListCriteria(PlayerCriteria.DEATH_COUNT);
+                ColorTeaming.instance.getCTConfig().setListCriteria(PlayerCriteria.DEATH_COUNT);
             } else if ( args[1].equalsIgnoreCase("point") ) {
-                ColorTeaming.getCTConfig().setListCriteria(PlayerCriteria.POINT);
+                ColorTeaming.instance.getCTConfig().setListCriteria(PlayerCriteria.POINT);
             } else if ( args[1].equalsIgnoreCase("health") ) {
-                ColorTeaming.getCTConfig().setListCriteria(PlayerCriteria.HEALTH);
+                ColorTeaming.instance.getCTConfig().setListCriteria(PlayerCriteria.HEALTH);
             } else if ( args[1].equalsIgnoreCase("custom") ) {
-                ColorTeaming.getCTConfig().setListCriteria(PlayerCriteria.CUSTOM);
+                ColorTeaming.instance.getCTConfig().setListCriteria(PlayerCriteria.CUSTOM);
             } else if ( args[1].equalsIgnoreCase("clear") || args[1].equalsIgnoreCase("none") ) {
-                ColorTeaming.getCTConfig().setListCriteria(PlayerCriteria.NONE);
+                ColorTeaming.instance.getCTConfig().setListCriteria(PlayerCriteria.NONE);
             } else {
                 return false;
             }
 
             // スコアボードの更新
-            ColorTeaming.makeTabkeyListScore();
+            ColorTeaming.instance.makeTabkeyListScore();
 
-            String criteria = ColorTeaming.getCTConfig().getListCriteria().toString();
+            String criteria = ColorTeaming.instance.getCTConfig().getListCriteria().toString();
             sender.sendMessage(PREINFO + "リストの表示を" + criteria + "にしました。");
 
             return true;
@@ -261,26 +263,26 @@ public class CTeamingCommand implements CommandExecutor {
         } else if ( args.length >= 2 && args[0].equalsIgnoreCase("below") ) {
 
             if ( args[1].equalsIgnoreCase("kill") ) {
-                ColorTeaming.getCTConfig().setBelowCriteria(PlayerCriteria.KILL_COUNT);
+                ColorTeaming.instance.getCTConfig().setBelowCriteria(PlayerCriteria.KILL_COUNT);
             } else if ( args[1].equalsIgnoreCase("death") ) {
-                ColorTeaming.getCTConfig().setBelowCriteria(PlayerCriteria.DEATH_COUNT);
+                ColorTeaming.instance.getCTConfig().setBelowCriteria(PlayerCriteria.DEATH_COUNT);
             } else if ( args[1].equalsIgnoreCase("point") ) {
-                ColorTeaming.getCTConfig().setBelowCriteria(PlayerCriteria.POINT);
+                ColorTeaming.instance.getCTConfig().setBelowCriteria(PlayerCriteria.POINT);
             } else if ( args[1].equalsIgnoreCase("health") ) {
-                ColorTeaming.getCTConfig().setBelowCriteria(PlayerCriteria.HEALTH);
+                ColorTeaming.instance.getCTConfig().setBelowCriteria(PlayerCriteria.HEALTH);
             } else if ( args[1].equalsIgnoreCase("custom") ) {
-                ColorTeaming.getCTConfig().setBelowCriteria(PlayerCriteria.CUSTOM);
+                ColorTeaming.instance.getCTConfig().setBelowCriteria(PlayerCriteria.CUSTOM);
             } else if ( args[1].equalsIgnoreCase("clear") || args[1].equalsIgnoreCase("none") ) {
-                ColorTeaming.getCTConfig().setBelowCriteria(PlayerCriteria.NONE);
+                ColorTeaming.instance.getCTConfig().setBelowCriteria(PlayerCriteria.NONE);
             } else {
                 return false;
             }
 
             // スコアボードの更新
-            ColorTeaming.makeBelowNameScore();
+            ColorTeaming.instance.makeBelowNameScore();
 
             // 設定の保存
-            String criteria = ColorTeaming.getCTConfig().getBelowCriteria().toString();
+            String criteria = ColorTeaming.instance.getCTConfig().getBelowCriteria().toString();
             sender.sendMessage(PREINFO + "名前欄のスコア表示を" + criteria + "にしました。");
 
             return true;

@@ -57,7 +57,7 @@ public class ColorTeaming extends JavaPlugin {
     private static final String TEAM_INFORMATION_FORMAT = "&a[%s&a] %s";
 
     private static Scoreboard sb;
-    protected static ColorTeaming instance;
+    public static ColorTeaming instance;
     public static TeamMemberSaveDataHandler sdhandler;
 
     public static Logger logger;
@@ -147,7 +147,7 @@ public class ColorTeaming extends JavaPlugin {
      * スコアボードを返す。
      * @return スコアボード
      */
-    public static Scoreboard getScoreboard() {
+    public Scoreboard getScoreboard() {
         if ( sb == null ) {
             sb = instance.getServer().getScoreboardManager().getMainScoreboard();
         }
@@ -159,7 +159,7 @@ public class ColorTeaming extends JavaPlugin {
      * @param player プレイヤー
      * @return チーム
      */
-    public static Team getPlayerTeam(Player player) {
+    public Team getPlayerTeam(Player player) {
 
         Scoreboard scoreboard = getScoreboard();
         Set<Team> teams = scoreboard.getTeams();
@@ -178,7 +178,7 @@ public class ColorTeaming extends JavaPlugin {
      * @param player
      * @return
      */
-    public static String getPlayerColor(Player player) {
+    public String getPlayerColor(Player player) {
 
         Team team = getPlayerTeam(player);
         if ( team == null ) return "";
@@ -190,7 +190,7 @@ public class ColorTeaming extends JavaPlugin {
      * @param player プレイヤー
      * @param color チームの色
      */
-    public static Team addPlayerTeam(Player player, String color) {
+    public Team addPlayerTeam(Player player, String color) {
 
         Scoreboard scoreboard = getScoreboard();
 
@@ -219,7 +219,7 @@ public class ColorTeaming extends JavaPlugin {
      * Player に設定されているチームを削除する。
      * @param player プレイヤー
      */
-    public static void leavePlayerTeam(Player player) {
+    public void leavePlayerTeam(Player player) {
 
         Team team = getPlayerTeam(player);
         if ( team != null )
@@ -234,7 +234,7 @@ public class ColorTeaming extends JavaPlugin {
      * 強制的にfalseになることに注意
      * @param ff trueならフレンドリーファイア有効、falseなら無効
      */
-    public static void setFriendlyFilre(boolean ff) {
+    public void setFriendlyFilre(boolean ff) {
 
         Scoreboard scoreboard = getScoreboard();
 
@@ -250,7 +250,7 @@ public class ColorTeaming extends JavaPlugin {
      * 仲間の可視化の設定。<br>
      * @param fi trueならフレンドリーファイア有効、falseなら無効
      */
-    public static void setSeeFriendlyInvisibles(boolean fi) {
+    public void setSeeFriendlyInvisibles(boolean fi) {
 
         Scoreboard scoreboard = getScoreboard();
 
@@ -264,7 +264,7 @@ public class ColorTeaming extends JavaPlugin {
      * 指定したチーム名のチームを削除する
      * @param name
      */
-    public static void removeTeam(String name) {
+    public void removeTeam(String name) {
 
         Scoreboard scoreboard = getScoreboard();
         Team team = scoreboard.getTeam(name);
@@ -281,7 +281,7 @@ public class ColorTeaming extends JavaPlugin {
     /**
      * 全てのチームを削除する
      */
-    public static void removeAllTeam() {
+    public void removeAllTeam() {
 
         Scoreboard scoreboard = getScoreboard();
 
@@ -295,7 +295,7 @@ public class ColorTeaming extends JavaPlugin {
      * ユーザーをチームごとのメンバーに整理して返すメソッド
      * @return 色をKey メンバーをValueとした Hashtable
      */
-    public static Hashtable<String, ArrayList<Player>> getAllTeamMembers() {
+    public Hashtable<String, ArrayList<Player>> getAllTeamMembers() {
 
         Hashtable<String, ArrayList<Player>> result = new Hashtable<String, ArrayList<Player>>();
         Scoreboard scoreboard = getScoreboard();
@@ -319,7 +319,7 @@ public class ColorTeaming extends JavaPlugin {
      * 全てのプレイヤーを取得する
      * @return 全てのプレイヤー
      */
-    public static ArrayList<Player> getAllPlayers() {
+    public ArrayList<Player> getAllPlayers() {
         Player[] temp = instance.getServer().getOnlinePlayers();
         ArrayList<Player> result = new ArrayList<Player>();
         for ( Player p : temp ) {
@@ -334,7 +334,7 @@ public class ColorTeaming extends JavaPlugin {
      * @param worldNames 対象にするワールド名
      * @return 全てのプレイヤー
      */
-    public static ArrayList<Player> getAllPlayersOnWorld(List<String> worldNames) {
+    public ArrayList<Player> getAllPlayersOnWorld(List<String> worldNames) {
 
         if ( worldNames == null ) {
             return null;
@@ -354,7 +354,7 @@ public class ColorTeaming extends JavaPlugin {
      * 全てのチーム名（＝全ての色）を取得する
      * @return 全てのチーム名
      */
-    public static ArrayList<String> getAllColors() {
+    public ArrayList<String> getAllColors() {
 
         ArrayList<String> result = new ArrayList<String>();
         Set<Team> teams = getScoreboard().getTeams();
@@ -367,19 +367,11 @@ public class ColorTeaming extends JavaPlugin {
     }
 
     /**
-     * メッセージをブロードキャストに送信する。
-     * @param message 送信するメッセージ
-     */
-    public static void sendBroadcast(String message) {
-        instance.getServer().broadcastMessage(message);
-    }
-
-    /**
      * メッセージをチームチャットに送信する。
      * @param player 送信元プレイヤー
      * @param message 送信するメッセージ
      */
-    public static void sendTeamChat(Player player, String message) {
+    public void sendTeamChat(Player player, String message) {
 
         Team team = getPlayerTeam(player);
         if ( team == null ) {
@@ -429,7 +421,7 @@ public class ColorTeaming extends JavaPlugin {
      * @param color 送信先のチーム
      * @param message 送信するメッセージ
      */
-    public static void sendInfoToTeamChat(String color, String message) {
+    public void sendInfoToTeamChat(String color, String message) {
 
         // メッセージを生成
         String partyMessage = String.format(
@@ -452,7 +444,7 @@ public class ColorTeaming extends JavaPlugin {
      * @param name プレイヤー名
      * @return
      */
-    public static Player getPlayerExact(String name) {
+    public Player getPlayerExact(String name) {
         return instance.getServer().getPlayerExact(name);
     }
 
@@ -461,7 +453,7 @@ public class ColorTeaming extends JavaPlugin {
      * @param name ワールド名
      * @return
      */
-    public static World getWorld(String name) {
+    public World getWorld(String name) {
         return instance.getServer().getWorld(name);
     }
 
@@ -469,7 +461,7 @@ public class ColorTeaming extends JavaPlugin {
      * このプラグインのJarファイル自身を示すFileクラスを返す。
      * @return
      */
-    protected static File getPluginJarFile() {
+    protected File getPluginJarFile() {
         return instance.getFile();
     }
 
@@ -477,7 +469,7 @@ public class ColorTeaming extends JavaPlugin {
      * サイドバーを新しく作る。
      * もともとサイドバーがあった場合は、削除して再作成される。
      */
-    public static void makeSidebar() {
+    public void makeSidebar() {
 
         removeSidebar();
         if ( ctconfig.getSideCriteria() != SidebarCriteria.NONE ) {
@@ -488,7 +480,7 @@ public class ColorTeaming extends JavaPlugin {
     /**
      * サイドバーを消去する。
      */
-    public static void removeSidebar() {
+    public void removeSidebar() {
 
         getScoreboard().clearSlot(DisplaySlot.SIDEBAR);
         if ( sidebarScore != null ) {
@@ -499,7 +491,7 @@ public class ColorTeaming extends JavaPlugin {
     /**
      * サイドバーのスコアを更新する。
      */
-    public static void refreshSidebarScore() {
+    public void refreshSidebarScore() {
 
         if ( sidebarScore != null ) {
             sidebarScore.refreshScore();
@@ -510,7 +502,7 @@ public class ColorTeaming extends JavaPlugin {
      * タブキーリストのスコアを新しく作る。
      * もともとスコアがあった場合は、削除して再作成される。
      */
-    public static void makeTabkeyListScore() {
+    public void makeTabkeyListScore() {
 
         removeTabkeyListScore();
         if ( ctconfig.getListCriteria() != PlayerCriteria.NONE ) {
@@ -521,7 +513,7 @@ public class ColorTeaming extends JavaPlugin {
     /**
      * タブキーリストのスコアを消去する。
      */
-    public static void removeTabkeyListScore() {
+    public void removeTabkeyListScore() {
 
         getScoreboard().clearSlot(DisplaySlot.PLAYER_LIST);
         if ( tablistScore != null ) {
@@ -532,7 +524,7 @@ public class ColorTeaming extends JavaPlugin {
     /**
      * タブキーリストのスコアを更新する。
      */
-    public static void refreshTabkeyListScore() {
+    public void refreshTabkeyListScore() {
 
         if ( tablistScore != null ) {
             tablistScore.refreshScore();
@@ -543,7 +535,7 @@ public class ColorTeaming extends JavaPlugin {
      * 名前下のスコアを新しく作る。
      * もともとスコアがあった場合は、削除して再作成される。
      */
-    public static void makeBelowNameScore() {
+    public void makeBelowNameScore() {
 
         removeBelowNameScore();
         if ( ctconfig.getBelowCriteria() != PlayerCriteria.NONE ) {
@@ -554,7 +546,7 @@ public class ColorTeaming extends JavaPlugin {
     /**
      * 名前下のスコアを消去する。
      */
-    public static void removeBelowNameScore() {
+    public void removeBelowNameScore() {
 
         getScoreboard().clearSlot(DisplaySlot.BELOW_NAME);
         if ( belownameScore != null ) {
@@ -565,7 +557,7 @@ public class ColorTeaming extends JavaPlugin {
     /**
      * 名前下のスコアを更新する。
      */
-    public static void refreshBelowNameScore() {
+    public void refreshBelowNameScore() {
 
         if ( belownameScore != null ) {
             belownameScore.refreshScore();
@@ -576,14 +568,38 @@ public class ColorTeaming extends JavaPlugin {
      * ColorTeamingConfig を取得する
      * @return ColorTeamingConfig
      */
-    public static ColorTeamingConfig getCTConfig() {
+    public ColorTeamingConfig getCTConfig() {
         return ctconfig;
     }
 
     /**
      * ColorTeamingConfig を更新する
      */
-    public static void reloadCTConfig() {
+    public void reloadCTConfig() {
         ctconfig = ColorTeamingConfig.loadConfig();
+    }
+
+    /**
+     * TeamMemberSaveDataHandler を取得する
+     * @return TeamMemberSaveDataHandler
+     */
+    public TeamMemberSaveDataHandler getCTSaveDataHandler() {
+        return sdhandler;
+    }
+
+    /**
+     * キルデス数を全てクリアする
+     */
+    public void clearKillDeathPoints() {
+        killDeathCounts.clear();
+        killDeathUserCounts.clear();
+    }
+
+    /**
+     * メッセージをブロードキャストに送信する。
+     * @param message 送信するメッセージ
+     */
+    public static void sendBroadcast(String message) {
+        instance.getServer().broadcastMessage(message);
     }
 }

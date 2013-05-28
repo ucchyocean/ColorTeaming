@@ -22,7 +22,7 @@ public class BelowNameScoreDisplay extends ScoreDisplayBase {
      */
     @Override
     public PlayerCriteria getConfigData() {
-        return ColorTeaming.getCTConfig().getBelowCriteria();
+        return ColorTeaming.instance.getCTConfig().getBelowCriteria();
     }
 
     /**

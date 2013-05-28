@@ -55,9 +55,9 @@ public class CKillCommand implements CommandExecutor {
             while ( keys.hasMoreElements() ) {
                 String group = keys.nextElement();
                 int[] counts = ColorTeaming.killDeathCounts.get(group);
-                int point = counts[0] * ColorTeaming.getCTConfig().getKillPoint() +
-                        counts[1] * ColorTeaming.getCTConfig().getDeathPoint() +
-                        counts[2] * ColorTeaming.getCTConfig().getTkPoint();
+                int point = counts[0] * ColorTeaming.instance.getCTConfig().getKillPoint() +
+                        counts[1] * ColorTeaming.instance.getCTConfig().getDeathPoint() +
+                        counts[2] * ColorTeaming.instance.getCTConfig().getTkPoint();
 
                 int index = 0;
                 while ( groups.size() > index && points.get(index) > point ) {
@@ -103,9 +103,9 @@ public class CKillCommand implements CommandExecutor {
             while ( playersEnum.hasMoreElements() ) {
                 String playerName = playersEnum.nextElement();
                 int[] counts = ColorTeaming.killDeathUserCounts.get(playerName);
-                int point = counts[0] * ColorTeaming.getCTConfig().getKillPoint() +
-                        counts[1] * ColorTeaming.getCTConfig().getDeathPoint() +
-                        counts[2] * ColorTeaming.getCTConfig().getTkPoint();
+                int point = counts[0] * ColorTeaming.instance.getCTConfig().getKillPoint() +
+                        counts[1] * ColorTeaming.instance.getCTConfig().getDeathPoint() +
+                        counts[2] * ColorTeaming.instance.getCTConfig().getTkPoint();
 
                 int index = 0;
                 while ( users.size() > index && userPoints.get(index) > point ) {
@@ -149,7 +149,7 @@ public class CKillCommand implements CommandExecutor {
                             "[Your Score] %s %dpoints (%dkill, %ddeath, %dtk)",
                             playerName, point, counts[0], counts[1], counts[2]);
 
-                    ColorTeaming.getPlayerExact(playerName).sendMessage(ChatColor.GRAY + message);
+                    ColorTeaming.instance.getPlayerExact(playerName).sendMessage(ChatColor.GRAY + message);
                 }
             }
 
@@ -159,9 +159,9 @@ public class CKillCommand implements CommandExecutor {
 
             ColorTeaming.killDeathCounts.clear();
             ColorTeaming.killDeathUserCounts.clear();
-            ColorTeaming.refreshSidebarScore();
-            ColorTeaming.refreshTabkeyListScore();
-            ColorTeaming.refreshBelowNameScore();
+            ColorTeaming.instance.refreshSidebarScore();
+            ColorTeaming.instance.refreshTabkeyListScore();
+            ColorTeaming.instance.refreshBelowNameScore();
             sender.sendMessage(ChatColor.GRAY + "KillDeath数をリセットしました。");
             return true;
         }

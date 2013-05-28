@@ -51,12 +51,12 @@ public class CCountCommand implements CommandExecutor {
         // メンバー情報の取得
         Hashtable<String, ArrayList<Player>> members;
         if ( !isAll ) {
-            members = ColorTeaming.getAllTeamMembers();
+            members = ColorTeaming.instance.getAllTeamMembers();
         } else {
             members = new Hashtable<String, ArrayList<Player>>();
-            ArrayList<Player> players = ColorTeaming.getAllPlayers();
+            ArrayList<Player> players = ColorTeaming.instance.getAllPlayers();
             for ( Player p : players ) {
-                String color = ColorTeaming.getPlayerColor(p);
+                String color = ColorTeaming.instance.getPlayerColor(p);
                 if ( members.containsKey(color) ) {
                     members.get(color).add(p);
                 } else {

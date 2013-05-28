@@ -49,7 +49,8 @@ public class CRandomCommand implements CommandExecutor {
 
         // ゲームモードがクリエイティブの人は除外する
         ArrayList<Player> tempPlayers =
-                ColorTeaming.getAllPlayersOnWorld(ColorTeaming.getCTConfig().getWorldNames());
+                ColorTeaming.instance.getAllPlayersOnWorld(
+                        ColorTeaming.instance.getCTConfig().getWorldNames());
         ArrayList<Player> players = new ArrayList<Player>();
         for ( Player p : tempPlayers ) {
             if ( p.getGameMode() != GameMode.CREATIVE ) {
@@ -63,7 +64,7 @@ public class CRandomCommand implements CommandExecutor {
         }
 
         // 全てのグループをいったん削除する
-        ColorTeaming.removeAllTeam();
+        ColorTeaming.instance.removeAllTeam();
 
         // シャッフル
         Random rand = new Random();
@@ -78,12 +79,12 @@ public class CRandomCommand implements CommandExecutor {
         for ( int i=0; i<players.size(); i++ ) {
             int group = i % numberOfGroups;
             String color = GROUP_COLORS[group];
-            ColorTeaming.addPlayerTeam(players.get(i), color);
+            ColorTeaming.instance.addPlayerTeam(players.get(i), color);
         }
 
         // 各グループに、通知メッセージを出す
         for ( int i=0; i<numberOfGroups; i++ ) {
-            ColorTeaming.sendInfoToTeamChat(GROUP_COLORS[i],
+            ColorTeaming.instance.sendInfoToTeamChat(GROUP_COLORS[i],
                     "あなたは " +
                     Utility.replaceColors(GROUP_COLORS[i]) +
                     GROUP_COLORS[i] +
@@ -96,13 +97,13 @@ public class CRandomCommand implements CommandExecutor {
         ColorTeaming.killDeathUserCounts.clear();
 
         // スコアボードの作成
-        ColorTeaming.makeSidebar();
-        ColorTeaming.makeTabkeyListScore();
-        ColorTeaming.makeBelowNameScore();
+        ColorTeaming.instance.makeSidebar();
+        ColorTeaming.instance.makeTabkeyListScore();
+        ColorTeaming.instance.makeBelowNameScore();
 
         // メンバー情報の取得
         Hashtable<String, ArrayList<Player>> members =
-                ColorTeaming.getAllTeamMembers();
+                ColorTeaming.instance.getAllTeamMembers();
 
         // コマンド完了を、CCメッセージで通知する
         CCountCommand.sendCCMessage(sender, members, false);
@@ -123,10 +124,11 @@ public class CRandomCommand implements CommandExecutor {
 
         // ゲームモードがクリエイティブの人や、既に色が設定されている人は除外する
         ArrayList<Player> tempPlayers =
-                ColorTeaming.getAllPlayersOnWorld(ColorTeaming.getCTConfig().getWorldNames());
+                ColorTeaming.instance.getAllPlayersOnWorld(
+                        ColorTeaming.instance.getCTConfig().getWorldNames());
         ArrayList<Player> players = new ArrayList<Player>();
         for ( Player p : tempPlayers ) {
-            Team team = ColorTeaming.getPlayerTeam(p);
+            Team team = ColorTeaming.instance.getPlayerTeam(p);
             if ( p.getGameMode() != GameMode.CREATIVE &&
                     (team == null || team.getName().equals("") ||
                             team.getName().equals("white")) ) {
@@ -152,7 +154,7 @@ public class CRandomCommand implements CommandExecutor {
         for ( int i=0; i<players.size(); i++ ) {
             String color = getLeastGroup();
             if ( color != null ) {
-                ColorTeaming.addPlayerTeam(players.get(i), color);
+                ColorTeaming.instance.addPlayerTeam(players.get(i), color);
                 players.get(i).sendMessage(
                         ChatColor.GREEN + "あなたは " +
                         Utility.replaceColors(color) +
@@ -167,14 +169,13 @@ public class CRandomCommand implements CommandExecutor {
         }
 
         // スコアボードの作成
-        // TODO: 要確認。TABキーリストはリフレッシュでいい…はず。
-        ColorTeaming.makeSidebar();
-        ColorTeaming.refreshTabkeyListScore();
-        ColorTeaming.refreshBelowNameScore();
+        ColorTeaming.instance.makeSidebar();
+        ColorTeaming.instance.refreshTabkeyListScore();
+        ColorTeaming.instance.refreshBelowNameScore();
 
         // メンバー情報の取得
         Hashtable<String, ArrayList<Player>> members =
-                ColorTeaming.getAllTeamMembers();
+                ColorTeaming.instance.getAllTeamMembers();
 
         // コマンド完了を、CCメッセージで通知する
         CCountCommand.sendCCMessage(sender, members, false);
@@ -192,7 +193,7 @@ public class CRandomCommand implements CommandExecutor {
     private String getLeastGroup() {
 
         Hashtable<String, ArrayList<Player>> members =
-                ColorTeaming.getAllTeamMembers();
+                ColorTeaming.instance.getAllTeamMembers();
         int least = 999;
         String leastGroup = null;
 

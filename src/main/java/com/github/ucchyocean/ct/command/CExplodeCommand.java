@@ -38,15 +38,15 @@ public class CExplodeCommand implements CommandExecutor {
         String target = args[0]; // 制裁を加えるグループかユーザー
 
         Hashtable<String, ArrayList<Player>> members =
-                ColorTeaming.getAllTeamMembers();
+                ColorTeaming.instance.getAllTeamMembers();
         ArrayList<Player> playersToExplode = new ArrayList<Player>();
 
         if ( members.containsKey(target) ) {
             // target はグループである場合
             playersToExplode = members.get(target);
-        } else if ( ColorTeaming.getPlayerExact(target) != null ) {
+        } else if ( ColorTeaming.instance.getPlayerExact(target) != null ) {
             // target はプレイヤーである場合
-            playersToExplode.add(ColorTeaming.getPlayerExact(target));
+            playersToExplode.add(ColorTeaming.instance.getPlayerExact(target));
         } else {
             sender.sendMessage(PREERR + target +
                     " というグループまたはプレイヤーは存在しません。");

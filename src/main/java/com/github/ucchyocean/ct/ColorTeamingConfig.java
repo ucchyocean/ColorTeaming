@@ -107,7 +107,9 @@ public class ColorTeamingConfig {
         // config.yml が無い場合に、デフォルトを読み出し
         File configFile = new File(ColorTeaming.instance.getDataFolder(), "config.yml");
         if ( !configFile.exists() ) {
-            Utility.copyFileFromJar(ColorTeaming.getPluginJarFile(), configFile, "config_ja.yml", false);
+            Utility.copyFileFromJar(
+                    ColorTeaming.instance.getPluginJarFile(),
+                    configFile, "config_ja.yml", false);
         }
 
         // config取得
