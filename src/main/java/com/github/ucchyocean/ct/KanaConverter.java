@@ -58,7 +58,7 @@ public class KanaConverter {
         TABLE.put("xt", new String[]{"た","ち","っ","て","と"});
         TABLE.put( "x", new String[]{"ぁ","ぃ","ぅ","ぇ","ぉ"});
     };
-    
+
     private static String getKanaFromTable(String s, int n) {
 
         if ( TABLE.containsKey(s) ) {
@@ -103,16 +103,24 @@ public class KanaConverter {
                         continue;
                     }
                 }
-                if ( java.lang.Character.isLetter(tmp.charAt(0)) ) {
-                    if ( last.equals(tmp) ) {
+                if ( Character.isLetter(tmp.charAt(0)) ) {
+                    if ( Character.isUpperCase(tmp.charAt(0)) ) {
+                        line.append(last + tmp);
+                        last = "";
+                    } else if ( last.equals(tmp) ) {
                         line.append("っ");
                         last = tmp;
                     } else {
                         last = last + tmp;
                     }
                 } else {
-                    line.append(last + tmp);
-                    last = "";
+                    if ( tmp.equals("-") ) {
+                        line.append(last + "ー");
+                        last = "";
+                    } else {
+                        line.append(last + tmp);
+                        last = "";
+                    }
                 }
             }
         }

@@ -13,13 +13,14 @@ import java.util.Map;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import com.github.ucchyocean.ct.scoreboard.PlayerCriteria;
 import com.github.ucchyocean.ct.scoreboard.SidebarCriteria;
 
 /**
- * @author ucchy
  * ColorMeTeaming の設定ハンドルクラス
+ * @author ucchy
  */
 public class ColorTeamingConfig {
 
@@ -100,8 +101,7 @@ public class ColorTeamingConfig {
 
     /**
      * config.ymlの読み出し処理。
-     * @throws IOException
-     * @return 成功したかどうか
+     * @return 読み込んだ ColorTeamingConfig オブジェクト
      */
     public static ColorTeamingConfig loadConfig() {
 
@@ -176,26 +176,54 @@ public class ColorTeamingConfig {
 
         ctconfig.showJapanizeGlobalChat = config.getBoolean("showJapanizeGlobalChat", false);
         ctconfig.showJapanizeTeamChat = config.getBoolean("showJapanizeTeamChat", true);
-        ctconfig.teleportDelay = config.getInt("teleportDelay", 3);
+        ctconfig.teleportDelay = config.getInt("teleportDelay", 2);
 
         return ctconfig;
     }
 
     /**
-     * config.yml に、設定値を保存する
-     * @param key 設定値のキー
-     * @param value 設定値の値
+     * 設定を保存する
      */
-    private static void setConfigValue(String key, Object value) {
+    public void saveConfig() {
 
-        FileConfiguration config = ColorTeaming.instance.getConfig();
-        config.set(key, value);
+        // ファイルのロード
+        File configFile = new File(ColorTeaming.instance.getDataFolder(), "config.yml");
+        YamlConfiguration config = Utility.getYamlFromJar("config_ja.yml");
+        if ( configFile.exists() ) {
+            config = YamlConfiguration.loadConfiguration(configFile);
+        }
 
-        // ヘッダー再設定
-        String header = Utility.getYamlHeader("config_ja.yml");
-        config.options().header(header);
+        // 設定のデシリアライズ
+        config.set("worlds", worldNames);
+        config.set("teamChatMode", isTeamChatMode);
+        config.set("opDisplayMode", isOPDisplayMode);
+        config.set("teamChatLogMode", isTeamChatLogMode);
+        config.set("friendlyFireDisabler", isFriendlyFireDisabler);
+        config.set("seeFriendlyInvisible", canSeeFriendlyInvisibles);
+        config.set("colorRemoveOnDeath", colorRemoveOnDeath);
+        config.set("colorRemoveOnQuit", colorRemoveOnQuit);
+        config.set("noDamageSeconds", noDamageSeconds);
+        config.set("allowPlayerJoinAny", allowPlayerJoinAny);
+        config.set("allowPlayerJoinRandom", allowPlayerJoinRandom);
+        config.set("points.killPoint", killPoint);
+        config.set("points.deathPoint", deathPoint);
+        config.set("points.tkPoint", tkPoint);
+        config.set("sideCriteria", sideCriteria.toString());
+        config.set("listCriteria", listCriteria.toString());
+        config.set("belowCriteria", belowCriteria.toString());
+        config.set("killTrophy", killTrophy);
+        config.set("killReachTrophy", killReachTrophy);
+        config.set("worldSpawn", worldSpawn);
+        config.set("showJapanizeGlobalChat", showJapanizeGlobalChat);
+        config.set("showJapanizeTeamChat", showJapanizeTeamChat);
+        config.set("teleportDelay", teleportDelay);
 
-        ColorTeaming.instance.saveConfig();
+        // 保存処理
+        try {
+            config.save(configFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public List<String> getWorldNames() {
@@ -298,78 +326,95 @@ public class ColorTeamingConfig {
         return teleportDelay;
     }
 
+    public void setWorldNames(List<String> worldNames) {
+        this.worldNames = worldNames;
+    }
+
     public void setTeamChatMode(boolean isTeamChatMode) {
         this.isTeamChatMode = isTeamChatMode;
-        setConfigValue("teamChatMode", isTeamChatMode);
     }
 
     public void setOPDisplayMode(boolean isOPDisplayMode) {
         this.isOPDisplayMode = isOPDisplayMode;
-        setConfigValue("opDisplayMode", isOPDisplayMode);
     }
 
     public void setTeamChatLogMode(boolean isTeamChatLogMode) {
         this.isTeamChatLogMode = isTeamChatLogMode;
-        setConfigValue("teamChatLogMode", isTeamChatLogMode);
     }
 
     public void setFriendlyFireDisabler(boolean isFriendlyFireDisabler) {
         this.isFriendlyFireDisabler = isFriendlyFireDisabler;
-        setConfigValue("friendlyFireDisabler", isFriendlyFireDisabler);
     }
 
     public void setCanSeeFriendlyInvisibles(boolean canSeeFriendlyInvisibles) {
         this.canSeeFriendlyInvisibles = canSeeFriendlyInvisibles;
-        setConfigValue("seeFriendlyInvisible", canSeeFriendlyInvisibles);
     }
 
     public void setColorRemoveOnDeath(boolean colorRemoveOnDeath) {
         this.colorRemoveOnDeath = colorRemoveOnDeath;
-        setConfigValue("colorRemoveOnDeath", colorRemoveOnDeath);
     }
 
     public void setColorRemoveOnQuit(boolean colorRemoveOnQuit) {
         this.colorRemoveOnQuit = colorRemoveOnQuit;
-        setConfigValue("colorRemoveOnQuit", colorRemoveOnQuit);
     }
 
     public void setNoDamageSeconds(int noDamageSeconds) {
         this.noDamageSeconds = noDamageSeconds;
-        setConfigValue("noDamageSeconds", noDamageSeconds);
     }
 
     public void setAllowPlayerJoinAny(boolean allowPlayerJoinAny) {
         this.allowPlayerJoinAny = allowPlayerJoinAny;
-        setConfigValue("allowPlayerJoinAny", allowPlayerJoinAny);
     }
 
     public void setAllowPlayerJoinRandom(boolean allowPlayerJoinRandom) {
         this.allowPlayerJoinRandom = allowPlayerJoinRandom;
-        setConfigValue("allowPlayerJoinRandom", allowPlayerJoinRandom);
+    }
+
+    public void setKillPoint(int killPoint) {
+        this.killPoint = killPoint;
+    }
+
+    public void setDeathPoint(int deathPoint) {
+        this.deathPoint = deathPoint;
+    }
+
+    public void setTkPoint(int tkPoint) {
+        this.tkPoint = tkPoint;
     }
 
     public void setSideCriteria(SidebarCriteria sideCriteria) {
         this.sideCriteria = sideCriteria;
-        setConfigValue("sideCriteria", sideCriteria.toString());
     }
 
     public void setListCriteria(PlayerCriteria listCriteria) {
         this.listCriteria = listCriteria;
-        setConfigValue("listCriteria", listCriteria.toString());
     }
 
     public void setBelowCriteria(PlayerCriteria belowCriteria) {
         this.belowCriteria = belowCriteria;
-        setConfigValue("belowCriteria", belowCriteria);
     }
 
     public void setKillTrophy(int killTrophy) {
         this.killTrophy = killTrophy;
-        setConfigValue("killTrophy", killTrophy);
     }
 
     public void setKillReachTrophy(int killReachTrophy) {
         this.killReachTrophy = killReachTrophy;
-        setConfigValue("killReachTrophy", killReachTrophy);
+    }
+
+    public void setWorldSpawn(boolean worldSpawn) {
+        this.worldSpawn = worldSpawn;
+    }
+
+    public void setShowJapanizeGlobalChat(boolean showJapanizeGlobalChat) {
+        this.showJapanizeGlobalChat = showJapanizeGlobalChat;
+    }
+
+    public void setShowJapanizeTeamChat(boolean showJapanizeTeamChat) {
+        this.showJapanizeTeamChat = showJapanizeTeamChat;
+    }
+
+    public void setTeleportDelay(int teleportDelay) {
+        this.teleportDelay = teleportDelay;
     }
 }

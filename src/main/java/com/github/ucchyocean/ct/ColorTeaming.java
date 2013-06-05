@@ -49,8 +49,8 @@ import com.github.ucchyocean.ct.scoreboard.SidebarScoreDisplay;
 import com.github.ucchyocean.ct.scoreboard.TabListScoreDisplay;
 
 /**
- * @author ucchy
  * 簡易PVPチーミングプラグイン
+ * @author ucchy
  */
 public class ColorTeaming extends JavaPlugin {
 

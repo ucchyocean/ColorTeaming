@@ -9,6 +9,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 import com.github.ucchyocean.ct.ColorTeaming;
+import com.github.ucchyocean.ct.ColorTeamingConfig;
 
 /**
  * @author ucchy
@@ -59,7 +60,9 @@ public class CRemoveCommand implements CommandExecutor {
      * @param enable 有効/無効
      */
     private void setColorRemoveOnDeath(CommandSender sender, boolean enable) {
-        ColorTeaming.instance.getCTConfig().setColorRemoveOnDeath(enable);
+        ColorTeamingConfig config = ColorTeaming.instance.getCTConfig();
+        config.setColorRemoveOnDeath(enable);
+        config.saveConfig();
         String msg = enable ? "有効" : "無効";
         sender.sendMessage(ChatColor.GRAY +
                 "死亡時のチーム離脱が" + msg + "になりました。");
@@ -71,7 +74,9 @@ public class CRemoveCommand implements CommandExecutor {
      * @param enable 有効/無効
      */
     private void setColorRemoveOnQuit(CommandSender sender, boolean enable) {
-        ColorTeaming.instance.getCTConfig().setColorRemoveOnQuit(enable);
+        ColorTeamingConfig config = ColorTeaming.instance.getCTConfig();
+        config.setColorRemoveOnQuit(enable);
+        config.saveConfig();
         String msg = enable ? "有効" : "無効";
         sender.sendMessage(ChatColor.GRAY +
                 "ログアウト時のチーム離脱が" + msg + "になりました。");

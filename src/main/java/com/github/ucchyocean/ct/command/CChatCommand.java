@@ -37,26 +37,32 @@ public class CChatCommand implements CommandExecutor {
 
         if ( args[0].equalsIgnoreCase("on") ) {
             config.setTeamChatMode(true);
+            config.saveConfig();
             sender.sendMessage(ChatColor.RED + "チームチャットモードになりました。");
             return true;
         } else if ( args[0].equalsIgnoreCase("off") ) {
             config.setTeamChatMode(false);
+            config.saveConfig();
             sender.sendMessage(ChatColor.RED + "チームチャットを無効にしました。");
             return true;
         } else if ( args[0].equalsIgnoreCase("opon") || args[0].equalsIgnoreCase("opcopyon") ) {
             config.setOPDisplayMode(true);
+            config.saveConfig();
             sender.sendMessage(ChatColor.RED + "チームチャットをOPにも表示します。");
             return true;
         } else if ( args[0].equalsIgnoreCase("opoff") || args[0].equalsIgnoreCase("opcopyoff") ) {
             config.setOPDisplayMode(false);
+            config.saveConfig();
             sender.sendMessage(ChatColor.RED + "チームチャットのOPへの表示をオフにします。");
             return true;
         } else if ( args[0].equalsIgnoreCase("logon") ) {
             config.setTeamChatLogMode(true);
+            config.saveConfig();
             sender.sendMessage(ChatColor.RED + "チームチャットのログ記録を有効にします。");
             return true;
         } else if ( args[0].equalsIgnoreCase("logoff") ) {
             config.setTeamChatLogMode(false);
+            config.saveConfig();
             sender.sendMessage(ChatColor.RED + "チームチャットのログ記録を無効にします。");
             return true;
         } else if ( args.length >= 2 ){
