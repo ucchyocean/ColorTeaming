@@ -4,9 +4,9 @@
 package com.github.ucchyocean.ct.command;
 
 import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.HashMap;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -15,11 +15,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.github.ucchyocean.ct.ColorTeaming;
+import com.github.ucchyocean.ct.ColorTeamingAPI;
 import com.github.ucchyocean.ct.KitHandler;
 
 /**
- * @author ucchy
  * colorclass(cclass)コマンドの実行クラス
+ * @author ucchy
  */
 public class CClassCommand implements CommandExecutor {
 
@@ -27,8 +28,10 @@ public class CClassCommand implements CommandExecutor {
     private static final String PREINFO = ChatColor.GRAY.toString();
 
     private KitHandler handler;
+    private ColorTeaming plugin;
 
-    public CClassCommand() {
+    public CClassCommand(ColorTeaming plugin) {
+        this.plugin = plugin;
         handler = new KitHandler();
     }
 
@@ -38,7 +41,7 @@ public class CClassCommand implements CommandExecutor {
     public boolean onCommand(
             CommandSender sender, Command command, String label, String[] args) {
 
-        if ( args.length >= 1 && args[0].equalsIgnoreCase("hand") ) {
+        if ( args.length >= 1 && args[0].equalsIgnoreCase("check") ) {
             // cclass hand コマンドの処理
             if ( !(sender instanceof Player) ) {
                 sender.sendMessage(PREERR + "cclass hand コマンドは、ゲーム内でのみ実行できます。");
@@ -58,7 +61,8 @@ public class CClassCommand implements CommandExecutor {
         String group = args[0];
         String clas = args[1];
 
-        Hashtable<String, ArrayList<Player>> members = ColorTeaming.instance.getAllTeamMembers();
+        ColorTeamingAPI api = plugin.getAPI();
+        HashMap<String, ArrayList<Player>> members = api.getAllTeamMembers();
 
         // 有効なグループ名かユーザー名か'all'が指定されたかを確認する
         boolean isAll = false;
@@ -69,7 +73,7 @@ public class CClassCommand implements CommandExecutor {
         } else if ( members.containsKey(group)  ) {
             // グループ指定
             isGroup = true;
-        } else if ( ColorTeaming.instance.getAllPlayers().contains(ColorTeaming.instance.getPlayerExact(group)) ) {
+        } else if ( api.getAllPlayers().contains(Bukkit.getPlayerExact(group)) ) {
             // ユーザー指定
         } else {
             sender.sendMessage(PREERR + "グループまたはプレイヤー " + group + " が存在しません。");
@@ -77,14 +81,14 @@ public class CClassCommand implements CommandExecutor {
         }
 
         // 有効なクラス名が指定されたか確認する
-        if ( !ColorTeaming.instance.getCTConfig().getClassItems().containsKey(clas) ) {
+        if ( !plugin.getCTConfig().getClassItems().containsKey(clas) ) {
             sender.sendMessage(PREERR + "クラス " + clas + " が存在しません。");
             return true;
         }
 
         // クラス設定を実行する
-        String items = ColorTeaming.instance.getCTConfig().getClassItems().get(clas);
-        String armor = ColorTeaming.instance.getCTConfig().getClassArmors().get(clas);
+        String items = plugin.getCTConfig().getClassItems().get(clas);
+        String armor = plugin.getCTConfig().getClassArmors().get(clas);
 
         ArrayList<ItemStack> itemData = handler.convertToItemStack(items);
         ArrayList<ItemStack> armorData = null;
@@ -94,14 +98,13 @@ public class CClassCommand implements CommandExecutor {
 
         ArrayList<Player> playersToSet = new ArrayList<Player>();
         if ( isAll ) {
-            Enumeration<String> groups = members.keys();
-            while ( groups.hasMoreElements() ) {
-                playersToSet.addAll(members.get(groups.nextElement()));
+            for ( String key : members.keySet() ) {
+                playersToSet.addAll(members.get(key));
             }
         } else if ( isGroup ) {
             playersToSet = members.get(group);
         } else {
-            playersToSet.add(ColorTeaming.instance.getPlayerExact(group));
+            playersToSet.add(Bukkit.getPlayerExact(group));
         }
 
         for ( Player p : playersToSet ) {

@@ -6,8 +6,9 @@
 package com.github.ucchyocean.ct.command;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -19,8 +20,8 @@ import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.KitHandler;
 
 /**
- * @author ucchy
  * colorgive(cgive)コマンドの実行クラス
+ * @author ucchy
  */
 public class CGiveCommand implements CommandExecutor {
 
@@ -28,8 +29,10 @@ public class CGiveCommand implements CommandExecutor {
     private static final String PREINFO = ChatColor.GRAY.toString();
 
     private KitHandler handler;
+    private ColorTeaming plugin;
 
-    public CGiveCommand() {
+    public CGiveCommand(ColorTeaming plugin) {
+        this.plugin = plugin;
         handler = new KitHandler();
     }
 
@@ -46,21 +49,21 @@ public class CGiveCommand implements CommandExecutor {
         String target = args[0]; // アイテムを配布するグループかユーザー
         String targetDesc = "";
 
-        Hashtable<String, ArrayList<Player>> members =
-                ColorTeaming.instance.getAllTeamMembers();
+        HashMap<String, ArrayList<Player>> members =
+                plugin.getAPI().getAllTeamMembers();
         ArrayList<Player> playersForGive = new ArrayList<Player>();
 
         if ( target.equalsIgnoreCase("all") ) {
             // 全員を対象とする
-            playersForGive = ColorTeaming.instance.getAllPlayers();
+            playersForGive = plugin.getAPI().getAllPlayers();
             targetDesc = "全員";
         } else if ( members.containsKey(target) ) {
             // target はグループである場合
             playersForGive = members.get(target);
             targetDesc = "グループ" + target;
-        } else if ( ColorTeaming.instance.getPlayerExact(target) != null ) {
+        } else if ( Bukkit.getPlayerExact(target) != null ) {
             // target はプレイヤーである場合
-            playersForGive.add(ColorTeaming.instance.getPlayerExact(target));
+            playersForGive.add(Bukkit.getPlayerExact(target));
             targetDesc = target;
         } else {
             sender.sendMessage(PREERR + target +

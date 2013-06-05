@@ -12,10 +12,16 @@ import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingConfig;
 
 /**
- * @author ucchy
  * ColorRemove(CR)コマンドの実行クラス
+ * @author ucchy
  */
 public class CRemoveCommand implements CommandExecutor {
+
+    private ColorTeaming plugin;
+
+    public CRemoveCommand(ColorTeaming plugin) {
+        this.plugin = plugin;
+    }
 
     /**
      * @see org.bukkit.command.CommandExecutor#onCommand(org.bukkit.command.CommandSender, org.bukkit.command.Command, java.lang.String, java.lang.String[])
@@ -60,7 +66,7 @@ public class CRemoveCommand implements CommandExecutor {
      * @param enable 有効/無効
      */
     private void setColorRemoveOnDeath(CommandSender sender, boolean enable) {
-        ColorTeamingConfig config = ColorTeaming.instance.getCTConfig();
+        ColorTeamingConfig config = plugin.getCTConfig();
         config.setColorRemoveOnDeath(enable);
         config.saveConfig();
         String msg = enable ? "有効" : "無効";
@@ -74,7 +80,7 @@ public class CRemoveCommand implements CommandExecutor {
      * @param enable 有効/無効
      */
     private void setColorRemoveOnQuit(CommandSender sender, boolean enable) {
-        ColorTeamingConfig config = ColorTeaming.instance.getCTConfig();
+        ColorTeamingConfig config = plugin.getCTConfig();
         config.setColorRemoveOnQuit(enable);
         config.saveConfig();
         String msg = enable ? "有効" : "無効";

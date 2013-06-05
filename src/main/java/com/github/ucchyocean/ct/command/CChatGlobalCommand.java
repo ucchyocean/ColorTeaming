@@ -10,8 +10,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 /**
- * @author ucchy
  * colorglobal(g)コマンドの実行クラス
+ * @author ucchy
  */
 public class CChatGlobalCommand implements CommandExecutor {
 

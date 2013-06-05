@@ -11,15 +11,22 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import com.github.ucchyocean.ct.ColorTeaming;
+import com.github.ucchyocean.ct.ColorTeamingConfig;
 import com.github.ucchyocean.ct.KanaConverter;
 
 /**
- * @author ucchy
  * チャットが発生したときに、チームチャットへ転送するためのリスナークラス
+ * @author ucchy
  */
 public class PlayerChatListener implements Listener {
 
     private static final String GLOBAL_CHAT_MARKER = "#GLOBAL#";
+
+    private ColorTeaming plugin;
+
+    public PlayerChatListener(ColorTeaming plugin) {
+        this.plugin = plugin;
+    }
 
     /**
      * Playerがチャットを送信したときに発生するイベント
@@ -30,9 +37,10 @@ public class PlayerChatListener implements Listener {
 
         // GLOBALマーカーが付いていたら、/g コマンドを経由してきたので、
         // GLOBALマーカーを取り除いてから抜ける。
+        ColorTeamingConfig config = plugin.getCTConfig();
         if ( event.getMessage().startsWith(GLOBAL_CHAT_MARKER) ) {
             String newMessage = event.getMessage().substring(GLOBAL_CHAT_MARKER.length());
-            if ( ColorTeaming.instance.getCTConfig().isShowJapanizeGlobalChat() ) {
+            if ( config.isShowJapanizeGlobalChat() ) {
                 newMessage = addJapanize(newMessage); // Japanize化
             }
             event.setMessage(newMessage);
@@ -40,8 +48,8 @@ public class PlayerChatListener implements Listener {
         }
 
         // チームチャット無効なら、何もせずに抜ける
-        if ( !ColorTeaming.instance.getCTConfig().isTeamChatMode() ) {
-            if ( ColorTeaming.instance.getCTConfig().isShowJapanizeGlobalChat() ) {
+        if ( !config.isTeamChatMode() ) {
+            if ( config.isShowJapanizeGlobalChat() ) {
                 event.setMessage( addJapanize(event.getMessage()) ); // Japanize化
             }
             return;
@@ -51,19 +59,19 @@ public class PlayerChatListener implements Listener {
 
         // プレイヤーのゲームモードがクリエイティブなら、何もせずに抜ける
         if ( player.getGameMode() == GameMode.CREATIVE ) {
-            if ( ColorTeaming.instance.getCTConfig().isShowJapanizeGlobalChat() ) {
+            if ( config.isShowJapanizeGlobalChat() ) {
                 event.setMessage( addJapanize(event.getMessage()) ); // Japanize化
             }
             return;
         }
 
         // チームに所属していなければ、何もせずに抜ける
-        if ( ColorTeaming.instance.getPlayerColor(player).equals("") ) {
+        if ( plugin.getAPI().getPlayerColor(player).equals("") ) {
             return;
         }
 
         // チームメンバに送信する
-        ColorTeaming.instance.sendTeamChat(player, event.getMessage());
+        plugin.getAPI().sendTeamChat(player, event.getMessage());
 
         // 元のイベントをキャンセル
         event.setCancelled(true);

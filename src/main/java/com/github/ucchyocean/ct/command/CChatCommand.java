@@ -4,7 +4,7 @@
 package com.github.ucchyocean.ct.command;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -13,15 +13,22 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.github.ucchyocean.ct.ColorTeaming;
+import com.github.ucchyocean.ct.ColorTeamingAPI;
 import com.github.ucchyocean.ct.ColorTeamingConfig;
 
 /**
- * @author ucchy
  * colorchat(cchat)コマンドの実行クラス
+ * @author ucchy
  */
 public class CChatCommand implements CommandExecutor {
 
     private static final String PREERR = ChatColor.RED.toString();
+
+    private ColorTeaming plugin;
+
+    public CChatCommand(ColorTeaming plugin) {
+        this.plugin = plugin;
+    }
 
     /**
      * @see org.bukkit.plugin.java.JavaPlugin#onCommand(org.bukkit.command.CommandSender, org.bukkit.command.Command, java.lang.String, java.lang.String[])
@@ -33,7 +40,7 @@ public class CChatCommand implements CommandExecutor {
             return false;
         }
 
-        ColorTeamingConfig config = ColorTeaming.instance.getCTConfig();
+        ColorTeamingConfig config = plugin.getCTConfig();
 
         if ( args[0].equalsIgnoreCase("on") ) {
             config.setTeamChatMode(true);
@@ -68,8 +75,9 @@ public class CChatCommand implements CommandExecutor {
         } else if ( args.length >= 2 ){
             // グループにメッセージ送信
             String group = args[0];
+            ColorTeamingAPI api = plugin.getAPI();
 
-            Hashtable<String, ArrayList<Player>> members = ColorTeaming.instance.getAllTeamMembers();
+            HashMap<String, ArrayList<Player>> members = api.getAllTeamMembers();
 
             // 有効なグループ名が指定されたか確認する
             if ( !members.containsKey(group) ) {
@@ -84,7 +92,7 @@ public class CChatCommand implements CommandExecutor {
             }
 
             // 送信
-            ColorTeaming.instance.sendInfoToTeamChat(group, message.toString());
+            api.sendInfoToTeamChat(group, message.toString());
         }
 
         return false;

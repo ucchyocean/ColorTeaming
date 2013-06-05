@@ -9,8 +9,8 @@ import org.bukkit.scoreboard.Criterias;
 
 
 /**
- * @author ucchy
  * Playerに表示するスコアの種類
+ * @author ucchy
  */
 public enum PlayerCriteria {
 

@@ -43,14 +43,6 @@ commands:
            /<command> say [all] - 各色グループのメンバーの一覧を、サーバー全体メッセージで表示します。
     permission: colorteaming.count
     permission-message: パーミッション "<permission>" が無いため、実行できません。
-  colorcountsay:
-    description: メンバーを一覧表示するコマンド
-    aliases: ccsay
-    usage: |
-           /<command> - 各色グループのメンバーを、サーバー全体メッセージで表示します。
-           /<command> all - 全てのプレイヤー（ignoreGroups込み）のメンバーを、サーバー全体メッセージで表示します。
-    permission: colorteaming.count
-    permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorfriendlyfire:
     description: メンバー間の攻撃の有効無効を切り替えるコマンド
     aliases: cff
@@ -100,7 +92,7 @@ commands:
     description: インベントリを設定されたアイテムで初期化するためのコマンド
     aliases: cclass
     usage: |
-           /<command> hand - 手に持っているアイテムの情報を表示します。
+           /<command> check - 手に持っているアイテムの情報を表示します。
            /<command> (group) (class) - groupのメンバー全員のアイテムと装備を、config.yml の classes 設定に書かれているクラス設定のアイテムに変更します。
            /<command> (player) (class) - player のアイテムと装備を、config.yml の classes 設定に書かれているクラス設定のアイテムに変更します。
            /<command> all (class) - 全プレイヤーのアイテムと装備を、config.yml の classes 設定に書かれているクラス設定のアイテムに変更します。

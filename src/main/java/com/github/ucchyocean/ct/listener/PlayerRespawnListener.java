@@ -11,12 +11,19 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
 import com.github.ucchyocean.ct.ColorTeaming;
+import com.github.ucchyocean.ct.RespawnConfiguration;
 
 /**
- * @author ucchy
  * プレイヤーがリスポーンしたときに、通知を受け取って処理するクラス
+ * @author ucchy
  */
 public class PlayerRespawnListener implements Listener {
+
+    private ColorTeaming plugin;
+
+    public PlayerRespawnListener(ColorTeaming plugin) {
+        this.plugin = plugin;
+    }
 
     /**
      * Playerがリスポーンしたときに発生するイベント
@@ -26,11 +33,13 @@ public class PlayerRespawnListener implements Listener {
     public void onPlayerRespawn(PlayerRespawnEvent event) {
 
         Player player = event.getPlayer();
-        String color = ColorTeaming.instance.getPlayerColor(player);
+        String color = plugin.getAPI().getPlayerColor(player);
 
         // リスポーンポイントを設定
-        Location respawn = ColorTeaming.respawnConfig.get(color, ColorTeaming.respawnMapName);
-        if ( respawn == null && ColorTeaming.instance.getCTConfig().isWorldSpawn() ) {
+        RespawnConfiguration respawnConfig = plugin.getAPI().getRespawnConfig();
+        String respawnMapName = plugin.getAPI().getRespawnMapName();
+        Location respawn = respawnConfig.get(color, respawnMapName);
+        if ( respawn == null && plugin.getCTConfig().isWorldSpawn() ) {
             // チームリスポーンがない場合は、ワールドリスポーンを取得する
             respawn = player.getWorld().getSpawnLocation();
         }
@@ -38,7 +47,7 @@ public class PlayerRespawnListener implements Listener {
         if ( respawn != null ) {
             respawn = respawn.add(0.5, 0, 0.5);
             event.setRespawnLocation(respawn);
-            player.setNoDamageTicks(ColorTeaming.instance.getCTConfig().getNoDamageSeconds() * 20);
+            player.setNoDamageTicks(plugin.getCTConfig().getNoDamageSeconds() * 20);
         }
     }
 }

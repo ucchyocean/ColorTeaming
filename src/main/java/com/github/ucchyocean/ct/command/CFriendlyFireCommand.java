@@ -9,13 +9,18 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 import com.github.ucchyocean.ct.ColorTeaming;
-import com.github.ucchyocean.ct.ColorTeamingConfig;
 
 /**
- * @author ucchy
  * colorfriendlyfire(cff)コマンドの実行クラス
+ * @author ucchy
  */
 public class CFriendlyFireCommand implements CommandExecutor {
+
+    private ColorTeaming plugin;
+
+    public CFriendlyFireCommand(ColorTeaming plugin) {
+        this.plugin = plugin;
+    }
 
     /**
      * @see org.bukkit.plugin.java.JavaPlugin#onCommand(org.bukkit.command.CommandSender, org.bukkit.command.Command, java.lang.String, java.lang.String[])
@@ -27,33 +32,23 @@ public class CFriendlyFireCommand implements CommandExecutor {
             return false;
         }
 
-        ColorTeamingConfig config = ColorTeaming.instance.getCTConfig();
-
         if ( args[0].equalsIgnoreCase("on") ) {
-            config.setFriendlyFireDisabler(true);
-            config.saveConfig();
-            ColorTeaming.instance.setFriendlyFilre(false);
+            plugin.getAPI().setFriendlyFilre(false);
             sender.sendMessage(ChatColor.GRAY + "仲間同士の攻撃が無効になりました。");
             return true;
         } else if ( args[0].equalsIgnoreCase("off") ) {
-            config.setFriendlyFireDisabler(false);
-            config.saveConfig();
-            ColorTeaming.instance.setFriendlyFilre(true);
+            plugin.getAPI().setFriendlyFilre(true);
             sender.sendMessage(ChatColor.GRAY + "仲間同士の攻撃が有効になりました。");
             return true;
         }
 
         if ( args.length >= 2 && args[0].equalsIgnoreCase("invisible") ) {
             if ( args[1].equalsIgnoreCase("on") ) {
-                config.setCanSeeFriendlyInvisibles(true);
-                config.saveConfig();
-                ColorTeaming.instance.setSeeFriendlyInvisibles(true);
+                plugin.getAPI().setSeeFriendlyInvisibles(true);
                 sender.sendMessage(ChatColor.GRAY + "仲間同士の透明化が見えるようになりました。");
                 return true;
             } else if ( args[1].equalsIgnoreCase("off") ) {
-                config.setCanSeeFriendlyInvisibles(false);
-                config.saveConfig();
-                ColorTeaming.instance.setSeeFriendlyInvisibles(false);
+                plugin.getAPI().setSeeFriendlyInvisibles(false);
                 sender.sendMessage(ChatColor.GRAY + "仲間同士の透明化が見えないようになりました。");
                 return true;
             }

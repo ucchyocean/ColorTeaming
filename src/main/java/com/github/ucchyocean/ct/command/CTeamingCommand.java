@@ -4,9 +4,9 @@
 package com.github.ucchyocean.ct.command;
 
 import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.HashMap;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -14,19 +14,26 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.github.ucchyocean.ct.ColorTeaming;
+import com.github.ucchyocean.ct.ColorTeamingAPI;
 import com.github.ucchyocean.ct.ColorTeamingConfig;
 import com.github.ucchyocean.ct.Utility;
 import com.github.ucchyocean.ct.scoreboard.PlayerCriteria;
 import com.github.ucchyocean.ct.scoreboard.SidebarCriteria;
 
 /**
- * @author ucchy
  * colorteaming(ct)コマンドの実行クラス
+ * @author ucchy
  */
 public class CTeamingCommand implements CommandExecutor {
 
     private static final String PREERR = ChatColor.RED.toString();
     private static final String PREINFO = ChatColor.GRAY.toString();
+
+    private ColorTeaming plugin;
+
+    public CTeamingCommand(ColorTeaming plugin) {
+        this.plugin = plugin;
+    }
 
     /**
      * @see org.bukkit.plugin.java.JavaPlugin#onCommand(org.bukkit.command.CommandSender, org.bukkit.command.Command, java.lang.String, java.lang.String[])
@@ -40,27 +47,27 @@ public class CTeamingCommand implements CommandExecutor {
 
         if ( args[0].equalsIgnoreCase("reload") ) {
 
-            ColorTeaming.instance.reloadCTConfig();
+            plugin.reloadCTConfig();
             sender.sendMessage("config.ymlの再読み込みを行いました。");
             return true;
 
         } else if ( args[0].equalsIgnoreCase("removeall") ) {
 
-            Hashtable<String, ArrayList<Player>> members =
-                    ColorTeaming.instance.getAllTeamMembers();
-            Enumeration<String> keys = members.keys();
-            while ( keys.hasMoreElements() ) {
-                String group = keys.nextElement();
+            ColorTeamingAPI api = plugin.getAPI();
+
+            HashMap<String, ArrayList<Player>> members =
+                    api.getAllTeamMembers();
+            for ( String group : members.keySet() ) {
                 for ( Player p : members.get(group) ) {
-                    ColorTeaming.instance.leavePlayerTeam(p);
+                    api.leavePlayerTeam(p);
                 }
-                ColorTeaming.instance.removeTeam(group);
+                api.removeTeam(group);
             }
 
             // サイドバー削除、タブキーリスト更新
-            ColorTeaming.instance.removeSidebar();
-            ColorTeaming.instance.refreshTabkeyListScore();
-            ColorTeaming.instance.refreshBelowNameScore();
+            api.removeSidebar();
+            api.refreshTabkeyListScore();
+            api.refreshBelowNameScore();
 
             sender.sendMessage(PREINFO + "全てのグループが解散しました。");
 
@@ -68,8 +75,9 @@ public class CTeamingCommand implements CommandExecutor {
 
         } else if ( args.length >= 2 && args[0].equalsIgnoreCase("remove") ) {
 
-            Hashtable<String, ArrayList<Player>> members =
-                    ColorTeaming.instance.getAllTeamMembers();
+            ColorTeamingAPI api = plugin.getAPI();
+
+            HashMap<String, ArrayList<Player>> members = api.getAllTeamMembers();
             String group = args[1];
             if ( !members.containsKey(group) ) {
                 sender.sendMessage(PREERR + "グループ " + group + " は存在しません。");
@@ -77,15 +85,15 @@ public class CTeamingCommand implements CommandExecutor {
             }
 
             for ( Player p : members.get(group) ) {
-                ColorTeaming.instance.leavePlayerTeam(p);
+                api.leavePlayerTeam(p);
                 p.sendMessage(PREINFO + "グループ " + group + " が解散しました。");
             }
-            ColorTeaming.instance.removeTeam(group);
+            api.removeTeam(group);
 
             // サイドバー再作成、タブキーリスト更新
-            ColorTeaming.instance.makeSidebar();
-            ColorTeaming.instance.refreshTabkeyListScore();
-            ColorTeaming.instance.refreshBelowNameScore();
+            api.makeSidebar();
+            api.refreshTabkeyListScore();
+            api.refreshBelowNameScore();
 
             sender.sendMessage(PREINFO + "グループ " + group + " が解散しました。");
 
@@ -110,7 +118,7 @@ public class CTeamingCommand implements CommandExecutor {
                 return true;
             }
 
-            ColorTeamingConfig config = ColorTeaming.instance.getCTConfig();
+            ColorTeamingConfig config = plugin.getCTConfig();
             config.setKillTrophy(amount);
             config.saveConfig();
 
@@ -138,12 +146,12 @@ public class CTeamingCommand implements CommandExecutor {
             if ( amount < 0 ) {
                 sender.sendMessage(PREERR + "ct reachTrophy コマンドには、マイナス値を指定できません。");
                 return true;
-            } else if ( ColorTeaming.instance.getCTConfig().getKillTrophy() < amount ) {
+            } else if ( plugin.getCTConfig().getKillTrophy() < amount ) {
                 sender.sendMessage(PREERR + "killTrophyの設定値より大きな値は指定できません。");
                 return true;
             }
 
-            ColorTeamingConfig config = ColorTeaming.instance.getCTConfig();
+            ColorTeamingConfig config = plugin.getCTConfig();
             config.setKillReachTrophy(amount);
             config.saveConfig();
 
@@ -157,13 +165,13 @@ public class CTeamingCommand implements CommandExecutor {
         } else if ( args.length >= 2 && args[0].equalsIgnoreCase("allowJoinAny") ) {
 
             if ( args[1].equalsIgnoreCase("on") ) {
-                ColorTeamingConfig config = ColorTeaming.instance.getCTConfig();
+                ColorTeamingConfig config = plugin.getCTConfig();
                 config.setAllowPlayerJoinAny(true);
                 config.saveConfig();
                 sender.sendMessage(ChatColor.GRAY + "一般プレイヤーの /cjoin (group) の使用が可能になりました。");
                 return true;
             } else if ( args[1].equalsIgnoreCase("off") ) {
-                ColorTeamingConfig config = ColorTeaming.instance.getCTConfig();
+                ColorTeamingConfig config = plugin.getCTConfig();
                 config.setAllowPlayerJoinAny(false);
                 config.saveConfig();
                 sender.sendMessage(ChatColor.GRAY + "一般プレイヤーの /cjoin (group) の使用が不可になりました。");
@@ -175,13 +183,13 @@ public class CTeamingCommand implements CommandExecutor {
         } else if ( args.length >= 2 && args[0].equalsIgnoreCase("allowJoinRandom") ) {
 
             if ( args[1].equalsIgnoreCase("on") ) {
-                ColorTeamingConfig config = ColorTeaming.instance.getCTConfig();
+                ColorTeamingConfig config = plugin.getCTConfig();
                 config.setAllowPlayerJoinRandom(true);
                 config.saveConfig();
                 sender.sendMessage(ChatColor.GRAY + "一般プレイヤーの /cjoin の使用が可能になりました。");
                 return true;
             } else if ( args[1].equalsIgnoreCase("off") ) {
-                ColorTeamingConfig config = ColorTeaming.instance.getCTConfig();
+                ColorTeamingConfig config = plugin.getCTConfig();
                 config.setAllowPlayerJoinRandom(false);
                 config.saveConfig();
                 sender.sendMessage(ChatColor.GRAY + "一般プレイヤーの /cjoin の使用が不可になりました。");
@@ -198,25 +206,26 @@ public class CTeamingCommand implements CommandExecutor {
                 return true;
             }
 
-            Player player = ColorTeaming.instance.getPlayerExact(args[2]);
+            Player player = Bukkit.getPlayerExact(args[2]);
             if ( player == null ) {
                 sender.sendMessage(PREERR + "プレイヤー " + args[2] + " は存在しません。");
                 return true;
             }
 
-            boolean isNewGroup = ! ColorTeaming.instance.getAllTeamMembers().containsKey(group);
-            ColorTeaming.instance.addPlayerTeam(player, group);
+            ColorTeamingAPI api = plugin.getAPI();
+            boolean isNewGroup = !api.getAllTeamMembers().containsKey(group);
+            api.addPlayerTeam(player, group);
 
             // メンバー情報をlastdataに保存する
-            ColorTeaming.sdhandler.save("lastdata");
+            api.getCTSaveDataHandler().save("lastdata");
 
             // サイドバーの更新 グループが増える場合は、再生成する
             if ( isNewGroup ) {
-                ColorTeaming.instance.makeSidebar();
+                api.makeSidebar();
             }
-            ColorTeaming.instance.refreshSidebarScore();
-            ColorTeaming.instance.refreshTabkeyListScore();
-            ColorTeaming.instance.refreshBelowNameScore();
+            api.refreshSidebarScore();
+            api.refreshTabkeyListScore();
+            api.refreshBelowNameScore();
 
             sender.sendMessage(PREINFO + "プレイヤー " + player.getName() + " をグループ " +
                     group + " に追加しました。");
@@ -225,7 +234,7 @@ public class CTeamingCommand implements CommandExecutor {
 
         } else if ( args.length >= 2 && args[0].equalsIgnoreCase("side") ) {
 
-            ColorTeamingConfig config = ColorTeaming.instance.getCTConfig();
+            ColorTeamingConfig config = plugin.getCTConfig();
             if ( args[1].equalsIgnoreCase("kill") ) {
                 config.setSideCriteria(SidebarCriteria.KILL_COUNT);
             } else if ( args[1].equalsIgnoreCase("death") ) {
@@ -242,16 +251,16 @@ public class CTeamingCommand implements CommandExecutor {
             config.saveConfig();
 
             // サイドバーの更新
-            ColorTeaming.instance.makeSidebar();
+            plugin.getAPI().makeSidebar();
 
-            String criteria = ColorTeaming.instance.getCTConfig().getSideCriteria().toString();
+            String criteria = config.getSideCriteria().toString();
             sender.sendMessage(PREINFO + "サイドバーの表示を" + criteria + "にしました。");
 
             return true;
 
         } else if ( args.length >= 2 && args[0].equalsIgnoreCase("list") ) {
 
-            ColorTeamingConfig config = ColorTeaming.instance.getCTConfig();
+            ColorTeamingConfig config = plugin.getCTConfig();
             if ( args[1].equalsIgnoreCase("kill") ) {
                 config.setListCriteria(PlayerCriteria.KILL_COUNT);
             } else if ( args[1].equalsIgnoreCase("death") ) {
@@ -270,16 +279,16 @@ public class CTeamingCommand implements CommandExecutor {
             config.saveConfig();
 
             // スコアボードの更新
-            ColorTeaming.instance.makeTabkeyListScore();
+            plugin.getAPI().makeTabkeyListScore();
 
-            String criteria = ColorTeaming.instance.getCTConfig().getListCriteria().toString();
+            String criteria = config.getListCriteria().toString();
             sender.sendMessage(PREINFO + "リストの表示を" + criteria + "にしました。");
 
             return true;
 
         } else if ( args.length >= 2 && args[0].equalsIgnoreCase("below") ) {
 
-            ColorTeamingConfig config = ColorTeaming.instance.getCTConfig();
+            ColorTeamingConfig config = plugin.getCTConfig();
             if ( args[1].equalsIgnoreCase("kill") ) {
                 config.setBelowCriteria(PlayerCriteria.KILL_COUNT);
             } else if ( args[1].equalsIgnoreCase("death") ) {
@@ -298,10 +307,10 @@ public class CTeamingCommand implements CommandExecutor {
             config.saveConfig();
 
             // スコアボードの更新
-            ColorTeaming.instance.makeBelowNameScore();
+            plugin.getAPI().makeBelowNameScore();
 
             // 設定の保存
-            String criteria = ColorTeaming.instance.getCTConfig().getBelowCriteria().toString();
+            String criteria = config.getBelowCriteria().toString();
             sender.sendMessage(PREINFO + "名前欄のスコア表示を" + criteria + "にしました。");
 
             return true;

@@ -3,6 +3,10 @@
  */
 package com.github.ucchyocean.ct.listener;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -16,14 +20,22 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
 import com.github.ucchyocean.ct.ColorTeaming;
+import com.github.ucchyocean.ct.ColorTeamingAPI;
+import com.github.ucchyocean.ct.ColorTeamingConfig;
 
 /**
- * @author ucchy
  * プレイヤーが死亡したときに、通知を受け取って処理するクラス
+ * @author ucchy
  */
 public class PlayerDeathListener implements Listener {
 
     private static final String PRENOTICE = ChatColor.LIGHT_PURPLE.toString();
+
+    private ColorTeaming plugin;
+
+    public PlayerDeathListener(ColorTeaming plugin) {
+        this.plugin = plugin;
+    }
 
     /**
      * Playerが死亡したときに発生するイベント
@@ -33,38 +45,43 @@ public class PlayerDeathListener implements Listener {
     public void onPlayerDeath(PlayerDeathEvent event) {
 
         Player player = event.getEntity();
-        String color = ColorTeaming.instance.getPlayerColor(player);
+        ColorTeamingConfig config = plugin.getCTConfig();
+        ColorTeamingAPI api = plugin.getAPI();
+        HashMap<String, int[]> killDeathCounts = api.getKillDeathCounts();
+        HashMap<String, int[]> killDeathUserCounts = api.getKillDeathUserCounts();
+        HashMap<String, ArrayList<String>> leaders = api.getLeaders();
+
+        String color = api.getPlayerColor(player);
 
         // Death数を加算
 
         // グループへ加算
-        if ( !ColorTeaming.killDeathCounts.containsKey(color) ) {
-            ColorTeaming.killDeathCounts.put(color, new int[3]);
+        if ( !killDeathCounts.containsKey(color) ) {
+            killDeathCounts.put(color, new int[3]);
         }
-        ColorTeaming.killDeathCounts.get(color)[1]++;
+        killDeathCounts.get(color)[1]++;
         // ユーザーへ加算
-        if ( !ColorTeaming.killDeathUserCounts.containsKey(player.getName()) ) {
-            ColorTeaming.killDeathUserCounts.put(player.getName(), new int[3]);
+        if ( !killDeathUserCounts.containsKey(player.getName()) ) {
+            killDeathUserCounts.put(player.getName(), new int[3]);
         }
-        ColorTeaming.killDeathUserCounts.get(player.getName())[1]++;
+        killDeathUserCounts.get(player.getName())[1]++;
 
         // 死亡したプレイヤーが、大将だった場合、倒されたことを全体に通知する。
-        if ( ColorTeaming.leaders.containsKey(color) &&
-                ColorTeaming.leaders.get(color).contains(player.getName()) ) {
+        if ( leaders.containsKey(color) &&
+                leaders.get(color).contains(player.getName()) ) {
             String message = String.format(PRENOTICE + "%s チームの大将、%s が倒されました！",
                     color, player.getName());
-            ColorTeaming.sendBroadcast(message);
-            ColorTeaming.leaders.get(color).remove(player.getName());
+            Bukkit.broadcastMessage(message);
+            leaders.get(color).remove(player.getName());
 
-            if ( ColorTeaming.leaders.get(color).size() >= 1 ) {
+            if ( leaders.get(color).size() >= 1 ) {
                 message = String.format(PRENOTICE + "%s チームの残り大将は、あと %d 人です。",
-                        color, ColorTeaming.leaders.get(color).size());
-                ColorTeaming.sendBroadcast(message);
+                        color, leaders.get(color).size());
+                Bukkit.broadcastMessage(message);
             } else {
                 message = String.format(PRENOTICE + "%s チームの大将は全滅しました！", color);
-                ColorTeaming.sendBroadcast(message);
-
-                ColorTeaming.leaders.remove(color);
+                Bukkit.broadcastMessage(message);
+                leaders.remove(color);
             }
 
         }
@@ -85,66 +102,65 @@ public class PlayerDeathListener implements Listener {
         }
 
         if ( killer != null ) {
-            String colorKiller = ColorTeaming.instance.getPlayerColor(killer);
+            String colorKiller = api.getPlayerColor(killer);
 
             // Kill数を加算
 
             // グループへ加算
-            if ( !ColorTeaming.killDeathCounts.containsKey(colorKiller) ) {
-                ColorTeaming.killDeathCounts.put(colorKiller, new int[3]);
+            if ( !killDeathCounts.containsKey(colorKiller) ) {
+                killDeathCounts.put(colorKiller, new int[3]);
             }
             if ( color.equals(colorKiller) ) // 同じグループだった場合のペナルティ
-                ColorTeaming.killDeathCounts.get(colorKiller)[2]++;
+                killDeathCounts.get(colorKiller)[2]++;
             else
-                ColorTeaming.killDeathCounts.get(colorKiller)[0]++;
+                killDeathCounts.get(colorKiller)[0]++;
             // ユーザーへ加算
-            if ( !ColorTeaming.killDeathUserCounts.containsKey(killer.getName()) ) {
-                ColorTeaming.killDeathUserCounts.put(killer.getName(), new int[3]);
+            if ( !killDeathUserCounts.containsKey(killer.getName()) ) {
+                killDeathUserCounts.put(killer.getName(), new int[3]);
             }
             if ( color.equals(colorKiller) ) // 同じグループだった場合のペナルティ
-                ColorTeaming.killDeathUserCounts.get(killer.getName())[2]++;
+                killDeathUserCounts.get(killer.getName())[2]++;
             else
-                ColorTeaming.killDeathUserCounts.get(killer.getName())[0]++;
+                killDeathUserCounts.get(killer.getName())[0]++;
 
             // killReachTrophyが設定されていたら、超えたかどうかを判定する
-            if ( ColorTeaming.instance.getCTConfig().getKillReachTrophy() > 0 &&
-                    ColorTeaming.leaders.size() == 0 ) {
+            if ( config.getKillReachTrophy() > 0 &&
+                    leaders.size() == 0 ) {
 
-                if ( ColorTeaming.killDeathCounts.get(colorKiller)[0] ==
-                        ColorTeaming.instance.getCTConfig().getKillReachTrophy() ) {
-                    int rest = ColorTeaming.instance.getCTConfig().getKillTrophy() -
-                            ColorTeaming.instance.getCTConfig().getKillReachTrophy();
+                if ( killDeathCounts.get(colorKiller)[0] ==
+                        config.getKillReachTrophy() ) {
+                    int rest = config.getKillTrophy() - config.getKillReachTrophy();
                     String message = String.format(
                             PRENOTICE + "%s チームが、%d キルまでもう少しです(あと %d キル)。",
-                            colorKiller, ColorTeaming.instance.getCTConfig().getKillTrophy(), rest);
-                    ColorTeaming.sendBroadcast(message);
+                            colorKiller, config.getKillTrophy(), rest);
+                    Bukkit.broadcastMessage(message);
                 }
             }
 
             // killTrophyが設定されていたら、超えたかどうかを判定する
-            if ( ColorTeaming.instance.getCTConfig().getKillTrophy() > 0 &&
-                    ColorTeaming.leaders.size() == 0 ) {
+            if ( config.getKillTrophy() > 0 &&
+                    leaders.size() == 0 ) {
 
-                if ( ColorTeaming.killDeathCounts.get(colorKiller)[0] ==
-                        ColorTeaming.instance.getCTConfig().getKillTrophy() ) {
+                if ( killDeathCounts.get(colorKiller)[0] ==
+                        config.getKillTrophy() ) {
 
                     // 全体通知
                     String message = String.format(
                             PRENOTICE + "%s チームは、%d キルを達成しました！",
-                            colorKiller, ColorTeaming.instance.getCTConfig().getKillTrophy());
-                    ColorTeaming.sendBroadcast(message);
+                            colorKiller, config.getKillTrophy());
+                    Bukkit.broadcastMessage(message);
                 }
             }
         }
 
         // 色設定を削除する
-        if ( ColorTeaming.instance.getCTConfig().isColorRemoveOnDeath() ) {
-            ColorTeaming.instance.leavePlayerTeam(player);
+        if ( config.isColorRemoveOnDeath() ) {
+            api.leavePlayerTeam(player);
         }
 
         // スコア表示を更新する
-        ColorTeaming.instance.refreshSidebarScore();
-        ColorTeaming.instance.refreshTabkeyListScore();
-        ColorTeaming.instance.refreshBelowNameScore();
+        api.refreshSidebarScore();
+        api.refreshTabkeyListScore();
+        api.refreshBelowNameScore();
     }
 }

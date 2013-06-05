@@ -6,6 +6,7 @@
 package com.github.ucchyocean.ct.scoreboard;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -13,21 +14,27 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 
 import com.github.ucchyocean.ct.ColorTeaming;
+import com.github.ucchyocean.ct.ColorTeamingConfig;
 
 /**
  * @author ucchy
- *
  */
 public abstract class ScoreDisplayBase {
 
     protected Objective objective;
+
+    private ColorTeaming plugin;
+
+    public ScoreDisplayBase(ColorTeaming plugin) {
+        this.plugin = plugin;
+    }
 
     /**
      * コンストラクタ。
      */
     public ScoreDisplayBase() {
 
-        Scoreboard scoreboard = ColorTeaming.instance.getScoreboard();
+        Scoreboard scoreboard = plugin.getAPI().getScoreboard();
         String criteria = PlayerCriteria.convert(getConfigData());
 
         objective = scoreboard.getObjective(getObjectiveName());
@@ -35,7 +42,7 @@ public abstract class ScoreDisplayBase {
             objective = scoreboard.registerNewObjective(getObjectiveName(), criteria);
         } else {
             // スコアを消去して使いまわす
-            for ( Player player : ColorTeaming.instance.getAllPlayers() ) {
+            for ( Player player : plugin.getAPI().getAllPlayers() ) {
                 objective.getScore(player).setScore(0);
             }
         }
@@ -61,26 +68,28 @@ public abstract class ScoreDisplayBase {
 
         // Customは、customScoreの更新メソッドを呼び出す。
         if ( getConfigData() == PlayerCriteria.CUSTOM ) {
-            if ( ColorTeaming.customScore != null ) {
-                ColorTeaming.customScore.refreshScore(objective);
+            if ( plugin.getAPI().getCustomScore() != null ) {
+                plugin.getAPI().getCustomScore().refreshScore(objective);
             }
             return;
         }
 
-        ArrayList<Player> players = ColorTeaming.instance.getAllPlayers();
+        ArrayList<Player> players = plugin.getAPI().getAllPlayers();
+        HashMap<String, int[]> killDeathUserCounts =
+                plugin.getAPI().getKillDeathUserCounts();
+        ColorTeamingConfig config = plugin.getCTConfig();
         for ( Player player : players ) {
-
             int point = 0;
-            if ( ColorTeaming.killDeathUserCounts.containsKey(player.getName()) ) {
-                int[] data = ColorTeaming.killDeathUserCounts.get(player.getName());
+            if ( killDeathUserCounts.containsKey(player.getName()) ) {
+                int[] data = killDeathUserCounts.get(player.getName());
                 if ( getConfigData() == PlayerCriteria.KILL_COUNT ) {
                     point = data[0];
                 } else if ( getConfigData() == PlayerCriteria.DEATH_COUNT ) {
                     point = data[1];
                 } else if ( getConfigData() == PlayerCriteria.POINT ) {
-                    point = data[0] * ColorTeaming.instance.getCTConfig().getKillPoint() +
-                            data[1] * ColorTeaming.instance.getCTConfig().getDeathPoint() +
-                            data[2] * ColorTeaming.instance.getCTConfig().getTkPoint();
+                    point = data[0] * config.getKillPoint() +
+                            data[1] * config.getDeathPoint() +
+                            data[2] * config.getTkPoint();
                 }
             }
             if ( point == 0 ) {
@@ -95,7 +104,7 @@ public abstract class ScoreDisplayBase {
      * スコア表示を削除する。
      */
     public void remove() {
-        if ( ColorTeaming.instance.getScoreboard().getObjective(getObjectiveName()) != null ) {
+        if ( plugin.getAPI().getScoreboard().getObjective(getObjectiveName()) != null ) {
             objective.unregister();
         }
     }

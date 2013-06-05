@@ -5,8 +5,7 @@ package com.github.ucchyocean.ct.command;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Hashtable;
-import java.util.Random;
+import java.util.HashMap;
 
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -17,11 +16,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Team;
 
 import com.github.ucchyocean.ct.ColorTeaming;
+import com.github.ucchyocean.ct.ColorTeamingAPI;
+import com.github.ucchyocean.ct.ColorTeamingConfig;
 import com.github.ucchyocean.ct.Utility;
 
 /**
- * @author ucchy
  * ColorRandom(CR)コマンドの実行クラス
+ * @author ucchy
  */
 public class CRandomCommand implements CommandExecutor {
 
@@ -29,6 +30,12 @@ public class CRandomCommand implements CommandExecutor {
 
     private static final String[] GROUP_COLORS =
         {"red", "blue", "yellow", "green", "aqua", "gray", "dark_red", "dark_green", "dark_aqua"};
+
+    private ColorTeaming plugin;
+
+    public CRandomCommand(ColorTeaming plugin) {
+        this.plugin = plugin;
+    }
 
     /**
      * @see org.bukkit.command.CommandExecutor#onCommand(org.bukkit.command.CommandSender, org.bukkit.command.Command, java.lang.String, java.lang.String[])
@@ -47,10 +54,12 @@ public class CRandomCommand implements CommandExecutor {
             numberOfGroups = Integer.parseInt(args[0]);
         }
 
+        ColorTeamingConfig config = plugin.getCTConfig();
+        ColorTeamingAPI api = plugin.getAPI();
+
         // ゲームモードがクリエイティブの人は除外する
         ArrayList<Player> tempPlayers =
-                ColorTeaming.instance.getAllPlayersOnWorld(
-                        ColorTeaming.instance.getCTConfig().getWorldNames());
+                api.getAllPlayersOnWorld(config.getWorldNames());
         ArrayList<Player> players = new ArrayList<Player>();
         for ( Player p : tempPlayers ) {
             if ( p.getGameMode() != GameMode.CREATIVE ) {
@@ -64,27 +73,21 @@ public class CRandomCommand implements CommandExecutor {
         }
 
         // 全てのグループをいったん削除する
-        ColorTeaming.instance.removeAllTeam();
+        api.removeAllTeam();
 
         // シャッフル
-        Random rand = new Random();
-        for ( int i=0; i<players.size(); i++ ) {
-            int j = rand.nextInt(players.size());
-            Player temp = players.get(i);
-            players.set(i, players.get(j));
-            players.set(j, temp);
-        }
+        Collections.shuffle(players);
 
         // グループを設定していく
         for ( int i=0; i<players.size(); i++ ) {
             int group = i % numberOfGroups;
             String color = GROUP_COLORS[group];
-            ColorTeaming.instance.addPlayerTeam(players.get(i), color);
+            api.addPlayerTeam(players.get(i), color);
         }
 
         // 各グループに、通知メッセージを出す
         for ( int i=0; i<numberOfGroups; i++ ) {
-            ColorTeaming.instance.sendInfoToTeamChat(GROUP_COLORS[i],
+            api.sendInfoToTeamChat(GROUP_COLORS[i],
                     "あなたは " +
                     Utility.replaceColors(GROUP_COLORS[i]) +
                     GROUP_COLORS[i] +
@@ -93,23 +96,21 @@ public class CRandomCommand implements CommandExecutor {
         }
 
         // キルデス情報のクリア
-        ColorTeaming.killDeathCounts.clear();
-        ColorTeaming.killDeathUserCounts.clear();
+        api.clearKillDeathPoints();
 
         // スコアボードの作成
-        ColorTeaming.instance.makeSidebar();
-        ColorTeaming.instance.makeTabkeyListScore();
-        ColorTeaming.instance.makeBelowNameScore();
+        api.makeSidebar();
+        api.makeTabkeyListScore();
+        api.makeBelowNameScore();
 
         // メンバー情報の取得
-        Hashtable<String, ArrayList<Player>> members =
-                ColorTeaming.instance.getAllTeamMembers();
+        HashMap<String, ArrayList<Player>> members = api.getAllTeamMembers();
 
         // コマンド完了を、CCメッセージで通知する
         CCountCommand.sendCCMessage(sender, members, false);
 
         // メンバー情報をlastdataに保存する
-        ColorTeaming.sdhandler.save("lastdata");
+        api.getCTSaveDataHandler().save("lastdata");
 
         return true;
     }
@@ -122,13 +123,15 @@ public class CRandomCommand implements CommandExecutor {
      */
     private boolean onRestCommand(CommandSender sender, String[] args) {
 
+        ColorTeamingConfig config = plugin.getCTConfig();
+        ColorTeamingAPI api = plugin.getAPI();
+
         // ゲームモードがクリエイティブの人や、既に色が設定されている人は除外する
         ArrayList<Player> tempPlayers =
-                ColorTeaming.instance.getAllPlayersOnWorld(
-                        ColorTeaming.instance.getCTConfig().getWorldNames());
+                api.getAllPlayersOnWorld(config.getWorldNames());
         ArrayList<Player> players = new ArrayList<Player>();
         for ( Player p : tempPlayers ) {
-            Team team = ColorTeaming.instance.getPlayerTeam(p);
+            Team team = api.getPlayerTeam(p);
             if ( p.getGameMode() != GameMode.CREATIVE &&
                     (team == null || team.getName().equals("") ||
                             team.getName().equals("white")) ) {
@@ -142,19 +145,13 @@ public class CRandomCommand implements CommandExecutor {
         }
 
         // シャッフル
-        Random rand = new Random();
-        for ( int i=0; i<players.size(); i++ ) {
-            int j = rand.nextInt(players.size());
-            Player temp = players.get(i);
-            players.set(i, players.get(j));
-            players.set(j, temp);
-        }
+        Collections.shuffle(players);
 
         // 人数の少ないグループに設定していく
         for ( int i=0; i<players.size(); i++ ) {
             String color = getLeastGroup();
             if ( color != null ) {
-                ColorTeaming.instance.addPlayerTeam(players.get(i), color);
+                api.addPlayerTeam(players.get(i), color);
                 players.get(i).sendMessage(
                         ChatColor.GREEN + "あなたは " +
                         Utility.replaceColors(color) +
@@ -169,19 +166,19 @@ public class CRandomCommand implements CommandExecutor {
         }
 
         // スコアボードの作成
-        ColorTeaming.instance.makeSidebar();
-        ColorTeaming.instance.refreshTabkeyListScore();
-        ColorTeaming.instance.refreshBelowNameScore();
+        api.makeSidebar();
+        api.refreshTabkeyListScore();
+        api.refreshBelowNameScore();
 
         // メンバー情報の取得
-        Hashtable<String, ArrayList<Player>> members =
-                ColorTeaming.instance.getAllTeamMembers();
+        HashMap<String, ArrayList<Player>> members =
+                api.getAllTeamMembers();
 
         // コマンド完了を、CCメッセージで通知する
         CCountCommand.sendCCMessage(sender, members, false);
 
         // メンバー情報をlastdataに保存する
-        ColorTeaming.sdhandler.save("lastdata");
+        api.getCTSaveDataHandler().save("lastdata");
 
         return true;
     }
@@ -192,8 +189,8 @@ public class CRandomCommand implements CommandExecutor {
      */
     private String getLeastGroup() {
 
-        Hashtable<String, ArrayList<Player>> members =
-                ColorTeaming.instance.getAllTeamMembers();
+        HashMap<String, ArrayList<Player>> members =
+                plugin.getAPI().getAllTeamMembers();
         int least = 999;
         String leastGroup = null;
 

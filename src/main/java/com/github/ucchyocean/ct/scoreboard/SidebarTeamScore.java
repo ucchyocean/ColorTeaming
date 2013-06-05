@@ -13,8 +13,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Team;
 
 /**
- * @author ucchy
  * サイドバーに表示するチーム項目クラス
+ * @author ucchy
  */
 public class SidebarTeamScore implements OfflinePlayer {
 

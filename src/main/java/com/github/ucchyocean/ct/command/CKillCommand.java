@@ -4,9 +4,9 @@
 package com.github.ucchyocean.ct.command;
 
 import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.HashMap;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -14,15 +14,22 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.github.ucchyocean.ct.ColorTeaming;
+import com.github.ucchyocean.ct.ColorTeamingAPI;
 
 /**
- * @author ucchy
  * colorkill(ckill)コマンドの実行クラス
+ * @author ucchy
  */
 public class CKillCommand implements CommandExecutor {
 
     private static final String PRE_LINE_MESSAGE =
             "=== Kill Death Counts Information ===";
+
+    private ColorTeaming plugin;
+
+    public CKillCommand(ColorTeaming plugin) {
+        this.plugin = plugin;
+    }
 
     /**
      * @see org.bukkit.plugin.java.JavaPlugin#onCommand(org.bukkit.command.CommandSender, org.bukkit.command.Command, java.lang.String, java.lang.String[])
@@ -37,13 +44,20 @@ public class CKillCommand implements CommandExecutor {
                 isBroadcast = true;
             }
 
+            HashMap<String, int[]> killDeathCounts =
+                    plugin.getAPI().getKillDeathCounts();
+            HashMap<String, int[]> killDeathUserCounts =
+                    plugin.getAPI().getKillDeathUserCounts();
+            HashMap<String, ArrayList<Player>> members =
+                    plugin.getAPI().getAllTeamMembers();
+            int killpoint = plugin.getCTConfig().getKillPoint();
+            int deathpoint = plugin.getCTConfig().getDeathPoint();
+            int tkpoint = plugin.getCTConfig().getTkPoint();
+
             // グループは存在するが、得点データがない場合、このタイミングで作成しておく
-            Hashtable<String, ArrayList<Player>> members = new Hashtable<String, ArrayList<Player>>();
-            Enumeration<String> keys_all = members.keys();
-            while ( keys_all.hasMoreElements() ) {
-                String key = keys_all.nextElement();
-                if ( !ColorTeaming.killDeathCounts.containsKey(key) ) {
-                    ColorTeaming.killDeathCounts.put(key, new int[3]);
+            for ( String key : members.keySet() ) {
+                if ( !killDeathCounts.containsKey(key) ) {
+                    killDeathCounts.put(key, new int[3]);
                 }
             }
 
@@ -51,13 +65,11 @@ public class CKillCommand implements CommandExecutor {
             ArrayList<String> groups = new ArrayList<String>();
             ArrayList<Integer> points = new ArrayList<Integer>();
 
-            Enumeration<String> keys = ColorTeaming.killDeathCounts.keys();
-            while ( keys.hasMoreElements() ) {
-                String group = keys.nextElement();
-                int[] counts = ColorTeaming.killDeathCounts.get(group);
-                int point = counts[0] * ColorTeaming.instance.getCTConfig().getKillPoint() +
-                        counts[1] * ColorTeaming.instance.getCTConfig().getDeathPoint() +
-                        counts[2] * ColorTeaming.instance.getCTConfig().getTkPoint();
+            for ( String group : killDeathCounts.keySet() ) {
+                int[] counts = killDeathCounts.get(group);
+                int point = counts[0] * killpoint +
+                            counts[1] * deathpoint +
+                            counts[2] * tkpoint;
 
                 int index = 0;
                 while ( groups.size() > index && points.get(index) > point ) {
@@ -71,13 +83,13 @@ public class CKillCommand implements CommandExecutor {
             if ( !isBroadcast ) {
                 sender.sendMessage(ChatColor.GRAY + PRE_LINE_MESSAGE);
             } else {
-                ColorTeaming.sendBroadcast(ChatColor.LIGHT_PURPLE + PRE_LINE_MESSAGE);
+                Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE + PRE_LINE_MESSAGE);
             }
 
             for ( int rank=1; rank<=groups.size(); rank++ ) {
                 String group = groups.get(rank-1);
                 int point = points.get(rank-1);
-                int[] counts = ColorTeaming.killDeathCounts.get(group);
+                int[] counts = killDeathCounts.get(group);
                 String message = String.format(
                         "%d. %s %dpoints (%dkill, %ddeath, %dtk)",
                         rank, group, point, counts[0], counts[1], counts[2]);
@@ -85,27 +97,25 @@ public class CKillCommand implements CommandExecutor {
                 if ( !isBroadcast ) {
                     sender.sendMessage(ChatColor.GRAY + message);
                 } else {
-                    ColorTeaming.sendBroadcast(ChatColor.RED + message);
+                    Bukkit.broadcastMessage(ChatColor.RED + message);
                 }
             }
 
             // ユーザー得点の集計
 
             // まだ1つも得点が記録されていないなら、ここでコマンドは終わる。
-            if ( ColorTeaming.killDeathUserCounts.size() <= 0 ) {
+            if ( killDeathUserCounts.size() <= 0 ) {
                 return true;
             }
 
             ArrayList<String> users = new ArrayList<String>();
             ArrayList<Integer> userPoints = new ArrayList<Integer>();
 
-            Enumeration<String> playersEnum = ColorTeaming.killDeathUserCounts.keys();
-            while ( playersEnum.hasMoreElements() ) {
-                String playerName = playersEnum.nextElement();
-                int[] counts = ColorTeaming.killDeathUserCounts.get(playerName);
-                int point = counts[0] * ColorTeaming.instance.getCTConfig().getKillPoint() +
-                        counts[1] * ColorTeaming.instance.getCTConfig().getDeathPoint() +
-                        counts[2] * ColorTeaming.instance.getCTConfig().getTkPoint();
+            for ( String playerName : killDeathUserCounts.keySet() ) {
+                int[] counts = killDeathUserCounts.get(playerName);
+                int point = counts[0] * killpoint +
+                            counts[1] * deathpoint +
+                            counts[2] * tkpoint;
 
                 int index = 0;
                 while ( users.size() > index && userPoints.get(index) > point ) {
@@ -128,14 +138,14 @@ public class CKillCommand implements CommandExecutor {
             for ( int i=0; i<mvp.size(); i++ ) {
                 String mvpName = users.get(i);
                 int point = userPoints.get(i);
-                int[] counts = ColorTeaming.killDeathUserCounts.get(users.get(i));
+                int[] counts = killDeathUserCounts.get(users.get(i));
                 String message = String.format(
                         "[MVP] %s %dpoints (%dkill, %ddeath, %dtk)",
                         mvpName, point, counts[0], counts[1], counts[2]);
                 if ( !isBroadcast ) {
                     sender.sendMessage(ChatColor.GRAY + message);
                 } else {
-                    ColorTeaming.sendBroadcast(ChatColor.RED + message);
+                    Bukkit.broadcastMessage(ChatColor.RED + message);
                 }
             }
 
@@ -144,12 +154,12 @@ public class CKillCommand implements CommandExecutor {
                 for ( int i=0; i<users.size(); i++ ) {
                     String playerName = users.get(i);
                     int point = userPoints.get(i);
-                    int[] counts = ColorTeaming.killDeathUserCounts.get(users.get(i));
+                    int[] counts = killDeathUserCounts.get(users.get(i));
                     String message = String.format(
                             "[Your Score] %s %dpoints (%dkill, %ddeath, %dtk)",
                             playerName, point, counts[0], counts[1], counts[2]);
 
-                    ColorTeaming.instance.getPlayerExact(playerName).sendMessage(ChatColor.GRAY + message);
+                    Bukkit.getPlayerExact(playerName).sendMessage(ChatColor.GRAY + message);
                 }
             }
 
@@ -157,11 +167,11 @@ public class CKillCommand implements CommandExecutor {
 
         } else if ( args.length >= 1 && args[0].equalsIgnoreCase("clear") ) {
 
-            ColorTeaming.killDeathCounts.clear();
-            ColorTeaming.killDeathUserCounts.clear();
-            ColorTeaming.instance.refreshSidebarScore();
-            ColorTeaming.instance.refreshTabkeyListScore();
-            ColorTeaming.instance.refreshBelowNameScore();
+            ColorTeamingAPI api = plugin.getAPI();
+            api.clearKillDeathPoints();
+            api.refreshSidebarScore();
+            api.refreshTabkeyListScore();
+            api.refreshBelowNameScore();
             sender.sendMessage(ChatColor.GRAY + "KillDeath数をリセットしました。");
             return true;
         }

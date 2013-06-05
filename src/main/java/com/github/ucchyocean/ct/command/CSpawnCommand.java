@@ -5,6 +5,7 @@ package com.github.ucchyocean.ct.command;
 
 import java.util.ArrayList;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -15,11 +16,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.github.ucchyocean.ct.ColorTeaming;
+import com.github.ucchyocean.ct.RespawnConfiguration;
 import com.github.ucchyocean.ct.Utility;
 
 /**
- * @author ucchy
  * colorspawn(cs)コマンドの実行クラス
+ * @author ucchy
  */
 public class CSpawnCommand implements CommandExecutor {
 
@@ -29,18 +31,26 @@ public class CSpawnCommand implements CommandExecutor {
     private static final String PREERR = ChatColor.RED.toString();
     private static final String PREINFO = ChatColor.GRAY.toString();
 
+    private ColorTeaming plugin;
+
+    public CSpawnCommand(ColorTeaming plugin) {
+        this.plugin = plugin;
+    }
+
     /**
      * @see org.bukkit.command.CommandExecutor#onCommand(org.bukkit.command.CommandSender, org.bukkit.command.Command, java.lang.String, java.lang.String[])
      */
     public boolean onCommand(
             CommandSender sender, Command command, String label, String[] args) {
 
+        RespawnConfiguration respawnConfig = plugin.getAPI().getRespawnConfig();
+
         if ( args.length == 1 ) {
             if ( args[0].equalsIgnoreCase("list") ) {
                 // cspawn list の実行
 
                 sender.sendMessage(PREINFO + PRE_LINE_MESSAGE);
-                ArrayList<String> list = ColorTeaming.respawnConfig.list();
+                ArrayList<String> list = respawnConfig.list();
                 for ( String l : list ) {
                     sender.sendMessage(PREINFO + l);
                 }
@@ -70,11 +80,11 @@ public class CSpawnCommand implements CommandExecutor {
             } else if ( args[0].equalsIgnoreCase("switch") ) {
                 // cspawn switch の実行
 
-                ColorTeaming.respawnMapName = "";
+                plugin.getAPI().setRespawnMapName("");
                 sender.sendMessage(PREINFO + "リスポーン設定を、デフォルトに切り替えました。");
 
                 // 切り替えたマップのリスポーン地点一覧を表示する
-                ArrayList<String> list = ColorTeaming.respawnConfig.list("");
+                ArrayList<String> list = respawnConfig.list("");
                 for ( String l : list ) {
                     sender.sendMessage(PREINFO + l);
                 }
@@ -103,7 +113,7 @@ public class CSpawnCommand implements CommandExecutor {
                 }
 
                 // spawnpoint設定を行う
-                ColorTeaming.respawnConfig.set(group, location);
+                respawnConfig.set(group, location);
 
                 String message = String.format(
                         "グループ %s のリスポーンポイントを (%d, %d, %d) に設定しました。",
@@ -124,9 +134,9 @@ public class CSpawnCommand implements CommandExecutor {
             if ( args[1].equalsIgnoreCase("all") ) {
                 // cspawn remove all の実行
 
-                ArrayList<String> keys = ColorTeaming.respawnConfig.keys();
+                ArrayList<String> keys = respawnConfig.keys();
                 for ( String k : keys ) {
-                    ColorTeaming.respawnConfig.set(k, null);
+                    respawnConfig.set(k, null);
                 }
 
                 sender.sendMessage(PREINFO + "全てのグループリスポーン設定を削除しました。");
@@ -138,12 +148,12 @@ public class CSpawnCommand implements CommandExecutor {
 
                 String group = args[1];
 
-                if ( ColorTeaming.respawnConfig.get(group) == null ) {
+                if ( respawnConfig.get(group) == null ) {
                     sender.sendMessage(PREERR + "グループ " + group + " のリスポーン設定がありません。");
                     return true;
                 }
 
-                ColorTeaming.respawnConfig.set(group, null);
+                respawnConfig.set(group, null);
 
                 sender.sendMessage(PREINFO + "グループ " + group + " のリスポーン設定を削除しました。");
 
@@ -155,12 +165,12 @@ public class CSpawnCommand implements CommandExecutor {
                 String group = args[1];
                 String map = args[2];
 
-                if ( ColorTeaming.respawnConfig.get(group, map) == null ) {
+                if ( respawnConfig.get(group, map) == null ) {
                     sender.sendMessage(PREERR + "グループ " + group + "、マップ " + map + " のリスポーン設定がありません。");
                     return true;
                 }
 
-                ColorTeaming.respawnConfig.set(group, map, null);
+                respawnConfig.set(group, map, null);
 
                 sender.sendMessage(PREINFO + "グループ " + group + "、マップ " + map + " のリスポーン設定を削除しました。");
 
@@ -177,11 +187,11 @@ public class CSpawnCommand implements CommandExecutor {
                 return true;
             }
 
-            ColorTeaming.respawnMapName = map;
+            plugin.getAPI().setRespawnMapName(map);
             sender.sendMessage(PREINFO + "リスポーン設定を、マップ " + map + " 用に切り替えました。");
 
             // 切り替えたマップのリスポーン地点一覧を表示する
-            ArrayList<String> list = ColorTeaming.respawnConfig.list(map);
+            ArrayList<String> list = respawnConfig.list(map);
             for ( String l : list ) {
                 sender.sendMessage(PREINFO + l);
             }
@@ -227,7 +237,7 @@ public class CSpawnCommand implements CommandExecutor {
             }
 
             // 実行者がプレイヤーかコマンドブロックなら、worldを取得して設定する
-            World world = ColorTeaming.instance.getWorld("world");
+            World world = Bukkit.getWorld("world");
             if ( sender instanceof BlockCommandSender ) {
                 BlockCommandSender block = (BlockCommandSender)sender;
                 world = block.getBlock().getWorld();
@@ -255,7 +265,7 @@ public class CSpawnCommand implements CommandExecutor {
             }
 
             // 実行者がプレイヤーかコマンドブロックなら、worldを取得して設定する
-            World world = ColorTeaming.instance.getWorld("world");
+            World world = Bukkit.getWorld("world");
             if ( sender instanceof BlockCommandSender ) {
                 BlockCommandSender block = (BlockCommandSender)sender;
                 world = block.getBlock().getWorld();
@@ -275,7 +285,7 @@ public class CSpawnCommand implements CommandExecutor {
         }
 
         // spawnpoint設定を行う
-        ColorTeaming.respawnConfig.set(group, map, location);
+        respawnConfig.set(group, map, location);
 
         if ( map == null || map.equals("") ) {
             String message = String.format(

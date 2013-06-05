@@ -7,7 +7,7 @@ package com.github.ucchyocean.ct.command;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Hashtable;
+import java.util.HashMap;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -19,12 +19,18 @@ import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.Utility;
 
 /**
- * @author ucchy
  * colorjoin(cjoin)コマンドの実行クラス
+ * @author ucchy
  */
 public class CJoinCommand implements CommandExecutor {
 
     private static final String PREERR = ChatColor.RED.toString();
+
+    private ColorTeaming plugin;
+
+    public CJoinCommand(ColorTeaming plugin) {
+        this.plugin = plugin;
+    }
 
     /**
      * @see org.bukkit.plugin.java.JavaPlugin#onCommand(org.bukkit.command.CommandSender, org.bukkit.command.Command, java.lang.String, java.lang.String[])
@@ -43,14 +49,14 @@ public class CJoinCommand implements CommandExecutor {
         String group = "";
         if ( args.length == 0 || args[0].equalsIgnoreCase("random") ) {
 
-            if ( !ColorTeaming.instance.getCTConfig().isAllowPlayerJoinRandom() ) {
+            if ( !plugin.getCTConfig().isAllowPlayerJoinRandom() ) {
                 player.sendMessage(
                         PREERR +
                         "cjoinコマンドによるランダム参加は、許可されておりません。");
                 return true;
             }
 
-            if ( !ColorTeaming.instance.getPlayerColor(player).equals("") ) {
+            if ( !plugin.getAPI().getPlayerColor(player).equals("") ) {
                 player.sendMessage(
                         PREERR + "あなたは既に、チームに所属しています。");
                 return true;
@@ -63,7 +69,7 @@ public class CJoinCommand implements CommandExecutor {
                 return true;
             }
 
-            ColorTeaming.instance.addPlayerTeam(player, group);
+            plugin.getAPI().addPlayerTeam(player, group);
             player.sendMessage(
                     ChatColor.GREEN + "あなたは " +
                     Utility.replaceColors(group) +
@@ -72,20 +78,20 @@ public class CJoinCommand implements CommandExecutor {
                     " グループになりました。");
 
             // メンバー情報をlastdataに保存する
-            ColorTeaming.sdhandler.save("lastdata");
+            plugin.getAPI().getCTSaveDataHandler().save("lastdata");
 
             return true;
 
         } else {
 
-            if ( !ColorTeaming.instance.getCTConfig().isAllowPlayerJoinAny() ) {
+            if ( !plugin.getCTConfig().isAllowPlayerJoinAny() ) {
                 player.sendMessage(
                         PREERR +
                         "cjoin (group) コマンドによる任意グループへの参加は、許可されておりません。");
                 return true;
             }
 
-            if ( !ColorTeaming.instance.getPlayerColor(player).equals("") ) {
+            if ( !plugin.getAPI().getPlayerColor(player).equals("") ) {
                 player.sendMessage(
                         PREERR + "あなたは既に、チームに所属しています。");
                 return true;
@@ -96,7 +102,7 @@ public class CJoinCommand implements CommandExecutor {
                 sender.sendMessage(PREERR + "グループ " + group + " は設定できないグループ名です。");
                 return true;
             }
-            ColorTeaming.instance.addPlayerTeam(player, group);
+            plugin.getAPI().addPlayerTeam(player, group);
             player.sendMessage(
                     ChatColor.GREEN + "あなたは " +
                     Utility.replaceColors(group) +
@@ -105,12 +111,12 @@ public class CJoinCommand implements CommandExecutor {
                     " グループになりました。");
 
             // サイドバー更新、タブキーリスト更新
-            ColorTeaming.instance.makeSidebar();
-            ColorTeaming.instance.refreshTabkeyListScore();
-            ColorTeaming.instance.refreshBelowNameScore();
+            plugin.getAPI().makeSidebar();
+            plugin.getAPI().refreshTabkeyListScore();
+            plugin.getAPI().refreshBelowNameScore();
 
             // メンバー情報をlastdataに保存する
-            ColorTeaming.sdhandler.save("lastdata");
+            plugin.getAPI().getCTSaveDataHandler().save("lastdata");
 
             return true;
 
@@ -124,8 +130,8 @@ public class CJoinCommand implements CommandExecutor {
      */
     private String getLeastGroup() {
 
-        Hashtable<String, ArrayList<Player>> members =
-                ColorTeaming.instance.getAllTeamMembers();
+        HashMap<String, ArrayList<Player>> members =
+                plugin.getAPI().getAllTeamMembers();
         int least = 999;
         String leastGroup = null;
 

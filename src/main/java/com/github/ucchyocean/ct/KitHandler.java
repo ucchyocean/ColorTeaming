@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -43,7 +44,7 @@ public class KitHandler {
      * @param logger プラグインのLogger
      */
     public KitHandler() {
-        this.logger = ColorTeaming.logger;
+        logger = Bukkit.getLogger();
         pattern = Pattern.compile(REGEX_ITEM_PATTERN);
         patternEnchant = Pattern.compile(REGEX_ENCHANT_PATTERN);
     }

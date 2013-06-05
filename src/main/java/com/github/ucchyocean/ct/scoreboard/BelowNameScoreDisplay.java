@@ -10,19 +10,25 @@ import org.bukkit.scoreboard.DisplaySlot;
 import com.github.ucchyocean.ct.ColorTeaming;
 
 /**
- * @author ucchy
  * 名前下のスコア表示を管理するクラス
+ * @author ucchy
  */
 public class BelowNameScoreDisplay extends ScoreDisplayBase {
 
     private static final String NAME = "belowscore";
+
+    private ColorTeaming plugin;
+
+    public BelowNameScoreDisplay(ColorTeaming plugin) {
+        this.plugin = plugin;
+    }
 
     /**
      * @see com.github.ucchyocean.ct.scoreboard.ScoreDisplayBase#getConfigData()
      */
     @Override
     public PlayerCriteria getConfigData() {
-        return ColorTeaming.instance.getCTConfig().getBelowCriteria();
+        return plugin.getCTConfig().getBelowCriteria();
     }
 
     /**

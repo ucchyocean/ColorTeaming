@@ -4,10 +4,10 @@
 package com.github.ucchyocean.ct.command;
 
 import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Random;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -17,14 +17,20 @@ import org.bukkit.entity.Player;
 import com.github.ucchyocean.ct.ColorTeaming;
 
 /**
- * @author ucchy
  * colorleader(cl)コマンドの実行クラス
+ * @author ucchy
  */
 public class CLeaderCommand implements CommandExecutor {
 
     private static final String PREERR = ChatColor.RED.toString();
     private static final String PREINFO = ChatColor.GRAY.toString();
     private static final String PRENOTICE = ChatColor.LIGHT_PURPLE.toString();
+
+    private ColorTeaming plugin;
+
+    public CLeaderCommand(ColorTeaming plugin) {
+        this.plugin = plugin;
+    }
 
     /**
      * @see org.bukkit.plugin.java.JavaPlugin#onCommand(org.bukkit.command.CommandSender, org.bukkit.command.Command, java.lang.String, java.lang.String[])
@@ -37,17 +43,13 @@ public class CLeaderCommand implements CommandExecutor {
         }
 
         String group = args[0];
+        HashMap<String, ArrayList<String>> leaders = plugin.getAPI().getLeaders();
 
         if ( group.equalsIgnoreCase("clear") ) {
             // clear 指定の場合。
 
-            Enumeration<String> keys = ColorTeaming.leaders.keys();
-            while ( keys.hasMoreElements() ) {
-                String key = keys.nextElement();
-                ColorTeaming.leaders.remove(key);
-            }
-
-            ColorTeaming.sendBroadcast(PRENOTICE + "大将設定がクリアされました。");
+            plugin.getAPI().clearLeaders();
+            Bukkit.broadcastMessage(PRENOTICE + "大将設定がクリアされました。");
             return true;
 
         } else if ( group.equalsIgnoreCase("view") || group.equalsIgnoreCase("say") ) {
@@ -59,16 +61,14 @@ public class CLeaderCommand implements CommandExecutor {
             }
 
             // 大将が設定されていない場合
-            if ( ColorTeaming.leaders.size() <= 0 ) {
+            if ( leaders.size() <= 0 ) {
                 sender.sendMessage(PREERR + "大将はまだ設定されていません。");
                 return true;
             }
 
-            Enumeration<String> keys = ColorTeaming.leaders.keys();
-            while ( keys.hasMoreElements() ) {
-                String key = keys.nextElement();
+            for ( String key : leaders.keySet() ) {
                 StringBuilder temp = new StringBuilder();
-                for ( String name : ColorTeaming.leaders.get(key) ) {
+                for ( String name : leaders.get(key) ) {
                     if ( temp.length() == 0 ) {
                         temp.append("  ");
                     } else {
@@ -78,8 +78,8 @@ public class CLeaderCommand implements CommandExecutor {
                 }
 
                 if ( isBroadcast ) {
-                    ColorTeaming.sendBroadcast(PRENOTICE + key + " グループの大将：");
-                    ColorTeaming.sendBroadcast(PRENOTICE + temp.toString());
+                    Bukkit.broadcastMessage(PRENOTICE + key + " グループの大将：");
+                    Bukkit.broadcastMessage(PRENOTICE + temp.toString());
                 } else {
                     sender.sendMessage(PREINFO + key + " グループの大将：");
                     sender.sendMessage(PREINFO + temp.toString());
@@ -91,8 +91,8 @@ public class CLeaderCommand implements CommandExecutor {
         } else if ( group.equalsIgnoreCase("all") ) {
             // all 指定の場合。
 
-            Hashtable<String, ArrayList<Player>> members =
-                    ColorTeaming.instance.getAllTeamMembers();
+            HashMap<String, ArrayList<Player>> members =
+                    plugin.getAPI().getAllTeamMembers();
 
             int numberOfLeaders = 1;
             if ( args.length >= 2 && args[1].matches("[1-9]") ) {
@@ -100,11 +100,7 @@ public class CLeaderCommand implements CommandExecutor {
             }
 
             // 全ての色グループに対して処理をする
-            Enumeration<String> keys = members.keys();
-
-            while ( keys.hasMoreElements() ) {
-
-                String key = keys.nextElement();
+            for ( String key : members.keySet() ) {
 
                 // 人数が少なすぎるグループは無視
                 if ( numberOfLeaders > members.get(key).size() ) {
@@ -114,21 +110,21 @@ public class CLeaderCommand implements CommandExecutor {
 
                 // ランダムにリーダーを選出する
                 int[] leaderIndexes = getPickupNumbers(members.get(key).size(), numberOfLeaders);
-                ColorTeaming.leaders.put(key, new ArrayList<String>());
+                leaders.put(key, new ArrayList<String>());
                 for ( int i : leaderIndexes ) {
-                    ColorTeaming.leaders.get(key).add(members.get(key).get(i).getName());
+                    leaders.get(key).add(members.get(key).get(i).getName());
                 }
 
                 // リーダーになった人を、チームに通知する
                 StringBuilder l = new StringBuilder();
-                for ( String name : ColorTeaming.leaders.get(key) ) {
+                for ( String name : leaders.get(key) ) {
                     if ( l.length() != 0 ) {
                         l.append(", ");
                     }
                     l.append(name);
                 }
                 String message = String.format("%s チームの大将に、%s が選ばれました。", key, l);
-                ColorTeaming.instance.sendInfoToTeamChat(key, message);
+                plugin.getAPI().sendInfoToTeamChat(key, message);
                 sender.sendMessage(String.format(PREINFO + "%s チームの大将を、%d 人設定しました。", key, numberOfLeaders));
             }
 
@@ -137,8 +133,8 @@ public class CLeaderCommand implements CommandExecutor {
         } else {
             // group 指定処理の場合
 
-            Hashtable<String, ArrayList<Player>> members =
-                    ColorTeaming.instance.getAllTeamMembers();
+            HashMap<String, ArrayList<Player>> members =
+                    plugin.getAPI().getAllTeamMembers();
 
             if ( !members.containsKey(group) ) {
                 sender.sendMessage(PREERR + group + " グループは存在しないようです。");
@@ -151,19 +147,19 @@ public class CLeaderCommand implements CommandExecutor {
             }
 
             String user = args[1];
-            Player player = ColorTeaming.instance.getPlayerExact(user);
+            Player player = Bukkit.getPlayerExact(user);
 
             if ( user.equalsIgnoreCase("random") ) {
 
                 // ランダムにリーダーを選出する
-                ColorTeaming.leaders.put(group, new ArrayList<String>());
+                leaders.put(group, new ArrayList<String>());
                 Random random = new Random();
                 int value = random.nextInt(members.get(group).size());
                 String newLeader = members.get(group).get(value).getName();
-                ColorTeaming.leaders.get(group).add(newLeader);
+                leaders.get(group).add(newLeader);
 
                 String message = String.format("%s チームの大将に、%s が選ばれました。", group, newLeader);
-                ColorTeaming.instance.sendInfoToTeamChat(group, message);
+                plugin.getAPI().sendInfoToTeamChat(group, message);
                 sender.sendMessage(String.format(PREINFO + "%s チームの大将を、1 人設定しました。", group));
 
                 return true;
@@ -176,11 +172,11 @@ public class CLeaderCommand implements CommandExecutor {
             } else {
 
                 // リーダーを設定
-                ColorTeaming.leaders.put(group, new ArrayList<String>());
-                ColorTeaming.leaders.get(group).add(user);
+                leaders.put(group, new ArrayList<String>());
+                leaders.get(group).add(user);
 
                 String message = String.format("%s チームの大将に、%s が選ばれました。", group, user);
-                ColorTeaming.instance.sendInfoToTeamChat(group, message);
+                plugin.getAPI().sendInfoToTeamChat(group, message);
                 sender.sendMessage(PRENOTICE + message);
 
                 return true;

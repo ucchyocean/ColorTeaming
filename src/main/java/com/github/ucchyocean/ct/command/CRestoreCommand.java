@@ -11,12 +11,19 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 import com.github.ucchyocean.ct.ColorTeaming;
+import com.github.ucchyocean.ct.TeamMemberSaveDataHandler;
 
 /**
- * @author ucchy
  * colorrestore(crestore)コマンドの実行クラス
+ * @author ucchy
  */
 public class CRestoreCommand implements CommandExecutor {
+
+    private ColorTeaming plugin;
+
+    public CRestoreCommand(ColorTeaming plugin) {
+        this.plugin = plugin;
+    }
 
     private static final String PREERR = ChatColor.RED.toString();
     private static final String PREINFO = ChatColor.GRAY.toString();
@@ -32,20 +39,22 @@ public class CRestoreCommand implements CommandExecutor {
             profileName = args[0];
         }
 
-        if ( !ColorTeaming.sdhandler.isExist(profileName) ) {
+        TeamMemberSaveDataHandler sdhandler = plugin.getAPI().getCTSaveDataHandler();
+
+        if ( !sdhandler.isExist(profileName) ) {
             sender.sendMessage(PREERR + profileName + " というデータが存在しません。");
             return true;
         }
 
-        boolean result = ColorTeaming.sdhandler.load(profileName);
+        boolean result = sdhandler.load(profileName);
 
         if ( result ) {
             sender.sendMessage(PREINFO + "メンバー状況を、" + profileName + " から復帰しました。");
 
             // スコアボードの作成
-            ColorTeaming.instance.makeSidebar();
-            ColorTeaming.instance.makeTabkeyListScore();
-            ColorTeaming.instance.makeBelowNameScore();
+            plugin.getAPI().makeSidebar();
+            plugin.getAPI().makeTabkeyListScore();
+            plugin.getAPI().makeBelowNameScore();
 
         } else {
             sender.sendMessage(PREERR + "メンバー状況の復帰に失敗しました。");

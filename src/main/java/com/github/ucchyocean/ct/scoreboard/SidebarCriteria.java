@@ -6,8 +6,8 @@
 package com.github.ucchyocean.ct.scoreboard;
 
 /**
- * @author ucchy
  * サイドバーに表示するスコアの種類
+ * @author ucchy
  */
 public enum SidebarCriteria {
 

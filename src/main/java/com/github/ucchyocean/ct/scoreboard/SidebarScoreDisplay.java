@@ -6,7 +6,7 @@
 package com.github.ucchyocean.ct.scoreboard;
 
 import java.util.ArrayList;
-import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Hashtable;
 
 import org.bukkit.ChatColor;
@@ -17,15 +17,22 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
 import com.github.ucchyocean.ct.ColorTeaming;
+import com.github.ucchyocean.ct.ColorTeamingConfig;
 
 /**
- * @author ucchy
  * サイドバーにスコアを表示するためのAPIクラス
+ * @author ucchy
  */
 public class SidebarScoreDisplay {
 
     private Objective objective;
     private Hashtable<String, SidebarTeamScore> teamscores;
+
+    private ColorTeaming plugin;
+
+    public SidebarScoreDisplay(ColorTeaming plugin) {
+        this.plugin = plugin;
+    }
 
     /**
      * コンストラクタ。コンストラクト時に、現在のチーム状況を取得し、
@@ -34,7 +41,7 @@ public class SidebarScoreDisplay {
     public SidebarScoreDisplay() {
 
         // Scoreboardからobjective取得。null の場合は再作成する。
-        Scoreboard scoreboard = ColorTeaming.instance.getScoreboard();
+        Scoreboard scoreboard = plugin.getAPI().getScoreboard();
         objective = scoreboard.getObjective("teamscore");
         if ( objective == null ) {
             objective = scoreboard.registerNewObjective("teamscore", "");
@@ -45,7 +52,7 @@ public class SidebarScoreDisplay {
         // 項目を初期化
         teamscores = new Hashtable<String, SidebarTeamScore>();
 
-        Hashtable<String, ArrayList<Player>> members = ColorTeaming.instance.getAllTeamMembers();
+        HashMap<String, ArrayList<Player>> members = plugin.getAPI().getAllTeamMembers();
         for ( String key : members.keySet() ) {
             Team team = scoreboard.getTeam(key);
             SidebarTeamScore ts = new SidebarTeamScore(team);
@@ -68,14 +75,11 @@ public class SidebarScoreDisplay {
      */
     private void refreshCriteria() {
 
-        SidebarCriteria criteria = ColorTeaming.instance.getCTConfig().getSideCriteria();
+        SidebarCriteria criteria = plugin.getCTConfig().getSideCriteria();
 
         if ( criteria == SidebarCriteria.NONE ) {
-            if ( ColorTeaming.sidebarScore != null ) {
-                ColorTeaming.sidebarScore.remove();
-                ColorTeaming.sidebarScore = null;
-                return;
-            }
+            plugin.getAPI().removeSidebar();
+            return;
         }
 
         objective.setDisplayName(
@@ -92,7 +96,7 @@ public class SidebarScoreDisplay {
      */
     public void refreshScore() {
 
-        switch (ColorTeaming.instance.getCTConfig().getSideCriteria()) {
+        switch (plugin.getCTConfig().getSideCriteria()) {
         case KILL_COUNT:
             refreshScoreByKillOrDeathCount(SidebarCriteria.KILL_COUNT);
             break;
@@ -123,16 +127,15 @@ public class SidebarScoreDisplay {
             index = 1;
         }
 
-        Hashtable<String, ArrayList<Player>> members =
-                ColorTeaming.instance.getAllTeamMembers();
-        Enumeration<String> keys = members.keys();
-        while ( keys.hasMoreElements() ) {
-            String key = keys.nextElement();
-
+        HashMap<String, ArrayList<Player>> members =
+                plugin.getAPI().getAllTeamMembers();
+        HashMap<String, int[]> killDeathCounts =
+                plugin.getAPI().getKillDeathCounts();
+        for ( String key : members.keySet() ) {
             if ( teamscores.containsKey(key) ) {
                 SidebarTeamScore team = teamscores.get(key);
-                if ( ColorTeaming.killDeathCounts.containsKey(key) ) {
-                    int[] data = ColorTeaming.killDeathCounts.get(key);
+                if ( killDeathCounts.containsKey(key) ) {
+                    int[] data = killDeathCounts.get(key);
                     objective.getScore(team).setScore(data[index]);
                 } else {
                     objective.getScore(team).setScore(0);
@@ -146,19 +149,19 @@ public class SidebarScoreDisplay {
      */
     private void refreshScoreByPoint() {
 
-        Hashtable<String, ArrayList<Player>> members =
-                ColorTeaming.instance.getAllTeamMembers();
-        Enumeration<String> keys = members.keys();
-        while ( keys.hasMoreElements() ) {
-            String key = keys.nextElement();
-
+        ColorTeamingConfig config = plugin.getCTConfig();
+        HashMap<String, ArrayList<Player>> members =
+                plugin.getAPI().getAllTeamMembers();
+        HashMap<String, int[]> killDeathCounts =
+                plugin.getAPI().getKillDeathCounts();
+        for ( String key : members.keySet() ) {
             if ( teamscores.containsKey(key) ) {
                 SidebarTeamScore team = teamscores.get(key);
-                if ( ColorTeaming.killDeathCounts.containsKey(key) ) {
-                    int[] data = ColorTeaming.killDeathCounts.get(key);
-                    int point = data[0] * ColorTeaming.instance.getCTConfig().getKillPoint() +
-                                data[1] * ColorTeaming.instance.getCTConfig().getDeathPoint() +
-                                data[2] * ColorTeaming.instance.getCTConfig().getTkPoint();
+                if ( killDeathCounts.containsKey(key) ) {
+                    int[] data = killDeathCounts.get(key);
+                    int point = data[0] * config.getKillPoint() +
+                                data[1] * config.getDeathPoint() +
+                                data[2] * config.getTkPoint();
                     objective.getScore(team).setScore(point);
                 } else {
                     objective.getScore(team).setScore(0);
@@ -171,11 +174,9 @@ public class SidebarScoreDisplay {
      * 残り人数によるスコア更新を行う
      */
     private void refreshScoreByRestPlayerCount() {
-        Hashtable<String, ArrayList<Player>> members = ColorTeaming.instance.getAllTeamMembers();
-        Enumeration<String> keys = members.keys();
-        while ( keys.hasMoreElements() ) {
-            String key = keys.nextElement();
-
+        HashMap<String, ArrayList<Player>> members =
+                plugin.getAPI().getAllTeamMembers();
+        for ( String key : members.keySet() ) {
             if ( teamscores.containsKey(key) ) {
                 SidebarTeamScore team = teamscores.get(key);
                 int rest = members.get(key).size();
@@ -188,7 +189,7 @@ public class SidebarScoreDisplay {
      * サイドバーの表示を消去する。
      */
     public void remove() {
-        if ( ColorTeaming.instance.getScoreboard().getObjective("teamscore") != null ) {
+        if ( plugin.getAPI().getScoreboard().getObjective("teamscore") != null ) {
             objective.unregister();
         }
     }

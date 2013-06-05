@@ -17,10 +17,16 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import com.github.ucchyocean.ct.ColorTeaming;
 
 /**
- * @author ucchy
  * 仲間同士の攻撃が発生したかどうかを確認するクラス
+ * @author ucchy
  */
 public class EntityDamageListener implements Listener {
+
+    private ColorTeaming plugin;
+
+    public EntityDamageListener(ColorTeaming plugin) {
+        this.plugin = plugin;
+    }
 
     /**
      * Entity が Entity に、ダメージを与えたときに発生するイベント。
@@ -35,7 +41,7 @@ public class EntityDamageListener implements Listener {
         }
 
         // 無効状態なら、何もしない
-        if (!ColorTeaming.instance.getCTConfig().isFriendlyFireDisabler()) {
+        if (!plugin.getCTConfig().isFriendlyFireDisabler()) {
             return;
         }
 
@@ -47,8 +53,8 @@ public class EntityDamageListener implements Listener {
         if ( attacker instanceof Player && defender instanceof Player ) {
 
             // ColorMe のカラーを取得し、同じ色かどうか確認する
-            String attackerColor = ColorTeaming.instance.getPlayerColor((Player)attacker);
-            String defenderColor = ColorTeaming.instance.getPlayerColor((Player)defender);
+            String attackerColor = plugin.getAPI().getPlayerColor((Player)attacker);
+            String defenderColor = plugin.getAPI().getPlayerColor((Player)defender);
 
             // どちらかがチーム無所属なら抜ける
             if ( attackerColor.equals("") || defenderColor.equals("") ) {
@@ -71,8 +77,8 @@ public class EntityDamageListener implements Listener {
             if ( shooter instanceof Player ) {
 
                 // ColorMe のカラーを取得し、同じ色かどうか確認する
-                String attackerColor = ColorTeaming.instance.getPlayerColor((Player)shooter);
-                String defenderColor = ColorTeaming.instance.getPlayerColor((Player)defender);
+                String attackerColor = plugin.getAPI().getPlayerColor((Player)shooter);
+                String defenderColor = plugin.getAPI().getPlayerColor((Player)defender);
 
                 // どちらかがチーム無所属なら抜ける
                 if ( attackerColor.equals("") || defenderColor.equals("") ) {

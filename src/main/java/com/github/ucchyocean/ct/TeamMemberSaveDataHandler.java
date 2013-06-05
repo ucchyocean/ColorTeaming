@@ -8,11 +8,11 @@ package com.github.ucchyocean.ct;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -24,6 +24,7 @@ import org.bukkit.entity.Player;
 public class TeamMemberSaveDataHandler {
 
     private File saveDir;
+    private ColorTeamingAPI api;
 
     /**
      * コンストラクタ
@@ -36,6 +37,8 @@ public class TeamMemberSaveDataHandler {
         if ( !saveDir.exists() ) {
             saveDir.mkdirs();
         }
+
+        api = ColorTeaming.instance.getAPI();
     }
 
     /**
@@ -48,12 +51,9 @@ public class TeamMemberSaveDataHandler {
         YamlConfiguration config = new YamlConfiguration();
 
         // メンバー情報の保存
-        Hashtable<String, ArrayList<Player>> members =
-                ColorTeaming.instance.getAllTeamMembers();
+        HashMap<String, ArrayList<Player>> members = api.getAllTeamMembers();
 
-        Enumeration<String> keys = members.keys();
-        while ( keys.hasMoreElements() ) {
-            String key = keys.nextElement();
+        for ( String key : members.keySet() ) {
 
             // プレイヤーを名前のリストに変換する
             ArrayList<String> names = new ArrayList<String>();
@@ -65,20 +65,18 @@ public class TeamMemberSaveDataHandler {
         }
 
         // チームキルデス数の保存
-        keys = ColorTeaming.killDeathCounts.keys();
-        while ( keys.hasMoreElements() ) {
-            String key = keys.nextElement();
+        HashMap<String, int[]> killDeathCounts = api.getKillDeathCounts();
+        for ( String key : killDeathCounts.keySet() ) {
             List<Integer> data =
-                    convertToList(ColorTeaming.killDeathCounts.get(key));
+                    convertToList(killDeathCounts.get(key));
             config.set("killDeathCounts." + key, data);
         }
 
         // ユーザーキルデス数の保存
-        keys = ColorTeaming.killDeathUserCounts.keys();
-        while ( keys.hasMoreElements() ) {
-            String key = keys.nextElement();
+        HashMap<String, int[]> killDeathUserCounts = api.getKillDeathUserCounts();
+        for ( String key : killDeathUserCounts.keySet() ) {
             List<Integer> data =
-                    convertToList(ColorTeaming.killDeathUserCounts.get(key));
+                    convertToList(killDeathUserCounts.get(key));
             config.set("killDeathUserCounts." + key, data);
         }
 
@@ -123,9 +121,9 @@ public class TeamMemberSaveDataHandler {
 
             List<String> groupMembers = msection.getStringList(group);
             for ( String pname : groupMembers ) {
-                Player player = ColorTeaming.instance.getPlayerExact(pname);
+                Player player = Bukkit.getPlayerExact(pname);
                 if ( player != null ) {
-                    ColorTeaming.instance.addPlayerTeam(player, group);
+                    api.addPlayerTeam(player, group);
                 }
             }
         }
@@ -135,15 +133,14 @@ public class TeamMemberSaveDataHandler {
                 config.getConfigurationSection("killDeathCounts");
         if ( tksection != null ) {
 
-            ColorTeaming.killDeathCounts.clear(); // 一旦、全てクリア
+            HashMap<String, int[]> killDeathCounts = api.getKillDeathCounts();
+            killDeathCounts.clear(); // 一旦、全てクリア
 
-            groups = tksection.getValues(false).keySet().iterator();
-            while (groups.hasNext()) {
-                String group = groups.next();
+            for ( String group : killDeathCounts.keySet() ) {
                 List<Integer> data = tksection.getIntegerList(group);
                 if ( data != null && data.size() >= 3 ) {
                     int[] value = {data.get(0), data.get(1), data.get(2)};
-                    ColorTeaming.killDeathCounts.put(group, value);
+                    killDeathCounts.put(group, value);
                 }
             }
         }
@@ -153,15 +150,14 @@ public class TeamMemberSaveDataHandler {
                 config.getConfigurationSection("killDeathUserCounts");
         if ( uksection != null ) {
 
-            ColorTeaming.killDeathUserCounts.clear(); // 一旦、全てクリア
+            HashMap<String, int[]> killDeathUserCounts = api.getKillDeathUserCounts();
+            killDeathUserCounts.clear(); // 一旦、全てクリア
 
-            Iterator<String> users = uksection.getValues(false).keySet().iterator();
-            while (users.hasNext()) {
-                String user = users.next();
+            for ( String user : killDeathUserCounts.keySet() ) {
                 List<Integer> data = uksection.getIntegerList(user);
                 if ( data != null && data.size() >= 3 ) {
                     int[] value = {data.get(0), data.get(1), data.get(2)};
-                    ColorTeaming.killDeathUserCounts.put(user, value);
+                    killDeathUserCounts.put(user, value);
                 }
             }
         }
@@ -185,12 +181,11 @@ public class TeamMemberSaveDataHandler {
      */
     private void clearAllUsers() {
 
-        Hashtable<String, ArrayList<Player>> members = ColorTeaming.instance.getAllTeamMembers();
-        Enumeration<String> keys = members.keys();
-        while ( keys.hasMoreElements() ) {
-            String group = keys.nextElement();
+        HashMap<String, ArrayList<Player>> members = api.getAllTeamMembers();
+
+        for ( String group : members.keySet() ) {
             for ( Player p : members.get(group) ) {
-                ColorTeaming.instance.leavePlayerTeam(p);
+                api.leavePlayerTeam(p);
             }
         }
     }

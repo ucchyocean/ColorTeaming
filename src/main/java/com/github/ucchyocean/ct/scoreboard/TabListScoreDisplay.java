@@ -10,19 +10,25 @@ import org.bukkit.scoreboard.DisplaySlot;
 import com.github.ucchyocean.ct.ColorTeaming;
 
 /**
- * @author ucchy
  * TABキーリストのスコア表示を管理するクラス
+ * @author ucchy
  */
 public class TabListScoreDisplay extends ScoreDisplayBase {
 
     private static final String NAME = "listscore";
+
+    private ColorTeaming plugin;
+
+    public TabListScoreDisplay(ColorTeaming plugin) {
+        this.plugin = plugin;
+    }
 
     /**
      * @see com.github.ucchyocean.ct.scoreboard.ScoreDisplayBase#getConfigData()
      */
     @Override
     public PlayerCriteria getConfigData() {
-        return ColorTeaming.instance.getCTConfig().getListCriteria();
+        return plugin.getCTConfig().getListCriteria();
     }
 
     /**

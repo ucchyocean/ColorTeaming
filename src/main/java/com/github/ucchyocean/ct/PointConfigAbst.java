@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
@@ -70,7 +71,7 @@ public abstract class PointConfigAbst {
             return null;
         }
         String w = section.getString(KEY_WORLD, "world");
-        World world = ColorTeaming.instance.getWorld(w);
+        World world = Bukkit.getWorld(w);
         if ( world == null ) {
             return null;
         }

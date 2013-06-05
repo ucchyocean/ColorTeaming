@@ -4,10 +4,9 @@
 package com.github.ucchyocean.ct.command;
 
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Hashtable;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.BlockCommandSender;
@@ -18,10 +17,11 @@ import org.bukkit.entity.Player;
 
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.DelayedTeleportTask;
+import com.github.ucchyocean.ct.RespawnConfiguration;
 
 /**
- * @author ucchy
  * colortp(ctp)コマンドの実行クラス
+ * @author ucchy
  */
 public class CTPCommand implements CommandExecutor {
 
@@ -30,6 +30,12 @@ public class CTPCommand implements CommandExecutor {
 
     private static final String PRE_LIST_MESSAGE =
             PREINFO + "=== TP Points Information ===";
+
+    private ColorTeaming plugin;
+
+    public CTPCommand(ColorTeaming plugin) {
+        this.plugin = plugin;
+    }
 
     /**
      * @see org.bukkit.plugin.java.JavaPlugin#onCommand(org.bukkit.command.CommandSender, org.bukkit.command.Command, java.lang.String, java.lang.String[])
@@ -46,7 +52,7 @@ public class CTPCommand implements CommandExecutor {
             // ctp list の実行
 
             sender.sendMessage(PRE_LIST_MESSAGE);
-            ArrayList<String> list = ColorTeaming.tppointConfig.list();
+            ArrayList<String> list = plugin.getAPI().getTppointConfig().list();
             for ( String l : list ) {
                 sender.sendMessage(PREINFO + l);
             }
@@ -61,19 +67,19 @@ public class CTPCommand implements CommandExecutor {
 
         if ( args[0].equalsIgnoreCase("all") ) {
 
-            Hashtable<String, ArrayList<Player>> members =
-                    ColorTeaming.instance.getAllTeamMembers();
+            HashMap<String, ArrayList<Player>> members = plugin.getAPI().getAllTeamMembers();
 
             if ( args[1].equalsIgnoreCase("spawn") ) {
                 // ctp all spawn の実行
 
                 // テレポート実行
-                Enumeration<String> keys = members.keys();
+                String respawnMapName = plugin.getAPI().getRespawnMapName();
+                RespawnConfiguration respawnConfig = plugin.getAPI().getRespawnConfig();
                 HashMap<Player, Location> map = new HashMap<Player, Location>();
-                while ( keys.hasMoreElements() ) {
-                    String group = keys.nextElement();
 
-                    Location location = ColorTeaming.respawnConfig.get(group, ColorTeaming.respawnMapName);
+                for ( String group : members.keySet() ) {
+
+                    Location location = respawnConfig.get(group, respawnMapName);
                     if ( location == null ) {
                         sender.sendMessage(PREERR +
                                 "グループ " + group + " にリスポーンポイントが指定されていません。");
@@ -88,14 +94,14 @@ public class CTPCommand implements CommandExecutor {
                 }
 
                 DelayedTeleportTask task = new DelayedTeleportTask(map,
-                        ColorTeaming.instance.getCTConfig().getTeleportDelay());
+                        plugin.getCTConfig().getTeleportDelay());
                 task.startTask();
 
             } else {
                 // ctp all (point) の実行
 
                 String point = args[1];
-                Location location = ColorTeaming.tppointConfig.get(point);
+                Location location = plugin.getAPI().getTppointConfig().get(point);
 
                 // point が登録済みのポイントかどうかを確認する
                 if ( location == null ) {
@@ -105,10 +111,8 @@ public class CTPCommand implements CommandExecutor {
                 }
 
                 // テレポート実行
-                Enumeration<String> keys = members.keys();
                 HashMap<Player, Location> map = new HashMap<Player, Location>();
-                while ( keys.hasMoreElements() ) {
-                    String group = keys.nextElement();
+                for ( String group : members.keySet() ) {
                     for ( Player p : members.get(group) ) {
                         map.put(p, location);
                     }
@@ -117,7 +121,7 @@ public class CTPCommand implements CommandExecutor {
                 }
 
                 DelayedTeleportTask task = new DelayedTeleportTask(map,
-                        ColorTeaming.instance.getCTConfig().getTeleportDelay());
+                        plugin.getCTConfig().getTeleportDelay());
                 task.startTask();
             }
 
@@ -154,7 +158,7 @@ public class CTPCommand implements CommandExecutor {
             }
 
             // ポイント登録の実行
-            ColorTeaming.tppointConfig.set(point, location);
+            plugin.getAPI().getTppointConfig().set(point, location);
 
             String message = String.format(
                     PREINFO + "ポイント %s を (%d, %d, %d) に設定しました。",
@@ -168,14 +172,14 @@ public class CTPCommand implements CommandExecutor {
             String point = args[1];
 
             // point が登録済みのポイントかどうかを確認する、未登録なら終了
-            if ( ColorTeaming.tppointConfig.get(point) == null ) {
+            if ( plugin.getAPI().getTppointConfig().get(point) == null ) {
                 sender.sendMessage(PREERR +
                         "ポイント " + point + " は登録されていません。");
                 return true;
             }
 
             // ポイント削除の実行
-            ColorTeaming.tppointConfig.set(point, null);
+            plugin.getAPI().getTppointConfig().set(point, null);
 
             String message = String.format(
                     PREINFO + "ポイント %s を削除しました。", point);
@@ -187,8 +191,8 @@ public class CTPCommand implements CommandExecutor {
             // ctp (group) ほにゃらら の実行
 
             String group = args[0];
-            Hashtable<String, ArrayList<Player>> members =
-                    ColorTeaming.instance.getAllTeamMembers();
+            HashMap<String, ArrayList<Player>> members =
+                    plugin.getAPI().getAllTeamMembers();
 
             // 有効なグループ名が指定されたか確認する
             if ( !members.containsKey(group) ) {
@@ -205,7 +209,7 @@ public class CTPCommand implements CommandExecutor {
                 if ( sender instanceof Player ) {
                     location = ((Player)sender).getLocation();
                 } else if ( sender instanceof BlockCommandSender ) {
-                    location = ((BlockCommandSender)sender).getBlock().getLocation().add(0, 1, 0);
+                    location = ((BlockCommandSender)sender).getBlock().getLocation().add(0.5, 1, 0.5);
                 } else {
                     sender.sendMessage(PREERR +
                             "ctp の here 指定は、コンソールからは実行できません。");
@@ -216,7 +220,9 @@ public class CTPCommand implements CommandExecutor {
                 // ctp (group) spawn
 
                 // グループのリスポーンポイントを取得、登録されていなければ終了
-                location = ColorTeaming.respawnConfig.get(group, ColorTeaming.respawnMapName);
+                String respawnMapName = plugin.getAPI().getRespawnMapName();
+                RespawnConfiguration respawnConfig = plugin.getAPI().getRespawnConfig();
+                location = respawnConfig.get(group, respawnMapName);
                 if ( location == null ) {
                     sender.sendMessage(PREERR +
                             "グループ " + group + " にリスポーンポイントが指定されていません。");
@@ -229,7 +235,7 @@ public class CTPCommand implements CommandExecutor {
 
                 // 登録ポイントの取得、ポイントがなければ終了
                 String point = args[1];
-                location = ColorTeaming.tppointConfig.get(point);
+                location = plugin.getAPI().getTppointConfig().get(point);
                 if ( location == null ) {
                     sender.sendMessage(PREERR +
                             "ポイント " + point + " は登録されていません。");
@@ -255,7 +261,7 @@ public class CTPCommand implements CommandExecutor {
             }
 
             DelayedTeleportTask task = new DelayedTeleportTask(map,
-                    ColorTeaming.instance.getCTConfig().getTeleportDelay());
+                    plugin.getCTConfig().getTeleportDelay());
             task.startTask();
 
             sender.sendMessage(PREINFO + "グループ " + group + " のプレイヤーを全員テレポートします。");
@@ -305,7 +311,7 @@ public class CTPCommand implements CommandExecutor {
         }
 
         // 有効なワールド名が指定されたか確認する
-        if ( ColorTeaming.instance.getWorld(world) == null ) {
+        if ( Bukkit.getWorld(world) == null ) {
             sender.sendMessage(PREERR + "ワールド " + world + " が存在しません。");
             return null;
         }
@@ -315,7 +321,7 @@ public class CTPCommand implements CommandExecutor {
         double y = Integer.parseInt(y_str);
         double z = Integer.parseInt(z_str) + 0.5;
 
-        return new Location(ColorTeaming.instance.getWorld(world), x, y, z);
+        return new Location(Bukkit.getWorld(world), x, y, z);
     }
 
     /**

@@ -4,9 +4,9 @@
 package com.github.ucchyocean.ct.command;
 
 import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.HashMap;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -16,13 +16,19 @@ import org.bukkit.entity.Player;
 import com.github.ucchyocean.ct.ColorTeaming;
 
 /**
- * @author ucchy
  * colorcount(cc)コマンド、colorcountsay(ccsay)コマンドの実行クラス
+ * @author ucchy
  */
 public class CCountCommand implements CommandExecutor {
 
     private static final String PRE_LINE_MESSAGE =
             "=== Team Member Information ===";
+
+    private ColorTeaming plugin;
+
+    public CCountCommand(ColorTeaming plugin) {
+        this.plugin = plugin;
+    }
 
     /**
      * @see org.bukkit.plugin.java.JavaPlugin#onCommand(org.bukkit.command.CommandSender, org.bukkit.command.Command, java.lang.String, java.lang.String[])
@@ -49,14 +55,14 @@ public class CCountCommand implements CommandExecutor {
         }
 
         // メンバー情報の取得
-        Hashtable<String, ArrayList<Player>> members;
+        HashMap<String, ArrayList<Player>> members;
         if ( !isAll ) {
-            members = ColorTeaming.instance.getAllTeamMembers();
+            members = plugin.getAPI().getAllTeamMembers();
         } else {
-            members = new Hashtable<String, ArrayList<Player>>();
-            ArrayList<Player> players = ColorTeaming.instance.getAllPlayers();
+            members = new HashMap<String, ArrayList<Player>>();
+            ArrayList<Player> players = plugin.getAPI().getAllPlayers();
             for ( Player p : players ) {
-                String color = ColorTeaming.instance.getPlayerColor(p);
+                String color = plugin.getAPI().getPlayerColor(p);
                 if ( members.containsKey(color) ) {
                     members.get(color).add(p);
                 } else {
@@ -80,20 +86,18 @@ public class CCountCommand implements CommandExecutor {
      * @param isBroadcast ブロードキャストかどうか
      */
     protected static void sendCCMessage(CommandSender sender,
-            Hashtable<String, ArrayList<Player>> members, boolean isBroadcast) {
+            HashMap<String, ArrayList<Player>> members, boolean isBroadcast) {
 
         // 最初の行を送信
         if ( !isBroadcast ) {
             sender.sendMessage(ChatColor.GRAY + PRE_LINE_MESSAGE);
         } else {
-            ColorTeaming.sendBroadcast(ChatColor.LIGHT_PURPLE + PRE_LINE_MESSAGE);
+            Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE + PRE_LINE_MESSAGE);
         }
 
         // メンバー情報を送信
-        Enumeration<String> keys = members.keys();
-        while ( keys.hasMoreElements() ) {
+        for ( String key : members.keySet() ) {
 
-            String key = (String)keys.nextElement();
             ArrayList<Player> member = members.get(key);
 
             StringBuilder value = new StringBuilder();
@@ -111,9 +115,9 @@ public class CCountCommand implements CommandExecutor {
                 sender.sendMessage(pre + value);
             } else {
                 String pre = ChatColor.RED.toString();
-                ColorTeaming.sendBroadcast( String.format("%s* %s - %d",
+                Bukkit.broadcastMessage( String.format("%s* %s - %d",
                         pre, key, member.size()));
-                ColorTeaming.sendBroadcast(pre + value);
+                Bukkit.broadcastMessage(pre + value);
             }
         }
     }
