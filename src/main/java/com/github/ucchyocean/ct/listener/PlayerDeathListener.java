@@ -22,6 +22,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingAPI;
 import com.github.ucchyocean.ct.ColorTeamingConfig;
+import com.github.ucchyocean.ct.event.ColorTeamingTeamDefeatedEvent;
 
 /**
  * プレイヤーが死亡したときに、通知を受け取って処理するクラス
@@ -79,6 +80,12 @@ public class PlayerDeathListener implements Listener {
                         color, leaders.get(color).size());
                 Bukkit.broadcastMessage(message);
             } else {
+
+                // イベントコール
+                ColorTeamingTeamDefeatedEvent event2 =
+                        new ColorTeamingTeamDefeatedEvent(color);
+                Bukkit.getServer().getPluginManager().callEvent(event2);
+
                 message = String.format(PRENOTICE + "%s チームの大将は全滅しました！", color);
                 Bukkit.broadcastMessage(message);
                 leaders.remove(color);

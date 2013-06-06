@@ -36,15 +36,16 @@ public interface ColorTeamingAPI {
 
     /**
      * Player に設定されている、チームのチーム名を取得する。
-     * @param player
-     * @return
+     * @param player プレイヤー
+     * @return チーム名
      */
     public String getPlayerTeamName(Player player);
 
     /**
      * Player にチームを設定する。
      * @param player プレイヤー
-     * @param color チームの色
+     * @param color チーム名
+     * @return チーム、イベントキャンセルされた場合はnullになることに注意
      */
     public Team addPlayerTeam(Player player, String color);
 

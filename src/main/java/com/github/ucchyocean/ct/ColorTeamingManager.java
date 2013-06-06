@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -17,6 +18,12 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
+import com.github.ucchyocean.ct.event.ColorTeamingPlayerAddEvent;
+import com.github.ucchyocean.ct.event.ColorTeamingPlayerLeaveEvent;
+import com.github.ucchyocean.ct.event.ColorTeamingTeamChatEvent;
+import com.github.ucchyocean.ct.event.ColorTeamingTeamCreateEvent;
+import com.github.ucchyocean.ct.event.ColorTeamingTeamDefeatedEvent;
+import com.github.ucchyocean.ct.event.ColorTeamingTeamRemoveEvent;
 import com.github.ucchyocean.ct.scoreboard.BelowNameScoreDisplay;
 import com.github.ucchyocean.ct.scoreboard.CustomScoreCriteria;
 import com.github.ucchyocean.ct.scoreboard.PlayerCriteria;
@@ -106,8 +113,8 @@ public class ColorTeamingManager implements ColorTeamingAPI {
 
     /**
      * Player に設定されている、チームのチーム名を取得する。
-     * @param player
-     * @return
+     * @param player プレイヤー
+     * @return チーム名
      */
     @Override
     public String getPlayerTeamName(Player player) {
@@ -120,7 +127,8 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     /**
      * Player にチームを設定する。
      * @param player プレイヤー
-     * @param color チームの色
+     * @param color チーム名
+     * @return チーム、イベントキャンセルされた場合はnullになることに注意
      */
     @Override
     public Team addPlayerTeam(Player player, String color) {
@@ -129,6 +137,15 @@ public class ColorTeamingManager implements ColorTeamingAPI {
 
         Team team = scoreboard.getTeam(color);
         if ( team == null ) {
+
+            // イベントコール
+            ColorTeamingTeamCreateEvent event =
+                    new ColorTeamingTeamCreateEvent(color);
+            Bukkit.getServer().getPluginManager().callEvent(event);
+            if ( event.isCancelled() ) {
+                return null;
+            }
+
             team = scoreboard.registerNewTeam(color);
             team.setDisplayName(Utility.replaceColors(color) + color + ChatColor.RESET);
             team.setPrefix(Utility.replaceColors(color).toString());
@@ -138,6 +155,15 @@ public class ColorTeamingManager implements ColorTeamingAPI {
                     config.isCanSeeFriendlyInvisibles() ||
                     !config.isFriendlyFireDisabler());
         }
+
+        // イベントコール
+        ColorTeamingPlayerAddEvent event =
+                new ColorTeamingPlayerAddEvent(player, team);
+        Bukkit.getServer().getPluginManager().callEvent(event);
+        if ( event.isCancelled() ) {
+            return null;
+        }
+
         team.addPlayer(player);
         player.setDisplayName(
                 Utility.replaceColors(color) + player.getName() + ChatColor.RESET);
@@ -153,8 +179,28 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     public void leavePlayerTeam(Player player) {
 
         Team team = getPlayerTeam(player);
-        if ( team != null )
+        if ( team != null ) {
+
+            // イベントコール
+            ColorTeamingPlayerLeaveEvent event =
+                    new ColorTeamingPlayerLeaveEvent(player, team);
+            Bukkit.getServer().getPluginManager().callEvent(event);
+            if ( event.isCancelled() ) {
+                return;
+            }
+
             team.removePlayer(player);
+
+            if ( team.getPlayers().size() <= 0 ) {
+
+                // イベントコール
+                ColorTeamingTeamDefeatedEvent event2 =
+                        new ColorTeamingTeamDefeatedEvent(team.getName());
+                Bukkit.getServer().getPluginManager().callEvent(event2);
+
+                removeTeam(team.getName());
+            }
+        }
 
         player.setDisplayName(player.getName());
     }
@@ -205,6 +251,14 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      */
     @Override
     public void removeTeam(String name) {
+
+        // イベントコール
+        ColorTeamingTeamRemoveEvent event =
+                new ColorTeamingTeamRemoveEvent(name);
+        Bukkit.getServer().getPluginManager().callEvent(event);
+        if ( event.isCancelled() ) {
+            return;
+        }
 
         Scoreboard scoreboard = getScoreboard();
         Team team = scoreboard.getTeam(name);
@@ -335,6 +389,15 @@ public class ColorTeamingManager implements ColorTeamingAPI {
                 message = message + "(" + kana + ")";
             }
         }
+
+        // イベントコール
+        ColorTeamingTeamChatEvent event =
+                new ColorTeamingTeamChatEvent(player, message);
+        Bukkit.getServer().getPluginManager().callEvent(event);
+        if ( event.isCancelled() ) {
+            return;
+        }
+        message = event.getMessage();
 
         // メッセージを生成
         String partyMessage = String.format(
