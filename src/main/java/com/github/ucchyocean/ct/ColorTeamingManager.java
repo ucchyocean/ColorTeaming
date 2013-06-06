@@ -327,8 +327,10 @@ public class ColorTeamingManager implements ColorTeamingAPI {
 
         // 設定に応じて、Japanize化する
         if ( config.isShowJapanizeTeamChat() ) {
-            // 2byteコードを含まない場合にのみ、処理を行う
-            if ( message.getBytes().length == message.length() ) {
+            // 2byteコードを含む場合や、半角カタカナしか含まない場合は、
+            // 処理しないようにする。
+            if ( message.getBytes().length == message.length() &&
+                    !message.matches("[ \\uFF61-\\uFF9F]+") ) {
                 String kana = KanaConverter.conv(message);
                 message = message + "(" + kana + ")";
             }
