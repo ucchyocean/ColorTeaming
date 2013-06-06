@@ -30,15 +30,13 @@ public class SidebarScoreDisplay {
 
     private ColorTeaming plugin;
 
-    public SidebarScoreDisplay(ColorTeaming plugin) {
-        this.plugin = plugin;
-    }
-
     /**
      * コンストラクタ。コンストラクト時に、現在のチーム状況を取得し、
      * サイドバーを初期化、表示する。
      */
-    public SidebarScoreDisplay() {
+    public SidebarScoreDisplay(ColorTeaming plugin) {
+
+        this.plugin = plugin;
 
         // Scoreboardからobjective取得。null の場合は再作成する。
         Scoreboard scoreboard = plugin.getAPI().getScoreboard();

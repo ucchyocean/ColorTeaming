@@ -227,6 +227,7 @@ public class Utility {
      * Jarファイル内から指定したymlファイルを直接読み込み、内容を返すメソッド
      * @param ymlファイルの名前
      * @return ファイルの内容
+     * @deprecated このメソッドでUTF-8のYamlを読み込んではいけない
      */
     public static YamlConfiguration getYamlFromJar(String name) {
 

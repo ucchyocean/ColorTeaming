@@ -17,10 +17,8 @@ public class BelowNameScoreDisplay extends ScoreDisplayBase {
 
     private static final String NAME = "belowscore";
 
-    private ColorTeaming plugin;
-
     public BelowNameScoreDisplay(ColorTeaming plugin) {
-        this.plugin = plugin;
+        super(plugin);
     }
 
     /**

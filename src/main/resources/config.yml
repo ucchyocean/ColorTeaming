@@ -1,4 +1,4 @@
-# Color Teaming Plugin 1.5.9
+# Color Teaming Plugin 2.0.0
 # @author     ucchy
 # @license    GPLv3
 # @copyright  Copyright ucchy 2013
@@ -52,4 +52,4 @@ killReachTrophy: 0
 worldSpawn: false
 showJapanizeGlobalChat: false 
 showJapanizeTeamChat: true
-teleportDelay: 3
+teleportDelay: 2

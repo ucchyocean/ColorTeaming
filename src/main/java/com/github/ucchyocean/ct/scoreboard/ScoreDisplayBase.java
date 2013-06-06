@@ -23,16 +23,14 @@ public abstract class ScoreDisplayBase {
 
     protected Objective objective;
 
-    private ColorTeaming plugin;
-
-    public ScoreDisplayBase(ColorTeaming plugin) {
-        this.plugin = plugin;
-    }
+    protected ColorTeaming plugin;
 
     /**
      * コンストラクタ。
      */
-    public ScoreDisplayBase() {
+    public ScoreDisplayBase(ColorTeaming plugin) {
+
+        this.plugin = plugin;
 
         Scoreboard scoreboard = plugin.getAPI().getScoreboard();
         String criteria = PlayerCriteria.convert(getConfigData());

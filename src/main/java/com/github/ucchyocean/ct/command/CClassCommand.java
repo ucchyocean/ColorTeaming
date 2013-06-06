@@ -14,6 +14,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import com.github.ucchyocean.ct.ClassData;
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingAPI;
 import com.github.ucchyocean.ct.KitHandler;
@@ -81,20 +82,15 @@ public class CClassCommand implements CommandExecutor {
         }
 
         // 有効なクラス名が指定されたか確認する
-        if ( !plugin.getCTConfig().getClassItems().containsKey(clas) ) {
+        if ( !plugin.getCTConfig().getClasses().containsKey(clas) ) {
             sender.sendMessage(PREERR + "クラス " + clas + " が存在しません。");
             return true;
         }
 
         // クラス設定を実行する
-        String items = plugin.getCTConfig().getClassItems().get(clas);
-        String armor = plugin.getCTConfig().getClassArmors().get(clas);
-
-        ArrayList<ItemStack> itemData = handler.convertToItemStack(items);
-        ArrayList<ItemStack> armorData = null;
-        if ( armor != null ) {
-            armorData = handler.convertToItemStack(armor);
-        }
+        ClassData cdata = plugin.getCTConfig().getClasses().get(clas);
+        ArrayList<ItemStack> itemData = cdata.getItems();
+        ArrayList<ItemStack> armorData = cdata.getArmor();
 
         ArrayList<Player> playersToSet = new ArrayList<Player>();
         if ( isAll ) {
@@ -124,18 +120,18 @@ public class CClassCommand implements CommandExecutor {
             }
 
             // 防具の配布
-            if ( armor != null ) {
+            if ( armorData != null ) {
 
-                if (armorData.get(0) != null ) {
+                if (armorData.size() >= 1 && armorData.get(0) != null ) {
                     p.getInventory().setHelmet(armorData.get(0));
                 }
-                if (armorData.get(1) != null ) {
+                if (armorData.size() >= 2 && armorData.get(1) != null ) {
                     p.getInventory().setChestplate(armorData.get(1));
                 }
-                if (armorData.get(2) != null ) {
+                if (armorData.size() >= 3 && armorData.get(2) != null ) {
                     p.getInventory().setLeggings(armorData.get(2));
                 }
-                if (armorData.get(3) != null ) {
+                if (armorData.size() >= 4 && armorData.get(3) != null ) {
                     p.getInventory().setBoots(armorData.get(3));
                 }
             }

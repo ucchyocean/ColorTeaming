@@ -7,7 +7,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -42,11 +41,8 @@ public class ColorTeamingConfig {
     /** 仲間の透明が見えるかどうか のオンオフ */
     private boolean canSeeFriendlyInvisibles;
 
-    /** クラスのアイテム設定 */
-    private Map<String, String> classItems;
-
-    /** クラスのアーマー設定 */
-    private Map<String, String> classArmors;
+    /** クラス設定 */
+    private Map<String, ClassData> classes;
 
     /** 死亡時のチーム離脱 オンオフ */
     private boolean colorRemoveOnDeath;
@@ -130,17 +126,16 @@ public class ColorTeamingConfig {
         ctconfig.isFriendlyFireDisabler = config.getBoolean("friendlyFireDisabler", true);
         ctconfig.canSeeFriendlyInvisibles = config.getBoolean("seeFriendlyInvisible", true);
 
-        ctconfig.classItems = new HashMap<String, String>();
-        ctconfig.classArmors = new HashMap<String, String>();
+        ctconfig.classes = new HashMap<String, ClassData>();
         ConfigurationSection section = config.getConfigurationSection("classes");
         if ( section != null ) {
-            Iterator<String> i = section.getValues(false).keySet().iterator();
-            while (i.hasNext()) {
-                String clas = i.next();
-                ctconfig.classItems.put(clas, config.getString("classes." + clas + ".items", "") );
-                if ( config.contains("classes." + clas + ".armor") ) {
-                    ctconfig.classArmors.put(clas, config.getString("classes." + clas + ".armor") );
-                }
+            for ( String clas : section.getKeys(false) ) {
+                ConfigurationSection c = section.getConfigurationSection(clas);
+                String i = c.getString("items");
+                String a = c.getString("armor");
+                String e = c.getString("effect");
+                ClassData data = new ClassData(i, a, e);
+                ctconfig.classes.put(clas, data);
             }
         }
 
@@ -188,7 +183,8 @@ public class ColorTeamingConfig {
 
         // ファイルのロード
         File configFile = new File(ColorTeaming.instance.getDataFolder(), "config.yml");
-        YamlConfiguration config = Utility.getYamlFromJar("config_ja.yml");
+        YamlConfiguration config = new YamlConfiguration();
+        config.options().header(Utility.getYamlHeader("config_ja.yml"));
         if ( configFile.exists() ) {
             config = YamlConfiguration.loadConfiguration(configFile);
         }
@@ -200,6 +196,7 @@ public class ColorTeamingConfig {
         config.set("teamChatLogMode", isTeamChatLogMode);
         config.set("friendlyFireDisabler", isFriendlyFireDisabler);
         config.set("seeFriendlyInvisible", canSeeFriendlyInvisibles);
+        // TODO: class
         config.set("colorRemoveOnDeath", colorRemoveOnDeath);
         config.set("colorRemoveOnQuit", colorRemoveOnQuit);
         config.set("noDamageSeconds", noDamageSeconds);
@@ -250,12 +247,8 @@ public class ColorTeamingConfig {
         return canSeeFriendlyInvisibles;
     }
 
-    public Map<String, String> getClassItems() {
-        return classItems;
-    }
-
-    public Map<String, String> getClassArmors() {
-        return classArmors;
+    public Map<String, ClassData> getClasses() {
+        return classes;
     }
 
     public boolean isColorRemoveOnDeath() {

@@ -17,10 +17,8 @@ public class TabListScoreDisplay extends ScoreDisplayBase {
 
     private static final String NAME = "listscore";
 
-    private ColorTeaming plugin;
-
     public TabListScoreDisplay(ColorTeaming plugin) {
-        this.plugin = plugin;
+        super(plugin);
     }
 
     /**

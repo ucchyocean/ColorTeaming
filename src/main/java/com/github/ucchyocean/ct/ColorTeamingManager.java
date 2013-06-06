@@ -397,7 +397,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
 
         removeSidebarScore();
         if ( config.getSideCriteria() != SidebarCriteria.NONE ) {
-            sidebarScore = new SidebarScoreDisplay();
+            sidebarScore = new SidebarScoreDisplay(ColorTeaming.instance);
         }
     }
 

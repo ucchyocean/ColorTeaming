@@ -1,11 +1,11 @@
 name: ColorTeaming
 main: com.github.ucchyocean.ct.ColorTeaming
-version: 1.5.9
+version: 2.0.0
 authors: [ucchy,owatakun]
 load: startup
 description: 簡易PVPチーミングプラグイン
 depend: []
-softdepend: [WorldGuard]
+softdepend: []
 commands:
   colorteaming:
     description: ColorTeamingの管理用コマンド

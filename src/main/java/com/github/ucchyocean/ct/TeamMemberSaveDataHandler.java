@@ -24,7 +24,6 @@ import org.bukkit.entity.Player;
 public class TeamMemberSaveDataHandler {
 
     private File saveDir;
-    private ColorTeamingAPI api;
 
     /**
      * コンストラクタ
@@ -37,8 +36,6 @@ public class TeamMemberSaveDataHandler {
         if ( !saveDir.exists() ) {
             saveDir.mkdirs();
         }
-
-        api = ColorTeaming.instance.getAPI();
     }
 
     /**
@@ -49,6 +46,7 @@ public class TeamMemberSaveDataHandler {
     public boolean save(String name) {
 
         YamlConfiguration config = new YamlConfiguration();
+        ColorTeamingAPI api = ColorTeaming.instance.getAPI();
 
         // メンバー情報の保存
         HashMap<String, ArrayList<Player>> members = api.getAllTeamMembers();
@@ -114,6 +112,8 @@ public class TeamMemberSaveDataHandler {
         }
 
         clearAllUsers(); // 一旦、全てのユーザーのグループを解散する
+
+        ColorTeamingAPI api = ColorTeaming.instance.getAPI();
 
         Iterator<String> groups = msection.getValues(false).keySet().iterator();
         while (groups.hasNext()) {
@@ -181,6 +181,7 @@ public class TeamMemberSaveDataHandler {
      */
     private void clearAllUsers() {
 
+        ColorTeamingAPI api = ColorTeaming.instance.getAPI();
         HashMap<String, ArrayList<Player>> members = api.getAllTeamMembers();
 
         for ( String group : members.keySet() ) {
