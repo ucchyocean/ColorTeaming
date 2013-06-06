@@ -68,8 +68,8 @@ public abstract class ScoreDisplayBase {
 
         // Customは、customScoreの更新メソッドを呼び出す。
         if ( getConfigData() == PlayerCriteria.CUSTOM ) {
-            if ( plugin.getAPI().getCustomScore() != null ) {
-                plugin.getAPI().getCustomScore().refreshScore(objective);
+            if ( plugin.getAPI().getCustomScoreCriteria() != null ) {
+                plugin.getAPI().getCustomScoreCriteria().refreshScore(objective);
             }
             return;
         }

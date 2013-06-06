@@ -11,8 +11,17 @@ import org.bukkit.scoreboard.Objective;
  * 外部連携用スコアインターフェイス
  * @author ucchy
  */
-public interface CTScoreInterface {
+public interface CustomScoreCriteria {
 
+    /**
+     * スコアを更新する必要があるときに、上位から呼び出されるメソッド
+     * @param objective 更新対象のobjective
+     */
     public void refreshScore(Objective objective);
+
+    /**
+     * スコアの単位を返す。BelowNameなどで表示される。
+     * @return スコアの単位
+     */
     public String getUnit();
 }

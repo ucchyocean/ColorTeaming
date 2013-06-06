@@ -78,7 +78,7 @@ public class SidebarScoreDisplay {
         SidebarCriteria criteria = plugin.getCTConfig().getSideCriteria();
 
         if ( criteria == SidebarCriteria.NONE ) {
-            plugin.getAPI().removeSidebar();
+            plugin.getAPI().removeSidebarScore();
             return;
         }
 

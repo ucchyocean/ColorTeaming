@@ -52,7 +52,7 @@ public class CRestoreCommand implements CommandExecutor {
             sender.sendMessage(PREINFO + "メンバー状況を、" + profileName + " から復帰しました。");
 
             // スコアボードの作成
-            plugin.getAPI().makeSidebar();
+            plugin.getAPI().makeSidebarScore();
             plugin.getAPI().makeTabkeyListScore();
             plugin.getAPI().makeBelowNameScore();
 

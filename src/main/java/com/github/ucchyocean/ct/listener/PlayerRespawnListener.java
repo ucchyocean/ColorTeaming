@@ -33,7 +33,7 @@ public class PlayerRespawnListener implements Listener {
     public void onPlayerRespawn(PlayerRespawnEvent event) {
 
         Player player = event.getPlayer();
-        String color = plugin.getAPI().getPlayerColor(player);
+        String color = plugin.getAPI().getPlayerTeamName(player);
 
         // リスポーンポイントを設定
         RespawnConfiguration respawnConfig = plugin.getAPI().getRespawnConfig();

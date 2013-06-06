@@ -99,7 +99,7 @@ public class CRandomCommand implements CommandExecutor {
         api.clearKillDeathPoints();
 
         // スコアボードの作成
-        api.makeSidebar();
+        api.makeSidebarScore();
         api.makeTabkeyListScore();
         api.makeBelowNameScore();
 
@@ -166,7 +166,7 @@ public class CRandomCommand implements CommandExecutor {
         }
 
         // スコアボードの作成
-        api.makeSidebar();
+        api.makeSidebarScore();
         api.refreshTabkeyListScore();
         api.refreshBelowNameScore();
 

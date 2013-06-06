@@ -58,7 +58,7 @@ public class PlayerJoinQuitListener implements Listener {
         if ( config.isWorldSpawn() ) {
 
             if ( !player.hasPlayedBefore() ||
-                    (api.getPlayerColor(player).equals("") &&
+                    (api.getPlayerTeamName(player).equals("") &&
                             player.getBedSpawnLocation() == null) ) {
                 Location location = player.getWorld().getSpawnLocation();
                 player.teleport(location, TeleportCause.PLUGIN);
@@ -86,7 +86,7 @@ public class PlayerJoinQuitListener implements Listener {
         }
 
         Player player = event.getPlayer();
-        String color = api.getPlayerColor(player);
+        String color = api.getPlayerTeamName(player);
 
         // ログアウトしたプレイヤーが、大将だった場合、逃げたことを全体に通知する。
         HashMap<String, ArrayList<String>> leaders = api.getLeaders();

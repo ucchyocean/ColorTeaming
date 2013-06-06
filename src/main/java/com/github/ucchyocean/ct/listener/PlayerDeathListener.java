@@ -51,7 +51,7 @@ public class PlayerDeathListener implements Listener {
         HashMap<String, int[]> killDeathUserCounts = api.getKillDeathUserCounts();
         HashMap<String, ArrayList<String>> leaders = api.getLeaders();
 
-        String color = api.getPlayerColor(player);
+        String color = api.getPlayerTeamName(player);
 
         // Death数を加算
 
@@ -102,7 +102,7 @@ public class PlayerDeathListener implements Listener {
         }
 
         if ( killer != null ) {
-            String colorKiller = api.getPlayerColor(killer);
+            String colorKiller = api.getPlayerTeamName(killer);
 
             // Kill数を加算
 

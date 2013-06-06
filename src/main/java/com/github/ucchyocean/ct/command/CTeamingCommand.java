@@ -65,7 +65,7 @@ public class CTeamingCommand implements CommandExecutor {
             }
 
             // サイドバー削除、タブキーリスト更新
-            api.removeSidebar();
+            api.removeSidebarScore();
             api.refreshTabkeyListScore();
             api.refreshBelowNameScore();
 
@@ -91,7 +91,7 @@ public class CTeamingCommand implements CommandExecutor {
             api.removeTeam(group);
 
             // サイドバー再作成、タブキーリスト更新
-            api.makeSidebar();
+            api.makeSidebarScore();
             api.refreshTabkeyListScore();
             api.refreshBelowNameScore();
 
@@ -221,7 +221,7 @@ public class CTeamingCommand implements CommandExecutor {
 
             // サイドバーの更新 グループが増える場合は、再生成する
             if ( isNewGroup ) {
-                api.makeSidebar();
+                api.makeSidebarScore();
             }
             api.refreshSidebarScore();
             api.refreshTabkeyListScore();
@@ -251,7 +251,7 @@ public class CTeamingCommand implements CommandExecutor {
             config.saveConfig();
 
             // サイドバーの更新
-            plugin.getAPI().makeSidebar();
+            plugin.getAPI().makeSidebarScore();
 
             String criteria = config.getSideCriteria().toString();
             sender.sendMessage(PREINFO + "サイドバーの表示を" + criteria + "にしました。");

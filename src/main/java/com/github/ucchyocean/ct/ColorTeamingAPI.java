@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
-import com.github.ucchyocean.ct.scoreboard.CTScoreInterface;
+import com.github.ucchyocean.ct.scoreboard.CustomScoreCriteria;
 
 /**
  * ColorTeaming APIクラス
@@ -39,7 +39,7 @@ public interface ColorTeamingAPI {
      * @param player
      * @return
      */
-    public String getPlayerColor(Player player);
+    public String getPlayerTeamName(Player player);
 
     /**
      * Player にチームを設定する。
@@ -60,7 +60,7 @@ public interface ColorTeamingAPI {
      * 強制的にfalseになることに注意
      * @param ff trueならフレンドリーファイア有効、falseなら無効
      */
-    public void setFriendlyFilre(boolean ff);
+    public void setFriendlyFire(boolean ff);
 
     /**
      * 仲間の可視化の設定。<br>
@@ -103,7 +103,7 @@ public interface ColorTeamingAPI {
      * 全てのチーム名（＝全ての色）を取得する
      * @return 全てのチーム名
      */
-    public ArrayList<String> getAllColors();
+    public ArrayList<String> getAllTeamNames();
 
     /**
      * メッセージをチームチャットに送信する。
@@ -123,12 +123,12 @@ public interface ColorTeamingAPI {
      * サイドバーを新しく作る。
      * もともとサイドバーがあった場合は、削除して再作成される。
      */
-    public void makeSidebar();
+    public void makeSidebarScore();
 
     /**
      * サイドバーを消去する。
      */
-    public void removeSidebar();
+    public void removeSidebarScore();
 
     /**
      * サイドバーのスコアを更新する。
@@ -182,13 +182,13 @@ public interface ColorTeamingAPI {
      * カスタムスコアを取得する
      * @return カスタムスコア
      */
-    public CTScoreInterface getCustomScore();
+    public CustomScoreCriteria getCustomScoreCriteria();
 
     /**
      * カスタムスコアを設定する
      * @param score カスタムスコア
      */
-    public void setCustomScore(CTScoreInterface score);
+    public void setCustomScoreCriteria(CustomScoreCriteria score);
 
     /**
      * チーム単位のキルデス数を取得する

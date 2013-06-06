@@ -33,11 +33,11 @@ public class CFriendlyFireCommand implements CommandExecutor {
         }
 
         if ( args[0].equalsIgnoreCase("on") ) {
-            plugin.getAPI().setFriendlyFilre(false);
+            plugin.getAPI().setFriendlyFire(false);
             sender.sendMessage(ChatColor.GRAY + "仲間同士の攻撃が無効になりました。");
             return true;
         } else if ( args[0].equalsIgnoreCase("off") ) {
-            plugin.getAPI().setFriendlyFilre(true);
+            plugin.getAPI().setFriendlyFire(true);
             sender.sendMessage(ChatColor.GRAY + "仲間同士の攻撃が有効になりました。");
             return true;
         }

@@ -53,8 +53,8 @@ public class EntityDamageListener implements Listener {
         if ( attacker instanceof Player && defender instanceof Player ) {
 
             // ColorMe のカラーを取得し、同じ色かどうか確認する
-            String attackerColor = plugin.getAPI().getPlayerColor((Player)attacker);
-            String defenderColor = plugin.getAPI().getPlayerColor((Player)defender);
+            String attackerColor = plugin.getAPI().getPlayerTeamName((Player)attacker);
+            String defenderColor = plugin.getAPI().getPlayerTeamName((Player)defender);
 
             // どちらかがチーム無所属なら抜ける
             if ( attackerColor.equals("") || defenderColor.equals("") ) {
@@ -77,8 +77,8 @@ public class EntityDamageListener implements Listener {
             if ( shooter instanceof Player ) {
 
                 // ColorMe のカラーを取得し、同じ色かどうか確認する
-                String attackerColor = plugin.getAPI().getPlayerColor((Player)shooter);
-                String defenderColor = plugin.getAPI().getPlayerColor((Player)defender);
+                String attackerColor = plugin.getAPI().getPlayerTeamName((Player)shooter);
+                String defenderColor = plugin.getAPI().getPlayerTeamName((Player)defender);
 
                 // どちらかがチーム無所属なら抜ける
                 if ( attackerColor.equals("") || defenderColor.equals("") ) {

@@ -18,7 +18,7 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
 import com.github.ucchyocean.ct.scoreboard.BelowNameScoreDisplay;
-import com.github.ucchyocean.ct.scoreboard.CTScoreInterface;
+import com.github.ucchyocean.ct.scoreboard.CustomScoreCriteria;
 import com.github.ucchyocean.ct.scoreboard.PlayerCriteria;
 import com.github.ucchyocean.ct.scoreboard.SidebarCriteria;
 import com.github.ucchyocean.ct.scoreboard.SidebarScoreDisplay;
@@ -51,7 +51,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
 
     private String respawnMapName;
 
-    private CTScoreInterface customScore;
+    private CustomScoreCriteria customScore;
 
     /**
      * コンストラクタ
@@ -110,7 +110,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      * @return
      */
     @Override
-    public String getPlayerColor(Player player) {
+    public String getPlayerTeamName(Player player) {
 
         Team team = getPlayerTeam(player);
         if ( team == null ) return "";
@@ -166,7 +166,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      * @param ff trueならフレンドリーファイア有効、falseなら無効
      */
     @Override
-    public void setFriendlyFilre(boolean ff) {
+    public void setFriendlyFire(boolean ff) {
 
         Scoreboard scoreboard = getScoreboard();
 
@@ -299,7 +299,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      * @return 全てのチーム名
      */
     @Override
-    public ArrayList<String> getAllColors() {
+    public ArrayList<String> getAllTeamNames() {
 
         ArrayList<String> result = new ArrayList<String>();
         Set<Team> teams = getScoreboard().getTeams();
@@ -393,9 +393,9 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      * もともとサイドバーがあった場合は、削除して再作成される。
      */
     @Override
-    public void makeSidebar() {
+    public void makeSidebarScore() {
 
-        removeSidebar();
+        removeSidebarScore();
         if ( config.getSideCriteria() != SidebarCriteria.NONE ) {
             sidebarScore = new SidebarScoreDisplay();
         }
@@ -405,7 +405,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      * サイドバーを消去する。
      */
     @Override
-    public void removeSidebar() {
+    public void removeSidebarScore() {
 
         getScoreboard().clearSlot(DisplaySlot.SIDEBAR);
         if ( sidebarScore != null ) {
@@ -522,7 +522,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      * @return カスタムスコア
      */
     @Override
-    public CTScoreInterface getCustomScore() {
+    public CustomScoreCriteria getCustomScoreCriteria() {
         return customScore;
     }
 
@@ -531,7 +531,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      * @param score カスタムスコア
      */
     @Override
-    public void setCustomScore(CTScoreInterface score) {
+    public void setCustomScoreCriteria(CustomScoreCriteria score) {
         customScore = score;
     }
 

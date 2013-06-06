@@ -56,7 +56,7 @@ public class CJoinCommand implements CommandExecutor {
                 return true;
             }
 
-            if ( !plugin.getAPI().getPlayerColor(player).equals("") ) {
+            if ( !plugin.getAPI().getPlayerTeamName(player).equals("") ) {
                 player.sendMessage(
                         PREERR + "あなたは既に、チームに所属しています。");
                 return true;
@@ -91,7 +91,7 @@ public class CJoinCommand implements CommandExecutor {
                 return true;
             }
 
-            if ( !plugin.getAPI().getPlayerColor(player).equals("") ) {
+            if ( !plugin.getAPI().getPlayerTeamName(player).equals("") ) {
                 player.sendMessage(
                         PREERR + "あなたは既に、チームに所属しています。");
                 return true;
@@ -111,7 +111,7 @@ public class CJoinCommand implements CommandExecutor {
                     " グループになりました。");
 
             // サイドバー更新、タブキーリスト更新
-            plugin.getAPI().makeSidebar();
+            plugin.getAPI().makeSidebarScore();
             plugin.getAPI().refreshTabkeyListScore();
             plugin.getAPI().refreshBelowNameScore();
 

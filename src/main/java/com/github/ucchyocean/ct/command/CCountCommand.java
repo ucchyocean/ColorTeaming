@@ -62,7 +62,7 @@ public class CCountCommand implements CommandExecutor {
             members = new HashMap<String, ArrayList<Player>>();
             ArrayList<Player> players = plugin.getAPI().getAllPlayers();
             for ( Player p : players ) {
-                String color = plugin.getAPI().getPlayerColor(p);
+                String color = plugin.getAPI().getPlayerTeamName(p);
                 if ( members.containsKey(color) ) {
                     members.get(color).add(p);
                 } else {
