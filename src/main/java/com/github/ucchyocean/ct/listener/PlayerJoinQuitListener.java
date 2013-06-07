@@ -19,6 +19,7 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingAPI;
 import com.github.ucchyocean.ct.ColorTeamingConfig;
+import com.github.ucchyocean.ct.event.ColorTeamingPlayerLeaveEvent.Reason;
 import com.github.ucchyocean.ct.scoreboard.SidebarCriteria;
 
 /**
@@ -107,7 +108,7 @@ public class PlayerJoinQuitListener implements Listener {
         }
 
         // 色設定を削除する
-        api.leavePlayerTeam(player);
+        api.leavePlayerTeam(player, Reason.DEAD);
     }
 
 }

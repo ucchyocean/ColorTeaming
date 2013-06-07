@@ -18,11 +18,15 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.scoreboard.Team;
 
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingAPI;
 import com.github.ucchyocean.ct.ColorTeamingConfig;
+import com.github.ucchyocean.ct.event.ColorTeamingPlayerLeaveEvent.Reason;
 import com.github.ucchyocean.ct.event.ColorTeamingTeamDefeatedEvent;
+import com.github.ucchyocean.ct.event.ColorTeamingTrophyKillEvent;
+import com.github.ucchyocean.ct.event.ColorTeamingTrophyKillReachEvent;
 
 /**
  * プレイヤーが死亡したときに、通知を受け取って処理するクラス
@@ -141,6 +145,12 @@ public class PlayerDeathListener implements Listener {
                             PRENOTICE + "%s チームが、%d キルまでもう少しです(あと %d キル)。",
                             colorKiller, config.getKillTrophy(), rest);
                     Bukkit.broadcastMessage(message);
+
+                    // イベントコール
+                    Team killerTeam = api.getPlayerTeam(killer);
+                    ColorTeamingTrophyKillReachEvent event2 =
+                            new ColorTeamingTrophyKillReachEvent(killerTeam, killer);
+                    Bukkit.getServer().getPluginManager().callEvent(event2);
                 }
             }
 
@@ -156,13 +166,19 @@ public class PlayerDeathListener implements Listener {
                             PRENOTICE + "%s チームは、%d キルを達成しました！",
                             colorKiller, config.getKillTrophy());
                     Bukkit.broadcastMessage(message);
+
+                    // イベントコール
+                    Team killerTeam = api.getPlayerTeam(killer);
+                    ColorTeamingTrophyKillEvent event2 =
+                            new ColorTeamingTrophyKillEvent(killerTeam, killer);
+                    Bukkit.getServer().getPluginManager().callEvent(event2);
                 }
             }
         }
 
         // 色設定を削除する
         if ( config.isColorRemoveOnDeath() ) {
-            api.leavePlayerTeam(player);
+            api.leavePlayerTeam(player, Reason.DEAD);
         }
 
         // スコア表示を更新する

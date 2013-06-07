@@ -17,6 +17,8 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
+import com.github.ucchyocean.ct.event.ColorTeamingPlayerLeaveEvent.Reason;
+
 /**
  * @author ucchy
  * csaveコマンドやcrestoreコマンドで扱う、チームメンバー保存データのハンドルクラス
@@ -186,7 +188,7 @@ public class TeamMemberSaveDataHandler {
 
         for ( String group : members.keySet() ) {
             for ( Player p : members.get(group) ) {
-                api.leavePlayerTeam(p);
+                api.leavePlayerTeam(p, Reason.TEAM_REMOVED);
             }
         }
     }

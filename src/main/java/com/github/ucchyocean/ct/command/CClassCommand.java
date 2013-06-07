@@ -45,7 +45,7 @@ public class CClassCommand implements CommandExecutor {
         if ( args.length >= 1 && args[0].equalsIgnoreCase("check") ) {
             // cclass hand コマンドの処理
             if ( !(sender instanceof Player) ) {
-                sender.sendMessage(PREERR + "cclass hand コマンドは、ゲーム内でのみ実行できます。");
+                sender.sendMessage(PREERR + "cclass check コマンドは、ゲーム内でのみ実行できます。");
                 return true;
             }
             Player player = (Player)sender;

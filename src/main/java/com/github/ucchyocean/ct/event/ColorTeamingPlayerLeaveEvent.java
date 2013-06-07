@@ -14,7 +14,40 @@ import org.bukkit.scoreboard.Team;
  */
 public class ColorTeamingPlayerLeaveEvent extends ColorTeamingPlayerEvent {
 
-    public ColorTeamingPlayerLeaveEvent(Player player, Team team) {
+    /**
+     * チームを離脱した理由
+     * @author ucchy
+     */
+    public enum Reason {
+
+        /** 死亡による離脱 */
+        DEAD,
+
+        /** チーム削除による離脱 */
+        TEAM_REMOVED,
+
+        /** 不明 */
+        UNKNOWN,
+    };
+
+    private Reason reason;
+
+    /**
+     * コンストラクタ
+     * @param player プレイヤー
+     * @param team チーム
+     * @param reason 離脱の理由
+     */
+    public ColorTeamingPlayerLeaveEvent(Player player, Team team, Reason reason) {
         super(player, team);
+        this.reason = reason;
+    }
+
+    /**
+     * 離脱理由を取得する
+     * @return 離脱理由
+     */
+    public Reason getReason() {
+        return reason;
     }
 }

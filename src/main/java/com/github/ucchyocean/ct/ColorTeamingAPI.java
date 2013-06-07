@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
+import com.github.ucchyocean.ct.event.ColorTeamingPlayerLeaveEvent.Reason;
 import com.github.ucchyocean.ct.scoreboard.CustomScoreCriteria;
 
 /**
@@ -52,8 +53,9 @@ public interface ColorTeamingAPI {
     /**
      * Player に設定されているチームを削除する。
      * @param player プレイヤー
+     * @param reason 離脱理由
      */
-    public void leavePlayerTeam(Player player);
+    public void leavePlayerTeam(Player player, Reason reason);
 
     /**
      * フレンドリーファイアの設定。<br>

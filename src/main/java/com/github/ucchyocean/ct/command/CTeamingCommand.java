@@ -17,6 +17,7 @@ import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingAPI;
 import com.github.ucchyocean.ct.ColorTeamingConfig;
 import com.github.ucchyocean.ct.Utility;
+import com.github.ucchyocean.ct.event.ColorTeamingPlayerLeaveEvent.Reason;
 import com.github.ucchyocean.ct.scoreboard.PlayerCriteria;
 import com.github.ucchyocean.ct.scoreboard.SidebarCriteria;
 
@@ -59,7 +60,7 @@ public class CTeamingCommand implements CommandExecutor {
                     api.getAllTeamMembers();
             for ( String group : members.keySet() ) {
                 for ( Player p : members.get(group) ) {
-                    api.leavePlayerTeam(p);
+                    api.leavePlayerTeam(p, Reason.TEAM_REMOVED);
                 }
                 api.removeTeam(group);
             }
@@ -85,7 +86,7 @@ public class CTeamingCommand implements CommandExecutor {
             }
 
             for ( Player p : members.get(group) ) {
-                api.leavePlayerTeam(p);
+                api.leavePlayerTeam(p, Reason.TEAM_REMOVED);
                 p.sendMessage(PREINFO + "グループ " + group + " が解散しました。");
             }
             api.removeTeam(group);

@@ -20,6 +20,8 @@ import org.bukkit.scoreboard.Team;
 
 import com.github.ucchyocean.ct.event.ColorTeamingPlayerAddEvent;
 import com.github.ucchyocean.ct.event.ColorTeamingPlayerLeaveEvent;
+import com.github.ucchyocean.ct.event.ColorTeamingPlayerLeaveEvent.Reason;
+import com.github.ucchyocean.ct.event.ColorTeamingKillDeathClearedEvent;
 import com.github.ucchyocean.ct.event.ColorTeamingTeamChatEvent;
 import com.github.ucchyocean.ct.event.ColorTeamingTeamCreateEvent;
 import com.github.ucchyocean.ct.event.ColorTeamingTeamDefeatedEvent;
@@ -174,16 +176,17 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     /**
      * Player に設定されているチームを削除する。
      * @param player プレイヤー
+     * @param reason 離脱理由
      */
     @Override
-    public void leavePlayerTeam(Player player) {
+    public void leavePlayerTeam(Player player, Reason reason) {
 
         Team team = getPlayerTeam(player);
         if ( team != null ) {
 
             // イベントコール
             ColorTeamingPlayerLeaveEvent event =
-                    new ColorTeamingPlayerLeaveEvent(player, team);
+                    new ColorTeamingPlayerLeaveEvent(player, team, reason);
             Bukkit.getServer().getPluginManager().callEvent(event);
             if ( event.isCancelled() ) {
                 return;
@@ -265,7 +268,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         if ( team != null ) {
             for ( OfflinePlayer player : team.getPlayers() ) {
                 if ( player.getPlayer() != null && player.isOnline() ) {
-                    leavePlayerTeam(player.getPlayer());
+                    leavePlayerTeam(player.getPlayer(), Reason.TEAM_REMOVED);
                 }
             }
             team.unregister();
@@ -576,6 +579,13 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      */
     @Override
     public void clearKillDeathPoints() {
+
+        // イベントコール
+        ColorTeamingKillDeathClearedEvent event =
+                new ColorTeamingKillDeathClearedEvent();
+        Bukkit.getServer().getPluginManager().callEvent(event);
+
+        // クリア
         killDeathCounts.clear();
         killDeathUserCounts.clear();
     }

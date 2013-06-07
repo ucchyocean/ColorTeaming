@@ -15,7 +15,7 @@ import org.bukkit.scoreboard.Team;
  * プレイヤーのチーム参加/離脱に関する基底イベント
  * @author ucchy
  */
-public class ColorTeamingPlayerEvent extends Event implements Cancellable {
+public abstract class ColorTeamingPlayerEvent extends Event implements Cancellable {
 
     private static final HandlerList handlers = new HandlerList();
 

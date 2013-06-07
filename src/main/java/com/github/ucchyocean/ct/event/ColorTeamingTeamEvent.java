@@ -13,7 +13,7 @@ import org.bukkit.event.HandlerList;
  * チームの作成/削除に関する基底イベント
  * @author ucchy
  */
-public class ColorTeamingTeamEvent extends Event implements Cancellable {
+public abstract class ColorTeamingTeamEvent extends Event implements Cancellable {
 
     private static final HandlerList handlers = new HandlerList();
 
