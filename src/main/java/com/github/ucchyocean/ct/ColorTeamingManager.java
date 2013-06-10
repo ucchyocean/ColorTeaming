@@ -18,16 +18,15 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
+import com.github.ucchyocean.ct.event.ColorTeamingKillDeathClearedEvent;
 import com.github.ucchyocean.ct.event.ColorTeamingPlayerAddEvent;
 import com.github.ucchyocean.ct.event.ColorTeamingPlayerLeaveEvent;
 import com.github.ucchyocean.ct.event.ColorTeamingPlayerLeaveEvent.Reason;
-import com.github.ucchyocean.ct.event.ColorTeamingKillDeathClearedEvent;
 import com.github.ucchyocean.ct.event.ColorTeamingTeamChatEvent;
 import com.github.ucchyocean.ct.event.ColorTeamingTeamCreateEvent;
-import com.github.ucchyocean.ct.event.ColorTeamingTeamDefeatedEvent;
 import com.github.ucchyocean.ct.event.ColorTeamingTeamRemoveEvent;
 import com.github.ucchyocean.ct.scoreboard.BelowNameScoreDisplay;
-import com.github.ucchyocean.ct.scoreboard.CustomScoreCriteria;
+import com.github.ucchyocean.ct.scoreboard.CustomScoreInterface;
 import com.github.ucchyocean.ct.scoreboard.PlayerCriteria;
 import com.github.ucchyocean.ct.scoreboard.SidebarCriteria;
 import com.github.ucchyocean.ct.scoreboard.SidebarScoreDisplay;
@@ -60,7 +59,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
 
     private String respawnMapName;
 
-    private CustomScoreCriteria customScore;
+    private HashMap<String, CustomScoreInterface> customScores;
 
     /**
      * コンストラクタ
@@ -79,6 +78,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         respawnConfig = new RespawnConfiguration();
         tppointConfig = new TPPointConfiguration();
         sdhandler = new TeamMemberSaveDataHandler(plugin.getDataFolder());
+        customScores = new HashMap<String, CustomScoreInterface>();
     }
 
     /**
@@ -195,12 +195,6 @@ public class ColorTeamingManager implements ColorTeamingAPI {
             team.removePlayer(player);
 
             if ( team.getPlayers().size() <= 0 ) {
-
-                // イベントコール
-                ColorTeamingTeamDefeatedEvent event2 =
-                        new ColorTeamingTeamDefeatedEvent(team.getName());
-                Bukkit.getServer().getPluginManager().callEvent(event2);
-
                 removeTeam(team.getName());
             }
         }
@@ -222,7 +216,6 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         Set<Team> teams = scoreboard.getTeams();
         for ( Team t : teams ) {
             boolean invisible = t.canSeeFriendlyInvisibles();
-            System.out.println("setff : " + (invisible || ff));
             t.setAllowFriendlyFire(invisible || ff);
         }
 
@@ -592,20 +585,22 @@ public class ColorTeamingManager implements ColorTeamingAPI {
 
     /**
      * カスタムスコアを取得する
+     * @param slot 登録スロット名
      * @return カスタムスコア
      */
     @Override
-    public CustomScoreCriteria getCustomScoreCriteria() {
-        return customScore;
+    public CustomScoreInterface getCustomScoreCriteria(String slot) {
+        return customScores.get(slot);
     }
 
     /**
      * カスタムスコアを設定する
+     * @param slot 登録スロット名
      * @param score カスタムスコア
      */
     @Override
-    public void setCustomScoreCriteria(CustomScoreCriteria score) {
-        customScore = score;
+    public void setCustomScoreCriteria(String slot, CustomScoreInterface score) {
+        customScores.put(slot, score);
     }
 
     /**

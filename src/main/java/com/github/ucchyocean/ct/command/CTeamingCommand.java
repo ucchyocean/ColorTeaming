@@ -18,6 +18,7 @@ import com.github.ucchyocean.ct.ColorTeamingAPI;
 import com.github.ucchyocean.ct.ColorTeamingConfig;
 import com.github.ucchyocean.ct.Utility;
 import com.github.ucchyocean.ct.event.ColorTeamingPlayerLeaveEvent.Reason;
+import com.github.ucchyocean.ct.scoreboard.CustomScoreInterface;
 import com.github.ucchyocean.ct.scoreboard.PlayerCriteria;
 import com.github.ucchyocean.ct.scoreboard.SidebarCriteria;
 
@@ -262,6 +263,34 @@ public class CTeamingCommand implements CommandExecutor {
         } else if ( args.length >= 2 && args[0].equalsIgnoreCase("list") ) {
 
             ColorTeamingConfig config = plugin.getCTConfig();
+
+            // カスタム指定の場合
+            if ( args[1].toLowerCase().startsWith("custom-") ) {
+                config.setListCriteria(PlayerCriteria.CUSTOM);
+                int index = 7; // args[1].indexOf("-") + 1;
+                String slot = args[1].toLowerCase().substring(index);
+
+                CustomScoreInterface custom =
+                        plugin.getAPI().getCustomScoreCriteria(slot);
+                if ( custom == null ) {
+                    sender.sendMessage(PREERR + "カスタムスコア" + slot + "が存在しません。");
+                    return true;
+                }
+
+                config.setListCriteria(PlayerCriteria.CUSTOM);
+                config.setListCustomSlot(slot);
+                config.saveConfig();
+
+                // スコアボードの更新
+                plugin.getAPI().makeTabkeyListScore();
+
+                sender.sendMessage(PREINFO +
+                        "リストの表示をカスタムスコア" + slot + "にしました。");
+
+                return true;
+            }
+
+            // その他の指定の場合
             if ( args[1].equalsIgnoreCase("kill") ) {
                 config.setListCriteria(PlayerCriteria.KILL_COUNT);
             } else if ( args[1].equalsIgnoreCase("death") ) {
@@ -270,8 +299,6 @@ public class CTeamingCommand implements CommandExecutor {
                 config.setListCriteria(PlayerCriteria.POINT);
             } else if ( args[1].equalsIgnoreCase("health") ) {
                 config.setListCriteria(PlayerCriteria.HEALTH);
-            } else if ( args[1].equalsIgnoreCase("custom") ) {
-                config.setListCriteria(PlayerCriteria.CUSTOM);
             } else if ( args[1].equalsIgnoreCase("clear") || args[1].equalsIgnoreCase("none") ) {
                 config.setListCriteria(PlayerCriteria.NONE);
             } else {
@@ -290,6 +317,34 @@ public class CTeamingCommand implements CommandExecutor {
         } else if ( args.length >= 2 && args[0].equalsIgnoreCase("below") ) {
 
             ColorTeamingConfig config = plugin.getCTConfig();
+
+            // カスタム指定の場合
+            if ( args[1].toLowerCase().startsWith("custom-") ) {
+                config.setListCriteria(PlayerCriteria.CUSTOM);
+                int index = 7; // args[1].indexOf("-") + 1;
+                String slot = args[1].toLowerCase().substring(index);
+
+                CustomScoreInterface custom =
+                        plugin.getAPI().getCustomScoreCriteria(slot);
+                if ( custom == null ) {
+                    sender.sendMessage(PREERR + "カスタムスコア" + slot + "が存在しません。");
+                    return true;
+                }
+
+                config.setBelowCriteria(PlayerCriteria.CUSTOM);
+                config.setBelowCustomSlot(slot);
+                config.saveConfig();
+
+                // スコアボードの更新
+                plugin.getAPI().makeBelowNameScore();
+
+                sender.sendMessage(PREINFO +
+                        "リストの表示をカスタムスコア" + slot + "にしました。");
+
+                return true;
+            }
+
+            // その他の指定の場合
             if ( args[1].equalsIgnoreCase("kill") ) {
                 config.setBelowCriteria(PlayerCriteria.KILL_COUNT);
             } else if ( args[1].equalsIgnoreCase("death") ) {
@@ -298,8 +353,6 @@ public class CTeamingCommand implements CommandExecutor {
                 config.setBelowCriteria(PlayerCriteria.POINT);
             } else if ( args[1].equalsIgnoreCase("health") ) {
                 config.setBelowCriteria(PlayerCriteria.HEALTH);
-            } else if ( args[1].equalsIgnoreCase("custom") ) {
-                config.setBelowCriteria(PlayerCriteria.CUSTOM);
             } else if ( args[1].equalsIgnoreCase("clear") || args[1].equalsIgnoreCase("none") ) {
                 config.setBelowCriteria(PlayerCriteria.NONE);
             } else {

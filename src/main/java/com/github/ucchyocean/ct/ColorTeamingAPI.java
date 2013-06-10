@@ -14,7 +14,7 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
 import com.github.ucchyocean.ct.event.ColorTeamingPlayerLeaveEvent.Reason;
-import com.github.ucchyocean.ct.scoreboard.CustomScoreCriteria;
+import com.github.ucchyocean.ct.scoreboard.CustomScoreInterface;
 
 /**
  * ColorTeaming APIクラス
@@ -183,15 +183,17 @@ public interface ColorTeamingAPI {
 
     /**
      * カスタムスコアを取得する
+     * @param slot 登録スロット名
      * @return カスタムスコア
      */
-    public CustomScoreCriteria getCustomScoreCriteria();
+    public CustomScoreInterface getCustomScoreCriteria(String slot);
 
     /**
      * カスタムスコアを設定する
+     * @param slot 登録スロット名
      * @param score カスタムスコア
      */
-    public void setCustomScoreCriteria(CustomScoreCriteria score);
+    public void setCustomScoreCriteria(String slot, CustomScoreInterface score);
 
     /**
      * チーム単位のキルデス数を取得する

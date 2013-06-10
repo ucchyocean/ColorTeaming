@@ -22,7 +22,6 @@ import com.github.ucchyocean.ct.ColorTeamingConfig;
 public abstract class ScoreDisplayBase {
 
     protected Objective objective;
-
     protected ColorTeaming plugin;
 
     /**
@@ -57,18 +56,11 @@ public abstract class ScoreDisplayBase {
      */
     public void refreshScore() {
 
-        // NOTE: Health、TotalKillは、自動更新させる。Noneは何もしない。
+        // NOTE: Health、TotalKill、Customは、自動更新させる。Noneは何もしない。
         if ( getConfigData() == PlayerCriteria.HEALTH ||
                 getConfigData() == PlayerCriteria.TOTAL_KILL_COUNT ||
+                getConfigData() == PlayerCriteria.CUSTOM ||
                 getConfigData() == PlayerCriteria.NONE ) {
-            return;
-        }
-
-        // Customは、customScoreの更新メソッドを呼び出す。
-        if ( getConfigData() == PlayerCriteria.CUSTOM ) {
-            if ( plugin.getAPI().getCustomScoreCriteria() != null ) {
-                plugin.getAPI().getCustomScoreCriteria().refreshScore(objective);
-            }
             return;
         }
 

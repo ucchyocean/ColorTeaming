@@ -19,12 +19,22 @@ public class ColorTeamingLeaderDefeatedEvent extends Event {
     /** チーム名 */
     private String teamName;
 
+    /** 最後に倒したプレイヤー名 */
+    private String killer;
+
+    /** 最後に倒されたプレイヤー名 */
+    private String deader;
+
     /**
      * コンストラクタ
      * @param team チーム
+     * @param killer 最後に倒したプレイヤー名
+     * @param deader 最後に倒されたプレイヤー名
      */
-    public ColorTeamingLeaderDefeatedEvent(String teamName) {
+    public ColorTeamingLeaderDefeatedEvent(String teamName, String killer, String deader) {
         this.teamName = teamName;
+        this.killer = killer;
+        this.deader = deader;
     }
 
     /**
@@ -32,6 +42,20 @@ public class ColorTeamingLeaderDefeatedEvent extends Event {
      */
     public String getTeamName() {
         return teamName;
+    }
+
+    /**
+     * @return 最後に倒したプレイヤー名、自殺だった場合はnullになることに注意
+     */
+    public String getKiller() {
+        return killer;
+    }
+
+    /**
+     * @return 最後に倒されたプレイヤー名
+     */
+    public String getDeader() {
+        return deader;
     }
 
     @Override
