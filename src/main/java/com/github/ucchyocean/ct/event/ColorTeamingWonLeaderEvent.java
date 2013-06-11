@@ -34,9 +34,9 @@ public class ColorTeamingWonLeaderEvent extends Event {
     }
 
     /**
-     * @return チーム名
+     * @return 勝利チーム名
      */
-    public String getTeamName() {
+    public String getWonTeamName() {
         return teamName;
     }
 
