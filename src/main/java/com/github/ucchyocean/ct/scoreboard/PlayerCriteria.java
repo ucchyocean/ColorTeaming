@@ -130,6 +130,7 @@ public enum PlayerCriteria {
         case DEATH_COUNT:
             return "death";
         case POINT:
+            return "point";
         case CUSTOM:
             return "point";
         case HEALTH:

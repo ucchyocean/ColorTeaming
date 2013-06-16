@@ -77,6 +77,9 @@ public class ColorTeamingConfig {
     /** 名前下のスコア設定 */
     private PlayerCriteria belowCriteria;
 
+    /** サイドバーのカスタムスロット名 */
+    private String sideCustomSlot;
+
     /** Tabキーリストのスコアのカスタムスロット名 */
     private String listCustomSlot;
 
@@ -158,6 +161,11 @@ public class ColorTeamingConfig {
 
         String criteriaTemp = config.getString("sideCriteria", "rest");
         ctconfig.sideCriteria = SidebarCriteria.fromString(criteriaTemp);
+        if ( ctconfig.sideCriteria == SidebarCriteria.CUSTOM ) {
+            ctconfig.sideCustomSlot = config.getString("sideCustomSlot", "");
+        } else {
+            ctconfig.sideCustomSlot = "";
+        }
         criteriaTemp = config.getString("listCriteria", "point");
         ctconfig.listCriteria = PlayerCriteria.fromString(criteriaTemp);
         if ( ctconfig.listCriteria == PlayerCriteria.CUSTOM ) {
@@ -235,6 +243,7 @@ public class ColorTeamingConfig {
         config.set("sideCriteria", sideCriteria.toString());
         config.set("listCriteria", listCriteria.toString());
         config.set("belowCriteria", belowCriteria.toString());
+        config.set("sideCustomSlot", sideCustomSlot);
         config.set("listCustomSlot", listCustomSlot);
         config.set("belowCustomSlot", belowCustomSlot);
         config.set("killTrophy", killTrophy);
@@ -243,8 +252,6 @@ public class ColorTeamingConfig {
         config.set("showJapanizeGlobalChat", showJapanizeGlobalChat);
         config.set("showJapanizeTeamChat", showJapanizeTeamChat);
         config.set("teleportDelay", teleportDelay);
-
-
 
         // 保存処理
         try {
@@ -442,12 +449,20 @@ public class ColorTeamingConfig {
         this.teleportDelay = teleportDelay;
     }
 
+    public String getSideCustomSlot() {
+        return sideCustomSlot;
+    }
+
     public String getListCustomSlot() {
         return listCustomSlot;
     }
 
     public String getBelowCustomSlot() {
         return belowCustomSlot;
+    }
+
+    public void setSideCustomSlot(String sideCustomSlot) {
+        this.sideCustomSlot = sideCustomSlot;
     }
 
     public void setListCustomSlot(String listCustomSlot) {

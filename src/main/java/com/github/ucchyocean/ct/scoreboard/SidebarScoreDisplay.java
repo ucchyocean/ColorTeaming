@@ -50,19 +50,22 @@ public class SidebarScoreDisplay {
         // 項目を初期化
         teamscores = new Hashtable<String, SidebarTeamScore>();
 
-        HashMap<String, ArrayList<Player>> members = plugin.getAPI().getAllTeamMembers();
-        for ( String key : members.keySet() ) {
-            Team team = scoreboard.getTeam(key);
-            SidebarTeamScore ts = new SidebarTeamScore(team);
-            objective.getScore(ts).setScore(0);
-            teamscores.put(key, ts);
-        }
-
-        // スコアを消去
-        // NOTE: 全部0を設定すると非表示になってしまうので、1を設定してから0を設定する
-        for ( String key : teamscores.keySet() ) {
-            objective.getScore(teamscores.get(key)).setScore(1);
-            objective.getScore(teamscores.get(key)).setScore(0);
+        SidebarCriteria criteria = plugin.getCTConfig().getSideCriteria();
+        if ( criteria != SidebarCriteria.CUSTOM ) {
+            HashMap<String, ArrayList<Player>> members = plugin.getAPI().getAllTeamMembers();
+            for ( String key : members.keySet() ) {
+                Team team = scoreboard.getTeam(key);
+                SidebarTeamScore ts = new SidebarTeamScore(team);
+                objective.getScore(ts).setScore(0);
+                teamscores.put(key, ts);
+            }
+        } else {
+            String slot = plugin.getCTConfig().getSideCustomSlot();
+            CustomScoreInterface custom =
+                    plugin.getAPI().getCustomScoreCriteria(slot);
+            if ( custom != null ) {
+                custom.displayStart(objective);
+            }
         }
 
         refreshCriteria();
@@ -106,6 +109,12 @@ public class SidebarScoreDisplay {
             break;
         case REST_PLAYER:
             refreshScoreByRestPlayerCount();
+            break;
+        case CUSTOM:
+            CustomScoreInterface custom = getCustomScore();
+            if ( custom != null ) {
+                custom.refreshScore(objective);
+            }
             break;
         case NONE:
             break; // do nothing.
@@ -190,5 +199,10 @@ public class SidebarScoreDisplay {
         if ( plugin.getAPI().getScoreboard().getObjective("teamscore") != null ) {
             objective.unregister();
         }
+    }
+
+    private CustomScoreInterface getCustomScore() {
+        String slot = ColorTeaming.instance.getCTConfig().getSideCustomSlot();
+        return ColorTeaming.instance.getAPI().getCustomScoreCriteria(slot);
     }
 }

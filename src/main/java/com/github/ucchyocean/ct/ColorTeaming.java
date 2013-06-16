@@ -36,7 +36,7 @@ import com.github.ucchyocean.ct.listener.PlayerRespawnListener;
  */
 public class ColorTeaming extends JavaPlugin {
 
-    protected static ColorTeaming instance;
+    public static ColorTeaming instance;
     private ColorTeamingConfig config;
     private ColorTeamingManager manager;
 

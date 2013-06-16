@@ -14,14 +14,34 @@ import org.bukkit.scoreboard.Objective;
 public interface CustomScoreInterface {
 
     /**
-     * 更新対象のobjectiveが渡される。このメソッドは、コマンドで表示を設定されたときに呼び出される。
+     * 表示が開始されたときに、ColorTeamingから呼び出しされます。
      * @param objective 更新対象のobjective
      */
-    public void setObjective(Objective objective);
+    public void displayStart(Objective objective);
 
     /**
-     * スコアの単位を返す。BelowNameなどで表示される。
-     * @return スコアの単位
+     * 表示が終了されたときに、ColorTeamingから呼び出されます。
+     * objective を保持したままの場合は、使用しないようにしてください。
+     */
+    public void displayEnd();
+
+    /**
+     * 表示が開始されていて、ColorTeamingの更新タイミング
+     * （チーム参加・離脱時、プレイヤー死亡時、ログイン・ログアウト時）
+     * に、ColorTeamingから呼び出しされます。
+     * @param objective
+     */
+    public void refreshScore(Objective objective);
+
+    /**
+     * サイドバー表示時に使われるタイトルを返すようにしてください。
+     * @return サイドバーのタイトル
+     */
+    public String getTitle();
+
+    /**
+     * BelowName表示時に使われる単位を返すようにしてください。
+     * @return BelowNameの単位
      */
     public String getUnit();
 }

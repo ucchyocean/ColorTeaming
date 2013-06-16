@@ -56,11 +56,20 @@ public abstract class ScoreDisplayBase {
      */
     public void refreshScore() {
 
-        // NOTE: Health、TotalKill、Customは、自動更新させる。Noneは何もしない。
+        // NOTE: Health、TotalKillは、自動更新させる。Noneは何もしない。
         if ( getConfigData() == PlayerCriteria.HEALTH ||
                 getConfigData() == PlayerCriteria.TOTAL_KILL_COUNT ||
                 getConfigData() == PlayerCriteria.CUSTOM ||
                 getConfigData() == PlayerCriteria.NONE ) {
+            return;
+        }
+
+        // NOTE: Customは、カスタムスコアのrefreshを呼び出す。
+        if ( getConfigData() == PlayerCriteria.CUSTOM ) {
+            CustomScoreInterface custom = getCustomScore();
+            if ( custom != null ) {
+                custom.refreshScore(objective);
+            }
             return;
         }
 
@@ -106,4 +115,6 @@ public abstract class ScoreDisplayBase {
     public abstract DisplaySlot getDisplaySlot();
 
     public abstract void refreshDisplayName();
+
+    public abstract CustomScoreInterface getCustomScore();
 }

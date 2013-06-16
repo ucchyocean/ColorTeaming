@@ -53,4 +53,15 @@ public class BelowNameScoreDisplay extends ScoreDisplayBase {
         String title = getConfigData().getBelowNameTitle();
         objective.setDisplayName(title);
     }
+
+    /**
+     * @see com.github.ucchyocean.ct.scoreboard.ScoreDisplayBase#getCustomScore()
+     */
+    @Override
+    public CustomScoreInterface getCustomScore() {
+        String slot = ColorTeaming.instance.getCTConfig().getBelowCustomSlot();
+        CustomScoreInterface custom =
+                ColorTeaming.instance.getAPI().getCustomScoreCriteria(slot);
+        return custom;
+    }
 }
