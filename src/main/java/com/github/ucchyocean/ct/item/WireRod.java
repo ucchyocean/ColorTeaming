@@ -10,8 +10,8 @@ import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Fish;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
@@ -21,6 +21,8 @@ import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerFishEvent.State;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.MetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
@@ -93,8 +95,13 @@ public class WireRod implements Listener, CustomItem {
 
             // 針の打ち出し速度を加速する
             hook.setVelocity(hook.getVelocity().multiply(HOOK_LAUNCH_SPEED));
-            return;
 
+            // 針にメタデータを仕込む
+            MetadataValue value = new FixedMetadataValue(ColorTeaming.instance, true);
+            hook.setMetadata(NAME, value);
+
+            return;
+            
         } else if ( event.getState() == State.CAUGHT_ENTITY ||
                 event.getState() == State.IN_GROUND ) {
             // 針をひっぱるときの処理
@@ -102,7 +109,7 @@ public class WireRod implements Listener, CustomItem {
             // ひっかかっているのは自分なら、2ダメージ(1ハート)を与える
             if ( event.getCaught() != null &&
                     event.getCaught().equals(player) ) {
-                player.damage(2, player);
+                player.damage(2F, player);
                 return;
             }
 
@@ -160,23 +167,25 @@ public class WireRod implements Listener, CustomItem {
     @EventHandler
     public void onHit(ProjectileHitEvent event) {
 
-        final Projectile projectile = event.getEntity();
-        LivingEntity shooter = projectile.getShooter();
+        Projectile projectile = event.getEntity();
 
-        if ( shooter == null || !(shooter instanceof Player) ) {
+        // プレイヤーが投げたものでないなら無視
+        if ( !(projectile.getShooter() instanceof Player) ) {
             return;
         }
 
-        Player player = (Player)shooter;
+        // 釣り針でなければ無視
+        if ( projectile.getType() != EntityType.FISHING_HOOK ) {
+            return;
+        }
 
-        if ( player.getItemInHand() == null ||
-                player.getItemInHand().getType() == Material.AIR ||
-                player.getItemInHand().getItemMeta().getDisplayName() == null ||
-                !player.getItemInHand().getItemMeta().getDisplayName().equals(DISPLAY_NAME) ) {
+        // メタデータを確認して、wirerodの針かどうか確認する
+        if ( !projectile.hasMetadata(NAME) ) {
             return;
         }
 
         // 音を出す
+        Player player = (Player)projectile.getShooter();
         player.playSound(player.getEyeLocation(), Sound.ARROW_HIT, 1, (float)0.5);
     }
 
