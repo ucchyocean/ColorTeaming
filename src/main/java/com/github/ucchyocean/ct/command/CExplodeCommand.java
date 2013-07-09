@@ -48,7 +48,12 @@ public class CExplodeCommand implements CommandExecutor {
                 plugin.getAPI().getAllTeamMembers();
         ArrayList<Player> playersToExplode = new ArrayList<Player>();
 
-        if ( members.containsKey(target) ) {
+        if ( target.equalsIgnoreCase("all") ) {
+            // target はallである場合
+            for ( String key : members.keySet() ) {
+                playersToExplode.addAll(members.get(key));
+            }
+        } else if ( members.containsKey(target) ) {
             // target はグループである場合
             playersToExplode = members.get(target);
         } else if ( Bukkit.getPlayerExact(target) != null ) {
