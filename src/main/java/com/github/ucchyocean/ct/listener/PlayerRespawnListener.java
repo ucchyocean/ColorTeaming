@@ -6,7 +6,6 @@ package com.github.ucchyocean.ct.listener;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
@@ -29,7 +28,7 @@ public class PlayerRespawnListener implements Listener {
      * Playerがリスポーンしたときに発生するイベント
      * @param event
      */
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event) {
 
         Player player = event.getPlayer();
@@ -39,10 +38,11 @@ public class PlayerRespawnListener implements Listener {
         RespawnConfiguration respawnConfig = plugin.getAPI().getRespawnConfig();
         String respawnMapName = plugin.getAPI().getRespawnMapName();
         Location respawn = respawnConfig.get(color, respawnMapName);
-        if ( respawn == null && plugin.getCTConfig().isWorldSpawn() ) {
-            // チームリスポーンがない場合は、ワールドリスポーンを取得する
-            respawn = player.getWorld().getSpawnLocation();
-        }
+        
+//        if ( respawn == null && plugin.getCTConfig().isWorldSpawn() ) {
+//            // チームリスポーンがない場合は、ワールドリスポーンを取得する
+//            respawn = player.getWorld().getSpawnLocation();
+//        }
 
         if ( respawn != null ) {
             respawn = respawn.add(0.5, 0, 0.5);

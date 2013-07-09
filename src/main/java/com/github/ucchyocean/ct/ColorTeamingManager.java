@@ -194,9 +194,9 @@ public class ColorTeamingManager implements ColorTeamingAPI {
 
             team.removePlayer(player);
 
-            if ( team.getPlayers().size() <= 0 ) {
-                removeTeam(team.getName());
-            }
+//            if ( team.getPlayers().size() <= 0 ) {
+//                removeTeam(team.getName());
+//            }
         }
 
         player.setDisplayName(player.getName());
@@ -621,6 +621,18 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         return killDeathUserCounts;
     }
 
+    /**
+     * ユーザー単位のキルデス数を設定する
+     * @param playerName プレイヤー名
+     * @param kill キル数
+     * @param death デス数
+     * @param tk TK数
+     */
+    public void setKillDeathUserCounts(String playerName, int kill, int death, int tk) {
+        int[] data = new int[]{kill, death, tk};
+        killDeathUserCounts.put(playerName, data);
+    }
+    
     /**
      * リーダー設定を全てクリアする
      */

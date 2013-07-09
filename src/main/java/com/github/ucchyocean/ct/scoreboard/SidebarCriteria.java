@@ -90,7 +90,10 @@ public enum SidebarCriteria {
             String slot = ColorTeaming.instance.getCTConfig().getSideCustomSlot();
             CustomScoreInterface custom =
                     ColorTeaming.instance.getAPI().getCustomScoreCriteria(slot);
-            return custom.getTitle();
+            if ( custom != null )
+                return custom.getTitle();
+            else
+                return "ポイント";
         case NONE:
         default:
             return "";

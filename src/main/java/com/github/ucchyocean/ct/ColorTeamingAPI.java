@@ -208,6 +208,15 @@ public interface ColorTeamingAPI {
     public HashMap<String, int[]> getKillDeathUserCounts();
 
     /**
+     * ユーザー単位のキルデス数を設定する
+     * @param playerName プレイヤー名
+     * @param kill キル数
+     * @param death デス数
+     * @param tk TK数
+     */
+    public void setKillDeathUserCounts(String playerName, int kill, int death, int tk);
+
+    /**
      * リーダー設定を全てクリアする
      */
     public void clearLeaders();
