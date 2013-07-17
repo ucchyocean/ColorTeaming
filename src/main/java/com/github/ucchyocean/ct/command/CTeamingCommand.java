@@ -248,7 +248,6 @@ public class CTeamingCommand implements CommandExecutor {
 
             // カスタム指定の場合
             if ( args[1].toLowerCase().startsWith("custom-") ) {
-                config.setSideCriteria(SidebarCriteria.CUSTOM);
                 int index = 7; // args[1].indexOf("-") + 1;
                 String slot = args[1].toLowerCase().substring(index);
 
@@ -259,8 +258,8 @@ public class CTeamingCommand implements CommandExecutor {
                     return true;
                 }
 
-                config.setListCriteria(PlayerCriteria.CUSTOM);
-                config.setListCustomSlot(slot);
+                config.setSideCriteria(SidebarCriteria.CUSTOM);
+                config.setSideCustomSlot(slot);
                 config.saveConfig();
 
                 // 開始処理と終了処理、スコアボードの更新
@@ -315,7 +314,6 @@ public class CTeamingCommand implements CommandExecutor {
 
             // カスタム指定の場合
             if ( args[1].toLowerCase().startsWith("custom-") ) {
-                config.setListCriteria(PlayerCriteria.CUSTOM);
                 int index = 7; // args[1].indexOf("-") + 1;
                 String slot = args[1].toLowerCase().substring(index);
 
@@ -375,7 +373,6 @@ public class CTeamingCommand implements CommandExecutor {
 
             // カスタム指定の場合
             if ( args[1].toLowerCase().startsWith("custom-") ) {
-                config.setListCriteria(PlayerCriteria.CUSTOM);
                 int index = 7; // args[1].indexOf("-") + 1;
                 String slot = args[1].toLowerCase().substring(index);
 
