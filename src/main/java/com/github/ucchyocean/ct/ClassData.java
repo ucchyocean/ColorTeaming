@@ -50,7 +50,7 @@ public class ClassData {
     public ArrayList<ItemStack> getArmor() {
 
         if ( armor == null ) {
-            return null;
+            return new ArrayList<ItemStack>();
         }
         if ( handler == null ) {
             handler = new KitHandler();
