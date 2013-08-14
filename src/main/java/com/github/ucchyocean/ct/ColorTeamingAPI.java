@@ -14,7 +14,6 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
 import com.github.ucchyocean.ct.event.ColorTeamingPlayerLeaveEvent.Reason;
-import com.github.ucchyocean.ct.scoreboard.CustomScoreInterface;
 
 /**
  * ColorTeaming APIクラス
@@ -180,20 +179,6 @@ public interface ColorTeamingAPI {
      * キルデス数を全てクリアする
      */
     public void clearKillDeathPoints();
-
-    /**
-     * カスタムスコアを取得する
-     * @param slot 登録スロット名
-     * @return カスタムスコア
-     */
-    public CustomScoreInterface getCustomScoreCriteria(String slot);
-
-    /**
-     * カスタムスコアを設定する
-     * @param slot 登録スロット名
-     * @param score カスタムスコア
-     */
-    public void setCustomScoreCriteria(String slot, CustomScoreInterface score);
 
     /**
      * チーム単位のキルデス数を取得する

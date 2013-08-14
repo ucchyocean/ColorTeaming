@@ -26,7 +26,6 @@ import com.github.ucchyocean.ct.event.ColorTeamingTeamChatEvent;
 import com.github.ucchyocean.ct.event.ColorTeamingTeamCreateEvent;
 import com.github.ucchyocean.ct.event.ColorTeamingTeamRemoveEvent;
 import com.github.ucchyocean.ct.scoreboard.BelowNameScoreDisplay;
-import com.github.ucchyocean.ct.scoreboard.CustomScoreInterface;
 import com.github.ucchyocean.ct.scoreboard.PlayerCriteria;
 import com.github.ucchyocean.ct.scoreboard.SidebarCriteria;
 import com.github.ucchyocean.ct.scoreboard.SidebarScoreDisplay;
@@ -59,8 +58,6 @@ public class ColorTeamingManager implements ColorTeamingAPI {
 
     private String respawnMapName;
 
-    private HashMap<String, CustomScoreInterface> customScores;
-
     /**
      * コンストラクタ
      * @param plugin
@@ -78,7 +75,6 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         respawnConfig = new RespawnConfiguration();
         tppointConfig = new TPPointConfiguration();
         sdhandler = new TeamMemberSaveDataHandler(plugin.getDataFolder());
-        customScores = new HashMap<String, CustomScoreInterface>();
     }
 
     /**
@@ -581,26 +577,6 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         // クリア
         killDeathCounts.clear();
         killDeathUserCounts.clear();
-    }
-
-    /**
-     * カスタムスコアを取得する
-     * @param slot 登録スロット名
-     * @return カスタムスコア
-     */
-    @Override
-    public CustomScoreInterface getCustomScoreCriteria(String slot) {
-        return customScores.get(slot);
-    }
-
-    /**
-     * カスタムスコアを設定する
-     * @param slot 登録スロット名
-     * @param score カスタムスコア
-     */
-    @Override
-    public void setCustomScoreCriteria(String slot, CustomScoreInterface score) {
-        customScores.put(slot, score);
     }
 
     /**

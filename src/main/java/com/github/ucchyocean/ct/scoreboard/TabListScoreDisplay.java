@@ -52,15 +52,4 @@ public class TabListScoreDisplay extends ScoreDisplayBase {
     public void refreshDisplayName() {
         // do nothing.
     }
-
-    /**
-     * @see com.github.ucchyocean.ct.scoreboard.ScoreDisplayBase#getCustomScore()
-     */
-    @Override
-    public CustomScoreInterface getCustomScore() {
-        String slot = ColorTeaming.instance.getCTConfig().getListCustomSlot();
-        CustomScoreInterface custom =
-                ColorTeaming.instance.getAPI().getCustomScoreCriteria(slot);
-        return custom;
-    }
 }

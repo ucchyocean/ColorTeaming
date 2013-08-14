@@ -18,7 +18,6 @@ import com.github.ucchyocean.ct.ColorTeamingAPI;
 import com.github.ucchyocean.ct.ColorTeamingConfig;
 import com.github.ucchyocean.ct.Utility;
 import com.github.ucchyocean.ct.event.ColorTeamingPlayerLeaveEvent.Reason;
-import com.github.ucchyocean.ct.scoreboard.CustomScoreInterface;
 import com.github.ucchyocean.ct.scoreboard.PlayerCriteria;
 import com.github.ucchyocean.ct.scoreboard.SidebarCriteria;
 
@@ -238,42 +237,6 @@ public class CTeamingCommand implements CommandExecutor {
 
             ColorTeamingConfig config = plugin.getCTConfig();
 
-            // 前回がカスタムだった場合、表示を終了する必要があるので、
-            // あらかじめカスタムを取得しておく
-            CustomScoreInterface oldCustom = null;
-            if ( config.getSideCriteria() == SidebarCriteria.CUSTOM ) {
-                String slot = config.getSideCustomSlot();
-                oldCustom = plugin.getAPI().getCustomScoreCriteria(slot);
-            }
-
-            // カスタム指定の場合
-            if ( args[1].toLowerCase().startsWith("custom-") ) {
-                int index = 7; // args[1].indexOf("-") + 1;
-                String slot = args[1].toLowerCase().substring(index);
-
-                CustomScoreInterface custom =
-                        plugin.getAPI().getCustomScoreCriteria(slot);
-                if ( custom == null ) {
-                    sender.sendMessage(PREERR + "カスタムスコア" + slot + "が存在しません。");
-                    return true;
-                }
-
-                config.setSideCriteria(SidebarCriteria.CUSTOM);
-                config.setSideCustomSlot(slot);
-                config.saveConfig();
-
-                // 開始処理と終了処理、スコアボードの更新
-                if ( oldCustom != null ) {
-                    oldCustom.displayEnd();
-                }
-                plugin.getAPI().makeTabkeyListScore();
-
-                sender.sendMessage(PREINFO +
-                        "リストの表示をカスタムスコア" + slot + "にしました。");
-
-                return true;
-            }
-
             if ( args[1].equalsIgnoreCase("kill") ) {
                 config.setSideCriteria(SidebarCriteria.KILL_COUNT);
             } else if ( args[1].equalsIgnoreCase("death") ) {
@@ -290,9 +253,6 @@ public class CTeamingCommand implements CommandExecutor {
             config.saveConfig();
 
             // サイドバーの更新
-            if ( oldCustom != null ) {
-                oldCustom.displayEnd();
-            }
             plugin.getAPI().makeSidebarScore();
 
             String criteria = config.getSideCriteria().toString();
@@ -303,42 +263,6 @@ public class CTeamingCommand implements CommandExecutor {
         } else if ( args.length >= 2 && args[0].equalsIgnoreCase("list") ) {
 
             ColorTeamingConfig config = plugin.getCTConfig();
-
-            // 前回がカスタムだった場合、表示を終了する必要があるので、
-            // あらかじめカスタムを取得しておく
-            CustomScoreInterface oldCustom = null;
-            if ( config.getListCriteria() == PlayerCriteria.CUSTOM ) {
-                String slot = config.getSideCustomSlot();
-                oldCustom = plugin.getAPI().getCustomScoreCriteria(slot);
-            }
-
-            // カスタム指定の場合
-            if ( args[1].toLowerCase().startsWith("custom-") ) {
-                int index = 7; // args[1].indexOf("-") + 1;
-                String slot = args[1].toLowerCase().substring(index);
-
-                CustomScoreInterface custom =
-                        plugin.getAPI().getCustomScoreCriteria(slot);
-                if ( custom == null ) {
-                    sender.sendMessage(PREERR + "カスタムスコア" + slot + "が存在しません。");
-                    return true;
-                }
-
-                config.setListCriteria(PlayerCriteria.CUSTOM);
-                config.setListCustomSlot(slot);
-                config.saveConfig();
-
-                // 開始処理と終了処理、スコアボードの更新
-                if ( oldCustom != null ) {
-                    oldCustom.displayEnd();
-                }
-                plugin.getAPI().makeTabkeyListScore();
-
-                sender.sendMessage(PREINFO +
-                        "リストの表示をカスタムスコア" + slot + "にしました。");
-
-                return true;
-            }
 
             // その他の指定の場合
             if ( args[1].equalsIgnoreCase("kill") ) {
@@ -357,9 +281,6 @@ public class CTeamingCommand implements CommandExecutor {
             config.saveConfig();
 
             // スコアボードの更新
-            if ( oldCustom != null ) {
-                oldCustom.displayEnd();
-            }
             plugin.getAPI().makeTabkeyListScore();
 
             String criteria = config.getListCriteria().toString();
@@ -370,31 +291,6 @@ public class CTeamingCommand implements CommandExecutor {
         } else if ( args.length >= 2 && args[0].equalsIgnoreCase("below") ) {
 
             ColorTeamingConfig config = plugin.getCTConfig();
-
-            // カスタム指定の場合
-            if ( args[1].toLowerCase().startsWith("custom-") ) {
-                int index = 7; // args[1].indexOf("-") + 1;
-                String slot = args[1].toLowerCase().substring(index);
-
-                CustomScoreInterface custom =
-                        plugin.getAPI().getCustomScoreCriteria(slot);
-                if ( custom == null ) {
-                    sender.sendMessage(PREERR + "カスタムスコア" + slot + "が存在しません。");
-                    return true;
-                }
-
-                config.setBelowCriteria(PlayerCriteria.CUSTOM);
-                config.setBelowCustomSlot(slot);
-                config.saveConfig();
-
-                // スコアボードの更新
-                plugin.getAPI().makeBelowNameScore();
-
-                sender.sendMessage(PREINFO +
-                        "リストの表示をカスタムスコア" + slot + "にしました。");
-
-                return true;
-            }
 
             // その他の指定の場合
             if ( args[1].equalsIgnoreCase("kill") ) {

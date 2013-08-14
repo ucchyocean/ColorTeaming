@@ -5,7 +5,6 @@
  */
 package com.github.ucchyocean.ct.scoreboard;
 
-import com.github.ucchyocean.ct.ColorTeaming;
 
 /**
  * サイドバーに表示するスコアの種類
@@ -24,9 +23,6 @@ public enum SidebarCriteria {
 
     /** 残り人数 */
     REST_PLAYER("rest"),
-
-    /** カスタム 他のプラグインからの連携用 */
-    CUSTOM("custom"),
 
     /** 非表示 */
     NONE("none");
@@ -86,14 +82,6 @@ public enum SidebarCriteria {
             return "チームスコア";
         case REST_PLAYER:
             return "チーム人数";
-        case CUSTOM:
-            String slot = ColorTeaming.instance.getCTConfig().getSideCustomSlot();
-            CustomScoreInterface custom =
-                    ColorTeaming.instance.getAPI().getCustomScoreCriteria(slot);
-            if ( custom != null )
-                return custom.getTitle();
-            else
-                return "ポイント";
         case NONE:
         default:
             return "";

@@ -50,22 +50,12 @@ public class SidebarScoreDisplay {
         // 項目を初期化
         teamscores = new Hashtable<String, SidebarTeamScore>();
 
-        SidebarCriteria criteria = plugin.getCTConfig().getSideCriteria();
-        if ( criteria != SidebarCriteria.CUSTOM ) {
-            HashMap<String, ArrayList<Player>> members = plugin.getAPI().getAllTeamMembers();
-            for ( String key : members.keySet() ) {
-                Team team = scoreboard.getTeam(key);
-                SidebarTeamScore ts = new SidebarTeamScore(team);
-                objective.getScore(ts).setScore(0);
-                teamscores.put(key, ts);
-            }
-        } else {
-            String slot = plugin.getCTConfig().getSideCustomSlot();
-            CustomScoreInterface custom =
-                    plugin.getAPI().getCustomScoreCriteria(slot);
-            if ( custom != null ) {
-                custom.displayStart(objective);
-            }
+        HashMap<String, ArrayList<Player>> members = plugin.getAPI().getAllTeamMembers();
+        for ( String key : members.keySet() ) {
+            Team team = scoreboard.getTeam(key);
+            SidebarTeamScore ts = new SidebarTeamScore(team);
+            objective.getScore(ts).setScore(0);
+            teamscores.put(key, ts);
         }
 
         refreshCriteria();
@@ -109,12 +99,6 @@ public class SidebarScoreDisplay {
             break;
         case REST_PLAYER:
             refreshScoreByRestPlayerCount();
-            break;
-        case CUSTOM:
-            CustomScoreInterface custom = getCustomScore();
-            if ( custom != null ) {
-                custom.refreshScore(objective);
-            }
             break;
         case NONE:
             break; // do nothing.
@@ -199,10 +183,5 @@ public class SidebarScoreDisplay {
         if ( plugin.getAPI().getScoreboard().getObjective("teamscore") != null ) {
             objective.unregister();
         }
-    }
-
-    private CustomScoreInterface getCustomScore() {
-        String slot = ColorTeaming.instance.getCTConfig().getSideCustomSlot();
-        return ColorTeaming.instance.getAPI().getCustomScoreCriteria(slot);
     }
 }

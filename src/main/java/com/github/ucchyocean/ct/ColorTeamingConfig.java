@@ -77,15 +77,6 @@ public class ColorTeamingConfig {
     /** 名前下のスコア設定 */
     private PlayerCriteria belowCriteria;
 
-    /** サイドバーのカスタムスロット名 */
-    private String sideCustomSlot;
-
-    /** Tabキーリストのスコアのカスタムスロット名 */
-    private String listCustomSlot;
-
-    /** 名前下のスコアのカスタムスロット名 */
-    private String belowCustomSlot;
-
     /** キル数目標の設定 */
     private int killTrophy;
 
@@ -161,25 +152,10 @@ public class ColorTeamingConfig {
 
         String criteriaTemp = config.getString("sideCriteria", "rest");
         ctconfig.sideCriteria = SidebarCriteria.fromString(criteriaTemp);
-        if ( ctconfig.sideCriteria == SidebarCriteria.CUSTOM ) {
-            ctconfig.sideCustomSlot = config.getString("sideCustomSlot", "");
-        } else {
-            ctconfig.sideCustomSlot = "";
-        }
         criteriaTemp = config.getString("listCriteria", "point");
         ctconfig.listCriteria = PlayerCriteria.fromString(criteriaTemp);
-        if ( ctconfig.listCriteria == PlayerCriteria.CUSTOM ) {
-            ctconfig.listCustomSlot = config.getString("listCustomSlot", "");
-        } else {
-            ctconfig.listCustomSlot = "";
-        }
         criteriaTemp = config.getString("belowCriteria", "none");
         ctconfig.belowCriteria = PlayerCriteria.fromString(criteriaTemp);
-        if ( ctconfig.belowCriteria == PlayerCriteria.CUSTOM ) {
-            ctconfig.belowCustomSlot = config.getString("belowCustomSlot", "");
-        } else {
-            ctconfig.belowCustomSlot = "";
-        }
 
         ctconfig.killTrophy = config.getInt("killTrophy", 0);
         if ( ctconfig.killTrophy > 0 ) {
@@ -243,9 +219,6 @@ public class ColorTeamingConfig {
         config.set("sideCriteria", sideCriteria.toString());
         config.set("listCriteria", listCriteria.toString());
         config.set("belowCriteria", belowCriteria.toString());
-        config.set("sideCustomSlot", sideCustomSlot);
-        config.set("listCustomSlot", listCustomSlot);
-        config.set("belowCustomSlot", belowCustomSlot);
         config.set("killTrophy", killTrophy);
         config.set("killReachTrophy", killReachTrophy);
         config.set("worldSpawn", worldSpawn);
@@ -447,29 +420,5 @@ public class ColorTeamingConfig {
 
     public void setTeleportDelay(int teleportDelay) {
         this.teleportDelay = teleportDelay;
-    }
-
-    public String getSideCustomSlot() {
-        return sideCustomSlot;
-    }
-
-    public String getListCustomSlot() {
-        return listCustomSlot;
-    }
-
-    public String getBelowCustomSlot() {
-        return belowCustomSlot;
-    }
-
-    public void setSideCustomSlot(String sideCustomSlot) {
-        this.sideCustomSlot = sideCustomSlot;
-    }
-
-    public void setListCustomSlot(String listCustomSlot) {
-        this.listCustomSlot = listCustomSlot;
-    }
-
-    public void setBelowCustomSlot(String belowCustomSlot) {
-        this.belowCustomSlot = belowCustomSlot;
     }
 }
