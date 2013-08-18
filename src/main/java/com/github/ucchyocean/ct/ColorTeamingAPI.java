@@ -13,6 +13,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
+import com.github.ucchyocean.ct.config.RespawnConfiguration;
+import com.github.ucchyocean.ct.config.TPPointConfiguration;
+import com.github.ucchyocean.ct.config.TeamMemberSaveDataHandler;
 import com.github.ucchyocean.ct.event.ColorTeamingPlayerLeaveEvent.Reason;
 
 /**
@@ -236,4 +239,39 @@ public interface ColorTeamingAPI {
      */
     public void setRespawnMapName(String respawnMapName);
 
+    /**
+     * ランダムな順序で、プレイヤーをチームわけします。<br/>
+     * 既にチームわけが存在する場合は、全部クリアしてから分けられます。
+     * @param players チームわけを行うプレイヤー
+     * @param teamNum チーム数（2から9までの数を指定可能です）
+     */
+    public void makeColorTeamsWithRandomSelection(ArrayList<Player> players, int teamNum);
+
+    /**
+     * 指定されたプレイヤー順序で、プレイヤーをチームわけします。<br/>
+     * 既にチームわけが存在する場合は、全部クリアしてから分けられます。
+     * @param players チームわけを行うプレイヤー
+     * @param teamNum チーム数（2から9までの数を指定可能です）
+     */
+    public void makeColorTeamsWithOrderSelection(ArrayList<Player> players, int teamNum);
+    
+    /**
+     * 既存のチームわけをそのままに、指定されたプレイヤーを既存のチームへ加えていきます。<br/>
+     * プレイヤーはランダムな順序で追加が行われます。<br/>
+     * 加えられる先のチームは、人数の少ないチームが選択されます。
+     * 同数の場合はその中からランダムに選択されます。
+     * @param players チームに加えるプレイヤー
+     * @return 最後まで処理が行われたかどうか
+     */
+    public boolean addPlayerToColorTeamsWithRandomSelection(ArrayList<Player> players);
+    
+    /**
+     * 既存のチームわけをそのままに、指定されたプレイヤーを既存のチームへ加えていきます。<br/>
+     * プレイヤーは指定の順序で追加が行われます。<br/>
+     * 加えられる先のチームは、人数の少ないチームが選択されます。
+     * 同数の場合はその中からランダムに選択されます。
+     * @param players チームに加えるプレイヤー
+     * @return 最後まで処理が行われたかどうか
+     */
+    public boolean addPlayerToColorTeamsWithOrderSelection(ArrayList<Player> players);
 }

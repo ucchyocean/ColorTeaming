@@ -4,6 +4,7 @@
 package com.github.ucchyocean.ct.command;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 import org.bukkit.Bukkit;
@@ -13,11 +14,12 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
 
-import com.github.ucchyocean.ct.ClassData;
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingAPI;
-import com.github.ucchyocean.ct.KitHandler;
+import com.github.ucchyocean.ct.config.ClassData;
+import com.github.ucchyocean.ct.config.KitParser;
 
 /**
  * colorclass(cclass)コマンドの実行クラス
@@ -28,12 +30,12 @@ public class CClassCommand implements CommandExecutor {
     private static final String PREERR = ChatColor.RED.toString();
     private static final String PREINFO = ChatColor.GRAY.toString();
 
-    private KitHandler handler;
+    private KitParser handler;
     private ColorTeaming plugin;
 
     public CClassCommand(ColorTeaming plugin) {
         this.plugin = plugin;
-        handler = new KitHandler();
+        handler = new KitParser();
     }
 
     /**
@@ -91,6 +93,7 @@ public class CClassCommand implements CommandExecutor {
         ClassData cdata = plugin.getCTConfig().getClasses().get(clas);
         ArrayList<ItemStack> itemData = cdata.getItems();
         ArrayList<ItemStack> armorData = cdata.getArmor();
+        ArrayList<PotionEffect> effectData = cdata.getEffect();
 
         ArrayList<Player> playersToSet = new ArrayList<Player>();
         if ( isAll ) {
@@ -103,8 +106,15 @@ public class CClassCommand implements CommandExecutor {
             playersToSet.add(Bukkit.getPlayerExact(group));
         }
 
+        boolean isHealOnSetClass = plugin.getCTConfig().isHealOnSetClass();
+        
         for ( Player p : playersToSet ) {
 
+            // 全回復の実行
+            if ( isHealOnSetClass ) {
+                heal(p);
+            }
+            
             // インベントリの消去
             p.getInventory().clear();
             p.getInventory().setHelmet(null);
@@ -135,6 +145,11 @@ public class CClassCommand implements CommandExecutor {
                     p.getInventory().setBoots(armorData.get(3));
                 }
             }
+            
+            // ポーション効果の設定
+            if ( effectData != null ) {
+                p.addPotionEffects(effectData);
+            }
 
             updateInventory(p);
         }
@@ -163,5 +178,21 @@ public class CClassCommand implements CommandExecutor {
     @SuppressWarnings("deprecation")
     private void updateInventory(Player player) {
         player.updateInventory();
+    }
+    
+    /**
+     * プレイヤーの全回復、および、全エフェクトの除去を行う
+     * @param player 対象プレイヤー
+     */
+    private void heal(Player player) {
+        
+        player.setHealth(player.getMaxHealth());
+        player.setFireTicks(0);
+        player.setFallDistance(0);
+        player.setFoodLevel(20);
+        Collection<PotionEffect> effects = player.getActivePotionEffects();
+        for ( PotionEffect e : effects ) {
+            player.removePotionEffect(e.getType());
+        }
     }
 }

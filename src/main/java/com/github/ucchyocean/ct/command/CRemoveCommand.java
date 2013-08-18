@@ -9,7 +9,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 import com.github.ucchyocean.ct.ColorTeaming;
-import com.github.ucchyocean.ct.ColorTeamingConfig;
+import com.github.ucchyocean.ct.config.ColorTeamingConfig;
 
 /**
  * ColorRemove(CR)コマンドの実行クラス

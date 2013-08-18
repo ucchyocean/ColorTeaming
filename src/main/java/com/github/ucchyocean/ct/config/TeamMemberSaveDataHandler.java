@@ -3,7 +3,7 @@
  * @license    GPLv3
  * @copyright  Copyright ucchy 2013
  */
-package com.github.ucchyocean.ct;
+package com.github.ucchyocean.ct.config;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,11 +17,13 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
+import com.github.ucchyocean.ct.ColorTeaming;
+import com.github.ucchyocean.ct.ColorTeamingAPI;
 import com.github.ucchyocean.ct.event.ColorTeamingPlayerLeaveEvent.Reason;
 
 /**
- * @author ucchy
  * csaveコマンドやcrestoreコマンドで扱う、チームメンバー保存データのハンドルクラス
+ * @author ucchy
  */
 public class TeamMemberSaveDataHandler {
 

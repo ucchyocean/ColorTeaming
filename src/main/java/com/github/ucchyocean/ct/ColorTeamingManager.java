@@ -6,6 +6,7 @@
 package com.github.ucchyocean.ct;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -18,6 +19,10 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
+import com.github.ucchyocean.ct.config.ColorTeamingConfig;
+import com.github.ucchyocean.ct.config.RespawnConfiguration;
+import com.github.ucchyocean.ct.config.TPPointConfiguration;
+import com.github.ucchyocean.ct.config.TeamMemberSaveDataHandler;
 import com.github.ucchyocean.ct.event.ColorTeamingKillDeathClearedEvent;
 import com.github.ucchyocean.ct.event.ColorTeamingPlayerAddEvent;
 import com.github.ucchyocean.ct.event.ColorTeamingPlayerLeaveEvent;
@@ -39,6 +44,9 @@ public class ColorTeamingManager implements ColorTeamingAPI {
 
     private static final String TEAM_CHAT_FORMAT = "&a[%s&a]<%s&r&a> %s";
     private static final String TEAM_INFORMATION_FORMAT = "&a[%s&a] %s";
+
+    private static final String[] GROUP_COLORS =
+        {"red", "blue", "yellow", "green", "aqua", "gray", "dark_red", "dark_green", "dark_aqua"};
 
     private ColorTeaming plugin;
     private ColorTeamingConfig config;
@@ -660,5 +668,132 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     @Override
     public void setRespawnMapName(String respawnMapName) {
         this.respawnMapName = respawnMapName;
+    }
+
+    /**
+     * ランダムな順序で、プレイヤーをチームわけします。<br/>
+     * 既にチームわけが存在する場合は、全部クリアしてから分けられます。
+     * @param players チームわけを行うプレイヤー
+     * @param teamNum チーム数（2から9までの数を指定可能です）
+     */
+    @Override
+    public void makeColorTeamsWithRandomSelection(
+            ArrayList<Player> players, int teamNum) {
+        Collections.shuffle(players);
+        makeColorTeamsWithOrderSelection(players, teamNum);
+    }
+
+    /**
+     * 指定されたプレイヤー順序で、プレイヤーをチームわけします。<br/>
+     * 既にチームわけが存在する場合は、全部クリアしてから分けられます。
+     * @param players チームわけを行うプレイヤー
+     * @param teamNum チーム数（2から9までの数を指定可能です）
+     */
+    @Override
+    public void makeColorTeamsWithOrderSelection(ArrayList<Player> players, int teamNum) {
+        
+        // 全てのグループをいったん削除する
+        removeAllTeam();
+
+        // グループを設定していく
+        for ( int i=0; i<players.size(); i++ ) {
+            int group = i % teamNum;
+            String color = GROUP_COLORS[group];
+            addPlayerTeam(players.get(i), color);
+        }
+
+        // 各グループに、通知メッセージを出す
+        for ( int i=0; i<teamNum; i++ ) {
+            sendInfoToTeamChat(GROUP_COLORS[i],
+                    "あなたは " +
+                    Utility.replaceColors(GROUP_COLORS[i]) +
+                    GROUP_COLORS[i] +
+                    ChatColor.GREEN +
+                    " グループになりました。");
+        }
+
+        // キルデス情報のクリア
+        clearKillDeathPoints();
+
+        // スコアボードの作成
+        makeSidebarScore();
+        makeTabkeyListScore();
+        makeBelowNameScore();
+
+        // メンバー情報をlastdataに保存する
+        getCTSaveDataHandler().save("lastdata");
+    }
+    
+    
+    
+    /**
+     * 既存のチームわけをそのままに、指定されたプレイヤーを既存のチームへ加えていきます。<br/>
+     * プレイヤーはランダムな順序で追加が行われます。<br/>
+     * 加えられる先のチームは、人数の少ないチームが選択されます。
+     * 同数の場合はその中からランダムに選択されます。
+     * @param players チームに加えるプレイヤー
+     * @return 最後まで処理が行われたかどうか
+     */
+    @Override
+    public boolean addPlayerToColorTeamsWithRandomSelection(ArrayList<Player> players) {
+        Collections.shuffle(players);
+        return addPlayerToColorTeamsWithOrderSelection(players);
+    }
+    
+    /**
+     * 既存のチームわけをそのままに、指定されたプレイヤーを既存のチームへ加えていきます。<br/>
+     * プレイヤーは指定の順序で追加が行われます。<br/>
+     * 加えられる先のチームは、人数の少ないチームが選択されます。
+     * 同数の場合はその中からランダムに選択されます。
+     * @param players チームに加えるプレイヤー
+     * @return 最後まで処理が行われたかどうか
+     */
+    @Override
+    public boolean addPlayerToColorTeamsWithOrderSelection(ArrayList<Player> players) {
+        
+        // 人数の少ないグループに設定していく
+        for ( int i=0; i<players.size(); i++ ) {
+
+            // 人数の少ないグループの取得
+            HashMap<String, ArrayList<Player>> members = getAllTeamMembers();
+            int least = 999;
+            String leastGroup = null;
+
+            ArrayList<String> groups = new ArrayList<String>(members.keySet());
+            // ランダム要素を入れるため、グループ名をシャッフルする
+            Collections.shuffle(groups);
+
+            for ( String group : groups ) {
+                if ( least > members.get(group).size() ) {
+                    least = members.get(group).size();
+                    leastGroup = group;
+                }
+            }
+            
+            // グループへプレイヤーを追加
+            if ( leastGroup != null ) {
+                addPlayerTeam(players.get(i), leastGroup);
+                players.get(i).sendMessage(
+                        ChatColor.GREEN + "あなたは " +
+                        Utility.replaceColors(leastGroup) +
+                        leastGroup +
+                        ChatColor.GREEN +
+                        " グループになりました。");
+            } else {
+//                sender.sendMessage(
+//                        PREERR + "設定できるグループが無いようです。");
+                return false;
+            }
+        }
+
+        // スコアボードの作成
+        makeSidebarScore();
+        refreshTabkeyListScore();
+        refreshBelowNameScore();
+
+        // メンバー情報をlastdataに保存する
+        getCTSaveDataHandler().save("lastdata");
+        
+        return true;
     }
 }

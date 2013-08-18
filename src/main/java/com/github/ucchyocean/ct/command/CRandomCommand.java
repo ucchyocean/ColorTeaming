@@ -4,7 +4,6 @@
 package com.github.ucchyocean.ct.command;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 
 import org.bukkit.ChatColor;
@@ -17,8 +16,7 @@ import org.bukkit.scoreboard.Team;
 
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingAPI;
-import com.github.ucchyocean.ct.ColorTeamingConfig;
-import com.github.ucchyocean.ct.Utility;
+import com.github.ucchyocean.ct.config.ColorTeamingConfig;
 
 /**
  * ColorRandom(CR)コマンドの実行クラス
@@ -27,9 +25,6 @@ import com.github.ucchyocean.ct.Utility;
 public class CRandomCommand implements CommandExecutor {
 
     private static final String PREERR = ChatColor.RED.toString();
-
-    private static final String[] GROUP_COLORS =
-        {"red", "blue", "yellow", "green", "aqua", "gray", "dark_red", "dark_green", "dark_aqua"};
 
     private ColorTeaming plugin;
 
@@ -72,45 +67,14 @@ public class CRandomCommand implements CommandExecutor {
             return true;
         }
 
-        // 全てのグループをいったん削除する
-        api.removeAllTeam();
-
-        // シャッフル
-        Collections.shuffle(players);
-
-        // グループを設定していく
-        for ( int i=0; i<players.size(); i++ ) {
-            int group = i % numberOfGroups;
-            String color = GROUP_COLORS[group];
-            api.addPlayerTeam(players.get(i), color);
-        }
-
-        // 各グループに、通知メッセージを出す
-        for ( int i=0; i<numberOfGroups; i++ ) {
-            api.sendInfoToTeamChat(GROUP_COLORS[i],
-                    "あなたは " +
-                    Utility.replaceColors(GROUP_COLORS[i]) +
-                    GROUP_COLORS[i] +
-                    ChatColor.GREEN +
-                    " グループになりました。");
-        }
-
-        // キルデス情報のクリア
-        api.clearKillDeathPoints();
-
-        // スコアボードの作成
-        api.makeSidebarScore();
-        api.makeTabkeyListScore();
-        api.makeBelowNameScore();
+        // チームわけの実行
+        api.makeColorTeamsWithRandomSelection(players, numberOfGroups);
 
         // メンバー情報の取得
         HashMap<String, ArrayList<Player>> members = api.getAllTeamMembers();
 
         // コマンド完了を、CCメッセージで通知する
         CCountCommand.sendCCMessage(sender, members, false);
-
-        // メンバー情報をlastdataに保存する
-        api.getCTSaveDataHandler().save("lastdata");
 
         return true;
     }
@@ -143,32 +107,16 @@ public class CRandomCommand implements CommandExecutor {
                     PREERR + "設定されたワールドに、対象プレイヤーがいないようです。");
             return true;
         }
-
-        // シャッフル
-        Collections.shuffle(players);
-
-        // 人数の少ないグループに設定していく
-        for ( int i=0; i<players.size(); i++ ) {
-            String color = getLeastGroup();
-            if ( color != null ) {
-                api.addPlayerTeam(players.get(i), color);
-                players.get(i).sendMessage(
-                        ChatColor.GREEN + "あなたは " +
-                        Utility.replaceColors(color) +
-                        color +
-                        ChatColor.GREEN +
-                        " グループになりました。");
-            } else {
-                sender.sendMessage(
-                        PREERR + "設定できるグループが無いようです。");
-                return true;
-            }
+        
+        // チームがあるかどうかを確認する
+        if ( api.getAllTeamNames().size() == 0 ) {
+            sender.sendMessage(
+                    PREERR + "設定できるグループが無いようです。");
+            return true;
         }
 
-        // スコアボードの作成
-        api.makeSidebarScore();
-        api.refreshTabkeyListScore();
-        api.refreshBelowNameScore();
+        // チームへのプレイヤー追加実行
+        api.addPlayerToColorTeamsWithRandomSelection(players);
 
         // メンバー情報の取得
         HashMap<String, ArrayList<Player>> members =
@@ -177,35 +125,6 @@ public class CRandomCommand implements CommandExecutor {
         // コマンド完了を、CCメッセージで通知する
         CCountCommand.sendCCMessage(sender, members, false);
 
-        // メンバー情報をlastdataに保存する
-        api.getCTSaveDataHandler().save("lastdata");
-
         return true;
-    }
-
-    /**
-     * メンバー人数が最小のグループを返す。
-     * @return メンバー人数が最小のグループ
-     */
-    private String getLeastGroup() {
-
-        HashMap<String, ArrayList<Player>> members =
-                plugin.getAPI().getAllTeamMembers();
-        int least = 999;
-        String leastGroup = null;
-
-        ArrayList<String> groups = new ArrayList<String>(members.keySet());
-        // ランダム要素を入れるため、グループ名をシャッフルする
-        Collections.shuffle(groups);
-
-        for ( String group : groups ) {
-            if ( least > members.get(group).size() ) {
-                least = members.get(group).size();
-                leastGroup = group;
-            }
-        }
-
-        return leastGroup;
-
     }
 }

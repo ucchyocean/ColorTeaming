@@ -24,6 +24,7 @@ import com.github.ucchyocean.ct.command.CSaveCommand;
 import com.github.ucchyocean.ct.command.CSpawnCommand;
 import com.github.ucchyocean.ct.command.CTPCommand;
 import com.github.ucchyocean.ct.command.CTeamingCommand;
+import com.github.ucchyocean.ct.config.ColorTeamingConfig;
 import com.github.ucchyocean.ct.listener.EntityDamageListener;
 import com.github.ucchyocean.ct.listener.PlayerChatListener;
 import com.github.ucchyocean.ct.listener.PlayerDeathListener;
@@ -85,7 +86,7 @@ public class ColorTeaming extends JavaPlugin {
      * このプラグインのJarファイル自身を示すFileクラスを返す。
      * @return
      */
-    protected File getPluginJarFile() {
+    public File getPluginJarFile() {
         return this.getFile();
     }
 

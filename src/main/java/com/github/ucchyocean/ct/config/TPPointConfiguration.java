@@ -3,11 +3,11 @@
  * @license    GPLv3
  * @copyright  Copyright ucchy 2013
  */
-package com.github.ucchyocean.ct;
+package com.github.ucchyocean.ct.config;
 
 /**
- * @author ucchy
  * ctpコマンドで使用する登録ポイントをファイルで保存し、値の取得・設定を仲介するためのクラス
+ * @author ucchy
  */
 public class TPPointConfiguration extends PointConfigAbst {
 

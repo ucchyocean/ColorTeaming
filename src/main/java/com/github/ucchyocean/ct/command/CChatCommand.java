@@ -14,7 +14,7 @@ import org.bukkit.entity.Player;
 
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingAPI;
-import com.github.ucchyocean.ct.ColorTeamingConfig;
+import com.github.ucchyocean.ct.config.ColorTeamingConfig;
 
 /**
  * colorchat(cchat)コマンドの実行クラス

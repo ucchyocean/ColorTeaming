@@ -17,7 +17,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.github.ucchyocean.ct.ColorTeaming;
-import com.github.ucchyocean.ct.KitHandler;
+import com.github.ucchyocean.ct.config.KitParser;
 
 /**
  * colorgive(cgive)コマンドの実行クラス
@@ -28,12 +28,12 @@ public class CGiveCommand implements CommandExecutor {
     private static final String PREERR = ChatColor.RED.toString();
     private static final String PREINFO = ChatColor.GRAY.toString();
 
-    private KitHandler handler;
+    private KitParser handler;
     private ColorTeaming plugin;
 
     public CGiveCommand(ColorTeaming plugin) {
         this.plugin = plugin;
-        handler = new KitHandler();
+        handler = new KitParser();
     }
 
     /**
@@ -80,7 +80,7 @@ public class CGiveCommand implements CommandExecutor {
             Player player = (Player)sender;
             item = player.getItemInHand().clone();
         } else {
-            item = handler.convertItemInfoToItemStack(args[1]);
+            item = handler.parseItemInfoToItemStack(args[1]);
             if ( item == null ) {
                 sender.sendMessage(PREERR + "指定した形式" + args[1] + "が正しくありません。");
                 return true;

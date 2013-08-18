@@ -3,11 +3,12 @@
  * @license    GPLv3
  * @copyright  Copyright ucchy 2013
  */
-package com.github.ucchyocean.ct;
+package com.github.ucchyocean.ct.config;
 
 import java.util.ArrayList;
 
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
 
 /**
  * クラスデータ
@@ -15,7 +16,8 @@ import org.bukkit.inventory.ItemStack;
  */
 public class ClassData {
 
-    private static KitHandler handler;
+    private static KitParser kparser;
+    private static EffectParser eparser;
 
     /** アイテムデータ */
     protected String items;
@@ -41,10 +43,10 @@ public class ClassData {
         if ( items == null ) {
             return new ArrayList<ItemStack>();
         }
-        if ( handler == null ) {
-            handler = new KitHandler();
+        if ( kparser == null ) {
+            kparser = new KitParser();
         }
-        return handler.convertToItemStack(items);
+        return kparser.parseToItemStack(items);
     }
 
     public ArrayList<ItemStack> getArmor() {
@@ -52,9 +54,20 @@ public class ClassData {
         if ( armor == null ) {
             return new ArrayList<ItemStack>();
         }
-        if ( handler == null ) {
-            handler = new KitHandler();
+        if ( kparser == null ) {
+            kparser = new KitParser();
         }
-        return handler.convertToItemStack(armor);
+        return kparser.parseToItemStack(armor);
+    }
+    
+    public ArrayList<PotionEffect> getEffect() {
+        
+        if ( effect == null ) {
+            return new ArrayList<PotionEffect>();
+        }
+        if ( eparser == null ) {
+            eparser = new EffectParser();
+        }
+        return eparser.parseEffectData(effect);
     }
 }

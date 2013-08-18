@@ -1,4 +1,4 @@
-# Color Teaming Plugin 2.0.0
+# Color Teaming Plugin 2.1.0
 # @author     ucchy
 # @license    GPLv3
 # @copyright  Copyright ucchy 2013
@@ -12,6 +12,7 @@
 #                  同時に、server.log にも記録されます。
 # friendlyFireDisabler: 同じチームメンバー同士の攻撃（剣などの直接攻撃と、弓矢）を無効にします。
 # seeFriendlyInvisible: 透明化した同じチームメンバーが、見えるようにするかどうかを設定します。
+# healOnSetClass: クラスを設定するときに、全回復するかどうかを設定します。
 # classes: クラスごとのインベントリーの内容を設定します。
 #          アイテムの設定形式は2種類あります。
 #          通常のアイテム → (アイテムID)[@(ダメージ値)][:(個数)]
@@ -67,6 +68,7 @@ opDisplayMode: false
 teamChatLogMode: true
 friendlyFireDisabler: true
 seeFriendlyInvisible: true
+healOnSetClass: true
 classes:
   Knight:
     items: 267,320:5

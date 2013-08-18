@@ -3,7 +3,7 @@
  * @license    GPLv3
  * @copyright  Copyright ucchy 2013
  */
-package com.github.ucchyocean.ct;
+package com.github.ucchyocean.ct.config;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,11 +23,11 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 /**
- * @author ucchy
  * kitの文字列からアイテムスタックを作ったり、
  * インベントリからkitの文字列に変換したりするユーティリティクラス
+ * @author ucchy
  */
-public class KitHandler {
+public class KitParser {
 
     private static final String REGEX_ITEM_PATTERN =
             "([0-9]+)(?:@([0-9]+))?(?::([0-9]+))?|" +
@@ -41,9 +41,8 @@ public class KitHandler {
 
     /**
      * コンストラクタ
-     * @param logger プラグインのLogger
      */
-    public KitHandler() {
+    public KitParser() {
         logger = Bukkit.getLogger();
         pattern = Pattern.compile(REGEX_ITEM_PATTERN);
         patternEnchant = Pattern.compile(REGEX_ENCHANT_PATTERN);
@@ -54,13 +53,13 @@ public class KitHandler {
      * @param data 解析元の文字列　例）"44:64,44@2:64,281:10"
      * @return ItemStackの配列
      */
-    public ArrayList<ItemStack> convertToItemStack(String data) {
+    public ArrayList<ItemStack> parseToItemStack(String data) {
 
         ArrayList<ItemStack> items = new ArrayList<ItemStack>();
 
         String[] array = data.split("[,]");
         for (int i = 0; i < array.length; i++) {
-            items.add(convertItemInfoToItemStack(array[i]));
+            items.add(parseItemInfoToItemStack(array[i]));
         }
 
         return items;
@@ -71,7 +70,7 @@ public class KitHandler {
      * @param info アイテム文字列表現
      * @return アイテム
      */
-    public ItemStack convertItemInfoToItemStack(String info) {
+    public ItemStack parseItemInfoToItemStack(String info) {
 
         if ( info == null || info.equals("") ) {
             return null;
@@ -257,7 +256,7 @@ public class KitHandler {
     public String getItemInfo(ItemStack item) {
 
         if ( item == null ) {
-            return "0";
+            return "";
         }
 
         StringBuilder message = new StringBuilder();
@@ -299,7 +298,7 @@ public class KitHandler {
      * @return アイテムの詳細情報
      */
     public ArrayList<String> getDescFromItemInfo(String info) {
-        return getDescFromItem( convertItemInfoToItemStack(info) );
+        return getDescFromItem( parseItemInfoToItemStack(info) );
     }
 
     /**

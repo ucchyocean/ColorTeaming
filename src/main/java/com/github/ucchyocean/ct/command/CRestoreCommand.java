@@ -11,7 +11,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 import com.github.ucchyocean.ct.ColorTeaming;
-import com.github.ucchyocean.ct.TeamMemberSaveDataHandler;
+import com.github.ucchyocean.ct.config.TeamMemberSaveDataHandler;
 
 /**
  * colorrestore(crestore)コマンドの実行クラス

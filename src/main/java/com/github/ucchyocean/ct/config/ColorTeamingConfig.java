@@ -1,7 +1,7 @@
 /*
  * Copyright ucchy 2013
  */
-package com.github.ucchyocean.ct;
+package com.github.ucchyocean.ct.config;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,6 +14,8 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
+import com.github.ucchyocean.ct.ColorTeaming;
+import com.github.ucchyocean.ct.Utility;
 import com.github.ucchyocean.ct.scoreboard.PlayerCriteria;
 import com.github.ucchyocean.ct.scoreboard.SidebarCriteria;
 
@@ -40,6 +42,9 @@ public class ColorTeamingConfig {
 
     /** 仲間の透明が見えるかどうか のオンオフ */
     private boolean canSeeFriendlyInvisibles;
+    
+    /** クラス設定時の全回復設定 のオンオフ */
+    private boolean healOnSetClass;
 
     /** クラス設定 */
     private Map<String, ClassData> classes;
@@ -126,6 +131,7 @@ public class ColorTeamingConfig {
         ctconfig.isFriendlyFireDisabler = config.getBoolean("friendlyFireDisabler", true);
         ctconfig.canSeeFriendlyInvisibles = config.getBoolean("seeFriendlyInvisible", true);
 
+        ctconfig.healOnSetClass = config.getBoolean("healOnSetClass", true);
         ctconfig.classes = new HashMap<String, ClassData>();
         ConfigurationSection section = config.getConfigurationSection("classes");
         if ( section != null ) {
@@ -196,6 +202,7 @@ public class ColorTeamingConfig {
         config.set("teamChatLogMode", isTeamChatLogMode);
         config.set("friendlyFireDisabler", isFriendlyFireDisabler);
         config.set("seeFriendlyInvisible", canSeeFriendlyInvisibles);
+        config.set("healOnSetClass", healOnSetClass);
         for ( String clas : classes.keySet() ) {
             ClassData data = classes.get(clas);
             if ( data.items != null ) {
@@ -256,6 +263,10 @@ public class ColorTeamingConfig {
 
     public boolean isCanSeeFriendlyInvisibles() {
         return canSeeFriendlyInvisibles;
+    }
+
+    public boolean isHealOnSetClass() {
+        return healOnSetClass;
     }
 
     public Map<String, ClassData> getClasses() {
@@ -352,6 +363,14 @@ public class ColorTeamingConfig {
 
     public void setCanSeeFriendlyInvisibles(boolean canSeeFriendlyInvisibles) {
         this.canSeeFriendlyInvisibles = canSeeFriendlyInvisibles;
+    }
+
+    public void setHealOnSetClass(boolean healOnSetClass) {
+        this.healOnSetClass = healOnSetClass;
+    }
+
+    public void setClasses(Map<String, ClassData> classes) {
+        this.classes = classes;
     }
 
     public void setColorRemoveOnDeath(boolean colorRemoveOnDeath) {

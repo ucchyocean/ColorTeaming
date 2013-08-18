@@ -17,7 +17,7 @@ import org.bukkit.entity.Player;
 
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.DelayedTeleportTask;
-import com.github.ucchyocean.ct.RespawnConfiguration;
+import com.github.ucchyocean.ct.config.RespawnConfiguration;
 
 /**
  * colortp(ctp)コマンドの実行クラス
@@ -138,13 +138,13 @@ public class CTPCommand implements CommandExecutor {
 
             Location location;
 
-            if ( args[2].equalsIgnoreCase("here") ) {
-                // ctp set (point) here
+            if ( args.length == 2 || args[2].equalsIgnoreCase("here") ) {
+                // ctp set (point) [here]
 
                 if ( sender instanceof Player ) {
                     location = ((Player)sender).getLocation();
                 } else {
-                    sender.sendMessage(PREERR + "ctp set point here 指定は、" +
+                    sender.sendMessage(PREERR + "ctp set point [here] 指定は、" +
                             "コンソールやコマンドブロックからは実行できません。");
                     return true;
                 }

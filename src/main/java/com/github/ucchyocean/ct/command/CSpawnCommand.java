@@ -16,8 +16,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.github.ucchyocean.ct.ColorTeaming;
-import com.github.ucchyocean.ct.RespawnConfiguration;
 import com.github.ucchyocean.ct.Utility;
+import com.github.ucchyocean.ct.config.RespawnConfiguration;
 
 /**
  * colorspawn(cs)コマンドの実行クラス

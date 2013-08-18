@@ -3,7 +3,7 @@
  * @license    GPLv3
  * @copyright  Copyright ucchy 2013
  */
-package com.github.ucchyocean.ct;
+package com.github.ucchyocean.ct.config;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,9 +16,11 @@ import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
+import com.github.ucchyocean.ct.ColorTeaming;
+
 /**
- * @author ucchy
  * Locationのファイル保存、ファイルから取得を行うための抽象クラス
+ * @author ucchy
  */
 public abstract class PointConfigAbst {
 

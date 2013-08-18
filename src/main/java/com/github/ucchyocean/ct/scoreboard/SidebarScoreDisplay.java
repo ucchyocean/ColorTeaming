@@ -17,7 +17,7 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
 import com.github.ucchyocean.ct.ColorTeaming;
-import com.github.ucchyocean.ct.ColorTeamingConfig;
+import com.github.ucchyocean.ct.config.ColorTeamingConfig;
 
 /**
  * サイドバーにスコアを表示するためのAPIクラス

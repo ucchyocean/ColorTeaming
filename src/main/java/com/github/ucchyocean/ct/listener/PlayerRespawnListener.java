@@ -10,7 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
 import com.github.ucchyocean.ct.ColorTeaming;
-import com.github.ucchyocean.ct.RespawnConfiguration;
+import com.github.ucchyocean.ct.config.RespawnConfiguration;
 
 /**
  * プレイヤーがリスポーンしたときに、通知を受け取って処理するクラス

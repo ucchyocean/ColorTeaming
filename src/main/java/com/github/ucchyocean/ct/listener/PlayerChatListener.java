@@ -10,8 +10,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import com.github.ucchyocean.ct.ColorTeaming;
-import com.github.ucchyocean.ct.ColorTeamingConfig;
 import com.github.ucchyocean.ct.KanaConverter;
+import com.github.ucchyocean.ct.config.ColorTeamingConfig;
 
 /**
  * チャットが発生したときに、チームチャットへ転送するためのリスナークラス

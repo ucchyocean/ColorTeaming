@@ -1,7 +1,7 @@
 /*
  * Copyright ucchy 2013
  */
-package com.github.ucchyocean.ct;
+package com.github.ucchyocean.ct.config;
 
 import java.util.ArrayList;
 
@@ -9,14 +9,14 @@ import org.bukkit.Location;
 
 
 /**
- * @author ucchy
  * 各色グループのリスポーンポイントをファイルで保存し、値の取得・設定を仲介するためのクラス
+ * @author ucchy
  */
 public class RespawnConfiguration extends PointConfigAbst {
 
     /**
      * コンストラクタ
-     * @see com.github.ucchyocean.ct.PointConfigAbst#getConfigFileName()
+     * @see com.github.ucchyocean.ct.config.PointConfigAbst#getConfigFileName()
      */
     @Override
     public String getConfigFileName() {
