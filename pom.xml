@@ -4,9 +4,25 @@
   <artifactId>ColorTeaming</artifactId>
   <version>2.1.0</version>
 
+  <licenses>
+    <license>
+      <name>GNU Lesser General Public License version 3</name>
+      <url>http://www.gnu.org/licenses/lgpl-3.0.en.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
+
+  <distributionManagement>
+    <repository>
+      <id>internal.repo</id>
+      <name>Temporary Staging Repository</name>
+      <url>file://${project.build.directory}/mvn-repo</url>
+    </repository>
+  </distributionManagement>
 
   <build>
     <finalName>${project.artifactId}</finalName>
@@ -17,19 +33,6 @@
         <configuration>
           <source>1.6</source>
           <target>1.6</target>
-        </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <version>1.9</version>
-        <configuration>
-          <author>true</author>
-          <source>1.6</source>
-          <showPackage>false</showPackage>
-          <showPrivate>false</showPrivate>
-          <encoding>UTF-8</encoding>
-          <charset>UTF-8</charset>
-          <docencoding>UTF-8</docencoding>
         </configuration>
       </plugin>
     </plugins>
