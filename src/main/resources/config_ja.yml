@@ -31,6 +31,8 @@
 #                     グループを作ったり参加したりすることができるようにするかを、設定します。
 # allowPlayerJoinRandom: 一般プレイヤーが、/cjoin コマンドで、ランダムに人数の少ないグループに
 #                        参加することができるようになります。
+# allowPlayerLeave: 一般プレイヤーが、/cleave コマンドを使用して、
+#                   グループから離脱することができるようにするかを、設定します。
 # sideCriteria: サイドバーに表示するチームスコアの種類を指定します。
 #               kill - キル数
 #               death - デス数
@@ -104,6 +106,7 @@ colorRemoveOnQuit: false
 noDamageSeconds: 5
 allowPlayerJoinAny: false
 allowPlayerJoinRandom: true
+allowPlayerLeave: false
 sideCriteria: rest
 listCriteria: point
 listCustomSlot: ''

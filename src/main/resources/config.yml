@@ -46,6 +46,7 @@ colorRemoveOnQuit: false
 noDamageSeconds: 5
 allowPlayerJoinAny: false
 allowPlayerJoinRandom: true
+allowPlayerLeave: false
 sideCriteria: rest
 listCriteria: point
 listCustomSlot: ''

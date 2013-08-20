@@ -25,6 +25,9 @@ public class ColorTeamingPlayerLeaveEvent extends ColorTeamingPlayerEvent {
 
         /** チーム削除による離脱 */
         TEAM_REMOVED,
+        
+        /** cleaveコマンドによる自己離脱 */
+        SELF,
 
         /** 不明 */
         UNKNOWN,

@@ -64,6 +64,9 @@ public class ColorTeamingConfig {
     /** /cjoin  を一般ユーザーに使用させるかどうか */
     private boolean allowPlayerJoinRandom;
 
+    /** /cleave  を一般ユーザーに使用させるかどうか */
+    private boolean allowPlayerLeave;
+
     /** キル時のポイント設定 */
     private int killPoint;
 
@@ -151,6 +154,7 @@ public class ColorTeamingConfig {
 
         ctconfig.allowPlayerJoinAny = config.getBoolean("allowPlayerJoinAny", false);
         ctconfig.allowPlayerJoinRandom = config.getBoolean("allowPlayerJoinRandom", true);
+        ctconfig.allowPlayerLeave = config.getBoolean("allowPlayerLeave", false);
 
         ctconfig.killPoint = config.getInt("points.killPoint", 1);
         ctconfig.deathPoint = config.getInt("points.deathPoint", -1);
@@ -220,6 +224,7 @@ public class ColorTeamingConfig {
         config.set("noDamageSeconds", noDamageSeconds);
         config.set("allowPlayerJoinAny", allowPlayerJoinAny);
         config.set("allowPlayerJoinRandom", allowPlayerJoinRandom);
+        config.set("allowPlayerLeave", allowPlayerLeave);
         config.set("points.killPoint", killPoint);
         config.set("points.deathPoint", deathPoint);
         config.set("points.tkPoint", tkPoint);
@@ -291,6 +296,10 @@ public class ColorTeamingConfig {
 
     public boolean isAllowPlayerJoinRandom() {
         return allowPlayerJoinRandom;
+    }
+
+    public boolean isAllowPlayerLeave() {
+        return allowPlayerLeave;
     }
 
     public int getKillPoint() {
@@ -393,6 +402,10 @@ public class ColorTeamingConfig {
         this.allowPlayerJoinRandom = allowPlayerJoinRandom;
     }
 
+    public void setAllowPlayerLeave(boolean allowPlayerLeave) {
+        this.allowPlayerLeave = allowPlayerLeave;
+    }
+
     public void setKillPoint(int killPoint) {
         this.killPoint = killPoint;
     }
@@ -440,4 +453,5 @@ public class ColorTeamingConfig {
     public void setTeleportDelay(int teleportDelay) {
         this.teleportDelay = teleportDelay;
     }
+
 }
