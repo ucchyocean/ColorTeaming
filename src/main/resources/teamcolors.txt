@@ -1,0 +1,10 @@
+redチーム,red
+blueチーム,blue
+yellowチーム,yellow
+greenチーム,green
+aquaチーム,aqua 
+grayチーム,gray 
+pinkチーム,pink
+d-redチーム,dark_red 
+d-greenチーム,dark_green 
+d-blueチーム,dark_aqua

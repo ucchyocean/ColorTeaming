@@ -23,6 +23,7 @@ import com.github.ucchyocean.ct.config.ColorTeamingConfig;
 import com.github.ucchyocean.ct.config.RespawnConfiguration;
 import com.github.ucchyocean.ct.config.TPPointConfiguration;
 import com.github.ucchyocean.ct.config.TeamMemberSaveDataHandler;
+import com.github.ucchyocean.ct.config.TeamNameConfig;
 import com.github.ucchyocean.ct.event.ColorTeamingKillDeathClearedEvent;
 import com.github.ucchyocean.ct.event.ColorTeamingPlayerAddEvent;
 import com.github.ucchyocean.ct.event.ColorTeamingPlayerLeaveEvent;
@@ -56,6 +57,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
 
     private RespawnConfiguration respawnConfig;
     private TPPointConfiguration tppointConfig;
+    private TeamNameConfig teamNameConfig;
     private SidebarScoreDisplay sidebarScore;
     private TabListScoreDisplay tablistScore;
     private BelowNameScoreDisplay belownameScore;
@@ -82,6 +84,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         leaders = new HashMap<String, ArrayList<String>>();
         respawnConfig = new RespawnConfiguration();
         tppointConfig = new TPPointConfiguration();
+        teamNameConfig = new TeamNameConfig();
         sdhandler = new TeamMemberSaveDataHandler(plugin.getDataFolder());
     }
 
@@ -644,12 +647,21 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     }
 
     /**
-     * TP地点設定を設定する
+     * TP地点設定を取得する
      * @return TP地点設定
      */
     @Override
     public TPPointConfiguration getTppointConfig() {
         return tppointConfig;
+    }
+    
+    /**
+     * チーム名設定を取得する
+     * @return チーム名設定
+     */
+    @Override
+    public TeamNameConfig getTeamNameConfig() {
+        return teamNameConfig;
     }
 
     /**
@@ -795,5 +807,17 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         getCTSaveDataHandler().save("lastdata");
         
         return true;
+    }
+    
+    /**
+     * ColorTeamingの設定ファイルを全て再読み込みする
+     */
+    @Override
+    public void realod() {
+        
+        ColorTeaming.instance.config = ColorTeamingConfig.loadConfig();
+        respawnConfig = new RespawnConfiguration();
+        tppointConfig = new TPPointConfiguration();
+        teamNameConfig = new TeamNameConfig();
     }
 }

@@ -194,7 +194,6 @@ public class ColorTeamingConfig {
         // ファイルのロード
         File configFile = new File(ColorTeaming.instance.getDataFolder(), "config.yml");
         YamlConfiguration config = new YamlConfiguration();
-        config.options().header(Utility.getYamlHeader("config_ja.yml"));
         if ( configFile.exists() ) {
             config = YamlConfiguration.loadConfiguration(configFile);
         }

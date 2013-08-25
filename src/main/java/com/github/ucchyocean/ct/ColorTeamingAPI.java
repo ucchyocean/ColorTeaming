@@ -16,6 +16,7 @@ import org.bukkit.scoreboard.Team;
 import com.github.ucchyocean.ct.config.RespawnConfiguration;
 import com.github.ucchyocean.ct.config.TPPointConfiguration;
 import com.github.ucchyocean.ct.config.TeamMemberSaveDataHandler;
+import com.github.ucchyocean.ct.config.TeamNameConfig;
 import com.github.ucchyocean.ct.event.ColorTeamingPlayerLeaveEvent.Reason;
 
 /**
@@ -222,10 +223,16 @@ public interface ColorTeamingAPI {
     public RespawnConfiguration getRespawnConfig();
 
     /**
-     * TP地点設定を設定する
+     * TP地点設定を取得する
      * @return TP地点設定
      */
     public TPPointConfiguration getTppointConfig();
+    
+    /**
+     * チーム名設定を取得する
+     * @return チーム名設定
+     */
+    public TeamNameConfig getTeamNameConfig();
 
     /**
      * リスポーンマップ名を取得する
@@ -274,4 +281,9 @@ public interface ColorTeamingAPI {
      * @return 最後まで処理が行われたかどうか
      */
     public boolean addPlayerToColorTeamsWithOrderSelection(ArrayList<Player> players);
+    
+    /**
+     * ColorTeamingの設定ファイルを全て再読み込みする
+     */
+    public void realod();
 }

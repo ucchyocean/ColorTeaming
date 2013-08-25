@@ -48,7 +48,7 @@ public class CTeamingCommand implements CommandExecutor {
 
         if ( args[0].equalsIgnoreCase("reload") ) {
 
-            plugin.reloadCTConfig();
+            plugin.getAPI().realod();
             sender.sendMessage("config.ymlの再読み込みを行いました。");
             return true;
 

@@ -39,7 +39,7 @@ import com.github.ucchyocean.ct.listener.PlayerRespawnListener;
 public class ColorTeaming extends JavaPlugin {
 
     public static ColorTeaming instance;
-    private ColorTeamingConfig config;
+    protected ColorTeamingConfig config;
     private ColorTeamingManager manager;
 
     /**
@@ -98,13 +98,6 @@ public class ColorTeaming extends JavaPlugin {
      */
     public ColorTeamingConfig getCTConfig() {
         return config;
-    }
-
-    /**
-     * ColorTeamingConfig を更新する
-     */
-    public void reloadCTConfig() {
-        config = ColorTeamingConfig.loadConfig();
     }
 
     /**

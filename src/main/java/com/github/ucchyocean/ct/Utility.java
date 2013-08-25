@@ -17,7 +17,6 @@ import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.file.YamlConfiguration;
 
 /**
  * @author ucchy
@@ -202,62 +201,5 @@ public class Utility {
         }
 
         return contents;
-    }
-
-    /**
-     * YamlファイルをJarの中から読み込んで、ヘッダー部分を返す
-     * @param name 読み込むファイル
-     * @return ヘッダー部分
-     */
-    public static String getYamlHeader(String name) {
-
-        ArrayList<String> contents = getContentsFromJar(name);
-        StringBuilder results = new StringBuilder();
-        for ( String line : contents ) {
-            if ( !line.startsWith("#") ) {
-                break;
-            }
-            results.append(line + "\n");
-        }
-        return results.toString();
-    }
-
-
-    /**
-     * Jarファイル内から指定したymlファイルを直接読み込み、内容を返すメソッド
-     * @param ymlファイルの名前
-     * @return ファイルの内容
-     * @deprecated このメソッドでUTF-8のYamlを読み込んではいけない
-     */
-    public static YamlConfiguration getYamlFromJar(String name) {
-
-        YamlConfiguration config = new YamlConfiguration();
-        JarFile jarFile = null;
-        InputStream inputStream = null;
-        try {
-            jarFile = new JarFile(ColorTeaming.instance.getPluginJarFile());
-            ZipEntry zipEntry = jarFile.getEntry(name);
-            inputStream = jarFile.getInputStream(zipEntry);
-            config = YamlConfiguration.loadConfiguration(inputStream);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if ( jarFile != null ) {
-                try {
-                    jarFile.close();
-                } catch (IOException e) {
-                    // do nothing.
-                }
-            }
-            if ( inputStream != null ) {
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                    // do nothing.
-                }
-            }
-        }
-
-        return config;
     }
 }
