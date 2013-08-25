@@ -24,6 +24,7 @@ import com.github.ucchyocean.ct.config.RespawnConfiguration;
 import com.github.ucchyocean.ct.config.TPPointConfiguration;
 import com.github.ucchyocean.ct.config.TeamMemberSaveDataHandler;
 import com.github.ucchyocean.ct.config.TeamNameConfig;
+import com.github.ucchyocean.ct.config.TeamNameSetting;
 import com.github.ucchyocean.ct.event.ColorTeamingKillDeathClearedEvent;
 import com.github.ucchyocean.ct.event.ColorTeamingPlayerAddEvent;
 import com.github.ucchyocean.ct.event.ColorTeamingPlayerLeaveEvent;
@@ -45,9 +46,6 @@ public class ColorTeamingManager implements ColorTeamingAPI {
 
     private static final String TEAM_CHAT_FORMAT = "&a[%s&a]<%s&r&a> %s";
     private static final String TEAM_INFORMATION_FORMAT = "&a[%s&a] %s";
-
-    private static final String[] GROUP_COLORS =
-        {"red", "blue", "yellow", "green", "aqua", "gray", "dark_red", "dark_green", "dark_aqua"};
 
     private ColorTeaming plugin;
     private ColorTeamingConfig config;
@@ -99,7 +97,36 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         }
         return sb;
     }
-
+    
+    /**
+     * 指定されたチームIDが存在するかどうかを返す。
+     * @param id チームID
+     * @return 存在するかどうか
+     */
+    @Override
+    public boolean isExistTeam(String id) {
+        
+        Scoreboard scoreboard = getScoreboard();
+        Set<Team> teams = scoreboard.getTeams();
+        for ( Team team : teams ) {
+            if ( team.getName().equals(id) ) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * チーム名をチームIDから取得する。
+     * @param id チームID
+     * @return チーム名
+     */
+    @Override
+    public TeamNameSetting getTeamNameFromID(String id) {
+        
+        return teamNameConfig.getTeamNameFromID(id);
+    }
+    
     /**
      * Player に設定されている、チームを取得する。
      * @param player プレイヤー
@@ -126,43 +153,45 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      * @return チーム名
      */
     @Override
-    public String getPlayerTeamName(Player player) {
+    public TeamNameSetting getPlayerTeamName(Player player) {
 
         Team team = getPlayerTeam(player);
-        if ( team == null ) return "";
-        else return team.getName();
+        if ( team == null ) return null;
+        else return teamNameConfig.getTeamNameFromID(team.getName());
     }
 
     /**
      * Player にチームを設定する。
      * @param player プレイヤー
-     * @param color チーム名
+     * @param teamName チーム名
      * @return チーム、イベントキャンセルされた場合はnullになることに注意
      */
     @Override
-    public Team addPlayerTeam(Player player, String color) {
+    public Team addPlayerTeam(Player player, TeamNameSetting teamName) {
 
         Scoreboard scoreboard = getScoreboard();
 
-        Team team = scoreboard.getTeam(color);
+        String id = teamName.getID();
+        String name = teamName.getName();
+        ChatColor color = teamName.getColor();
+        
+        Team team = scoreboard.getTeam(id);
         if ( team == null ) {
 
             // イベントコール
             ColorTeamingTeamCreateEvent event =
-                    new ColorTeamingTeamCreateEvent(color);
+                    new ColorTeamingTeamCreateEvent(teamName);
             Bukkit.getServer().getPluginManager().callEvent(event);
             if ( event.isCancelled() ) {
                 return null;
             }
 
-            team = scoreboard.registerNewTeam(color);
-            team.setDisplayName(Utility.replaceColors(color) + color + ChatColor.RESET);
-            team.setPrefix(Utility.replaceColors(color).toString());
+            team = scoreboard.registerNewTeam(id);
+            team.setDisplayName(color + name + ChatColor.RESET);
+            team.setPrefix(color.toString());
             team.setSuffix(ChatColor.RESET.toString());
             team.setCanSeeFriendlyInvisibles(config.isCanSeeFriendlyInvisibles());
-            team.setAllowFriendlyFire(
-                    config.isCanSeeFriendlyInvisibles() ||
-                    !config.isFriendlyFireDisabler());
+            team.setAllowFriendlyFire(!config.isFriendlyFireDisabler());
         }
 
         // イベントコール
@@ -174,8 +203,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         }
 
         team.addPlayer(player);
-        player.setDisplayName(
-                Utility.replaceColors(color) + player.getName() + ChatColor.RESET);
+        player.setDisplayName(color + player.getName() + ChatColor.RESET);
 
         return team;
     }
@@ -200,19 +228,13 @@ public class ColorTeamingManager implements ColorTeamingAPI {
             }
 
             team.removePlayer(player);
-
-//            if ( team.getPlayers().size() <= 0 ) {
-//                removeTeam(team.getName());
-//            }
         }
 
         player.setDisplayName(player.getName());
     }
 
     /**
-     * フレンドリーファイアの設定。<br>
-     * NOTE: 本メソッドは、透明可視化が設定されている場合は、
-     * 強制的にfalseになることに注意
+     * フレンドリーファイアの設定。
      * @param ff trueならフレンドリーファイア有効、falseなら無効
      */
     @Override
@@ -222,16 +244,15 @@ public class ColorTeamingManager implements ColorTeamingAPI {
 
         Set<Team> teams = scoreboard.getTeams();
         for ( Team t : teams ) {
-            boolean invisible = t.canSeeFriendlyInvisibles();
-            t.setAllowFriendlyFire(invisible || ff);
+            t.setAllowFriendlyFire(ff);
         }
 
-        config.setFriendlyFireDisabler(ff);
+        config.setFriendlyFireDisabler(!ff);
         config.saveConfig();
     }
 
     /**
-     * 仲間の可視化の設定。<br>
+     * 仲間の可視化の設定。
      * @param fi trueならフレンドリーファイア有効、falseなら無効
      */
     @Override
@@ -249,22 +270,25 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     }
 
     /**
-     * 指定したチーム名のチームを削除する
-     * @param name
+     * 指定したチームIDのチームを削除する
+     * @param id チームID
+     * @return 削除したかどうか（イベントでキャンセルされた場合はfalseになる）
      */
     @Override
-    public void removeTeam(String name) {
+    public boolean removeTeam(String id) {
 
+        TeamNameSetting teamName = teamNameConfig.getTeamNameFromID(id);
+        
         // イベントコール
         ColorTeamingTeamRemoveEvent event =
-                new ColorTeamingTeamRemoveEvent(name);
+                new ColorTeamingTeamRemoveEvent(teamName);
         Bukkit.getServer().getPluginManager().callEvent(event);
         if ( event.isCancelled() ) {
-            return;
+            return false;
         }
 
         Scoreboard scoreboard = getScoreboard();
-        Team team = scoreboard.getTeam(name);
+        Team team = scoreboard.getTeam(id);
         if ( team != null ) {
             for ( OfflinePlayer player : team.getPlayers() ) {
                 if ( player.getPlayer() != null && player.isOnline() ) {
@@ -273,6 +297,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
             }
             team.unregister();
         }
+        return true;
     }
 
     /**
@@ -294,24 +319,43 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      * @return 色をKey メンバーをValueとした Hashtable
      */
     @Override
-    public HashMap<String, ArrayList<Player>> getAllTeamMembers() {
+    public HashMap<TeamNameSetting, ArrayList<Player>> getAllTeamMembers() {
 
-        HashMap<String, ArrayList<Player>> result = new HashMap<String, ArrayList<Player>>();
-        Scoreboard scoreboard = getScoreboard();
+        ArrayList<TeamNameSetting> teamNames = getAllTeamNames();
+        HashMap<TeamNameSetting, ArrayList<Player>> result = 
+                new HashMap<TeamNameSetting, ArrayList<Player>>();
 
-        Set<Team> teams = scoreboard.getTeams();
-        for ( Team team : teams ) {
-            Set<OfflinePlayer> playersTemp = team.getPlayers();
-            ArrayList<Player> players = new ArrayList<Player>();
-            for ( OfflinePlayer player : playersTemp ) {
-                if ( player != null && player.isOnline() ) {
-                    players.add(player.getPlayer());
-                }
-            }
-            result.put(team.getName(), players);
+        for ( TeamNameSetting tn : teamNames ) {
+            result.put(tn, getTeamMembers(tn.getID()));
         }
 
         return result;
+    }
+    
+    /**
+     * チームメンバーを取得する
+     * @param id チームID
+     * @return チームメンバー。チームが存在しない場合はnullが返されることに注意
+     */
+    @Override
+    public ArrayList<Player> getTeamMembers(String id) {
+        
+        Scoreboard scoreboard = getScoreboard();
+        Team team = scoreboard.getTeam(id);
+        
+        if ( team == null ) {
+            return null;
+        }
+        
+        Set<OfflinePlayer> playersTemp = team.getPlayers();
+        ArrayList<Player> players = new ArrayList<Player>();
+        for ( OfflinePlayer player : playersTemp ) {
+            if ( player != null && player.isOnline() ) {
+                players.add(player.getPlayer());
+            }
+        }
+
+        return players;
     }
 
     /**
@@ -320,6 +364,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      */
     @Override
     public ArrayList<Player> getAllPlayers() {
+        
         Player[] temp = plugin.getServer().getOnlinePlayers();
         ArrayList<Player> result = new ArrayList<Player>();
         for ( Player p : temp ) {
@@ -352,17 +397,17 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     }
 
     /**
-     * 全てのチーム名（＝全ての色）を取得する
+     * 全てのチーム名を取得する
      * @return 全てのチーム名
      */
     @Override
-    public ArrayList<String> getAllTeamNames() {
+    public ArrayList<TeamNameSetting> getAllTeamNames() {
 
-        ArrayList<String> result = new ArrayList<String>();
+        ArrayList<TeamNameSetting> result = new ArrayList<TeamNameSetting>();
         Set<Team> teams = getScoreboard().getTeams();
 
         for ( Team team : teams ) {
-            result.add(team.getName());
+            result.add(teamNameConfig.getTeamNameFromID(team.getName()));
         }
 
         return result;
@@ -380,7 +425,6 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         if ( team == null ) {
             return;
         }
-        String color = team.getName();
 
         // 設定に応じて、Japanize化する
         if ( config.isShowJapanizeTeamChat() ) {
@@ -395,7 +439,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
 
         // イベントコール
         ColorTeamingTeamChatEvent event =
-                new ColorTeamingTeamChatEvent(player, message);
+                new ColorTeamingTeamChatEvent(player, message, team);
         Bukkit.getServer().getPluginManager().callEvent(event);
         if ( event.isCancelled() ) {
             return;
@@ -405,13 +449,13 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         // メッセージを生成
         String partyMessage = String.format(
                 Utility.replaceColorCode(TEAM_CHAT_FORMAT),
-                Utility.replaceColors(color) + color,
+                team.getDisplayName(),
                 player.getDisplayName(),
                 message
                 );
 
         // チームメンバに送信する
-        ArrayList<Player> playersToSend = getAllTeamMembers().get(color);
+        ArrayList<Player> playersToSend = getTeamMembers(team.getName());
         if ( config.isOPDisplayMode() ) {
             Player[] players = plugin.getServer().getOnlinePlayers();
             for ( Player p : players ) {
@@ -432,21 +476,26 @@ public class ColorTeamingManager implements ColorTeamingAPI {
 
     /**
      * 情報をチームチャットに送信する。
-     * @param color 送信先のチーム
+     * @param team 送信先のチームID
      * @param message 送信するメッセージ
      */
     @Override
-    public void sendInfoToTeamChat(String color, String message) {
+    public void sendInfoToTeamChat(String id, String message) {
 
+        // チームを取得する
+        Team team = getScoreboard().getTeam(id);
+        if ( team == null ) {
+            return;
+        }
+        
         // メッセージを生成
         String partyMessage = String.format(
                 Utility.replaceColorCode(TEAM_INFORMATION_FORMAT),
-                Utility.replaceColors(color) + color,
-                message
+                team.getDisplayName(), message
                 );
 
         // チームメンバに送信する
-        ArrayList<Player> playersToSend = getAllTeamMembers().get(color);
+        ArrayList<Player> playersToSend = getTeamMembers(id);
         if ( playersToSend != null ) {
             for ( Player p : playersToSend ) {
                 p.sendMessage(partyMessage);
@@ -704,24 +753,27 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     @Override
     public void makeColorTeamsWithOrderSelection(ArrayList<Player> players, int teamNum) {
         
-        // 全てのグループをいったん削除する
+        // 全てのチームをいったん削除する
         removeAllTeam();
+        
+        // チーム名設定を取得する
+        ArrayList<TeamNameSetting> tns = teamNameConfig.getTeamNames();
 
-        // グループを設定していく
+        // チームを設定していく
         for ( int i=0; i<players.size(); i++ ) {
             int group = i % teamNum;
-            String color = GROUP_COLORS[group];
-            addPlayerTeam(players.get(i), color);
+            TeamNameSetting teamName = tns.get(group);
+            addPlayerTeam(players.get(i), teamName);
         }
 
-        // 各グループに、通知メッセージを出す
+        // 各チームに、通知メッセージを出す
         for ( int i=0; i<teamNum; i++ ) {
-            sendInfoToTeamChat(GROUP_COLORS[i],
+            sendInfoToTeamChat(tns.get(i).getID(),
                     "あなたは " +
-                    Utility.replaceColors(GROUP_COLORS[i]) +
-                    GROUP_COLORS[i] +
+                    tns.get(i).getColor() +
+                    tns.get(i).getName() +
                     ChatColor.GREEN +
-                    " グループになりました。");
+                    " チームになりました。");
         }
 
         // キルデス情報のクリア
@@ -735,8 +787,6 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         // メンバー情報をlastdataに保存する
         getCTSaveDataHandler().save("lastdata");
     }
-    
-    
     
     /**
      * 既存のチームわけをそのままに、指定されたプレイヤーを既存のチームへ加えていきます。<br/>
@@ -763,37 +813,37 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     @Override
     public boolean addPlayerToColorTeamsWithOrderSelection(ArrayList<Player> players) {
         
-        // 人数の少ないグループに設定していく
+        // 人数の少ないチームに設定していく
         for ( int i=0; i<players.size(); i++ ) {
 
-            // 人数の少ないグループの取得
-            HashMap<String, ArrayList<Player>> members = getAllTeamMembers();
+            // 人数の少ないチームの取得
+            HashMap<TeamNameSetting, ArrayList<Player>> members = getAllTeamMembers();
             int least = 999;
-            String leastGroup = null;
+            TeamNameSetting leastTeam = null;
 
-            ArrayList<String> groups = new ArrayList<String>(members.keySet());
-            // ランダム要素を入れるため、グループ名をシャッフルする
-            Collections.shuffle(groups);
+            ArrayList<TeamNameSetting> teams = getAllTeamNames();
+            // ランダム要素を入れるため、チーム名をシャッフルする
+            Collections.shuffle(teams);
 
-            for ( String group : groups ) {
-                if ( least > members.get(group).size() ) {
-                    least = members.get(group).size();
-                    leastGroup = group;
+            for ( TeamNameSetting t : teams ) {
+                if ( least > members.get(t).size() ) {
+                    least = members.get(t).size();
+                    leastTeam = t;
                 }
             }
             
-            // グループへプレイヤーを追加
-            if ( leastGroup != null ) {
-                addPlayerTeam(players.get(i), leastGroup);
+            // チームへプレイヤーを追加
+            if ( leastTeam != null ) {
+                addPlayerTeam(players.get(i), leastTeam);
                 players.get(i).sendMessage(
                         ChatColor.GREEN + "あなたは " +
-                        Utility.replaceColors(leastGroup) +
-                        leastGroup +
+                        leastTeam.getColor() +
+                        leastTeam.getName() +
                         ChatColor.GREEN +
-                        " グループになりました。");
+                        " チームになりました。");
             } else {
 //                sender.sendMessage(
-//                        PREERR + "設定できるグループが無いようです。");
+//                        PREERR + "設定できるチームが無いようです。");
                 return false;
             }
         }

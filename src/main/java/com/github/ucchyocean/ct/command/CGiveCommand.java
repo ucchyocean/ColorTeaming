@@ -17,7 +17,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.github.ucchyocean.ct.ColorTeaming;
+import com.github.ucchyocean.ct.ColorTeamingAPI;
 import com.github.ucchyocean.ct.config.KitParser;
+import com.github.ucchyocean.ct.config.TeamNameSetting;
 
 /**
  * colorgive(cgive)コマンドの実行クラス
@@ -46,28 +48,30 @@ public class CGiveCommand implements CommandExecutor {
             return false;
         }
 
-        String target = args[0]; // アイテムを配布するグループかユーザー
+        String target = args[0]; // アイテムを配布するチームかユーザー
         String targetDesc = "";
 
-        HashMap<String, ArrayList<Player>> members =
-                plugin.getAPI().getAllTeamMembers();
+        ColorTeamingAPI api = plugin.getAPI();
+        HashMap<TeamNameSetting, ArrayList<Player>> members =
+                api.getAllTeamMembers();
         ArrayList<Player> playersForGive = new ArrayList<Player>();
 
         if ( target.equalsIgnoreCase("all") ) {
             // 全員を対象とする
             playersForGive = plugin.getAPI().getAllPlayers();
             targetDesc = "全員";
-        } else if ( members.containsKey(target) ) {
-            // target はグループである場合
-            playersForGive = members.get(target);
-            targetDesc = "グループ" + target;
+        } else if ( api.isExistTeam(target) ) {
+            // target はチームである場合
+            TeamNameSetting tns = api.getTeamNameFromID(target);
+            playersForGive = members.get(tns);
+            targetDesc = "チーム" + tns.getName();
         } else if ( Bukkit.getPlayerExact(target) != null ) {
             // target はプレイヤーである場合
             playersForGive.add(Bukkit.getPlayerExact(target));
-            targetDesc = target;
+            targetDesc = "プレイヤー" + target;
         } else {
             sender.sendMessage(PREERR + target +
-                    " というグループまたはプレイヤーは存在しません。");
+                    " というチームまたはプレイヤーは存在しません。");
             return true;
         }
 

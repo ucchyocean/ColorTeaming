@@ -24,12 +24,6 @@ import org.bukkit.ChatColor;
  */
 public class Utility {
 
-    private static final String[] VALID_COLORS = {
-        "red", "blue", "yellow", "green", "aqua", "gray", "dark_red",
-        "dark_green", "dark_aqua", "black", "dark_blue", "dark_gray",
-        "dark_purple", "gold", "light_purple", "white"
-    };
-
     /**
      * jarファイルの中に格納されているファイルを、jarファイルの外にコピーするメソッド
      * @param jarFile jarファイル
@@ -135,31 +129,18 @@ public class Utility {
     }
 
     /**
-     * ColorMeの色設定を、ChatColorクラスに変換する
-     * @param color ColorMeの色設定
-     * @return ChatColorクラス
+     * カラーコードをChatColorに変換する
+     * @param colorCode カラーコード
+     * @return ChatColorオブジェクト
      */
-    public static ChatColor replaceColors(String color) {
-
-        if ( isValidColor(color) ) {
-            return ChatColor.valueOf(color.toUpperCase());
+    public static ChatColor getChatColorFromColorCode(String colorCode) {
+        
+        if ( !colorCode.matches("&[0-9a-fk-or]") ) {
+            return ChatColor.WHITE;
         }
-        return ChatColor.WHITE;
-    }
-
-    /**
-     * ColorMeで指定可能な色かどうかを判断する
-     * @param color ColorMeの色設定
-     * @return 指定可能かどうか
-     */
-    public static boolean isValidColor(String color) {
-
-        for ( String s : VALID_COLORS ) {
-            if ( s.equals(color) ) {
-                return true;
-            }
-        }
-        return false;
+        
+        char code = colorCode.charAt(1);
+        return ChatColor.getByChar(code);
     }
 
     /**

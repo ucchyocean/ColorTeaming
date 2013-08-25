@@ -1,10 +1,24 @@
-redチーム,red
-blueチーム,blue
-yellowチーム,yellow
-greenチーム,green
-aquaチーム,aqua 
-grayチーム,gray 
-pinkチーム,pink
-d-redチーム,dark_red 
-d-greenチーム,dark_green 
-d-blueチーム,dark_aqua
+# Color Teaming 2.1.0
+# @author     ucchy
+# @license    LGPLv3
+# @copyright  Copyright ucchy 2013
+# 指定できる形式：  チームID, チーム表示名, チームカラー
+#   チームID：チームのIDです。英数字が使えます。
+#             コマンド指定時に使用されます。他のチームと重複したIDは指定できません。
+#   チーム表示名：チームの表示名です。10文字以内で指定してください。
+#   チームカラー：チームのカラーです。カラーコード（&[0-f]）を指定してください。
+red,     赤,   &c
+blue,    青,   &9
+yellow,  黄,   &e
+green,   緑,   &a
+aqua,    水,   &b
+gray,    灰,   &7
+pink,    桃,   &d
+purple,  紫,   &5
+gold,    金,   &6
+silver,  銀,   &8
+d-red,   暗赤, &4
+d-blue,  暗青, &1
+d-green, 暗緑, &2
+d-aqua,  暗水, &3
+black,   黒,   &0

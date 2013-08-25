@@ -11,6 +11,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.config.RespawnConfiguration;
+import com.github.ucchyocean.ct.config.TeamNameSetting;
 
 /**
  * プレイヤーがリスポーンしたときに、通知を受け取って処理するクラス
@@ -32,18 +33,13 @@ public class PlayerRespawnListener implements Listener {
     public void onPlayerRespawn(PlayerRespawnEvent event) {
 
         Player player = event.getPlayer();
-        String color = plugin.getAPI().getPlayerTeamName(player);
+        TeamNameSetting tns = plugin.getAPI().getPlayerTeamName(player);
 
         // リスポーンポイントを設定
         RespawnConfiguration respawnConfig = plugin.getAPI().getRespawnConfig();
         String respawnMapName = plugin.getAPI().getRespawnMapName();
-        Location respawn = respawnConfig.get(color, respawnMapName);
+        Location respawn = respawnConfig.get(tns.getID(), respawnMapName);
         
-//        if ( respawn == null && plugin.getCTConfig().isWorldSpawn() ) {
-//            // チームリスポーンがない場合は、ワールドリスポーンを取得する
-//            respawn = player.getWorld().getSpawnLocation();
-//        }
-
         if ( respawn != null ) {
             respawn = respawn.add(0.5, 0, 0.5);
             event.setRespawnLocation(respawn);

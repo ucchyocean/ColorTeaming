@@ -20,6 +20,7 @@ import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingAPI;
 import com.github.ucchyocean.ct.config.ClassData;
 import com.github.ucchyocean.ct.config.KitParser;
+import com.github.ucchyocean.ct.config.TeamNameSetting;
 
 /**
  * colorclass(cclass)コマンドの実行クラス
@@ -61,25 +62,25 @@ public class CClassCommand implements CommandExecutor {
             return false;
         }
 
-        String group = args[0];
+        String target = args[0];
         String clas = args[1];
 
         ColorTeamingAPI api = plugin.getAPI();
-        HashMap<String, ArrayList<Player>> members = api.getAllTeamMembers();
+        HashMap<TeamNameSetting, ArrayList<Player>> members = api.getAllTeamMembers();
 
-        // 有効なグループ名かユーザー名か'all'が指定されたかを確認する
+        // 有効なチーム名かユーザー名か'all'が指定されたかを確認する
         boolean isAll = false;
-        boolean isGroup = false;
-        if ( group.equalsIgnoreCase("all") ) {
+        boolean isTeam = false;
+        if ( target.equalsIgnoreCase("all") ) {
             // 全プレイヤー指定
             isAll = true;
-        } else if ( members.containsKey(group)  ) {
-            // グループ指定
-            isGroup = true;
-        } else if ( api.getAllPlayers().contains(Bukkit.getPlayerExact(group)) ) {
+        } else if ( api.isExistTeam(target) ) {
+            // チーム指定
+            isTeam = true;
+        } else if ( api.getAllPlayers().contains(Bukkit.getPlayerExact(target)) ) {
             // ユーザー指定
         } else {
-            sender.sendMessage(PREERR + "グループまたはプレイヤー " + group + " が存在しません。");
+            sender.sendMessage(PREERR + "チームまたはプレイヤー " + target + " が存在しません。");
             return true;
         }
 
@@ -97,13 +98,13 @@ public class CClassCommand implements CommandExecutor {
 
         ArrayList<Player> playersToSet = new ArrayList<Player>();
         if ( isAll ) {
-            for ( String key : members.keySet() ) {
+            for ( TeamNameSetting key : members.keySet() ) {
                 playersToSet.addAll(members.get(key));
             }
-        } else if ( isGroup ) {
-            playersToSet = members.get(group);
+        } else if ( isTeam ) {
+            playersToSet = members.get(target);
         } else {
-            playersToSet.add(Bukkit.getPlayerExact(group));
+            playersToSet.add(Bukkit.getPlayerExact(target));
         }
 
         boolean isHealOnSetClass = plugin.getCTConfig().isHealOnSetClass();
@@ -154,19 +155,19 @@ public class CClassCommand implements CommandExecutor {
             updateInventory(p);
         }
 
-        String target;
+        String targetName;
         if ( isAll ) {
-            target = "全てのプレイヤー";
+            targetName = "全てのプレイヤー";
+        } else if ( isTeam ) {
+            TeamNameSetting tns = api.getTeamNameFromID(target);
+            targetName = "チーム" + tns.toString();
         } else {
-            String type = "グループ";
-            if ( !isGroup ) {
-                type = "プレイヤー";
-            }
-            target = type + group;
+            targetName = "プレイヤー" + target;
         }
 
         sender.sendMessage(PREINFO +
-                String.format("%s に、%s クラスの装備とアイテムを配布しました。", target, clas));
+                String.format("%s に、%s クラスの装備とアイテムを配布しました。", 
+                        targetName, clas));
 
         return true;
     }

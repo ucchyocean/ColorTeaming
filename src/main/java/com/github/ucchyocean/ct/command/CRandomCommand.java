@@ -17,6 +17,7 @@ import org.bukkit.scoreboard.Team;
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingAPI;
 import com.github.ucchyocean.ct.config.ColorTeamingConfig;
+import com.github.ucchyocean.ct.config.TeamNameSetting;
 
 /**
  * ColorRandom(CR)コマンドの実行クラス
@@ -43,7 +44,7 @@ public class CRandomCommand implements CommandExecutor {
             return onRestCommand(sender, args);
         }
 
-        // 設定するグループ数を、1番目の引数から取得する
+        // 設定するチーム数を、1番目の引数から取得する
         int numberOfGroups = 2;
         if ( args.length >= 1 && args[0].matches("[2-9]") ) {
             numberOfGroups = Integer.parseInt(args[0]);
@@ -71,7 +72,8 @@ public class CRandomCommand implements CommandExecutor {
         api.makeColorTeamsWithRandomSelection(players, numberOfGroups);
 
         // メンバー情報の取得
-        HashMap<String, ArrayList<Player>> members = api.getAllTeamMembers();
+        HashMap<TeamNameSetting, ArrayList<Player>> members = 
+                api.getAllTeamMembers();
 
         // コマンド完了を、CCメッセージで通知する
         CCountCommand.sendCCMessage(sender, members, false);
@@ -111,7 +113,7 @@ public class CRandomCommand implements CommandExecutor {
         // チームがあるかどうかを確認する
         if ( api.getAllTeamNames().size() == 0 ) {
             sender.sendMessage(
-                    PREERR + "設定できるグループが無いようです。");
+                    PREERR + "設定できるチームが無いようです。");
             return true;
         }
 
@@ -119,7 +121,7 @@ public class CRandomCommand implements CommandExecutor {
         api.addPlayerToColorTeamsWithRandomSelection(players);
 
         // メンバー情報の取得
-        HashMap<String, ArrayList<Player>> members =
+        HashMap<TeamNameSetting, ArrayList<Player>> members =
                 api.getAllTeamMembers();
 
         // コマンド完了を、CCメッセージで通知する

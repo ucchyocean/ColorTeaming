@@ -5,6 +5,8 @@
  */
 package com.github.ucchyocean.ct.event;
 
+import com.github.ucchyocean.ct.config.TeamNameSetting;
+
 
 /**
  * チームが削除されたときのイベント
@@ -12,7 +14,7 @@ package com.github.ucchyocean.ct.event;
  */
 public class ColorTeamingTeamRemoveEvent extends ColorTeamingTeamEvent {
 
-    public ColorTeamingTeamRemoveEvent(String teamName) {
+    public ColorTeamingTeamRemoveEvent(TeamNameSetting teamName) {
         super(teamName);
     }
 }

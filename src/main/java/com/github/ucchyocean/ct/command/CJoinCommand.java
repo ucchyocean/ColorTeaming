@@ -16,7 +16,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.github.ucchyocean.ct.ColorTeaming;
-import com.github.ucchyocean.ct.Utility;
+import com.github.ucchyocean.ct.config.TeamNameConfig;
+import com.github.ucchyocean.ct.config.TeamNameSetting;
 
 /**
  * colorjoin(cjoin)コマンドの実行クラス
@@ -46,7 +47,7 @@ public class CJoinCommand implements CommandExecutor {
 
         Player player = (Player)sender;
 
-        String group = "";
+        TeamNameSetting team = null;
         if ( args.length == 0 || args[0].equalsIgnoreCase("random") ) {
 
             if ( !plugin.getCTConfig().isAllowPlayerJoinRandom() ) {
@@ -56,26 +57,25 @@ public class CJoinCommand implements CommandExecutor {
                 return true;
             }
 
-            if ( !plugin.getAPI().getPlayerTeamName(player).equals("") ) {
+            if ( plugin.getAPI().getPlayerTeamName(player) != null ) {
                 player.sendMessage(
                         PREERR + "あなたは既に、チームに所属しています。");
                 return true;
             }
 
-            group = getLeastGroup();
-            if ( group == null ) {
+            team = getLeastTeam();
+            if ( team == null ) {
                 sender.sendMessage(
-                        PREERR + "参加できるグループが無いようです。");
+                        PREERR + "参加できるチームが無いようです。");
                 return true;
             }
 
-            plugin.getAPI().addPlayerTeam(player, group);
+            plugin.getAPI().addPlayerTeam(player, team);
             player.sendMessage(
                     ChatColor.GREEN + "あなたは " +
-                    Utility.replaceColors(group) +
-                    group +
+                    team.toString() +
                     ChatColor.GREEN +
-                    " グループになりました。");
+                    " チームになりました。");
 
             // メンバー情報をlastdataに保存する
             plugin.getAPI().getCTSaveDataHandler().save("lastdata");
@@ -87,28 +87,29 @@ public class CJoinCommand implements CommandExecutor {
             if ( !plugin.getCTConfig().isAllowPlayerJoinAny() ) {
                 player.sendMessage(
                         PREERR +
-                        "cjoin (group) コマンドによる任意グループへの参加は、許可されておりません。");
+                        "cjoin (group) コマンドによる任意チームへの参加は、許可されておりません。");
                 return true;
             }
 
-            if ( !plugin.getAPI().getPlayerTeamName(player).equals("") ) {
+            if ( plugin.getAPI().getPlayerTeamName(player) != null ) {
                 player.sendMessage(
                         PREERR + "あなたは既に、チームに所属しています。");
                 return true;
             }
 
-            group = args[0];
-            if ( !Utility.isValidColor(group) ) {
-                sender.sendMessage(PREERR + "グループ " + group + " は設定できないグループ名です。");
+            String target = args[0];
+            ArrayList<TeamNameSetting> teams = plugin.getAPI().getTeamNameConfig().getTeamNames();
+            if ( !TeamNameConfig.containsID(teams, target) ) {
+                sender.sendMessage(PREERR + target + " は設定できないチーム名です。");
                 return true;
             }
-            plugin.getAPI().addPlayerTeam(player, group);
+            TeamNameSetting tns = plugin.getAPI().getTeamNameConfig().getTeamNameFromID(target);
+            plugin.getAPI().addPlayerTeam(player, tns);
             player.sendMessage(
                     ChatColor.GREEN + "あなたは " +
-                    Utility.replaceColors(group) +
-                    group +
+                    tns.toString() +
                     ChatColor.GREEN +
-                    " グループになりました。");
+                    " チームになりました。");
 
             // サイドバー更新、タブキーリスト更新
             plugin.getAPI().makeSidebarScore();
@@ -123,30 +124,29 @@ public class CJoinCommand implements CommandExecutor {
         }
     }
 
-
     /**
-     * メンバー人数が最小のグループを返す。
-     * @return メンバー人数が最小のグループ
+     * メンバー人数が最小のチームを返す。
+     * @return メンバー人数が最小のチーム
      */
-    private String getLeastGroup() {
+    private TeamNameSetting getLeastTeam() {
 
-        HashMap<String, ArrayList<Player>> members =
+        HashMap<TeamNameSetting, ArrayList<Player>> members =
                 plugin.getAPI().getAllTeamMembers();
         int least = 999;
-        String leastGroup = null;
+        TeamNameSetting leastTeam = null;
 
-        ArrayList<String> groups = new ArrayList<String>(members.keySet());
-        // ランダム要素を入れるため、グループ名をシャッフルする
-        Collections.shuffle(groups);
+        ArrayList<TeamNameSetting> teams = plugin.getAPI().getAllTeamNames();
+        // ランダム要素を入れるため、チーム名をシャッフルする
+        Collections.shuffle(teams);
 
-        for ( String group : groups ) {
-            if ( least > members.get(group).size() ) {
-                least = members.get(group).size();
-                leastGroup = group;
+        for ( TeamNameSetting tns : teams ) {
+            if ( least > members.get(tns).size() ) {
+                least = members.get(tns).size();
+                leastTeam = tns;
             }
         }
 
-        return leastGroup;
+        return leastTeam;
     }
 }
 

@@ -10,6 +10,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Set;
+import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
 
@@ -25,7 +27,7 @@ public class TeamNameConfig {
     private static final String FILE_NAME = "teamcolors.txt";
     
     private File file;
-    private ArrayList<TeamName> config;
+    private ArrayList<TeamNameSetting> config;
     
     /**
      * コンストラクタ
@@ -47,7 +49,7 @@ public class TeamNameConfig {
      * チーム名設定を取得する
      * @return チーム名設定
      */
-    public ArrayList<TeamName> getTeamNames() {
+    public ArrayList<TeamNameSetting> getTeamNames() {
         return config;
     }
     
@@ -56,7 +58,7 @@ public class TeamNameConfig {
      * @param file 読み込むファイル
      * @return 読み込み結果
      */
-    private ArrayList<TeamName> load(File file) {
+    private ArrayList<TeamNameSetting> load(File file) {
 
         // ファイルの内容を読み出す
         ArrayList<String> contents = new ArrayList<String>();
@@ -86,22 +88,105 @@ public class TeamNameConfig {
         }
 
         // 内容の解析
-        ArrayList<TeamName> config = new ArrayList<TeamName>();
+        ArrayList<TeamNameSetting> config = new ArrayList<TeamNameSetting>();
+        Logger logger = ColorTeaming.instance.getLogger();
         
         for ( String c : contents ) {
             
-            if ( !c.contains(",") ) {
+            String[] data = c.split(",");
+            
+            if ( data == null || data.length < 3 ) {
                 continue;
             }
             
-            int index = c.indexOf(",");
-            String name = c.substring(0, index).trim();
-            String color_temp = c.substring(index+1).trim();
-            ChatColor color = Utility.replaceColors(color_temp);
+            String id = data[0].trim();
+            String name = data[1].trim();
+            String color_temp = data[2].trim();
+            ChatColor color = Utility.getChatColorFromColorCode(color_temp);
             
-            config.add(new TeamName(name, color));
+            // チームIDが重複していないことを確認する
+            if ( containsID(config, id) ) {
+                logger.warning("teamcolors.txt：チームIDが重複しています。：" + c);
+                continue;
+            }
+            
+            // 表示名が長すぎないか確認する
+            if ( name.length() > 10 ) {
+                logger.warning("teamcolors.txt：表示名が長すぎます。：" + c);
+                continue;
+            }
+            
+            config.add(new TeamNameSetting(id, name, color));
         }
         
+        // TODO: 最低チーム設定数（9チーム）に満たない場合は、デフォルト設定で補完する。
+        
         return config;
+    }
+    
+    /**
+     * TeamNameを返す。
+     * 指定した名前に一致するTeamNameが存在しない場合は、
+     * color=nullのTeamNameが返されることに注意すること。
+     * @param id チームID
+     * @return TeamNameオブジェクト
+     */
+    public TeamNameSetting getTeamNameFromID(String id) {
+        
+        for ( TeamNameSetting tn : config ) {
+            if ( tn.getID().equals(id) ) {
+                return tn;
+            }
+        }
+        return new TeamNameSetting(id, id, null);
+    }
+    
+    /**
+     * TeamNameを返す。
+     * 指定した名前に一致するTeamNameが存在しない場合は、
+     * color=nullのTeamNameが返されることに注意すること。
+     * @param config 確認対象のTeamNameSetting配列
+     * @param id チームID
+     * @return TeamNameオブジェクト
+     */
+    public static TeamNameSetting getTeamNameFromID(Set<TeamNameSetting> config, String id) {
+        
+        for ( TeamNameSetting tn : config ) {
+            if ( tn.getID().equals(id) ) {
+                return tn;
+            }
+        }
+        return new TeamNameSetting(id, id, null);
+    }
+    
+    /**
+     * 指定したIDが存在するかどうかを確認する
+     * @param id ID
+     * @return 存在するかどうか
+     */
+    public boolean containsID(String id) {
+        
+        for ( TeamNameSetting tn : config ) {
+            if ( tn.getID().equals(id) ) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * 指定したIDが既に存在するかどうかを確認する
+     * @param config 確認対象のTeamNameSetting配列
+     * @param id ID
+     * @return 存在するかどうか
+     */
+    public static boolean containsID(ArrayList<TeamNameSetting> config, String id) {
+        
+        for ( TeamNameSetting tn : config ) {
+            if ( tn.getID().equals(id) ) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -86,9 +86,9 @@ public abstract class PointConfigAbst {
     }
 
     /**
-     * グループのリスポーンポイントを設定してコンフィグの保存を行う。
-     * @param name グループ名
-     * @param location グループのリスポーンポイント
+     * チームのリスポーンポイントを設定してコンフィグの保存を行う。
+     * @param name チーム名
+     * @param location チームのリスポーンポイント
      */
     public void set(String name, Location location) {
 

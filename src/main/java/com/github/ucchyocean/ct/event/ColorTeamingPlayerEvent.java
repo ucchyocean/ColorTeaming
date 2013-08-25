@@ -7,17 +7,13 @@ package com.github.ucchyocean.ct.event;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
 import org.bukkit.scoreboard.Team;
 
 /**
  * プレイヤーのチーム参加/離脱に関する基底イベント
  * @author ucchy
  */
-public abstract class ColorTeamingPlayerEvent extends Event implements Cancellable {
-
-    private static final HandlerList handlers = new HandlerList();
+public abstract class ColorTeamingPlayerEvent extends ColorTeamingEvent implements Cancellable {
 
     private boolean isCancelled;
 
@@ -49,15 +45,6 @@ public abstract class ColorTeamingPlayerEvent extends Event implements Cancellab
      */
     public Team getTeam() {
         return team;
-    }
-
-    @Override
-    public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
-        return handlers;
     }
 
     @Override

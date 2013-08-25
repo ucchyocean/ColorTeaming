@@ -12,6 +12,7 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.scoreboard.Team;
 
 import com.github.ucchyocean.ct.ColorTeaming;
 
@@ -51,17 +52,19 @@ public class EntityDamageListener implements Listener {
         // 両方プレイヤーの場合（＝剣や素手などの直接攻撃）
         if ( attacker instanceof Player && defender instanceof Player ) {
 
-            // ColorMe のカラーを取得し、同じ色かどうか確認する
-            String attackerColor = plugin.getAPI().getPlayerTeamName((Player)attacker);
-            String defenderColor = plugin.getAPI().getPlayerTeamName((Player)defender);
+            // チームを取得し、同じチームかどうか確認する
+            Team attackerTeam = 
+                    plugin.getAPI().getPlayerTeam((Player)attacker);
+            Team defenderTeam = 
+                    plugin.getAPI().getPlayerTeam((Player)defender);
 
             // どちらかがチーム無所属なら抜ける
-            if ( attackerColor.equals("") || defenderColor.equals("") ) {
+            if ( attackerTeam == null || defenderTeam == null ) {
                 return;
             }
 
-            // 同じ色ならば、
-            if ( attackerColor.equalsIgnoreCase(defenderColor) ) {
+            // 同じチームならば、
+            if ( attackerTeam.equals(defenderTeam) ) {
                 // 攻撃イベントをキャンセルしちゃう。
                 event.setCancelled(true);
             }
@@ -76,16 +79,18 @@ public class EntityDamageListener implements Listener {
             if ( shooter instanceof Player ) {
 
                 // ColorMe のカラーを取得し、同じ色かどうか確認する
-                String attackerColor = plugin.getAPI().getPlayerTeamName((Player)shooter);
-                String defenderColor = plugin.getAPI().getPlayerTeamName((Player)defender);
+                Team attackerTeam = 
+                        plugin.getAPI().getPlayerTeam((Player)shooter);
+                Team defenderTeam = 
+                        plugin.getAPI().getPlayerTeam((Player)defender);
 
                 // どちらかがチーム無所属なら抜ける
-                if ( attackerColor.equals("") || defenderColor.equals("") ) {
+                if ( attackerTeam == null || defenderTeam == null ) {
                     return;
                 }
 
                 // 同じ色ならば、
-                if ( attackerColor.equalsIgnoreCase(defenderColor) ) {
+                if ( attackerTeam.equals(defenderTeam) ) {
                     // 攻撃イベントをキャンセルしちゃう。
                     event.setCancelled(true);
                 }

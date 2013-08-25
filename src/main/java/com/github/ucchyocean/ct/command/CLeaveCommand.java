@@ -48,7 +48,7 @@ public class CLeaveCommand implements CommandExecutor {
             return true;
         }
 
-        if ( plugin.getAPI().getPlayerTeamName(player).equals("") ) {
+        if ( plugin.getAPI().getPlayerTeamName(player) == null ) {
             player.sendMessage(
                     PREERR + "あなたはチームに所属していません。");
             return true;

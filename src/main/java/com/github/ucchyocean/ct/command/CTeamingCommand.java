@@ -17,6 +17,7 @@ import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingAPI;
 import com.github.ucchyocean.ct.Utility;
 import com.github.ucchyocean.ct.config.ColorTeamingConfig;
+import com.github.ucchyocean.ct.config.TeamNameSetting;
 import com.github.ucchyocean.ct.event.ColorTeamingPlayerLeaveEvent.Reason;
 import com.github.ucchyocean.ct.scoreboard.PlayerCriteria;
 import com.github.ucchyocean.ct.scoreboard.SidebarCriteria;
@@ -56,13 +57,13 @@ public class CTeamingCommand implements CommandExecutor {
 
             ColorTeamingAPI api = plugin.getAPI();
 
-            HashMap<String, ArrayList<Player>> members =
+            HashMap<TeamNameSetting, ArrayList<Player>> members =
                     api.getAllTeamMembers();
-            for ( String group : members.keySet() ) {
+            for ( TeamNameSetting group : members.keySet() ) {
                 for ( Player p : members.get(group) ) {
                     api.leavePlayerTeam(p, Reason.TEAM_REMOVED);
                 }
-                api.removeTeam(group);
+                api.removeTeam(group.getID());
             }
 
             // サイドバー削除、タブキーリスト更新
@@ -70,7 +71,7 @@ public class CTeamingCommand implements CommandExecutor {
             api.refreshTabkeyListScore();
             api.refreshBelowNameScore();
 
-            sender.sendMessage(PREINFO + "全てのグループが解散しました。");
+            sender.sendMessage(PREINFO + "全てのチームが解散しました。");
 
             return true;
 
@@ -78,25 +79,27 @@ public class CTeamingCommand implements CommandExecutor {
 
             ColorTeamingAPI api = plugin.getAPI();
 
-            HashMap<String, ArrayList<Player>> members = api.getAllTeamMembers();
-            String group = args[1];
-            if ( !members.containsKey(group) ) {
-                sender.sendMessage(PREERR + "グループ " + group + " は存在しません。");
+            String target = args[1];
+            if ( !api.isExistTeam(target) ) {
+                sender.sendMessage(PREERR + "チーム " + target + " は存在しません。");
                 return true;
             }
 
-            for ( Player p : members.get(group) ) {
-                api.leavePlayerTeam(p, Reason.TEAM_REMOVED);
-                p.sendMessage(PREINFO + "グループ " + group + " が解散しました。");
+            ArrayList<Player> members = api.getTeamMembers(target);
+            if ( !api.removeTeam(target) ) {
+                return true; // イベントによる実行キャンセル
             }
-            api.removeTeam(group);
 
             // サイドバー再作成、タブキーリスト更新
             api.makeSidebarScore();
             api.refreshTabkeyListScore();
             api.refreshBelowNameScore();
+            
+            for ( Player p : members ) {
+                p.sendMessage(PREINFO + "チーム " + target + " が解散しました。");
+            }
 
-            sender.sendMessage(PREINFO + "グループ " + group + " が解散しました。");
+            sender.sendMessage(PREINFO + "チーム " + target + " が解散しました。");
 
             return true;
 
@@ -201,9 +204,10 @@ public class CTeamingCommand implements CommandExecutor {
 
         } else if ( args.length >= 3 && args[0].equalsIgnoreCase("add") ) {
 
-            String group = args[1];
-            if ( !Utility.isValidColor(group) ) {
-                sender.sendMessage(PREERR + "グループ " + group + " は設定できないグループ名です。");
+            String target = args[1];
+            ColorTeamingAPI api = plugin.getAPI();
+            if ( !api.getTeamNameConfig().containsID(target) ) {
+                sender.sendMessage(PREERR + "チーム " + target + " は設定できないチーム名です。");
                 return true;
             }
 
@@ -213,14 +217,14 @@ public class CTeamingCommand implements CommandExecutor {
                 return true;
             }
 
-            ColorTeamingAPI api = plugin.getAPI();
-            boolean isNewGroup = !api.getAllTeamMembers().containsKey(group);
-            api.addPlayerTeam(player, group);
+            boolean isNewGroup = !api.isExistTeam(target);
+            TeamNameSetting tns = api.getTeamNameFromID(target);
+            api.addPlayerTeam(player, tns);
 
             // メンバー情報をlastdataに保存する
             api.getCTSaveDataHandler().save("lastdata");
 
-            // サイドバーの更新 グループが増える場合は、再生成する
+            // サイドバーの更新 チームが増える場合は、再生成する
             if ( isNewGroup ) {
                 api.makeSidebarScore();
             }
@@ -228,8 +232,8 @@ public class CTeamingCommand implements CommandExecutor {
             api.refreshTabkeyListScore();
             api.refreshBelowNameScore();
 
-            sender.sendMessage(PREINFO + "プレイヤー " + player.getName() + " をグループ " +
-                    group + " に追加しました。");
+            sender.sendMessage(PREINFO + "プレイヤー " + player.getName() + " をチーム " +
+                    tns.getName() + " に追加しました。");
 
             return true;
 

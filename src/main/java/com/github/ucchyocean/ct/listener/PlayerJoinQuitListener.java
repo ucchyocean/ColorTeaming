@@ -19,6 +19,7 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingAPI;
 import com.github.ucchyocean.ct.config.ColorTeamingConfig;
+import com.github.ucchyocean.ct.config.TeamNameSetting;
 import com.github.ucchyocean.ct.event.ColorTeamingPlayerLeaveEvent.Reason;
 import com.github.ucchyocean.ct.scoreboard.SidebarCriteria;
 
@@ -59,7 +60,7 @@ public class PlayerJoinQuitListener implements Listener {
         if ( config.isWorldSpawn() ) {
 
             if ( !player.hasPlayedBefore() ||
-                    (api.getPlayerTeamName(player).equals("") &&
+                    (api.getPlayerTeamName(player) == null &&
                             player.getBedSpawnLocation() == null) ) {
                 Location location = player.getWorld().getSpawnLocation();
                 player.teleport(location, TeleportCause.PLUGIN);
@@ -82,33 +83,33 @@ public class PlayerJoinQuitListener implements Listener {
         api.refreshSidebarScore();
 
         // colorRemoveOnQuitがfalseなら、以降の処理は何もしない。
-        if ( !config.isColorRemoveOnQuit() ) {
-            return;
-        }
+        if ( config.isColorRemoveOnQuit() ) {
 
-        Player player = event.getPlayer();
-        String color = api.getPlayerTeamName(player);
-
-        // ログアウトしたプレイヤーが、大将だった場合、逃げたことを全体に通知する。
-        HashMap<String, ArrayList<String>> leaders = api.getLeaders();
-        if ( leaders.containsKey(color) &&
-                leaders.get(color).contains(player.getName()) ) {
-            String message = String.format(PRENOTICE + "%s チームの大将、%s は逃げ出した！",
-                    color, player.getName());
-            Bukkit.broadcastMessage(message);
-            leaders.get(color).remove(player.getName());
-
-            if ( leaders.get(color).size() >= 1 ) {
-                message = String.format(PRENOTICE + "%s チームの残り大将は、あと %d 人です。",
-                        color, leaders.get(color).size());
-            } else {
-                message = String.format(PRENOTICE + "%s チームの大将は全滅しました！", color);
+            Player player = event.getPlayer();
+            TeamNameSetting tns = api.getPlayerTeamName(player);
+    
+            // ログアウトしたプレイヤーが、大将だった場合、逃げたことを全体に通知する。
+            HashMap<String, ArrayList<String>> leaders = api.getLeaders();
+            if ( leaders.containsKey(tns.getID()) &&
+                    leaders.get(tns.getID()).contains(player.getName()) ) {
+                String message = String.format(PRENOTICE + "%s チームの大将、%s は逃げ出した！",
+                        tns.getName(), player.getName());
+                Bukkit.broadcastMessage(message);
+                leaders.get(tns.getID()).remove(player.getName());
+    
+                if ( leaders.get(tns.getID()).size() >= 1 ) {
+                    message = String.format(PRENOTICE + "%s チームの残り大将は、あと %d 人です。",
+                            tns.getName(), leaders.get(tns.getID()).size());
+                } else {
+                    message = String.format(PRENOTICE + "%s チームの大将は全滅しました！", 
+                            tns.getName());
+                }
+                Bukkit.broadcastMessage(message);
             }
-            Bukkit.broadcastMessage(message);
+    
+            // 色設定を削除する
+            api.leavePlayerTeam(player, Reason.DEAD);
         }
-
-        // 色設定を削除する
-        api.leavePlayerTeam(player, Reason.DEAD);
     }
 
 }

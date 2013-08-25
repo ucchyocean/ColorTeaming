@@ -5,19 +5,17 @@
  */
 package com.github.ucchyocean.ct.event;
 
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
+import com.github.ucchyocean.ct.config.TeamNameSetting;
+
 
 /**
  * チームのリーダーが全滅したときのイベント
  * @author ucchy
  */
-public class ColorTeamingLeaderDefeatedEvent extends Event {
-
-    private static final HandlerList handlers = new HandlerList();
+public class ColorTeamingLeaderDefeatedEvent extends ColorTeamingEvent {
 
     /** チーム名 */
-    private String teamName;
+    private TeamNameSetting teamName;
 
     /** 最後に倒したプレイヤー名 */
     private String killer;
@@ -31,7 +29,7 @@ public class ColorTeamingLeaderDefeatedEvent extends Event {
      * @param killer 最後に倒したプレイヤー名
      * @param deader 最後に倒されたプレイヤー名
      */
-    public ColorTeamingLeaderDefeatedEvent(String teamName, String killer, String deader) {
+    public ColorTeamingLeaderDefeatedEvent(TeamNameSetting teamName, String killer, String deader) {
         this.teamName = teamName;
         this.killer = killer;
         this.deader = deader;
@@ -40,7 +38,7 @@ public class ColorTeamingLeaderDefeatedEvent extends Event {
     /**
      * @return チーム名
      */
-    public String getTeamName() {
+    public TeamNameSetting getTeamName() {
         return teamName;
     }
 
@@ -56,14 +54,5 @@ public class ColorTeamingLeaderDefeatedEvent extends Event {
      */
     public String getDeader() {
         return deader;
-    }
-
-    @Override
-    public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
-        return handlers;
     }
 }

@@ -5,20 +5,18 @@
  */
 package com.github.ucchyocean.ct.event;
 
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
+import com.github.ucchyocean.ct.config.TeamNameSetting;
+
 
 /**
  * 大将戦勝利イベント。他のチームの大将が全滅したときに、大将が残っているのが残り1チームなら、このイベントが発生する。
  * @author ucchy
  *
  */
-public class ColorTeamingWonLeaderEvent extends Event {
-
-    private static final HandlerList handlers = new HandlerList();
+public class ColorTeamingWonLeaderEvent extends ColorTeamingEvent {
 
     /** チーム名 */
-    private String teamName;
+    private TeamNameSetting teamName;
 
     /** ColorTeamingLeaderDefeatedEvent */
     private ColorTeamingLeaderDefeatedEvent ldevent;
@@ -28,7 +26,7 @@ public class ColorTeamingWonLeaderEvent extends Event {
      * @param teamName 勝利チーム名
      * @param ldevent ColorTeamingLeaderDefeatedEvent
      */
-    public ColorTeamingWonLeaderEvent(String teamName, ColorTeamingLeaderDefeatedEvent ldevent) {
+    public ColorTeamingWonLeaderEvent(TeamNameSetting teamName, ColorTeamingLeaderDefeatedEvent ldevent) {
         this.teamName = teamName;
         this.ldevent = ldevent;
     }
@@ -36,7 +34,7 @@ public class ColorTeamingWonLeaderEvent extends Event {
     /**
      * @return 勝利チーム名
      */
-    public String getWonTeamName() {
+    public TeamNameSetting getWonTeamName() {
         return teamName;
     }
 
@@ -45,14 +43,5 @@ public class ColorTeamingWonLeaderEvent extends Event {
      */
     public ColorTeamingLeaderDefeatedEvent getLeaderDefeatedEvent() {
         return ldevent;
-    }
-
-    @Override
-    public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
-        return handlers;
     }
 }

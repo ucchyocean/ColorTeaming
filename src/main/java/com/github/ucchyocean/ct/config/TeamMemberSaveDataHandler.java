@@ -9,7 +9,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -19,7 +18,6 @@ import org.bukkit.entity.Player;
 
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingAPI;
-import com.github.ucchyocean.ct.event.ColorTeamingPlayerLeaveEvent.Reason;
 
 /**
  * csaveコマンドやcrestoreコマンドで扱う、チームメンバー保存データのハンドルクラス
@@ -53,9 +51,9 @@ public class TeamMemberSaveDataHandler {
         ColorTeamingAPI api = ColorTeaming.instance.getAPI();
 
         // メンバー情報の保存
-        HashMap<String, ArrayList<Player>> members = api.getAllTeamMembers();
+        HashMap<TeamNameSetting, ArrayList<Player>> members = api.getAllTeamMembers();
 
-        for ( String key : members.keySet() ) {
+        for ( TeamNameSetting key : members.keySet() ) {
 
             // プレイヤーを名前のリストに変換する
             ArrayList<String> names = new ArrayList<String>();
@@ -115,19 +113,22 @@ public class TeamMemberSaveDataHandler {
             return false;
         }
 
-        clearAllUsers(); // 一旦、全てのユーザーのグループを解散する
-
         ColorTeamingAPI api = ColorTeaming.instance.getAPI();
 
-        Iterator<String> groups = msection.getValues(false).keySet().iterator();
-        while (groups.hasNext()) {
-            String group = groups.next();
+        api.removeAllTeam(); // 一旦、全てのユーザーのチームを解散する
 
-            List<String> groupMembers = msection.getStringList(group);
+        for ( String team : msection.getKeys(false) ) {
+
+            if ( !api.getTeamNameConfig().containsID(team) ) {
+                continue;
+            }
+            
+            TeamNameSetting tns = api.getTeamNameConfig().getTeamNameFromID(team);
+            List<String> groupMembers = msection.getStringList(team);
             for ( String pname : groupMembers ) {
                 Player player = Bukkit.getPlayerExact(pname);
                 if ( player != null ) {
-                    api.addPlayerTeam(player, group);
+                    api.addPlayerTeam(player, tns);
                 }
             }
         }
@@ -178,21 +179,6 @@ public class TeamMemberSaveDataHandler {
 
         File file = new File(saveDir, name + ".yml");
         return file.exists() && file.isFile();
-    }
-
-    /**
-     * 全てのユーザーの色を解除して、全グループを解散させる
-     */
-    private void clearAllUsers() {
-
-        ColorTeamingAPI api = ColorTeaming.instance.getAPI();
-        HashMap<String, ArrayList<Player>> members = api.getAllTeamMembers();
-
-        for ( String group : members.keySet() ) {
-            for ( Player p : members.get(group) ) {
-                api.leavePlayerTeam(p, Reason.TEAM_REMOVED);
-            }
-        }
     }
 
     private List<Integer> convertToList(int[] arr) {

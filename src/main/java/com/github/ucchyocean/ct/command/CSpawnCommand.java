@@ -16,7 +16,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.github.ucchyocean.ct.ColorTeaming;
-import com.github.ucchyocean.ct.Utility;
+import com.github.ucchyocean.ct.ColorTeamingAPI;
 import com.github.ucchyocean.ct.config.RespawnConfiguration;
 
 /**
@@ -95,10 +95,11 @@ public class CSpawnCommand implements CommandExecutor {
                 // cspawn (group) の実行
 
                 String group = args[0];
+                ColorTeamingAPI api = plugin.getAPI();
 
-                // 有効なグループ名が指定されたか確認する
-                if ( !Utility.isValidColor(group) ) {
-                    sender.sendMessage(PREERR + "グループ " + group + " は設定できないグループ名です。");
+                // 有効なチーム名が指定されたか確認する
+                if ( !api.getTeamNameConfig().containsID(group) ) {
+                    sender.sendMessage(PREERR + "チーム " + group + " は設定できないチーム名です。");
                     return true;
                 }
 
@@ -116,7 +117,7 @@ public class CSpawnCommand implements CommandExecutor {
                 respawnConfig.set(group, location);
 
                 String message = String.format(
-                        "グループ %s のリスポーンポイントを (%d, %d, %d) に設定しました。",
+                        "チーム %s のリスポーンポイントを (%d, %d, %d) に設定しました。",
                         group, location.getBlockX(), location.getBlockY(), location.getBlockZ());
                 sender.sendMessage(PREINFO + message);
 
@@ -139,7 +140,7 @@ public class CSpawnCommand implements CommandExecutor {
                     respawnConfig.set(k, null);
                 }
 
-                sender.sendMessage(PREINFO + "全てのグループリスポーン設定を削除しました。");
+                sender.sendMessage(PREINFO + "全てのチームリスポーン設定を削除しました。");
 
                 return true;
 
@@ -149,13 +150,13 @@ public class CSpawnCommand implements CommandExecutor {
                 String group = args[1];
 
                 if ( respawnConfig.get(group) == null ) {
-                    sender.sendMessage(PREERR + "グループ " + group + " のリスポーン設定がありません。");
+                    sender.sendMessage(PREERR + "チーム " + group + " のリスポーン設定がありません。");
                     return true;
                 }
 
                 respawnConfig.set(group, null);
 
-                sender.sendMessage(PREINFO + "グループ " + group + " のリスポーン設定を削除しました。");
+                sender.sendMessage(PREINFO + "チーム " + group + " のリスポーン設定を削除しました。");
 
                 return true;
 
@@ -166,13 +167,13 @@ public class CSpawnCommand implements CommandExecutor {
                 String map = args[2];
 
                 if ( respawnConfig.get(group, map) == null ) {
-                    sender.sendMessage(PREERR + "グループ " + group + "、マップ " + map + " のリスポーン設定がありません。");
+                    sender.sendMessage(PREERR + "チーム " + group + "、マップ " + map + " のリスポーン設定がありません。");
                     return true;
                 }
 
                 respawnConfig.set(group, map, null);
 
-                sender.sendMessage(PREINFO + "グループ " + group + "、マップ " + map + " のリスポーン設定を削除しました。");
+                sender.sendMessage(PREINFO + "チーム " + group + "、マップ " + map + " のリスポーン設定を削除しました。");
 
                 return true;
             }
@@ -278,9 +279,9 @@ public class CSpawnCommand implements CommandExecutor {
                     Integer.parseInt(args[3]), Integer.parseInt(args[4]));
         }
 
-        // 有効なグループ名が指定されたか確認する
-        if ( !Utility.isValidColor(group) ) {
-            sender.sendMessage(PREERR + "グループ " + group + " は設定できないグループ名です。");
+        // 有効なチーム名が指定されたか確認する
+        if ( !plugin.getAPI().getTeamNameConfig().containsID(group) ) {
+            sender.sendMessage(PREERR + "チーム " + group + " は設定できないチーム名です。");
             return true;
         }
 
@@ -289,12 +290,12 @@ public class CSpawnCommand implements CommandExecutor {
 
         if ( map == null || map.equals("") ) {
             String message = String.format(
-                    "グループ %s のリスポーンポイントを (%d, %d, %d) に設定しました。",
+                    "チーム %s のリスポーンポイントを (%d, %d, %d) に設定しました。",
                     group, location.getBlockX(), location.getBlockY(), location.getBlockZ() );
             sender.sendMessage(PREINFO + message);
         } else {
             String message = String.format(
-                    "グループ %s、マップ %s のリスポーンポイントを (%d, %d, %d) に設定しました。",
+                    "チーム %s、マップ %s のリスポーンポイントを (%d, %d, %d) に設定しました。",
                     group, map, location.getBlockX(), location.getBlockY(), location.getBlockZ() );
             sender.sendMessage(PREINFO + message);
        }
@@ -322,6 +323,6 @@ public class CSpawnCommand implements CommandExecutor {
     }
 
     private boolean isValidMapName(String name) {
-        return name.matches("[a-zA-Z]{1,10}");
+        return name.matches("[a-zA-Z0-9_]{1,10}");
     }
 }

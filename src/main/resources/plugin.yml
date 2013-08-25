@@ -12,9 +12,9 @@ commands:
     aliases: ct
     usage: |
            /<command> reload - ColorMeTeaming の config.yml を再読み込みします。
-           /<command> add (group) (player) - playerをgroupに追加します。
-           /<command> remove (group) - groupを解散します。
-           /<command> removeAll - 全てのグループを解散します。
+           /<command> add (team) (player) - playerをteamに追加します。
+           /<command> remove (team) - teamを解散します。
+           /<command> removeAll - 全てのチームを解散します。
            /<command> trophy (amount) - キル数達成時の通知を設定します。
            /<command> reachTrophy (amount) - キル数リーチ時の通知を設定します。
            /<command> side (kill|death|point|rest) - サイドバーのスコア表示を変更します。
@@ -30,60 +30,61 @@ commands:
     aliases: [crandom,randomcolor,rc]
     usage: |
            /<command> - 全てのプレイヤーを2チームにチーム分けします。
-           /<command> (numberOfGroups) - 全てのプレイヤーを、numberOfGroupsの数のチームにチーム分けします。
-           /<command> rest - 色が設定されていない人を、現在設定されているグループにランダム割り振りします。
+           /<command> (numberOfTeams) - 全てのプレイヤーを、numberOfTeamsの数のチームにチーム分けします。
+           /<command> rest - 色が設定されていない人を、現在設定されているチームにランダム割り振りします。
     permission: colorteaming.random
     permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorcount:
     description: メンバーを一覧表示するコマンド
     aliases: cc
     usage: |
-           /<command> - 各色グループのメンバーを一覧表示します。
-           /<command> all - 全てのプレイヤー（ignoreGroups込み）のメンバーを一覧表示します。
-           /<command> say [all] - 各色グループのメンバーの一覧を、サーバー全体メッセージで表示します。
+           /<command> - 各色チームのメンバーを一覧表示します。
+           /<command> all - 全てのプレイヤーのメンバーを一覧表示します。
+           /<command> say [all] - 各色チームのメンバーの一覧を、サーバー全体メッセージで表示します。
     permission: colorteaming.count
     permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorfriendlyfire:
     description: メンバー間の攻撃の有効無効を切り替えるコマンド
     aliases: cff
     usage: |
-           /<command> (on|off) - 各色グループのメンバー間の攻撃を、onで無効に、offで有効に設定します。
-           /<command> invisible (on|off) - 各色グループの透明なメンバーを、onで見えるように、offで見えないようにします。
+           /<command> (on|off) - 各色チームのメンバー間の攻撃を、onで無効に、offで有効に設定します。
+           /<command> invisible (on|off) - 各色チームの透明なメンバーを、onで見えるように、offで見えないようにします。
     permission: colorteaming.friendlyfire
     permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorchat:
     description: チームチャットの有効無効を切り替えるコマンド
     aliases: cchat
     usage: |
-           /<command> (on|off) - 各色グループのメンバーのチャットを、onでチームチャットに、offで通常チャットに設定します。
+           /<command> (on|off) - 各色チームのメンバーのチャットを、onでチームチャットに、offで通常チャットに設定します。
            /<command> (opon|opoff) - 各チームのチームチャットを、OPが傍聴するかどうかを設定します。
            /<command> (logon|logoff) - 各チームのチームチャットを、server.logに記録します。
+           /<command> (team) (message) - 指定したチームにメッセージを送ります。
     permission: colorteaming.chat
     permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorleader:
-    description: 各グループから大将を選出するコマンド
+    description: 各チームから大将を選出するコマンド
     aliases: cl
     usage: |
-           /<command> (group) (player) - playerを、groupの大将に設定します。
-           /<command> (group) random [(numberOfLeaders)] - groupの中からランダムに1人を、groupの大将に設定します。numberOfLeadersを指定した場合、指定した人数を大将として選出します。
-           /<command> all [(numberOfLeaders)] - 全てのグループからランダムに1人を、各グループの大将に設定します。numberOfLeadersを指定した場合、指定した人数を各グループから大将として選出します。
+           /<command> (team) (player) - playerを、teamの大将に設定します。
+           /<command> (team) random [(numberOfLeaders)] - teamの中からランダムに1人を、teamの大将に設定します。numberOfLeadersを指定した場合、指定した人数を大将として選出します。
+           /<command> all [(numberOfLeaders)] - 全てのチームからランダムに1人を、各チームの大将に設定します。numberOfLeadersを指定した場合、指定した人数を各チームから大将として選出します。
            /<command> clear - 大将設定を削除します。
            /<command> view - 大将設定を表示します。
            /<command> say - 大将設定を、サーバー全体メッセージで表示します。
     permission: colorteaming.leader
     permission-message: パーミッション "<permission>" が無いため、実行できません。
   colortp:
-    description: 各グループをテレポートするためのコマンド
+    description: 各チームをテレポートするためのコマンド
     aliases: ctp
     usage: |
-           /<command> (group) [(world)] (x) (y) (z) - groupのメンバー全員を、(world):(x),(y),(z) の場所にテレポートします。
-           /<command> (group) here - groupのメンバー全員を、コマンドを実行した人の場所にテレポートします。
-           /<command> (group) spawn - groupのメンバー全員を、グループのリスポーンポイントにテレポートします。
-           /<command> (group) (point) - groupのメンバー全員を、指定されたポイントにテレポートします。
+           /<command> (team) [(world)] (x) (y) (z) - teamのメンバー全員を、(world):(x),(y),(z) の場所にテレポートします。
+           /<command> (team) here - teamのメンバー全員を、コマンドを実行した人の場所にテレポートします。
+           /<command> (team) spawn - teamのメンバー全員を、チームのリスポーンポイントにテレポートします。
+           /<command> (team) (point) - teamのメンバー全員を、指定されたポイントにテレポートします。
            /<command> set (point) [(world)] (x) (y) (z) - (world):(x),(y),(z) の場所に、新しいポイントを登録します。
            /<command> set (point) here - コマンドを実行した人の場所に、新しいポイントを登録します。
            /<command> remove (point) - 登録されたポイントを削除します。
-           /<command> all spawn - 全てのプレイヤーを、グループのリスポーンポイントにテレポートします。
+           /<command> all spawn - 全てのプレイヤーを、チームのリスポーンポイントにテレポートします。
            /<command> all (point) - 全てのプレイヤーを、指定されたポイントにテレポートします。
            /<command> list - 登録されたポイントを一覧表示します。
     permission: colorteaming.tp
@@ -93,7 +94,7 @@ commands:
     aliases: cclass
     usage: |
            /<command> check - 手に持っているアイテムの情報を表示します。
-           /<command> (group) (class) - groupのメンバー全員のアイテムと装備を、config.yml の classes 設定に書かれているクラス設定のアイテムに変更します。
+           /<command> (team) (class) - teamのメンバー全員のアイテムと装備を、config.yml の classes 設定に書かれているクラス設定のアイテムに変更します。
            /<command> (player) (class) - player のアイテムと装備を、config.yml の classes 設定に書かれているクラス設定のアイテムに変更します。
            /<command> all (class) - 全プレイヤーのアイテムと装備を、config.yml の classes 設定に書かれているクラス設定のアイテムに変更します。
     permission: colorteaming.class
@@ -102,22 +103,22 @@ commands:
     description: チームごとのキルデス数を表示するためのコマンド
     aliases: [ckill,ck]
     usage: |
-           /<command> - 全てのグループごとのキルデス数カウントを参照します。
-           /<command> say - 全てのグループごとのキルデス数カウントを、サーバー全体メッセージで表示します。
-           /<command> clear - 全てのグループごとのキルデス数カウントを初期化して0にします。
+           /<command> - 全てのチームごとのキルデス数カウントを参照します。
+           /<command> say - 全てのチームごとのキルデス数カウントを、サーバー全体メッセージで表示します。
+           /<command> clear - 全てのチームごとのキルデス数カウントを初期化して0にします。
     permission: colorteaming.kill
     permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorspawn:
     description: チームごとのリスポーンポイントを設定するためのコマンド
     aliases: [cspawn,cs]
     usage: |
-           /<command> (group) - groupのメンバーのリスポーンポイントを、コマンドを実行した人の場所に設定します。
-           /<command> (group) (MapName) - マップMapNameにおけるgroupのメンバーのリスポーンポイントを、コマンドを実行した人の場所に設定します。
-           /<command> (group) (x) (y) (z) - groupのメンバー全員のリスポーンポイントを、(x),(y),(z) の場所に設定します。
+           /<command> (team) - teamのメンバーのリスポーンポイントを、コマンドを実行した人の場所に設定します。
+           /<command> (team) (MapName) - マップMapNameにおけるteamのメンバーのリスポーンポイントを、コマンドを実行した人の場所に設定します。
+           /<command> (team) (x) (y) (z) - teamのメンバー全員のリスポーンポイントを、(x),(y),(z) の場所に設定します。
            /<command> switch (MapName) - リスポーンポイントの設定を、MapNameに変更します。
            /<command> switch - リスポーンポイントの設定を、デフォルトに戻します。
-           /<command> remove (group) - groupのリスポーンポイント設定を削除します。
-           /<command> remove all - 全てのグループのリスポーン設定を削除します。
+           /<command> remove (team) - teamのリスポーンポイント設定を削除します。
+           /<command> remove all - 全てのチームのリスポーン設定を削除します。
            /<command> world - ワールドのリスポーンポイントを設定します。
            /<command> list - リスポーン設定を一覧表示します。
     permission: colorteaming.spawn
@@ -150,7 +151,7 @@ commands:
     description: チームを爆発させるコマンド（爆発オチ用）
     aliases: [ce,cexplode]
     usage: |
-           /<command> (group) - groupのメンバー全員が爆発して死亡します。
+           /<command> (team) - teamのメンバー全員が爆発して死亡します。
            /<command> (player) - playerが爆発して死亡します。
     permission: colorteaming.explode
     permission-message: パーミッション "<permission>" が無いため、実行できません。
@@ -158,9 +159,9 @@ commands:
     description: チームメンバーのインベントリに、アイテムを追加するコマンド
     aliases: cgive
     usage: |
-           /<command> (group) (item-id) - 指定したIDのアイテムを、groupのメンバー全員に配布します。
+           /<command> (team) (item-id) - 指定したIDのアイテムを、teamのメンバー全員に配布します。
            /<command> (player) (item-id) - 指定したIDのアイテムを、playerに配布します。
-           /<command> (group) hand - 手に持ったアイテムを、groupのメンバー全員に配布します。
+           /<command> (team) hand - 手に持ったアイテムを、teamのメンバー全員に配布します。
            /<command> (player) hand - 手に持ったアイテムを、playerに配布します。
     permission: colorteaming.join
     permission-message: パーミッション "<permission>" が無いため、実行できません。
@@ -171,16 +172,16 @@ commands:
     permission: colorteaming-user.global
     permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorjoin:
-    description: 一般プレイヤーが、任意のグループへ参加するためのコマンド
+    description: 一般プレイヤーが、任意のチームへ参加するためのコマンド
     aliases: cjoin
     usage: |
-           /<command> (group) - groupに参加します。
+           /<command> (team) - teamに参加します。
            /<command> - 人数が少ないチームへ参加します。
            /<command> random - /<command> と同様です。
     permission: colorteaming-user.join
     permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorleave:
-    description: 一般プレイヤーが、グループから離脱するためのコマンド
+    description: 一般プレイヤーが、チームから離脱するためのコマンド
     aliases: cleave
     usage: /<command> - チームから離脱します。
     permission: colorteaming-user.leave

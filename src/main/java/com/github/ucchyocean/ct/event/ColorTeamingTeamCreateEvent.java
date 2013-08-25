@@ -5,6 +5,8 @@
  */
 package com.github.ucchyocean.ct.event;
 
+import com.github.ucchyocean.ct.config.TeamNameSetting;
+
 
 /**
  * チームが作成されたときのイベント
@@ -12,7 +14,7 @@ package com.github.ucchyocean.ct.event;
  */
 public class ColorTeamingTeamCreateEvent extends ColorTeamingTeamEvent {
 
-    public ColorTeamingTeamCreateEvent(String teamName) {
+    public ColorTeamingTeamCreateEvent(TeamNameSetting teamName) {
         super(teamName);
     }
 }

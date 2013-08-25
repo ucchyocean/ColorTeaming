@@ -6,44 +6,33 @@
 package com.github.ucchyocean.ct.event;
 
 import org.bukkit.event.Cancellable;
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
+
+import com.github.ucchyocean.ct.config.TeamNameSetting;
 
 /**
  * チームの作成/削除に関する基底イベント
  * @author ucchy
  */
-public abstract class ColorTeamingTeamEvent extends Event implements Cancellable {
-
-    private static final HandlerList handlers = new HandlerList();
+public abstract class ColorTeamingTeamEvent extends ColorTeamingEvent implements Cancellable {
 
     private boolean isCancelled;
 
     /** チーム名 */
-    private String teamName;
+    private TeamNameSetting teamName;
 
     /**
      * コンストラクタ
      * @param team チーム
      */
-    public ColorTeamingTeamEvent(String teamName) {
+    public ColorTeamingTeamEvent(TeamNameSetting teamName) {
         this.teamName = teamName;
     }
 
     /**
      * @return チーム名
      */
-    public String getTeamName() {
+    public TeamNameSetting getTeamName() {
         return teamName;
-    }
-
-    @Override
-    public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
-        return handlers;
     }
 
     @Override

@@ -65,7 +65,7 @@ public class PlayerChatListener implements Listener {
         }
 
         // チームに所属していなければ、何もせずに抜ける
-        if ( plugin.getAPI().getPlayerTeamName(player).equals("") ) {
+        if ( plugin.getAPI().getPlayerTeamName(player) == null ) {
             return;
         }
 

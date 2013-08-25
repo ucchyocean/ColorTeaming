@@ -17,6 +17,7 @@ import com.github.ucchyocean.ct.config.RespawnConfiguration;
 import com.github.ucchyocean.ct.config.TPPointConfiguration;
 import com.github.ucchyocean.ct.config.TeamMemberSaveDataHandler;
 import com.github.ucchyocean.ct.config.TeamNameConfig;
+import com.github.ucchyocean.ct.config.TeamNameSetting;
 import com.github.ucchyocean.ct.event.ColorTeamingPlayerLeaveEvent.Reason;
 
 /**
@@ -30,7 +31,21 @@ public interface ColorTeamingAPI {
      * @return スコアボード
      */
     public Scoreboard getScoreboard();
-
+    
+    /**
+     * 指定されたチームIDが存在するかどうかを返す。
+     * @param id チームID
+     * @return 存在するかどうか
+     */
+    public boolean isExistTeam(String id);
+    
+    /**
+     * チーム名をチームIDから取得する。
+     * @param id チームID
+     * @return チーム名
+     */
+    public TeamNameSetting getTeamNameFromID(String id);
+    
     /**
      * Player に設定されている、チームを取得する。
      * @param player プレイヤー
@@ -43,15 +58,15 @@ public interface ColorTeamingAPI {
      * @param player プレイヤー
      * @return チーム名
      */
-    public String getPlayerTeamName(Player player);
+    public TeamNameSetting getPlayerTeamName(Player player);
 
     /**
      * Player にチームを設定する。
      * @param player プレイヤー
-     * @param color チーム名
+     * @param teamName チーム名
      * @return チーム、イベントキャンセルされた場合はnullになることに注意
      */
-    public Team addPlayerTeam(Player player, String color);
+    public Team addPlayerTeam(Player player, TeamNameSetting teamName);
 
     /**
      * Player に設定されているチームを削除する。
@@ -76,9 +91,10 @@ public interface ColorTeamingAPI {
 
     /**
      * 指定したチーム名のチームを削除する
-     * @param name
+     * @param name チームID
+     * @return 削除したかどうか（イベントでキャンセルされた場合はfalseになる）
      */
-    public void removeTeam(String name);
+    public boolean removeTeam(String name);
 
     /**
      * 全てのチームを削除する
@@ -89,8 +105,15 @@ public interface ColorTeamingAPI {
      * ユーザーをチームごとのメンバーに整理して返すメソッド
      * @return 色をKey メンバーをValueとした Hashtable
      */
-    public HashMap<String, ArrayList<Player>> getAllTeamMembers();
+    public HashMap<TeamNameSetting, ArrayList<Player>> getAllTeamMembers();
 
+    /**
+     * チームメンバーを取得する
+     * @param id チームID
+     * @return チームメンバー。チームが存在しない場合はnullが返されることに注意
+     */
+    public ArrayList<Player> getTeamMembers(String id);
+    
     /**
      * 全てのプレイヤーを取得する
      * @return 全てのプレイヤー
@@ -109,7 +132,7 @@ public interface ColorTeamingAPI {
      * 全てのチーム名（＝全ての色）を取得する
      * @return 全てのチーム名
      */
-    public ArrayList<String> getAllTeamNames();
+    public ArrayList<TeamNameSetting> getAllTeamNames();
 
     /**
      * メッセージをチームチャットに送信する。
@@ -120,10 +143,10 @@ public interface ColorTeamingAPI {
 
     /**
      * 情報をチームチャットに送信する。
-     * @param color 送信先のチーム
+     * @param team 送信先のチーム
      * @param message 送信するメッセージ
      */
-    public void sendInfoToTeamChat(String color, String message);
+    public void sendInfoToTeamChat(String team, String message);
 
     /**
      * サイドバーを新しく作る。

@@ -22,6 +22,7 @@ import org.bukkit.scoreboard.Team;
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingAPI;
 import com.github.ucchyocean.ct.config.ColorTeamingConfig;
+import com.github.ucchyocean.ct.config.TeamNameSetting;
 import com.github.ucchyocean.ct.event.ColorTeamingLeaderDefeatedEvent;
 import com.github.ucchyocean.ct.event.ColorTeamingPlayerLeaveEvent.Reason;
 import com.github.ucchyocean.ct.event.ColorTeamingTeamDefeatedEvent;
@@ -58,7 +59,8 @@ public class PlayerDeathListener implements Listener {
         HashMap<String, int[]> killDeathCounts = api.getKillDeathCounts();
         HashMap<String, int[]> killDeathUserCounts = api.getKillDeathUserCounts();
         HashMap<String, ArrayList<String>> leaders = api.getLeaders();
-        String color = api.getPlayerTeamName(deader);
+        TeamNameSetting tns = api.getPlayerTeamName(deader);
+        String team = tns.getID();
 
         // 倒したプレイヤーを取得
         // 直接攻撃で倒された場合は、killerをそのまま使う
@@ -81,11 +83,11 @@ public class PlayerDeathListener implements Listener {
 
         // Death数を加算
 
-        // グループへ加算
-        if ( !killDeathCounts.containsKey(color) ) {
-            killDeathCounts.put(color, new int[3]);
+        // チームへ加算
+        if ( !killDeathCounts.containsKey(team) ) {
+            killDeathCounts.put(team, new int[3]);
         }
-        killDeathCounts.get(color)[1]++;
+        killDeathCounts.get(team)[1]++;
         // ユーザーへ加算
         if ( !killDeathUserCounts.containsKey(deader.getName()) ) {
             killDeathUserCounts.put(deader.getName(), new int[3]);
@@ -93,36 +95,37 @@ public class PlayerDeathListener implements Listener {
         killDeathUserCounts.get(deader.getName())[1]++;
 
         // 死亡したプレイヤーが、大将だった場合、倒されたことを全体に通知する。
-        if ( leaders.containsKey(color) &&
-                leaders.get(color).contains(deader.getName()) ) {
+        if ( leaders.containsKey(team) &&
+                leaders.get(team).contains(deader.getName()) ) {
             String message = String.format(PRENOTICE + "%s チームの大将、%s が倒されました！",
-                    color, deader.getName());
+                    tns.getName(), deader.getName());
             Bukkit.broadcastMessage(message);
-            leaders.get(color).remove(deader.getName());
+            leaders.get(team).remove(deader.getName());
 
-            if ( leaders.get(color).size() >= 1 ) {
+            if ( leaders.get(team).size() >= 1 ) {
                 message = String.format(PRENOTICE + "%s チームの残り大将は、あと %d 人です。",
-                        color, leaders.get(color).size());
+                        tns.getName(), leaders.get(team).size());
                 Bukkit.broadcastMessage(message);
             } else {
 
-                message = String.format(PRENOTICE + "%s チームの大将は全滅しました！", color);
+                message = String.format(PRENOTICE + "%s チームの大将は全滅しました！", 
+                        tns.getName());
                 Bukkit.broadcastMessage(message);
-                leaders.remove(color);
+                leaders.remove(team);
 
                 // チームリーダー全滅イベントのコール
                 ColorTeamingLeaderDefeatedEvent event2 =
-                        new ColorTeamingLeaderDefeatedEvent(color, killerName, deader.getName());
+                        new ColorTeamingLeaderDefeatedEvent(tns, killerName, deader.getName());
                 Bukkit.getServer().getPluginManager().callEvent(event2);
 
                 // リーダーが残っているチームがあと1チームなら、勝利イベントを更にコール
                 if ( leaders.size() == 1 ) {
-                    String wonColor = "";
+                    TeamNameSetting wonTeam = null;
                     for ( String t : leaders.keySet() ) {
-                        wonColor = t;
+                        wonTeam = api.getTeamNameFromID(t);
                     }
                     ColorTeamingWonLeaderEvent event3 =
-                            new ColorTeamingWonLeaderEvent(wonColor, event2);
+                            new ColorTeamingWonLeaderEvent(wonTeam, event2);
                     Bukkit.getServer().getPluginManager().callEvent(event3);
                 }
             }
@@ -130,23 +133,24 @@ public class PlayerDeathListener implements Listener {
 
         // 倒したプレイヤー側の処理
         if ( killer != null ) {
-            String colorKiller = api.getPlayerTeamName(killer);
+            TeamNameSetting tnsKiller = api.getPlayerTeamName(killer);
+            String teamKiller = tnsKiller.getID();
 
             // Kill数を加算
 
-            // グループへ加算
-            if ( !killDeathCounts.containsKey(colorKiller) ) {
-                killDeathCounts.put(colorKiller, new int[3]);
+            // チームへ加算
+            if ( !killDeathCounts.containsKey(teamKiller) ) {
+                killDeathCounts.put(teamKiller, new int[3]);
             }
-            if ( color.equals(colorKiller) ) // 同じグループだった場合のペナルティ
-                killDeathCounts.get(colorKiller)[2]++;
+            if ( team.equals(teamKiller) ) // 同じチームだった場合のペナルティ
+                killDeathCounts.get(teamKiller)[2]++;
             else
-                killDeathCounts.get(colorKiller)[0]++;
+                killDeathCounts.get(teamKiller)[0]++;
             // ユーザーへ加算
             if ( !killDeathUserCounts.containsKey(killer.getName()) ) {
                 killDeathUserCounts.put(killer.getName(), new int[3]);
             }
-            if ( color.equals(colorKiller) ) // 同じグループだった場合のペナルティ
+            if ( team.equals(teamKiller) ) // 同じチームだった場合のペナルティ
                 killDeathUserCounts.get(killer.getName())[2]++;
             else
                 killDeathUserCounts.get(killer.getName())[0]++;
@@ -155,12 +159,12 @@ public class PlayerDeathListener implements Listener {
             if ( config.getKillReachTrophy() > 0 &&
                     leaders.size() == 0 ) {
 
-                if ( killDeathCounts.get(colorKiller)[0] ==
+                if ( killDeathCounts.get(teamKiller)[0] ==
                         config.getKillReachTrophy() ) {
                     int rest = config.getKillTrophy() - config.getKillReachTrophy();
                     String message = String.format(
                             PRENOTICE + "%s チームが、%d キルまでもう少しです(あと %d キル)。",
-                            colorKiller, config.getKillTrophy(), rest);
+                            tnsKiller.getName(), config.getKillTrophy(), rest);
                     Bukkit.broadcastMessage(message);
 
                     // キル数達成イベントのコール
@@ -175,13 +179,13 @@ public class PlayerDeathListener implements Listener {
             if ( config.getKillTrophy() > 0 &&
                     leaders.size() == 0 ) {
 
-                if ( killDeathCounts.get(colorKiller)[0] ==
+                if ( killDeathCounts.get(teamKiller)[0] ==
                         config.getKillTrophy() ) {
 
                     // 全体通知
                     String message = String.format(
                             PRENOTICE + "%s チームは、%d キルを達成しました！",
-                            colorKiller, config.getKillTrophy());
+                            tnsKiller.getName(), config.getKillTrophy());
                     Bukkit.broadcastMessage(message);
 
                     // キル数リーチイベントのコール
@@ -199,18 +203,18 @@ public class PlayerDeathListener implements Listener {
 
             // チームがなくなっていたなら、チーム全滅イベントをコール
             ColorTeamingTeamDefeatedEvent event2 =
-                    new ColorTeamingTeamDefeatedEvent(color, killerName, deader.getName());
+                    new ColorTeamingTeamDefeatedEvent(tns, killerName, deader.getName());
             Bukkit.getServer().getPluginManager().callEvent(event2);
 
             // 残っているチームがあと1チームなら、勝利イベントを更にコール
-            ArrayList<String> teamNames = api.getAllTeamNames();
+            ArrayList<TeamNameSetting> teamNames = api.getAllTeamNames();
             if ( teamNames.size() == 1 ) {
-                String wonColor = "";
-                for ( String t : leaders.keySet() ) {
-                    wonColor = t;
+                TeamNameSetting wonTeam = null;
+                for ( TeamNameSetting t : teamNames ) {
+                    wonTeam = t;
                 }
                 ColorTeamingWonTeamEvent event3 =
-                        new ColorTeamingWonTeamEvent(wonColor, event2);
+                        new ColorTeamingWonTeamEvent(wonTeam, event2);
                 Bukkit.getServer().getPluginManager().callEvent(event3);
             }
         }

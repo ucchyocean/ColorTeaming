@@ -5,29 +5,16 @@
  */
 package com.github.ucchyocean.ct.event;
 
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
 
 /**
  * キルデス数のカウントがクリアされるときに呼び出されるイベント
  * @author ucchy
  */
-public class ColorTeamingKillDeathClearedEvent extends Event {
-
-    private static final HandlerList handlers = new HandlerList();
+public class ColorTeamingKillDeathClearedEvent extends ColorTeamingEvent {
 
     /**
      * コンストラクタ
      */
     public ColorTeamingKillDeathClearedEvent() {
-    }
-
-    @Override
-    public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
-        return handlers;
     }
 }

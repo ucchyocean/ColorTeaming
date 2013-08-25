@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingAPI;
+import com.github.ucchyocean.ct.config.TeamNameSetting;
 
 /**
  * colorkill(ckill)コマンドの実行クラス
@@ -48,20 +49,20 @@ public class CKillCommand implements CommandExecutor {
                     plugin.getAPI().getKillDeathCounts();
             HashMap<String, int[]> killDeathUserCounts =
                     plugin.getAPI().getKillDeathUserCounts();
-            HashMap<String, ArrayList<Player>> members =
+            HashMap<TeamNameSetting, ArrayList<Player>> members =
                     plugin.getAPI().getAllTeamMembers();
             int killpoint = plugin.getCTConfig().getKillPoint();
             int deathpoint = plugin.getCTConfig().getDeathPoint();
             int tkpoint = plugin.getCTConfig().getTkPoint();
 
-            // グループは存在するが、得点データがない場合、このタイミングで作成しておく
-            for ( String key : members.keySet() ) {
-                if ( !killDeathCounts.containsKey(key) ) {
-                    killDeathCounts.put(key, new int[3]);
+            // チームは存在するが、得点データがない場合、このタイミングで作成しておく
+            for ( TeamNameSetting key : members.keySet() ) {
+                if ( !killDeathCounts.containsKey(key.getID()) ) {
+                    killDeathCounts.put(key.getID(), new int[3]);
                 }
             }
 
-            // 全グループの得点を集計して、得点順に並べる
+            // 全チームの得点を集計して、得点順に並べる
             ArrayList<String> groups = new ArrayList<String>();
             ArrayList<Integer> points = new ArrayList<Integer>();
 
@@ -79,7 +80,7 @@ public class CKillCommand implements CommandExecutor {
                 points.add(index, point);
             }
 
-            // 全グループの得点を表示する
+            // 全チームの得点を表示する
             if ( !isBroadcast ) {
                 sender.sendMessage(ChatColor.GRAY + PRE_LINE_MESSAGE);
             } else {
@@ -87,17 +88,25 @@ public class CKillCommand implements CommandExecutor {
             }
 
             for ( int rank=1; rank<=groups.size(); rank++ ) {
-                String group = groups.get(rank-1);
+                String color;
+                if ( !isBroadcast ) {
+                    color = ChatColor.GRAY.toString();
+                } else {
+                    color = ChatColor.RED.toString();
+                }
+                String id = groups.get(rank-1);
                 int point = points.get(rank-1);
-                int[] counts = killDeathCounts.get(group);
+                int[] counts = killDeathCounts.get(id);
+                String team = plugin.getAPI().getTeamNameFromID(id).toString();
                 String message = String.format(
-                        "%d. %s %dpoints (%dkill, %ddeath, %dtk)",
-                        rank, group, point, counts[0], counts[1], counts[2]);
+                        "%s%d. %s %s%dpoints (%dkill, %ddeath, %dtk)",
+                        color, rank, team, color, point, 
+                        counts[0], counts[1], counts[2]);
 
                 if ( !isBroadcast ) {
-                    sender.sendMessage(ChatColor.GRAY + message);
+                    sender.sendMessage(message);
                 } else {
-                    Bukkit.broadcastMessage(ChatColor.RED + message);
+                    Bukkit.broadcastMessage(message);
                 }
             }
 

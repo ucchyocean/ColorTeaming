@@ -18,6 +18,7 @@ import org.bukkit.entity.Player;
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.DelayedTeleportTask;
 import com.github.ucchyocean.ct.config.RespawnConfiguration;
+import com.github.ucchyocean.ct.config.TeamNameSetting;
 
 /**
  * colortp(ctp)コマンドの実行クラス
@@ -67,7 +68,8 @@ public class CTPCommand implements CommandExecutor {
 
         if ( args[0].equalsIgnoreCase("all") ) {
 
-            HashMap<String, ArrayList<Player>> members = plugin.getAPI().getAllTeamMembers();
+            HashMap<TeamNameSetting, ArrayList<Player>> members = 
+                    plugin.getAPI().getAllTeamMembers();
 
             if ( args[1].equalsIgnoreCase("spawn") ) {
                 // ctp all spawn の実行
@@ -77,19 +79,19 @@ public class CTPCommand implements CommandExecutor {
                 RespawnConfiguration respawnConfig = plugin.getAPI().getRespawnConfig();
                 HashMap<Player, Location> map = new HashMap<Player, Location>();
 
-                for ( String group : members.keySet() ) {
+                for ( TeamNameSetting tns : members.keySet() ) {
 
-                    Location location = respawnConfig.get(group, respawnMapName);
+                    Location location = respawnConfig.get(tns.getID(), respawnMapName);
                     if ( location == null ) {
                         sender.sendMessage(PREERR +
-                                "グループ " + group + " にリスポーンポイントが指定されていません。");
+                                "チーム " + tns.getID() + " にリスポーンポイントが指定されていません。");
                     } else {
                         location = location.add(0.5, 0, 0.5);
-                        for ( Player p : members.get(group) ) {
+                        for ( Player p : members.get(tns) ) {
                             map.put(p, location);
                         }
                         sender.sendMessage(PREINFO +
-                                "グループ " + group + " のプレイヤーを全員テレポートします。");
+                                "チーム " + tns.getName() + " のプレイヤーを全員テレポートします。");
                     }
                 }
 
@@ -112,12 +114,12 @@ public class CTPCommand implements CommandExecutor {
 
                 // テレポート実行
                 HashMap<Player, Location> map = new HashMap<Player, Location>();
-                for ( String group : members.keySet() ) {
-                    for ( Player p : members.get(group) ) {
+                for ( TeamNameSetting tns : members.keySet() ) {
+                    for ( Player p : members.get(tns) ) {
                         map.put(p, location);
                     }
                     sender.sendMessage(PREINFO +
-                            "グループ " + group + " のプレイヤーを全員テレポートします。");
+                            "チーム " + tns.getName() + " のプレイヤーを全員テレポートします。");
                 }
 
                 DelayedTeleportTask task = new DelayedTeleportTask(map,
@@ -191,12 +193,12 @@ public class CTPCommand implements CommandExecutor {
             // ctp (group) ほにゃらら の実行
 
             String group = args[0];
-            HashMap<String, ArrayList<Player>> members =
+            HashMap<TeamNameSetting, ArrayList<Player>> members =
                     plugin.getAPI().getAllTeamMembers();
 
-            // 有効なグループ名が指定されたか確認する
+            // 有効なチーム名が指定されたか確認する
             if ( !members.containsKey(group) ) {
-                sender.sendMessage(PREERR + "グループ " + group + " が存在しません。");
+                sender.sendMessage(PREERR + "チーム " + group + " が存在しません。");
                 return true;
             }
 
@@ -219,13 +221,13 @@ public class CTPCommand implements CommandExecutor {
             } else if ( args[1].equalsIgnoreCase("spawn") ) {
                 // ctp (group) spawn
 
-                // グループのリスポーンポイントを取得、登録されていなければ終了
+                // チームのリスポーンポイントを取得、登録されていなければ終了
                 String respawnMapName = plugin.getAPI().getRespawnMapName();
                 RespawnConfiguration respawnConfig = plugin.getAPI().getRespawnConfig();
                 location = respawnConfig.get(group, respawnMapName);
                 if ( location == null ) {
                     sender.sendMessage(PREERR +
-                            "グループ " + group + " にリスポーンポイントが指定されていません。");
+                            "チーム " + group + " にリスポーンポイントが指定されていません。");
                     return true;
                 }
                 location = location.add(0.5, 0, 0.5);
@@ -264,7 +266,7 @@ public class CTPCommand implements CommandExecutor {
                     plugin.getCTConfig().getTeleportDelay());
             task.startTask();
 
-            sender.sendMessage(PREINFO + "グループ " + group + " のプレイヤーを全員テレポートします。");
+            sender.sendMessage(PREINFO + "チーム " + group + " のプレイヤーを全員テレポートします。");
 
             return true;
         }

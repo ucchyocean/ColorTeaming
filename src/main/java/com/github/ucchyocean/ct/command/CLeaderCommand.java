@@ -15,6 +15,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.github.ucchyocean.ct.ColorTeaming;
+import com.github.ucchyocean.ct.config.TeamNameSetting;
 
 /**
  * colorleader(cl)コマンドの実行クラス
@@ -78,10 +79,10 @@ public class CLeaderCommand implements CommandExecutor {
                 }
 
                 if ( isBroadcast ) {
-                    Bukkit.broadcastMessage(PRENOTICE + key + " グループの大将：");
+                    Bukkit.broadcastMessage(PRENOTICE + key + " チームの大将：");
                     Bukkit.broadcastMessage(PRENOTICE + temp.toString());
                 } else {
-                    sender.sendMessage(PREINFO + key + " グループの大将：");
+                    sender.sendMessage(PREINFO + key + " チームの大将：");
                     sender.sendMessage(PREINFO + temp.toString());
                 }
             }
@@ -91,7 +92,7 @@ public class CLeaderCommand implements CommandExecutor {
         } else if ( group.equalsIgnoreCase("all") ) {
             // all 指定の場合。
 
-            HashMap<String, ArrayList<Player>> members =
+            HashMap<TeamNameSetting, ArrayList<Player>> members =
                     plugin.getAPI().getAllTeamMembers();
 
             int numberOfLeaders = 1;
@@ -99,32 +100,32 @@ public class CLeaderCommand implements CommandExecutor {
                 numberOfLeaders = Integer.parseInt(args[1]);
             }
 
-            // 全ての色グループに対して処理をする
-            for ( String key : members.keySet() ) {
+            // 全ての色チームに対して処理をする
+            for ( TeamNameSetting key : members.keySet() ) {
 
-                // 人数が少なすぎるグループは無視
-                if ( numberOfLeaders > members.get(key).size() ) {
-                    sender.sendMessage(PREERR + key + " グループは人数が少なすぎて、大将を設定できません！");
+                // 人数が少なすぎるチームは無視
+                if ( numberOfLeaders > members.get(key.getID()).size() ) {
+                    sender.sendMessage(PREERR + key.getName() + " チームは人数が少なすぎて、大将を設定できません！");
                     continue;
                 }
 
                 // ランダムにリーダーを選出する
-                int[] leaderIndexes = getPickupNumbers(members.get(key).size(), numberOfLeaders);
-                leaders.put(key, new ArrayList<String>());
+                int[] leaderIndexes = getPickupNumbers(members.get(key.getID()).size(), numberOfLeaders);
+                leaders.put(key.getID(), new ArrayList<String>());
                 for ( int i : leaderIndexes ) {
-                    leaders.get(key).add(members.get(key).get(i).getName());
+                    leaders.get(key.getID()).add(members.get(key.getID()).get(i).getName());
                 }
 
                 // リーダーになった人を、チームに通知する
                 StringBuilder l = new StringBuilder();
-                for ( String name : leaders.get(key) ) {
+                for ( String name : leaders.get(key.getID()) ) {
                     if ( l.length() != 0 ) {
                         l.append(", ");
                     }
                     l.append(name);
                 }
-                String message = String.format("%s チームの大将に、%s が選ばれました。", key, l);
-                plugin.getAPI().sendInfoToTeamChat(key, message);
+                String message = String.format("%s チームの大将に、%s が選ばれました。", key.getName(), l);
+                plugin.getAPI().sendInfoToTeamChat(key.getID(), message);
                 sender.sendMessage(String.format(PREINFO + "%s チームの大将を、%d 人設定しました。", key, numberOfLeaders));
             }
 
@@ -133,18 +134,18 @@ public class CLeaderCommand implements CommandExecutor {
         } else {
             // group 指定処理の場合
 
-            HashMap<String, ArrayList<Player>> members =
-                    plugin.getAPI().getAllTeamMembers();
-
-            if ( !members.containsKey(group) ) {
-                sender.sendMessage(PREERR + group + " グループは存在しないようです。");
+            if ( !plugin.getAPI().isExistTeam(group) ) {
+                sender.sendMessage(PREERR + group + " チームは存在しないようです。");
                 return true;
             }
 
             if ( args.length <= 1 ) {
-                sender.sendMessage(PREERR + "group を指定する場合は、user も指定してください。");
+                sender.sendMessage(PREERR + "team を指定する場合は、user も指定してください。");
                 return false;
             }
+
+            HashMap<TeamNameSetting, ArrayList<Player>> members =
+                    plugin.getAPI().getAllTeamMembers();
 
             String user = args[1];
             Player player = Bukkit.getPlayerExact(user);
@@ -166,7 +167,7 @@ public class CLeaderCommand implements CommandExecutor {
 
             } else if ( player != null && !members.get(group).contains(player) ) {
 
-                sender.sendMessage(PREERR + user + " は、" + group + " グループにいないようです。");
+                sender.sendMessage(PREERR + user + " は、" + group + " チームにいないようです。");
                 return true;
 
             } else {

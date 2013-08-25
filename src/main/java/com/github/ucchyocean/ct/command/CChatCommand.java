@@ -3,14 +3,10 @@
  */
 package com.github.ucchyocean.ct.command;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingAPI;
@@ -73,15 +69,13 @@ public class CChatCommand implements CommandExecutor {
             sender.sendMessage(ChatColor.RED + "チームチャットのログ記録を無効にします。");
             return true;
         } else if ( args.length >= 2 ){
-            // グループにメッセージ送信
-            String group = args[0];
+            // チームにメッセージ送信
+            String team = args[0];
             ColorTeamingAPI api = plugin.getAPI();
 
-            HashMap<String, ArrayList<Player>> members = api.getAllTeamMembers();
-
-            // 有効なグループ名が指定されたか確認する
-            if ( !members.containsKey(group) ) {
-                sender.sendMessage(PREERR + "グループ " + group + " が存在しません。");
+            // 有効なチーム名が指定されたか確認する
+            if ( !api.isExistTeam(team) ) {
+                sender.sendMessage(PREERR + "チーム " + team + " が存在しません。");
                 return true;
             }
 
@@ -92,7 +86,7 @@ public class CChatCommand implements CommandExecutor {
             }
 
             // 送信
-            api.sendInfoToTeamChat(group, message.toString());
+            api.sendInfoToTeamChat(team, message.toString());
         }
 
         return false;

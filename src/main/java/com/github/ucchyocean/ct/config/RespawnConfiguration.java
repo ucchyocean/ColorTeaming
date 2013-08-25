@@ -9,7 +9,7 @@ import org.bukkit.Location;
 
 
 /**
- * 各色グループのリスポーンポイントをファイルで保存し、値の取得・設定を仲介するためのクラス
+ * 各色チームのリスポーンポイントをファイルで保存し、値の取得・設定を仲介するためのクラス
  * @author ucchy
  */
 public class RespawnConfiguration extends PointConfigAbst {

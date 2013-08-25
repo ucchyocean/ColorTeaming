@@ -18,6 +18,7 @@ import org.bukkit.scoreboard.Team;
 
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.config.ColorTeamingConfig;
+import com.github.ucchyocean.ct.config.TeamNameSetting;
 
 /**
  * サイドバーにスコアを表示するためのAPIクラス
@@ -50,12 +51,12 @@ public class SidebarScoreDisplay {
         // 項目を初期化
         teamscores = new Hashtable<String, SidebarTeamScore>();
 
-        HashMap<String, ArrayList<Player>> members = plugin.getAPI().getAllTeamMembers();
-        for ( String key : members.keySet() ) {
-            Team team = scoreboard.getTeam(key);
+        ArrayList<TeamNameSetting> teamNames = plugin.getAPI().getAllTeamNames();
+        for ( TeamNameSetting tns : teamNames ) {
+            Team team = scoreboard.getTeam(tns.getID());
             SidebarTeamScore ts = new SidebarTeamScore(team);
             objective.getScore(ts).setScore(0);
-            teamscores.put(key, ts);
+            teamscores.put(tns.getID(), ts);
         }
 
         refreshCriteria();
@@ -118,15 +119,14 @@ public class SidebarScoreDisplay {
             index = 1;
         }
 
-        HashMap<String, ArrayList<Player>> members =
-                plugin.getAPI().getAllTeamMembers();
+        ArrayList<TeamNameSetting> teams = plugin.getAPI().getAllTeamNames();
         HashMap<String, int[]> killDeathCounts =
                 plugin.getAPI().getKillDeathCounts();
-        for ( String key : members.keySet() ) {
-            if ( teamscores.containsKey(key) ) {
-                SidebarTeamScore team = teamscores.get(key);
-                if ( killDeathCounts.containsKey(key) ) {
-                    int[] data = killDeathCounts.get(key);
+        for ( TeamNameSetting tns : teams ) {
+            if ( teamscores.containsKey(tns.getID()) ) {
+                SidebarTeamScore team = teamscores.get(tns.getID());
+                if ( killDeathCounts.containsKey(tns.getID()) ) {
+                    int[] data = killDeathCounts.get(tns.getID());
                     objective.getScore(team).setScore(data[index]);
                 } else {
                     objective.getScore(team).setScore(0);
@@ -141,15 +141,14 @@ public class SidebarScoreDisplay {
     private void refreshScoreByPoint() {
 
         ColorTeamingConfig config = plugin.getCTConfig();
-        HashMap<String, ArrayList<Player>> members =
-                plugin.getAPI().getAllTeamMembers();
+        ArrayList<TeamNameSetting> teams = plugin.getAPI().getAllTeamNames();
         HashMap<String, int[]> killDeathCounts =
                 plugin.getAPI().getKillDeathCounts();
-        for ( String key : members.keySet() ) {
-            if ( teamscores.containsKey(key) ) {
-                SidebarTeamScore team = teamscores.get(key);
-                if ( killDeathCounts.containsKey(key) ) {
-                    int[] data = killDeathCounts.get(key);
+        for ( TeamNameSetting tns : teams ) {
+            if ( teamscores.containsKey(tns.getID()) ) {
+                SidebarTeamScore team = teamscores.get(tns.getID());
+                if ( killDeathCounts.containsKey(tns.getID()) ) {
+                    int[] data = killDeathCounts.get(tns.getID());
                     int point = data[0] * config.getKillPoint() +
                                 data[1] * config.getDeathPoint() +
                                 data[2] * config.getTkPoint();
@@ -165,12 +164,12 @@ public class SidebarScoreDisplay {
      * 残り人数によるスコア更新を行う
      */
     private void refreshScoreByRestPlayerCount() {
-        HashMap<String, ArrayList<Player>> members =
+        HashMap<TeamNameSetting, ArrayList<Player>> members =
                 plugin.getAPI().getAllTeamMembers();
-        for ( String key : members.keySet() ) {
-            if ( teamscores.containsKey(key) ) {
-                SidebarTeamScore team = teamscores.get(key);
-                int rest = members.get(key).size();
+        for ( TeamNameSetting tns : members.keySet() ) {
+            if ( teamscores.containsKey(tns.getID()) ) {
+                SidebarTeamScore team = teamscores.get(tns.getID());
+                int rest = members.get(tns.getID()).size();
                 objective.getScore(team).setScore(rest);
             }
         }

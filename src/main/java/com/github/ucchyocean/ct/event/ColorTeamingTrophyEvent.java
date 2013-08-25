@@ -6,17 +6,13 @@
 package com.github.ucchyocean.ct.event;
 
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
 import org.bukkit.scoreboard.Team;
 
 /**
  * キル数がkillReachTrophy/killTrophyに到達したときに呼び出される基底イベント
  * @author ucchy
  */
-public abstract class ColorTeamingTrophyEvent extends Event {
-
-    private static final HandlerList handlers = new HandlerList();
+public abstract class ColorTeamingTrophyEvent extends ColorTeamingEvent {
 
     private Team team;
     private Player killer;
@@ -45,14 +41,5 @@ public abstract class ColorTeamingTrophyEvent extends Event {
      */
     public Player getKiller() {
         return killer;
-    }
-
-    @Override
-    public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
-        return handlers;
     }
 }
