@@ -64,12 +64,11 @@ public class TeamMemberSaveDataHandler {
             config.set("members." + key, names);
         }
 
-        // チームキルデス数の保存
-        HashMap<String, int[]> killDeathCounts = api.getKillDeathCounts();
-        for ( String key : killDeathCounts.keySet() ) {
-            List<Integer> data =
-                    convertToList(killDeathCounts.get(key));
-            config.set("killDeathCounts." + key, data);
+        // チームポイント数の保存
+        HashMap<TeamNameSetting, Integer> teamPoints = api.getAllTeamPoints();
+        for ( TeamNameSetting key : teamPoints.keySet() ) {
+            int point = teamPoints.get(key);
+            config.set("teamPoints." + key.getID(), point);
         }
 
         // ユーザーキルデス数の保存
@@ -135,18 +134,13 @@ public class TeamMemberSaveDataHandler {
 
         // チームキルデス数の復帰
         ConfigurationSection tksection =
-                config.getConfigurationSection("killDeathCounts");
+                config.getConfigurationSection("teamPoints");
         if ( tksection != null ) {
 
-            HashMap<String, int[]> killDeathCounts = api.getKillDeathCounts();
-            killDeathCounts.clear(); // 一旦、全てクリア
-
-            for ( String group : killDeathCounts.keySet() ) {
-                List<Integer> data = tksection.getIntegerList(group);
-                if ( data != null && data.size() >= 3 ) {
-                    int[] value = {data.get(0), data.get(1), data.get(2)};
-                    killDeathCounts.put(group, value);
-                }
+            for ( String id : tksection.getKeys(false) ) {
+                
+                int point = tksection.getInt(id, 0);
+                api.setTeamPoint(id, point);
             }
         }
 

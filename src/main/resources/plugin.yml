@@ -99,14 +99,14 @@ commands:
            /<command> all (class) - 全プレイヤーのアイテムと装備を、config.yml の classes 設定に書かれているクラス設定のアイテムに変更します。
     permission: colorteaming.class
     permission-message: パーミッション "<permission>" が無いため、実行できません。
-  colorkill:
+  colorpoint:
     description: チームごとのキルデス数を表示するためのコマンド
-    aliases: [ckill,ck]
+    aliases: [ckill,ck,cpoint,cp]
     usage: |
            /<command> - 全てのチームごとのキルデス数カウントを参照します。
            /<command> say - 全てのチームごとのキルデス数カウントを、サーバー全体メッセージで表示します。
            /<command> clear - 全てのチームごとのキルデス数カウントを初期化して0にします。
-    permission: colorteaming.kill
+    permission: colorteaming.point
     permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorspawn:
     description: チームごとのリスポーンポイントを設定するためのコマンド
@@ -211,7 +211,7 @@ permissions:
   colorteaming.class:
     description: colorclass(cclass)コマンドの使用権限
     default: op
-  colorteaming.kill:
+  colorteaming.point:
     description: colorkill(ckill)コマンドの使用権限
     default: op
   colorteaming.spawn:

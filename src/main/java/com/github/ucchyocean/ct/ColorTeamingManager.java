@@ -61,7 +61,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     private BelowNameScoreDisplay belownameScore;
 
     private HashMap<String, ArrayList<String>> leaders;
-    private HashMap<String, int[]> killDeathCounts;
+    private HashMap<TeamNameSetting, Integer> teamPoints;
     private HashMap<String, int[]> killDeathUserCounts;
 
     private String respawnMapName;
@@ -77,7 +77,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         this.config = config;
 
         // 変数の初期化
-        killDeathCounts = new HashMap<String, int[]>();
+        teamPoints = new HashMap<TeamNameSetting, Integer>();
         killDeathUserCounts = new HashMap<String, int[]>();
         leaders = new HashMap<String, ArrayList<String>>();
         respawnConfig = new RespawnConfiguration();
@@ -146,7 +146,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         }
         return null;
     }
-
+    
     /**
      * Player に設定されている、チームのチーム名を取得する。
      * @param player プレイヤー
@@ -624,7 +624,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     }
 
     /**
-     * キルデス数を全てクリアする
+     * キルデス数やポイントを全てクリアする
      */
     @Override
     public void clearKillDeathPoints() {
@@ -633,21 +633,93 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         ColorTeamingKillDeathClearedEvent event =
                 new ColorTeamingKillDeathClearedEvent();
         Bukkit.getServer().getPluginManager().callEvent(event);
+        if ( event.isCancelled() ) {
+            return;
+        }
 
         // クリア
-        killDeathCounts.clear();
+        teamPoints.clear();
         killDeathUserCounts.clear();
     }
 
     /**
+     * チームのポイント数を全取得する
+     * @return チームのポイント数
+     */
+    @Override
+    public HashMap<TeamNameSetting, Integer> getAllTeamPoints() {
+        return teamPoints;
+    }
+
+    /**
+     * チームポイントを設定する。
+     * @param team チーム名
+     * @param point ポイント数
+     */
+    @Override
+    public void setTeamPoint(String team, int point) {
+        
+        TeamNameSetting tns = teamNameConfig.getTeamNameFromID(team);
+        
+        teamPoints.put(tns, point);
+        
+        // サイドバーがポイント表示なら、表示内容を更新する
+        if ( config.getSideCriteria() == SidebarCriteria.POINT ) {
+            refreshSidebarScore();
+        }
+    }
+    
+    /**
+     * チームポイントを増減する。
+     * @param team チーム名
+     * @param amount ポイント増減量（マイナスでポイント減少）
+     * @return 増減後のポイント
+     */
+    @Override
+    public int addTeamPoint(String team, int amount) {
+        
+        TeamNameSetting tns = teamNameConfig.getTeamNameFromID(team);
+        
+        int point = 0;
+        if ( teamPoints.containsKey(tns) ) {
+            point = teamPoints.get(tns);
+        }
+        
+        teamPoints.put(tns, point + amount);
+        
+        // サイドバーがポイント表示なら、表示内容を更新する
+        if ( config.getSideCriteria() == SidebarCriteria.POINT ) {
+            refreshSidebarScore();
+        }
+        
+        return point + amount;
+    }
+    
+    /**
      * チーム単位のキルデス数を取得する
      * @return キルデス数
      */
-    @Override
-    public HashMap<String, int[]> getKillDeathCounts() {
-        return killDeathCounts;
+    public HashMap<TeamNameSetting, int[]> getKillDeathCounts() {
+        
+        HashMap<TeamNameSetting, int[]> result = new HashMap<TeamNameSetting, int[]>();
+        HashMap<TeamNameSetting, ArrayList<Player>> members = getAllTeamMembers();
+        for ( TeamNameSetting tns : members.keySet() ) {
+            int[] data = new int[3];
+            ArrayList<Player> member = members.get(tns);
+            for ( Player p : member ) {
+                if ( killDeathUserCounts.containsKey(p.getName()) ) {
+                    int[] userData = killDeathUserCounts.get(p);
+                    for ( int i=0; i<3; i++ ) {
+                        data[i] += userData[i];
+                    }
+                }
+            }
+            result.put(tns, data);
+        }
+        
+        return result;
     }
-
+    
     /**
      * ユーザー単位のキルデス数を取得する
      * @return キルデス数

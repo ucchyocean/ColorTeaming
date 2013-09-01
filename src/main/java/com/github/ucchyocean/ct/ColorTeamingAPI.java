@@ -203,15 +203,36 @@ public interface ColorTeamingAPI {
     public TeamMemberSaveDataHandler getCTSaveDataHandler();
 
     /**
-     * キルデス数を全てクリアする
+     * チームのポイント数を全取得する
+     * @return チームのポイント数
+     */
+    public HashMap<TeamNameSetting, Integer> getAllTeamPoints();
+
+    /**
+     * チームポイントを設定する。
+     * @param team チーム名
+     * @param point ポイント数
+     */
+    public void setTeamPoint(String team, int point);
+    
+    /**
+     * チームポイントを増減する。
+     * @param team チーム名
+     * @param amount ポイント増減量（マイナスでポイント減少）
+     * @return 増減後のポイント
+     */
+    public int addTeamPoint(String team, int amount);
+
+    /**
+     * キルデス数やポイントを全てクリアする
      */
     public void clearKillDeathPoints();
-
+    
     /**
      * チーム単位のキルデス数を取得する
      * @return キルデス数
      */
-    public HashMap<String, int[]> getKillDeathCounts();
+    public HashMap<TeamNameSetting, int[]> getKillDeathCounts();
 
     /**
      * ユーザー単位のキルデス数を取得する

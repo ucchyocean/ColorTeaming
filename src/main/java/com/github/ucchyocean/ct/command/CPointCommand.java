@@ -11,24 +11,23 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingAPI;
 import com.github.ucchyocean.ct.config.TeamNameSetting;
 
 /**
- * colorkill(ckill)コマンドの実行クラス
+ * colorpoint(cpoint)コマンドの実行クラス
  * @author ucchy
  */
-public class CKillCommand implements CommandExecutor {
+public class CPointCommand implements CommandExecutor {
 
     private static final String PRE_LINE_MESSAGE =
-            "=== Kill Death Counts Information ===";
+            "=== Team Point Information ===";
 
     private ColorTeaming plugin;
 
-    public CKillCommand(ColorTeaming plugin) {
+    public CPointCommand(ColorTeaming plugin) {
         this.plugin = plugin;
     }
 
@@ -45,38 +44,29 @@ public class CKillCommand implements CommandExecutor {
                 isBroadcast = true;
             }
 
-            HashMap<String, int[]> killDeathCounts =
+            HashMap<TeamNameSetting, int[]> killDeathCounts =
                     plugin.getAPI().getKillDeathCounts();
             HashMap<String, int[]> killDeathUserCounts =
                     plugin.getAPI().getKillDeathUserCounts();
-            HashMap<TeamNameSetting, ArrayList<Player>> members =
-                    plugin.getAPI().getAllTeamMembers();
+            HashMap<TeamNameSetting, Integer> teamPoints =
+                    plugin.getAPI().getAllTeamPoints();
             int killpoint = plugin.getCTConfig().getKillPoint();
             int deathpoint = plugin.getCTConfig().getDeathPoint();
             int tkpoint = plugin.getCTConfig().getTkPoint();
 
-            // チームは存在するが、得点データがない場合、このタイミングで作成しておく
-            for ( TeamNameSetting key : members.keySet() ) {
-                if ( !killDeathCounts.containsKey(key.getID()) ) {
-                    killDeathCounts.put(key.getID(), new int[3]);
-                }
-            }
-
             // 全チームの得点を集計して、得点順に並べる
-            ArrayList<String> groups = new ArrayList<String>();
+            ArrayList<TeamNameSetting> teams = new ArrayList<TeamNameSetting>();
             ArrayList<Integer> points = new ArrayList<Integer>();
 
-            for ( String group : killDeathCounts.keySet() ) {
-                int[] counts = killDeathCounts.get(group);
-                int point = counts[0] * killpoint +
-                            counts[1] * deathpoint +
-                            counts[2] * tkpoint;
+            for ( TeamNameSetting tns : killDeathCounts.keySet() ) {
+                
+                int point = teamPoints.get(tns);
 
                 int index = 0;
-                while ( groups.size() > index && points.get(index) > point ) {
+                while ( teams.size() > index && points.get(index) > point ) {
                     index++;
                 }
-                groups.add(index, group);
+                teams.add(index, tns);
                 points.add(index, point);
             }
 
@@ -87,20 +77,21 @@ public class CKillCommand implements CommandExecutor {
                 Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE + PRE_LINE_MESSAGE);
             }
 
-            for ( int rank=1; rank<=groups.size(); rank++ ) {
+            for ( int rank=1; rank<=teams.size(); rank++ ) {
+                
                 String color;
                 if ( !isBroadcast ) {
                     color = ChatColor.GRAY.toString();
                 } else {
                     color = ChatColor.RED.toString();
                 }
-                String id = groups.get(rank-1);
+
+                TeamNameSetting tns = teams.get(rank-1);
                 int point = points.get(rank-1);
-                int[] counts = killDeathCounts.get(id);
-                String team = plugin.getAPI().getTeamNameFromID(id).toString();
+                int[] counts = killDeathCounts.get(tns);
                 String message = String.format(
                         "%s%d. %s %s%dpoints (%dkill, %ddeath, %dtk)",
-                        color, rank, team, color, point, 
+                        color, rank, tns.toString(), color, point, 
                         counts[0], counts[1], counts[2]);
 
                 if ( !isBroadcast ) {
@@ -183,6 +174,51 @@ public class CKillCommand implements CommandExecutor {
             api.refreshBelowNameScore();
             sender.sendMessage(ChatColor.GRAY + "KillDeath数をリセットしました。");
             return true;
+            
+        } else if ( args.length >= 3 && args[0].equalsIgnoreCase("set") ) {
+            
+            if ( !args[2].matches("-?[0-9]{1,9}") ) {
+                sender.sendMessage(ChatColor.RED + "pointには数字を指定してください。");
+                sender.sendMessage(ChatColor.RED + "/" + label + " set (team) (point)");
+                return true;
+            }
+            
+            String id = args[1];
+            int point = Integer.parseInt(args[2]);
+            
+            if ( !plugin.getAPI().isExistTeam(id) ) {
+                sender.sendMessage(ChatColor.RED + "チーム" + id + "が存在しません。");
+                return true;
+            }
+            
+            plugin.getAPI().setTeamPoint(id, point);
+            
+            sender.sendMessage(ChatColor.RED + 
+                    "チーム" + id + "のポイントを、" + point + "に設定しました。");
+            return true;
+
+        } else if ( args.length >= 3 && args[0].equalsIgnoreCase("add") ) {
+            
+            if ( !args[2].matches("-?[0-9]{1,9}") ) {
+                sender.sendMessage(ChatColor.RED + "pointには数字を指定してください。");
+                sender.sendMessage(ChatColor.RED + "/" + label + " set (team) (point)");
+                return true;
+            }
+            
+            String id = args[1];
+            int amount = Integer.parseInt(args[2]);
+            
+            if ( !plugin.getAPI().isExistTeam(id) ) {
+                sender.sendMessage(ChatColor.RED + "チーム" + id + "が存在しません。");
+                return true;
+            }
+            
+            int point = plugin.getAPI().addTeamPoint(id, amount);
+            
+            sender.sendMessage(ChatColor.RED + 
+                    "チーム" + id + "のポイントを、" + point + "に設定しました。");
+            return true;
+
         }
 
         return false;

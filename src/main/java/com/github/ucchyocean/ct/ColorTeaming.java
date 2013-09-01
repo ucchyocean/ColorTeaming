@@ -15,7 +15,7 @@ import com.github.ucchyocean.ct.command.CExplodeCommand;
 import com.github.ucchyocean.ct.command.CFriendlyFireCommand;
 import com.github.ucchyocean.ct.command.CGiveCommand;
 import com.github.ucchyocean.ct.command.CJoinCommand;
-import com.github.ucchyocean.ct.command.CKillCommand;
+import com.github.ucchyocean.ct.command.CPointCommand;
 import com.github.ucchyocean.ct.command.CLeaderCommand;
 import com.github.ucchyocean.ct.command.CLeaveCommand;
 import com.github.ucchyocean.ct.command.CRandomCommand;
@@ -64,7 +64,7 @@ public class ColorTeaming extends JavaPlugin {
         getCommand("colorleader").setExecutor(new CLeaderCommand(this));
         getCommand("colortp").setExecutor(new CTPCommand(this));
         getCommand("colorclass").setExecutor(new CClassCommand(this));
-        getCommand("colorkill").setExecutor(new CKillCommand(this));
+        getCommand("colorkill").setExecutor(new CPointCommand(this));
         getCommand("colorspawn").setExecutor(new CSpawnCommand(this));
         getCommand("colorrandom").setExecutor(new CRandomCommand(this));
         getCommand("colorremove").setExecutor(new CRemoveCommand(this));

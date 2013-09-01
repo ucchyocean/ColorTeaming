@@ -127,7 +127,7 @@ public class TeamNameConfig {
     /**
      * TeamNameを返す。
      * 指定した名前に一致するTeamNameが存在しない場合は、
-     * color=nullのTeamNameが返されることに注意すること。
+     * color=whiteのTeamNameが返されることに注意すること。
      * @param id チームID
      * @return TeamNameオブジェクト
      */
@@ -138,13 +138,13 @@ public class TeamNameConfig {
                 return tn;
             }
         }
-        return new TeamNameSetting(id, id, null);
+        return new TeamNameSetting(id, id, ChatColor.WHITE);
     }
     
     /**
      * TeamNameを返す。
      * 指定した名前に一致するTeamNameが存在しない場合は、
-     * color=nullのTeamNameが返されることに注意すること。
+     * color=whiteのTeamNameが返されることに注意すること。
      * @param config 確認対象のTeamNameSetting配列
      * @param id チームID
      * @return TeamNameオブジェクト
@@ -156,7 +156,7 @@ public class TeamNameConfig {
                 return tn;
             }
         }
-        return new TeamNameSetting(id, id, null);
+        return new TeamNameSetting(id, id, ChatColor.WHITE);
     }
     
     /**

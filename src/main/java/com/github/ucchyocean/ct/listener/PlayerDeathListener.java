@@ -56,11 +56,11 @@ public class PlayerDeathListener implements Listener {
         Player deader = event.getEntity();
         ColorTeamingConfig config = plugin.getCTConfig();
         ColorTeamingAPI api = plugin.getAPI();
-        HashMap<String, int[]> killDeathCounts = api.getKillDeathCounts();
+        
         HashMap<String, int[]> killDeathUserCounts = api.getKillDeathUserCounts();
         HashMap<String, ArrayList<String>> leaders = api.getLeaders();
-        TeamNameSetting tns = api.getPlayerTeamName(deader);
-        String team = tns.getID();
+        TeamNameSetting tnsDeader = api.getPlayerTeamName(deader);
+        String teamDeader = tnsDeader.getID();
 
         // 倒したプレイヤーを取得
         // 直接攻撃で倒された場合は、killerをそのまま使う
@@ -84,10 +84,8 @@ public class PlayerDeathListener implements Listener {
         // Death数を加算
 
         // チームへ加算
-        if ( !killDeathCounts.containsKey(team) ) {
-            killDeathCounts.put(team, new int[3]);
-        }
-        killDeathCounts.get(team)[1]++;
+        api.addTeamPoint(teamDeader, config.getDeathPoint());
+        
         // ユーザーへ加算
         if ( !killDeathUserCounts.containsKey(deader.getName()) ) {
             killDeathUserCounts.put(deader.getName(), new int[3]);
@@ -95,27 +93,27 @@ public class PlayerDeathListener implements Listener {
         killDeathUserCounts.get(deader.getName())[1]++;
 
         // 死亡したプレイヤーが、大将だった場合、倒されたことを全体に通知する。
-        if ( leaders.containsKey(team) &&
-                leaders.get(team).contains(deader.getName()) ) {
+        if ( leaders.containsKey(teamDeader) &&
+                leaders.get(teamDeader).contains(deader.getName()) ) {
             String message = String.format(PRENOTICE + "%s チームの大将、%s が倒されました！",
-                    tns.getName(), deader.getName());
+                    tnsDeader.getName(), deader.getName());
             Bukkit.broadcastMessage(message);
-            leaders.get(team).remove(deader.getName());
+            leaders.get(teamDeader).remove(deader.getName());
 
-            if ( leaders.get(team).size() >= 1 ) {
+            if ( leaders.get(teamDeader).size() >= 1 ) {
                 message = String.format(PRENOTICE + "%s チームの残り大将は、あと %d 人です。",
-                        tns.getName(), leaders.get(team).size());
+                        tnsDeader.getName(), leaders.get(teamDeader).size());
                 Bukkit.broadcastMessage(message);
             } else {
 
                 message = String.format(PRENOTICE + "%s チームの大将は全滅しました！", 
-                        tns.getName());
+                        tnsDeader.getName());
                 Bukkit.broadcastMessage(message);
-                leaders.remove(team);
+                leaders.remove(teamDeader);
 
                 // チームリーダー全滅イベントのコール
                 ColorTeamingLeaderDefeatedEvent event2 =
-                        new ColorTeamingLeaderDefeatedEvent(tns, killerName, deader.getName());
+                        new ColorTeamingLeaderDefeatedEvent(tnsDeader, killerName, deader.getName());
                 Bukkit.getServer().getPluginManager().callEvent(event2);
 
                 // リーダーが残っているチームがあと1チームなら、勝利イベントを更にコール
@@ -139,27 +137,27 @@ public class PlayerDeathListener implements Listener {
             // Kill数を加算
 
             // チームへ加算
-            if ( !killDeathCounts.containsKey(teamKiller) ) {
-                killDeathCounts.put(teamKiller, new int[3]);
-            }
-            if ( team.equals(teamKiller) ) // 同じチームだった場合のペナルティ
-                killDeathCounts.get(teamKiller)[2]++;
+            if ( teamDeader.equals(teamKiller) ) // 同じチームだった場合のペナルティ
+                api.addTeamPoint(teamKiller, config.getTkPoint());
             else
-                killDeathCounts.get(teamKiller)[0]++;
+                api.addTeamPoint(teamKiller, config.getKillPoint());
             // ユーザーへ加算
             if ( !killDeathUserCounts.containsKey(killer.getName()) ) {
                 killDeathUserCounts.put(killer.getName(), new int[3]);
             }
-            if ( team.equals(teamKiller) ) // 同じチームだった場合のペナルティ
+            if ( teamDeader.equals(teamKiller) ) // 同じチームだった場合のペナルティ
                 killDeathUserCounts.get(killer.getName())[2]++;
             else
                 killDeathUserCounts.get(killer.getName())[0]++;
 
             // killReachTrophyが設定されていたら、超えたかどうかを判定する
+            HashMap<TeamNameSetting, int[]> killDeathCounts =
+                    api.getKillDeathCounts();
+            
             if ( config.getKillReachTrophy() > 0 &&
                     leaders.size() == 0 ) {
 
-                if ( killDeathCounts.get(teamKiller)[0] ==
+                if ( killDeathCounts.get(tnsKiller)[0] ==
                         config.getKillReachTrophy() ) {
                     int rest = config.getKillTrophy() - config.getKillReachTrophy();
                     String message = String.format(
@@ -179,7 +177,7 @@ public class PlayerDeathListener implements Listener {
             if ( config.getKillTrophy() > 0 &&
                     leaders.size() == 0 ) {
 
-                if ( killDeathCounts.get(teamKiller)[0] ==
+                if ( killDeathCounts.get(tnsKiller)[0] ==
                         config.getKillTrophy() ) {
 
                     // 全体通知
@@ -203,7 +201,7 @@ public class PlayerDeathListener implements Listener {
 
             // チームがなくなっていたなら、チーム全滅イベントをコール
             ColorTeamingTeamDefeatedEvent event2 =
-                    new ColorTeamingTeamDefeatedEvent(tns, killerName, deader.getName());
+                    new ColorTeamingTeamDefeatedEvent(tnsDeader, killerName, deader.getName());
             Bukkit.getServer().getPluginManager().callEvent(event2);
 
             // 残っているチームがあと1チームなら、勝利イベントを更にコール

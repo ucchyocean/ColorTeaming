@@ -115,7 +115,8 @@ public class Utility {
      */
     public static String replaceColorCode(String source) {
 
-        return source.replaceAll("&([0-9a-fk-or])", "\u00A7$1");
+        //return source.replaceAll("&([0-9a-fk-or])", "\u00A7$1");
+        return ChatColor.translateAlternateColorCodes('&', source);
     }
 
     /**
