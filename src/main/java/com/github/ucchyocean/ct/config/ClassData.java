@@ -25,17 +25,21 @@ public class ClassData {
     protected String armor;
     /** エフェクトデータ */
     protected String effect;
+    /** 経験値 */
+    protected int experience;
 
     /**
      * コンストラクタ
      * @param items アイテムデータ
      * @param armors 防具データ
      * @param effects エフェクトデータ
+     * @param experience 経験値
      */
-    public ClassData(String items, String armor, String effect) {
+    public ClassData(String items, String armor, String effect, int experience) {
         this.items = items;
         this.armor = armor;
         this.effect = effect;
+        this.experience = experience;
     }
 
     public ArrayList<ItemStack> getItems() {
@@ -69,5 +73,10 @@ public class ClassData {
             eparser = new EffectParser();
         }
         return eparser.parseEffectData(effect);
+    }
+    
+    public int getExperience() {
+        
+        return experience;
     }
 }

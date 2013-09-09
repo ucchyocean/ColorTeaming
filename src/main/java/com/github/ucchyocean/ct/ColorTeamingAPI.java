@@ -19,6 +19,7 @@ import com.github.ucchyocean.ct.config.TeamMemberSaveDataHandler;
 import com.github.ucchyocean.ct.config.TeamNameConfig;
 import com.github.ucchyocean.ct.config.TeamNameSetting;
 import com.github.ucchyocean.ct.event.ColorTeamingPlayerLeaveEvent.Reason;
+import com.github.ucchyocean.ct.item.CustomItem;
 
 /**
  * ColorTeaming APIクラス
@@ -289,6 +290,19 @@ public interface ColorTeamingAPI {
      * @param respawnMapName リスポーンマップ名
      */
     public void setRespawnMapName(String respawnMapName);
+    
+    /**
+     * カスタムアイテムを登録する
+     * @param item カスタムアイテム
+     */
+    public void registerCustomItem(CustomItem item);
+    
+    /**
+     * 登録されているカスタムアイテムを取得する
+     * @param name カスタムアイテム名
+     * @return カスタムアイテム、登録されていないアイテム名を指定した場合はnullが返される。
+     */
+    public CustomItem getCustomItem(String name);
 
     /**
      * ランダムな順序で、プレイヤーをチームわけします。<br/>

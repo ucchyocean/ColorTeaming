@@ -95,6 +95,7 @@ public class CClassCommand implements CommandExecutor {
         ArrayList<ItemStack> itemData = cdata.getItems();
         ArrayList<ItemStack> armorData = cdata.getArmor();
         ArrayList<PotionEffect> effectData = cdata.getEffect();
+        int experience = cdata.getExperience();
 
         ArrayList<Player> playersToSet = new ArrayList<Player>();
         if ( isAll ) {
@@ -147,12 +148,17 @@ public class CClassCommand implements CommandExecutor {
                 }
             }
             
+            // インベントリ更新
+            updateInventory(p);
+
             // ポーション効果の設定
             if ( effectData != null ) {
                 p.addPotionEffects(effectData);
             }
 
-            updateInventory(p);
+            // 経験値の設定
+            p.setTotalExperience(experience);
+            updateExp(p);
         }
 
         String targetName;
@@ -195,5 +201,22 @@ public class CClassCommand implements CommandExecutor {
         for ( PotionEffect e : effects ) {
             player.removePotionEffect(e.getType());
         }
+    }
+    
+    /**
+     * 経験値表示を更新する
+     * @param player 更新対象のプレイヤー
+     */
+    private static void updateExp(final Player player) {
+
+        int total = player.getTotalExperience();
+        player.setLevel(0);
+        player.setExp(0);
+        while ( total > player.getExpToLevel() ) {
+            total -= player.getExpToLevel();
+            player.setLevel(player.getLevel()+1);
+        }
+        float xp = (float)total / (float)player.getExpToLevel();
+        player.setExp(xp);
     }
 }

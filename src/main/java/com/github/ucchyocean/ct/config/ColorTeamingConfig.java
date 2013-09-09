@@ -143,7 +143,8 @@ public class ColorTeamingConfig {
                 String i = c.getString("items");
                 String a = c.getString("armor");
                 String e = c.getString("effect");
-                ClassData data = new ClassData(i, a, e);
+                int x = c.getInt("experience", 0);
+                ClassData data = new ClassData(i, a, e, x);
                 ctconfig.classes.put(clas, data);
             }
         }

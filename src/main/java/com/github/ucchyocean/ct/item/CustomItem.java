@@ -14,6 +14,12 @@ import org.bukkit.inventory.ItemStack;
 public interface CustomItem {
 
     /**
+     * カスタムアイテム名を返す
+     * @return カスタムアイテム名
+     */
+    public String getName();
+    
+    /**
      * カスタムアイテムの表示名を返す
      * @return 表示名
      */

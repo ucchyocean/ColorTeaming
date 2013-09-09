@@ -22,6 +22,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
+import com.github.ucchyocean.ct.ColorTeaming;
+import com.github.ucchyocean.ct.ColorTeamingAPI;
+import com.github.ucchyocean.ct.item.CustomItem;
+
 /**
  * kitの文字列からアイテムスタックを作ったり、
  * インベントリからkitの文字列に変換したりするユーティリティクラス
@@ -31,7 +35,8 @@ public class KitParser {
 
     private static final String REGEX_ITEM_PATTERN =
             "([0-9]+)(?:@([0-9]+))?(?::([0-9]+))?|" +
-            "([0-9]+)((?:\\^[0-9]+-[0-9]+)*)(?:@([0-9]+))?(?:\\$([0-9A-Fa-f]{6}))?";
+            "([0-9]+)((?:\\^[0-9]+-[0-9]+)*)(?:@([0-9]+))?(?:\\$([0-9A-Fa-f]{6}))?|" +
+            "\\(([a-zA-Z0-9]+)\\)(?::([0-9]+))?";
     private static final String REGEX_ENCHANT_PATTERN =
             "\\^([0-9]+)-([0-9]+)";
 
@@ -158,6 +163,28 @@ public class KitParser {
             }
 
             return getEnchantedItem(item, enchants, damage, color);
+
+        } else if ( matcher.group(8) != null ) {
+            // group8 が null でないなら、カスタム形式の指定である。
+
+            String name = matcher.group(8);
+            
+            int amount = 1;
+            if ( matcher.group(9) != null ) {
+                amount = Integer.parseInt(matcher.group(9));
+            }
+            
+            ColorTeamingAPI api = ColorTeaming.instance.getAPI();
+            CustomItem item = api.getCustomItem(name);
+
+            if ( item == null ) {
+                logger.severe("指定されたカスタムアイテム " + name + " が見つかりません。");
+                return null;
+            }
+
+            ItemStack is = item.getItemStack();
+            is.setAmount(amount);
+            return is;
 
         } else {
             logger.severe("内部エラー : 正規表現が正しくマッチしていません。");

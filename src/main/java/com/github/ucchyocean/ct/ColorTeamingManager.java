@@ -32,6 +32,7 @@ import com.github.ucchyocean.ct.event.ColorTeamingPlayerLeaveEvent.Reason;
 import com.github.ucchyocean.ct.event.ColorTeamingTeamChatEvent;
 import com.github.ucchyocean.ct.event.ColorTeamingTeamCreateEvent;
 import com.github.ucchyocean.ct.event.ColorTeamingTeamRemoveEvent;
+import com.github.ucchyocean.ct.item.CustomItem;
 import com.github.ucchyocean.ct.scoreboard.BelowNameScoreDisplay;
 import com.github.ucchyocean.ct.scoreboard.PlayerCriteria;
 import com.github.ucchyocean.ct.scoreboard.SidebarCriteria;
@@ -66,6 +67,8 @@ public class ColorTeamingManager implements ColorTeamingAPI {
 
     private String respawnMapName;
 
+    private HashMap<String, CustomItem> customItems;
+
     /**
      * コンストラクタ
      * @param plugin
@@ -84,6 +87,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         tppointConfig = new TPPointConfiguration();
         teamNameConfig = new TeamNameConfig();
         sdhandler = new TeamMemberSaveDataHandler(plugin.getDataFolder());
+        customItems = new HashMap<String, CustomItem>();
     }
 
     /**
@@ -801,6 +805,27 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     @Override
     public void setRespawnMapName(String respawnMapName) {
         this.respawnMapName = respawnMapName;
+    }
+    
+    /**
+     * カスタムアイテムを登録する
+     * @param item カスタムアイテム
+     */
+    @Override
+    public void registerCustomItem(CustomItem item) {
+        
+        String name = item.getName();
+        customItems.put(name, item);
+    }
+    
+    /**
+     * 登録されているカスタムアイテムを取得する
+     * @param name カスタムアイテム名
+     * @return カスタムアイテム、登録されていないアイテム名を指定した場合はnullが返される。
+     */
+    @Override
+    public CustomItem getCustomItem(String name) {
+        return customItems.get(name);
     }
 
     /**
