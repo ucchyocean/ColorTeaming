@@ -1,5 +1,7 @@
 /*
- * Copyright ucchy 2013
+ * @author     ucchy
+ * @license    LGPLv3
+ * @copyright  Copyright ucchy 2013
  */
 package com.github.ucchyocean.ct;
 
@@ -15,9 +17,9 @@ import com.github.ucchyocean.ct.command.CExplodeCommand;
 import com.github.ucchyocean.ct.command.CFriendlyFireCommand;
 import com.github.ucchyocean.ct.command.CGiveCommand;
 import com.github.ucchyocean.ct.command.CJoinCommand;
-import com.github.ucchyocean.ct.command.CPointCommand;
 import com.github.ucchyocean.ct.command.CLeaderCommand;
 import com.github.ucchyocean.ct.command.CLeaveCommand;
+import com.github.ucchyocean.ct.command.CPointCommand;
 import com.github.ucchyocean.ct.command.CRandomCommand;
 import com.github.ucchyocean.ct.command.CRemoveCommand;
 import com.github.ucchyocean.ct.command.CRestoreCommand;

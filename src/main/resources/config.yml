@@ -1,4 +1,4 @@
-# Color Teaming 2.1.0
+# Color Teaming 2.2.0
 # @author     ucchy
 # @license    LGPLv3
 # @copyright  Copyright ucchy 2013
@@ -49,9 +49,7 @@ allowPlayerJoinRandom: true
 allowPlayerLeave: false
 sideCriteria: rest
 listCriteria: point
-listCustomSlot: ''
 belowCriteria: none
-belowCustomSlot: ''
 killTrophy: 0
 killReachTrophy: 0
 worldSpawn: false

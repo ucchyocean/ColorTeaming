@@ -1,76 +1,38 @@
-# Color Teaming Plugin 2.1.0
+# Color Teaming Plugin 2.2.0
 # @author     ucchy
 # @license    LGPLv3
 # @copyright  Copyright ucchy 2013
-#
+
 # worlds: PVPを実施するworld名を設定してください。複数指定可能です。
+worlds: ['world']
+
 # teamChatMode: サーバー起動時のチームチャットモードを設定します。
 #               trueになっている場合は、チャットの発言がチーム内のみになります。
+teamChatMode: false
+
 # opDisplayMode: teamChatMode が有効のときに、OPメンバーの画面にもチームチャットの内容を
 #                表示するかどうかを設定します。
+opDisplayMode: false
+
 # teamChatLogMode: チームチャットの内容を、コンソールに表示します。
 #                  同時に、server.log にも記録されます。
+teamChatLogMode: true
+
 # friendlyFireDisabler: 同じチームメンバー同士の攻撃（剣などの直接攻撃と、弓矢）を無効にします。
+friendlyFireDisabler: true
+
 # seeFriendlyInvisible: 透明化した同じチームメンバーが、見えるようにするかどうかを設定します。
+seeFriendlyInvisible: true
+
 # healOnSetClass: クラスを設定するときに、全回復するかどうかを設定します。
+healOnSetClass: true
+
 # classes: クラスごとのインベントリーの内容を設定します。
 #          アイテムの設定形式は2種類あります。
 #          通常のアイテム → (アイテムID)[@(ダメージ値)][:(個数)]
 #          エンチャント付きアイテム → (アイテムID)^(エンチャントID)-(エンチャントレベル)
 #          armor の方は、(頭)、(胸)、(レギンス)、(足) の順に指定します。
 #          0 を指定すると、その部分は装備しません。
-# points: ckillコマンド用の得点設定。
-#         killPoint - 他のチームのプレイヤーを倒したときの獲得点数。
-#         deathPoint - 誰かに倒されたときの獲得点数。
-#         tkPoint - 自分のチームのプレイヤーを倒したときの獲得点数。
-# colorRemoveOnDeath: 死んでリスポンしたときに、チームから自動で抜けるかどうかを設定します。
-# colorRemoveOnQuit: ログアウトしたときに、チームから自動で抜けるかどうかを設定します。
-# noDamageSeconds: 死んでリスポンしたときに、ダメージを無効にする秒数を設定します。
-#                  colorRemoveOnDeath が true だと、この設定は無視されますので注意してください。
-# allowPlayerJoinAny: 一般プレイヤーが、/cjoin (group) コマンドを使用して、
-#                     チームを作ったり参加したりすることができるようにするかを、設定します。
-# allowPlayerJoinRandom: 一般プレイヤーが、/cjoin コマンドで、ランダムに人数の少ないチームに
-#                        参加することができるようになります。
-# allowPlayerLeave: 一般プレイヤーが、/cleave コマンドを使用して、
-#                   チームから離脱することができるようにするかを、設定します。
-# sideCriteria: サイドバーに表示するチームスコアの種類を指定します。
-#               kill - キル数
-#               death - デス数
-#               point - ポイント(上記のpointsの項目を参照)
-#               rest - 残り人数
-#               none - 非表示
-# listCriteria: TABキーリストに表示する個人スコアの種類を指定します。
-#               kill - キル数
-#               death - デス数
-#               point - ポイント(上記のpointsの項目を参照)
-#               health - 残り体力
-#               none - 非表示
-# belowCriteria: 名前の下に表示する個人スコアの種類を指定します。
-#                指定可能な項目は、listCriteriaと同じです。
-# killTrophy: いずれかのチームが指定のキル数に達したときに、通知を行うかどうかを設定します。
-#             30を指定した場合は、30キル達成で通知します。0の場合は通知オフとなります。
-#             clコマンドで大将を選出している場合は、本設定は無視されることに注意してください。
-# killReachTrophy: いずれかのチームが指定のキル数に達したときに、通知を行うかどうかを設定します。
-#             25を指定した場合は、25キル達成で
-#             「red チームが、30 キルまでもう少しです(あと 5 キル)。」と通知します。
-#             0の場合は通知オフとなります。
-#             killTrophyが 0 の場合や、killTrophy より killReachTrophy が大きい場合は、この設定は無視されます。
-#             clコマンドで大将を選出している場合も、本設定は無視されます。
-# worldSpawn: チーム無所属の人がサーバーに参加したときに、
-#             ワールドのリスポーン地点へリスポーンするようになります。
-#             ワールドのリスポーン地点は、/cspawn world コマンドを使用してください。
-# showJapanizeGlobalChat: 通常のチャットをJapanize化します。
-# showJapanizeTeamChat: チームチャットをJapanize化します。
-# teleportDelay: テレポート実行時の、ディレイ間隔を指定します。単位はtick（1秒=20tick）
-
-worlds:
-- world
-teamChatMode: false
-opDisplayMode: false
-teamChatLogMode: true
-friendlyFireDisabler: true
-seeFriendlyInvisible: true
-healOnSetClass: true
 classes:
   Knight:
     items: 267,320:5
@@ -97,24 +59,81 @@ classes:
     armor: 298$E5E533,299$E5E533,300$E5E533,301$E5E533
   GreenLeather:
     armor: 298$667F33,299$667F33,300$667F33,301$667F33
+
+# points: ckillコマンド用の得点設定。
+#         killPoint - 他のチームのプレイヤーを倒したときの獲得点数。
+#         deathPoint - 誰かに倒されたときの獲得点数。
+#         tkPoint - 自分のチームのプレイヤーを倒したときの獲得点数。
 points:
   killPoint: 1
   deathPoint: -1
   tkPoint: -3
+
+# colorRemoveOnDeath: 死んでリスポンしたときに、チームから自動で抜けるかどうかを設定します。
 colorRemoveOnDeath: false
+
+# colorRemoveOnQuit: ログアウトしたときに、チームから自動で抜けるかどうかを設定します。
 colorRemoveOnQuit: false
+
+# noDamageSeconds: 死んでリスポンしたときに、ダメージを無効にする秒数を設定します。
+#                  colorRemoveOnDeath が true だと、この設定は無視されますので注意してください。
 noDamageSeconds: 5
+
+# allowPlayerJoinAny: 一般プレイヤーが、/cjoin (group) コマンドを使用して、
+#                     チームを作ったり参加したりすることができるようにするかを、設定します。
 allowPlayerJoinAny: false
+
+# allowPlayerJoinRandom: 一般プレイヤーが、/cjoin コマンドで、ランダムに人数の少ないチームに
+#                        参加することができるようになります。
 allowPlayerJoinRandom: true
+
+# allowPlayerLeave: 一般プレイヤーが、/cleave コマンドを使用して、
+#                   チームから離脱することができるようにするかを、設定します。
 allowPlayerLeave: false
+
+# sideCriteria: サイドバーに表示するチームスコアの種類を指定します。
+#               kill - キル数
+#               death - デス数
+#               point - ポイント(上記のpointsの項目を参照)
+#               rest - 残り人数
+#               none - 非表示
 sideCriteria: rest
+
+# listCriteria: TABキーリストに表示する個人スコアの種類を指定します。
+#               kill - キル数
+#               death - デス数
+#               point - ポイント(上記のpointsの項目を参照)
+#               health - 残り体力
+#               none - 非表示
 listCriteria: point
-listCustomSlot: ''
+
+# belowCriteria: 名前の下に表示する個人スコアの種類を指定します。
+#                指定可能な項目は、listCriteriaと同じです。
 belowCriteria: none
-belowCustomSlot: ''
+
+# killTrophy: いずれかのチームが指定のキル数に達したときに、通知を行うかどうかを設定します。
+#             30を指定した場合は、30キル達成で通知します。0の場合は通知オフとなります。
+#             clコマンドで大将を選出している場合は、本設定は無視されることに注意してください。
 killTrophy: 0
+
+# killReachTrophy: いずれかのチームが指定のキル数に達したときに、通知を行うかどうかを設定します。
+#             25を指定した場合は、25キル達成で
+#             「red チームが、30 キルまでもう少しです(あと 5 キル)。」と通知します。
+#             0の場合は通知オフとなります。
+#             killTrophyが 0 の場合や、killTrophy より killReachTrophy が大きい場合は、この設定は無視されます。
+#             clコマンドで大将を選出している場合も、本設定は無視されます。
 killReachTrophy: 0
+
+# worldSpawn: チーム無所属の人がサーバーに参加したときに、
+#             ワールドのリスポーン地点へリスポーンするようになります。
+#             ワールドのリスポーン地点は、/cspawn world コマンドを使用してください。
 worldSpawn: false
+
+# showJapanizeGlobalChat: 通常のチャットをJapanize化します。
 showJapanizeGlobalChat: false
+
+# showJapanizeTeamChat: チームチャットをJapanize化します。
 showJapanizeTeamChat: true
+
+# teleportDelay: テレポート実行時の、ディレイ間隔を指定します。単位はtick（20tick=1秒）
 teleportDelay: 2

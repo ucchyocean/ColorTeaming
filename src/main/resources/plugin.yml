@@ -1,6 +1,6 @@
 name: ColorTeaming
 main: com.github.ucchyocean.ct.ColorTeaming
-version: 2.1.0
+version: 2.2.0
 authors: [ucchy,owatakun]
 load: startup
 description: 簡易PVPチーミングプラグイン
