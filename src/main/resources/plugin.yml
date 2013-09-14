@@ -163,7 +163,7 @@ commands:
            /<command> (player) (item-id) - 指定したIDのアイテムを、playerに配布します。
            /<command> (team) hand - 手に持ったアイテムを、teamのメンバー全員に配布します。
            /<command> (player) hand - 手に持ったアイテムを、playerに配布します。
-    permission: colorteaming.join
+    permission: colorteaming.cgive
     permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorglobal:
     description: チームチャット有効時にグローバルへ発言するためのコマンド
@@ -229,6 +229,9 @@ permissions:
   colorteaming.explode:
     description: colorexplode(cexplode)コマンドの使用権限
     default: op
+  colorteaming.give:
+    description: colorgive(cgive)コマンドの使用権限
+    default: op
   colorteaming.*:
     children:
       colorteaming.team: true
@@ -245,6 +248,7 @@ permissions:
       colorteaming.save: true
       colorteaming.restore: true
       colorteaming.explode: true
+      colorteaming.give: true
     description: ColorTeamingプラグインの管理系コマンド全ての使用権限
   colorteaming-user.global:
     description: colorglobal(g)コマンドの使用権限
