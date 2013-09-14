@@ -66,13 +66,13 @@ classes:
   GreenLeather:
     armor: 298$667F33,299$667F33,300$667F33,301$667F33
 
-# ckillコマンド用の得点設定。
-#   killPoint - 他のチームのプレイヤーを倒したときの獲得点数。
-#   deathPoint - 誰かに倒されたときの獲得点数。
-#   tkPoint - 自分のチームのプレイヤーを倒したときの獲得点数。
-killPoint: 1
-deathPoint: -1
-tkPoint: -3
+# cpointコマンド用の得点設定。
+#   ctKillPoint - 他のチームのプレイヤーを倒したときの獲得点数。
+#   ctDeathPoint - 誰かに倒されたときの獲得点数。
+#   ctTKPoint - 自分のチームのプレイヤーを倒したときの獲得点数。
+ctKillPoint: 1
+ctDeathPoint: -1
+ctTKPoint: -3
 
 # 死んでリスポンしたときに、チームから自動で抜けるかどうかを設定します。
 colorRemoveOnDeath: false

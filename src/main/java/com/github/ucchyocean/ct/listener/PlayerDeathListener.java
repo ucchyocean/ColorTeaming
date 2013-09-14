@@ -86,7 +86,7 @@ public class PlayerDeathListener implements Listener {
         // Death数を加算
 
         // チームへ加算
-        api.addTeamPoint(teamDeader, config.getDeathPoint());
+        api.addTeamPoint(teamDeader, config.getCTDeathPoint());
         
         // ユーザーへ加算
         if ( !killDeathUserCounts.containsKey(deader.getName()) ) {
@@ -140,9 +140,9 @@ public class PlayerDeathListener implements Listener {
 
             // チームへ加算
             if ( teamDeader.equals(teamKiller) ) // 同じチームだった場合のペナルティ
-                api.addTeamPoint(teamKiller, config.getTkPoint());
+                api.addTeamPoint(teamKiller, config.getCTTKPoint());
             else
-                api.addTeamPoint(teamKiller, config.getKillPoint());
+                api.addTeamPoint(teamKiller, config.getCTKillPoint());
             // ユーザーへ加算
             if ( !killDeathUserCounts.containsKey(killer.getName()) ) {
                 killDeathUserCounts.put(killer.getName(), new int[3]);

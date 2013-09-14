@@ -52,9 +52,9 @@ public class CPointCommand implements CommandExecutor {
                     plugin.getAPI().getKillDeathUserCounts();
             HashMap<TeamNameSetting, Integer> teamPoints =
                     plugin.getAPI().getAllTeamPoints();
-            int killpoint = plugin.getCTConfig().getKillPoint();
-            int deathpoint = plugin.getCTConfig().getDeathPoint();
-            int tkpoint = plugin.getCTConfig().getTkPoint();
+            int killpoint = plugin.getCTConfig().getCTKillPoint();
+            int deathpoint = plugin.getCTConfig().getCTDeathPoint();
+            int tkpoint = plugin.getCTConfig().getCTTKPoint();
 
             // 全チームの得点を集計して、得点順に並べる
             ArrayList<TeamNameSetting> teams = new ArrayList<TeamNameSetting>();

@@ -76,9 +76,9 @@ public abstract class ScoreDisplayBase {
                 } else if ( getConfigData() == PlayerCriteria.DEATH_COUNT ) {
                     point = data[1];
                 } else if ( getConfigData() == PlayerCriteria.POINT ) {
-                    point = data[0] * config.getKillPoint() +
-                            data[1] * config.getDeathPoint() +
-                            data[2] * config.getTkPoint();
+                    point = data[0] * config.getCTKillPoint() +
+                            data[1] * config.getCTDeathPoint() +
+                            data[2] * config.getCTTKPoint();
                 }
             }
             if ( point == 0 ) {

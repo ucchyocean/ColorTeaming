@@ -66,7 +66,7 @@ public class ColorTeaming extends JavaPlugin {
         getCommand("colorleader").setExecutor(new CLeaderCommand(this));
         getCommand("colortp").setExecutor(new CTPCommand(this));
         getCommand("colorclass").setExecutor(new CClassCommand(this));
-        getCommand("colorkill").setExecutor(new CPointCommand(this));
+        getCommand("colorpoint").setExecutor(new CPointCommand(this));
         getCommand("colorspawn").setExecutor(new CSpawnCommand(this));
         getCommand("colorrandom").setExecutor(new CRandomCommand(this));
         getCommand("colorremove").setExecutor(new CRemoveCommand(this));

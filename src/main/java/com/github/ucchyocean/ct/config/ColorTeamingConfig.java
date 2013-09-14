@@ -69,13 +69,13 @@ public class ColorTeamingConfig {
     private boolean allowPlayerLeave;
 
     /** キル時のポイント設定 */
-    private int killPoint;
+    private int ctKillPoint;
 
     /** デス時のポイント設定 */
-    private int deathPoint;
+    private int ctDeathPoint;
 
     /** チームメンバーキル時のポイント設定 */
-    private int tkPoint;
+    private int ctTKPoint;
 
     /** サイドバーのスコア設定 */
     private SidebarCriteria sideCriteria;
@@ -158,9 +158,9 @@ public class ColorTeamingConfig {
         ctconfig.allowPlayerJoinRandom = config.getBoolean("allowPlayerJoinRandom", true);
         ctconfig.allowPlayerLeave = config.getBoolean("allowPlayerLeave", false);
 
-        ctconfig.killPoint = config.getInt("killPoint", 1);
-        ctconfig.deathPoint = config.getInt("deathPoint", -1);
-        ctconfig.tkPoint = config.getInt("tkPoint", -3);
+        ctconfig.ctKillPoint = config.getInt("ctKillPoint", 1);
+        ctconfig.ctDeathPoint = config.getInt("ctDeathPoint", -1);
+        ctconfig.ctTKPoint = config.getInt("ctTKPoint", -3);
 
         String criteriaTemp = config.getString("sideCriteria", "rest");
         ctconfig.sideCriteria = SidebarCriteria.fromString(criteriaTemp);
@@ -221,9 +221,9 @@ public class ColorTeamingConfig {
         config.set("allowPlayerJoinAny", allowPlayerJoinAny);
         config.set("allowPlayerJoinRandom", allowPlayerJoinRandom);
         config.set("allowPlayerLeave", allowPlayerLeave);
-        config.set("killPoint", killPoint);
-        config.set("deathPoint", deathPoint);
-        config.set("tkPoint", tkPoint);
+        config.set("killPoint", ctKillPoint);
+        config.set("deathPoint", ctDeathPoint);
+        config.set("tkPoint", ctTKPoint);
         config.set("sideCriteria", sideCriteria.toString());
         config.set("listCriteria", listCriteria.toString());
         config.set("belowCriteria", belowCriteria.toString());
@@ -298,16 +298,16 @@ public class ColorTeamingConfig {
         return allowPlayerLeave;
     }
 
-    public int getKillPoint() {
-        return killPoint;
+    public int getCTKillPoint() {
+        return ctKillPoint;
     }
 
-    public int getDeathPoint() {
-        return deathPoint;
+    public int getCTDeathPoint() {
+        return ctDeathPoint;
     }
 
-    public int getTkPoint() {
-        return tkPoint;
+    public int getCTTKPoint() {
+        return ctTKPoint;
     }
 
     public SidebarCriteria getSideCriteria() {
@@ -394,16 +394,16 @@ public class ColorTeamingConfig {
         this.allowPlayerLeave = allowPlayerLeave;
     }
 
-    public void setKillPoint(int killPoint) {
-        this.killPoint = killPoint;
+    public void setCTKillPoint(int killPoint) {
+        this.ctKillPoint = killPoint;
     }
 
-    public void setDeathPoint(int deathPoint) {
-        this.deathPoint = deathPoint;
+    public void setCTDeathPoint(int deathPoint) {
+        this.ctDeathPoint = deathPoint;
     }
 
-    public void setTkPoint(int tkPoint) {
-        this.tkPoint = tkPoint;
+    public void setCTTKPoint(int tkPoint) {
+        this.ctTKPoint = tkPoint;
     }
 
     public void setSideCriteria(SidebarCriteria sideCriteria) {
