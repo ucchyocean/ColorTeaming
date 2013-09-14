@@ -14,7 +14,6 @@ import java.util.Map;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.Utility;
@@ -39,8 +38,8 @@ public class ColorTeamingConfig {
     /** チームチャットのロギング オンオフ */
     private boolean isTeamChatLogMode;
 
-    /** FriendlyFire無効機能の オンオフ */
-    private boolean isFriendlyFireDisabler;
+    /** FriendlyFireの オンオフ */
+    private boolean isFriendlyFire;
 
     /** 仲間の透明が見えるかどうか のオンオフ */
     private boolean canSeeFriendlyInvisibles;
@@ -133,7 +132,7 @@ public class ColorTeamingConfig {
         ctconfig.isTeamChatMode = config.getBoolean("teamChatMode", false);
         ctconfig.isOPDisplayMode = config.getBoolean("opDisplayMode", false);
         ctconfig.isTeamChatLogMode = config.getBoolean("teamChatLogMode", true);
-        ctconfig.isFriendlyFireDisabler = config.getBoolean("friendlyFireDisabler", true);
+        ctconfig.isFriendlyFire = config.getBoolean("friendlyFire", true);
         ctconfig.canSeeFriendlyInvisibles = config.getBoolean("seeFriendlyInvisible", true);
 
         ctconfig.healOnSetClass = config.getBoolean("healOnSetClass", true);
@@ -159,9 +158,9 @@ public class ColorTeamingConfig {
         ctconfig.allowPlayerJoinRandom = config.getBoolean("allowPlayerJoinRandom", true);
         ctconfig.allowPlayerLeave = config.getBoolean("allowPlayerLeave", false);
 
-        ctconfig.killPoint = config.getInt("points.killPoint", 1);
-        ctconfig.deathPoint = config.getInt("points.deathPoint", -1);
-        ctconfig.tkPoint = config.getInt("points.tkPoint", -3);
+        ctconfig.killPoint = config.getInt("killPoint", 1);
+        ctconfig.deathPoint = config.getInt("deathPoint", -1);
+        ctconfig.tkPoint = config.getInt("tkPoint", -3);
 
         String criteriaTemp = config.getString("sideCriteria", "rest");
         ctconfig.sideCriteria = SidebarCriteria.fromString(criteriaTemp);
@@ -196,40 +195,35 @@ public class ColorTeamingConfig {
 
         // ファイルのロード
         File configFile = new File(ColorTeaming.instance.getDataFolder(), "config.yml");
-        YamlConfiguration config = new YamlConfiguration();
-        if ( configFile.exists() ) {
-            config = YamlConfiguration.loadConfiguration(configFile);
+        if ( !configFile.exists() ) {
+            Utility.copyFileFromJar(
+                    ColorTeaming.instance.getPluginJarFile(),
+                    configFile, "config_ja.yml", false);
+        }
+        YamlSetter config;
+        try {
+            config = new YamlSetter(configFile.getAbsolutePath());
+        } catch (IOException e1) {
+            e1.printStackTrace();
+            return;
         }
 
         // 設定のデシリアライズ
-        config.set("worlds", worldNames);
         config.set("teamChatMode", isTeamChatMode);
         config.set("opDisplayMode", isOPDisplayMode);
         config.set("teamChatLogMode", isTeamChatLogMode);
-        config.set("friendlyFireDisabler", isFriendlyFireDisabler);
+        config.set("friendlyFire", isFriendlyFire);
         config.set("seeFriendlyInvisible", canSeeFriendlyInvisibles);
         config.set("healOnSetClass", healOnSetClass);
-        for ( String clas : classes.keySet() ) {
-            ClassData data = classes.get(clas);
-            if ( data.items != null ) {
-                config.set("classes." + clas + ".items", data.items);
-            }
-            if ( data.armor != null ) {
-                config.set("classes." + clas + ".armor", data.armor);
-            }
-            if ( data.effect != null ) {
-                config.set("classes." + clas + ".effect", data.effect);
-            }
-        }
         config.set("colorRemoveOnDeath", colorRemoveOnDeath);
         config.set("colorRemoveOnQuit", colorRemoveOnQuit);
         config.set("noDamageSeconds", noDamageSeconds);
         config.set("allowPlayerJoinAny", allowPlayerJoinAny);
         config.set("allowPlayerJoinRandom", allowPlayerJoinRandom);
         config.set("allowPlayerLeave", allowPlayerLeave);
-        config.set("points.killPoint", killPoint);
-        config.set("points.deathPoint", deathPoint);
-        config.set("points.tkPoint", tkPoint);
+        config.set("killPoint", killPoint);
+        config.set("deathPoint", deathPoint);
+        config.set("tkPoint", tkPoint);
         config.set("sideCriteria", sideCriteria.toString());
         config.set("listCriteria", listCriteria.toString());
         config.set("belowCriteria", belowCriteria.toString());
@@ -242,7 +236,7 @@ public class ColorTeamingConfig {
 
         // 保存処理
         try {
-            config.save(configFile);
+            config.save();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -264,8 +258,8 @@ public class ColorTeamingConfig {
         return isTeamChatLogMode;
     }
 
-    public boolean isFriendlyFireDisabler() {
-        return isFriendlyFireDisabler;
+    public boolean isFriendlyFire() {
+        return isFriendlyFire;
     }
 
     public boolean isCanSeeFriendlyInvisibles() {
@@ -352,10 +346,6 @@ public class ColorTeamingConfig {
         return teleportDelay;
     }
 
-    public void setWorldNames(List<String> worldNames) {
-        this.worldNames = worldNames;
-    }
-
     public void setTeamChatMode(boolean isTeamChatMode) {
         this.isTeamChatMode = isTeamChatMode;
     }
@@ -368,8 +358,8 @@ public class ColorTeamingConfig {
         this.isTeamChatLogMode = isTeamChatLogMode;
     }
 
-    public void setFriendlyFireDisabler(boolean isFriendlyFireDisabler) {
-        this.isFriendlyFireDisabler = isFriendlyFireDisabler;
+    public void setFriendlyFire(boolean isFriendlyFire) {
+        this.isFriendlyFire = isFriendlyFire;
     }
 
     public void setCanSeeFriendlyInvisibles(boolean canSeeFriendlyInvisibles) {
@@ -378,10 +368,6 @@ public class ColorTeamingConfig {
 
     public void setHealOnSetClass(boolean healOnSetClass) {
         this.healOnSetClass = healOnSetClass;
-    }
-
-    public void setClasses(Map<String, ClassData> classes) {
-        this.classes = classes;
     }
 
     public void setColorRemoveOnDeath(boolean colorRemoveOnDeath) {

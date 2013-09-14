@@ -36,12 +36,12 @@ public class EntityDamageListener implements Listener {
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
 
         // 0以下のダメージのイベントは無視する
-        if (event.getDamage() <= 0) {
+        if ( event.getDamage() <= 0 ) {
             return;
         }
 
-        // 無効状態なら、何もしない
-        if (!plugin.getCTConfig().isFriendlyFireDisabler()) {
+        // フレンドリーファイア有効なら、何もしない
+        if ( plugin.getCTConfig().isFriendlyFire() ) {
             return;
         }
 

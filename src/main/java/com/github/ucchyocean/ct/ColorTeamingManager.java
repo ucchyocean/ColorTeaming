@@ -196,7 +196,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
             team.setPrefix(color.toString());
             team.setSuffix(ChatColor.RESET.toString());
             team.setCanSeeFriendlyInvisibles(config.isCanSeeFriendlyInvisibles());
-            team.setAllowFriendlyFire(!config.isFriendlyFireDisabler());
+            team.setAllowFriendlyFire(config.isFriendlyFire());
         }
 
         // イベントコール
@@ -252,7 +252,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
             t.setAllowFriendlyFire(ff);
         }
 
-        config.setFriendlyFireDisabler(!ff);
+        config.setFriendlyFire(ff);
         config.saveConfig();
     }
 
