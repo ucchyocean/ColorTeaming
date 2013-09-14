@@ -106,6 +106,7 @@ public class KitParser {
             }
 
             // Materialの取得をして、正しいIDが指定されたかどうかを確認する
+            @SuppressWarnings("deprecation")
             Material m = Material.getMaterial(item);
             if (m == null) {
                 logger.severe("指定されたItemID " + item + " が見つかりません。");
@@ -139,6 +140,7 @@ public class KitParser {
             }
 
             // Materialの取得をして、正しいIDが指定されたかどうかを確認する
+            @SuppressWarnings("deprecation")
             Material m = Material.getMaterial(item);
             if (m == null) {
                 logger.severe("指定されたItemID " + item + " が見つかりません。");
@@ -237,6 +239,7 @@ public class KitParser {
      * @param damage 配布するアイテムのダメージ値（指定しない場合は0にする）
      * @return ItemStackインスタンス
      */
+    @SuppressWarnings("deprecation")
     private ItemStack getItemStack(int item, int amount, short damage) {
         if ( damage > 0 )
             return new ItemStack(item, amount, damage);
@@ -288,6 +291,7 @@ public class KitParser {
 
         StringBuilder message = new StringBuilder();
 
+        @SuppressWarnings("deprecation")
         int itemID = item.getTypeId();
         int amount = item.getAmount();
         short durability = item.getDurability();
@@ -304,7 +308,9 @@ public class KitParser {
         Map<Enchantment, Integer> enchants = item.getEnchantments();
         Set<Enchantment> keys = enchants.keySet();
         for ( Enchantment e : keys ) {
-            message.append("^" + e.getId() + "-" + enchants.get(e));
+            @SuppressWarnings("deprecation")
+            int id = e.getId();
+            message.append("^" + id + "-" + enchants.get(e));
         }
         if ( durability > 1 ) {
             message.append("@" + durability);
@@ -338,6 +344,8 @@ public class KitParser {
         ArrayList<String> result = new ArrayList<String>();
 
         String material = item.getType().toString();
+        
+        @SuppressWarnings("deprecation")
         int itemID = item.getTypeId();
         int amount = item.getAmount();
         short durability = item.getDurability();

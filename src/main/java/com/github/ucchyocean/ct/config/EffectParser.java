@@ -56,6 +56,7 @@ public class EffectParser {
                     duration = Integer.parseInt(matcher.group(3));
                 }
 
+                @SuppressWarnings("deprecation")
                 PotionEffectType type = PotionEffectType.getById(id);
                 if ( type == null ) {
                     continue;
@@ -98,6 +99,7 @@ public class EffectParser {
                 message.append(",");
             }
             
+            @SuppressWarnings("deprecation")
             int id = effect.getType().getId();
             int level = effect.getAmplifier();
             int duration = effect.getDuration();
