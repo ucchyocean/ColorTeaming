@@ -1,4 +1,4 @@
-# Color Teaming Plugin 2.2.0
+# Color Teaming Plugin 2.2.1
 # @author     ucchy
 # @license    LGPLv3
 # @copyright  Copyright ucchy 2013
@@ -42,12 +42,16 @@ healOnSetClass: true
 # items : インベントリのアイテムを設定します。
 # armor : (頭)、(胸)、(レギンス)、(足) の順に指定します。
 #         0 を指定すると、その部分は装備しません。
-# effect : ポーション効果を設定します。
+# effect : ポーション効果を設定します。(エフェクトID)-(レベル)
+#         レベルは0から始まりますので注意してください。
+#         例）effect: 1-0,5-1,8-2 → 移動速度I、攻撃力II、跳躍力III
 # experience : 経験値の量を設定します。
 classes:
   Knight:
     items: 267,320:5
     armor: 306,307,308,309
+    effect: 1-0,5-1,8-2
+    experience: 1000
   Archer:
     items: 261,262:50,297:4
     armor: 298,299,300,301
@@ -62,6 +66,8 @@ classes:
   Excalibur:
     items: 276^16-300@1561
     armor: 314,315,316,317
+    effect: 1-5,5-5,8-5
+    experience: 2000
   RedLeather:
     armor: 298$993333,299$993333,300$993333,301$993333
   BlueLeather:

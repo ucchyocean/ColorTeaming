@@ -21,7 +21,7 @@ import com.github.ucchyocean.ct.ColorTeamingAPI;
 import com.github.ucchyocean.ct.config.ColorTeamingConfig;
 
 /**
- * ColorRandom(CR)コマンドの実行クラス
+ * ColorRandom(rc)コマンドの実行クラス
  * @author ucchy
  */
 public class CRandomCommand implements CommandExecutor {

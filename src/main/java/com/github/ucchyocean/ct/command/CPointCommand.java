@@ -13,6 +13,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingAPI;
@@ -62,7 +63,10 @@ public class CPointCommand implements CommandExecutor {
 
             for ( String team : killDeathCounts.keySet() ) {
                 
-                int point = teamPoints.get(team);
+                int point = 0;
+                if ( teamPoints.containsKey(team) ) {
+                    point = teamPoints.get(team);
+                }
 
                 int index = 0;
                 while ( teams.size() > index && points.get(index) > point ) {
@@ -163,7 +167,10 @@ public class CPointCommand implements CommandExecutor {
                             "[Your Score] %s %dpoints (%dkill, %ddeath, %dtk)",
                             playerName, point, counts[0], counts[1], counts[2]);
 
-                    Bukkit.getPlayerExact(playerName).sendMessage(ChatColor.GRAY + message);
+                    Player player = Bukkit.getPlayerExact(playerName);
+                    if ( player != null ) {
+                        player.sendMessage(ChatColor.GRAY + message);
+                    }
                 }
             }
 

@@ -38,14 +38,16 @@ public class PlayerRespawnListener implements Listener {
         TeamNameSetting tns = plugin.getAPI().getPlayerTeamName(player);
 
         // リスポーンポイントを設定
-        RespawnConfiguration respawnConfig = plugin.getAPI().getRespawnConfig();
-        String respawnMapName = plugin.getAPI().getRespawnMapName();
-        Location respawn = respawnConfig.get(tns.getID(), respawnMapName);
-        
-        if ( respawn != null ) {
-            respawn = respawn.add(0.5, 0, 0.5);
-            event.setRespawnLocation(respawn);
-            player.setNoDamageTicks(plugin.getCTConfig().getNoDamageSeconds() * 20);
+        if ( tns != null ) {
+            RespawnConfiguration respawnConfig = plugin.getAPI().getRespawnConfig();
+            String respawnMapName = plugin.getAPI().getRespawnMapName();
+            Location respawn = respawnConfig.get(tns.getID(), respawnMapName);
+            
+            if ( respawn != null ) {
+                respawn = respawn.add(0.5, 0, 0.5);
+                event.setRespawnLocation(respawn);
+                player.setNoDamageTicks(plugin.getCTConfig().getNoDamageSeconds() * 20);
+            }
         }
     }
 }

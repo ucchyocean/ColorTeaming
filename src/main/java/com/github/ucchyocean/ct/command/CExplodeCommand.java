@@ -69,7 +69,7 @@ public class CExplodeCommand implements CommandExecutor {
 
         for ( Player p : playersToExplode ) {
             p.getWorld().createExplosion(p.getLocation(), 0); // 爆発エフェクト発生
-            p.setHealth(0F); // HPを0に設定
+            p.damage(p.getMaxHealth());
             p.sendMessage("どーーん！");
         }
 

@@ -1,4 +1,4 @@
-# Color Teaming 2.2.0
+# Color Teaming 2.2.1
 # @author     ucchy
 # @license    LGPLv3
 # @copyright  Copyright ucchy 2013
@@ -24,8 +24,8 @@ pink,    桃,   &d
 purple,  紫,   &5
 gold,    金,   &6
 silver,  銀,   &8
-d-red,   暗赤, &4
-d-blue,  暗青, &1
-d-green, 暗緑, &2
-d-aqua,  暗水, &3
+d-red,   紅,   &4
+d-blue,  藍,   &1
+d-green, 葱,   &2
+d-aqua,  縹,   &3
 black,   黒,   &0

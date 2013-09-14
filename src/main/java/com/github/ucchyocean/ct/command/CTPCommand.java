@@ -99,9 +99,11 @@ public class CTPCommand implements CommandExecutor {
                     }
                 }
 
-                DelayedTeleportTask task = new DelayedTeleportTask(map,
-                        plugin.getCTConfig().getTeleportDelay());
-                task.startTask();
+                if ( map.size() > 0 ) {
+                    DelayedTeleportTask task = new DelayedTeleportTask(map,
+                            plugin.getCTConfig().getTeleportDelay());
+                    task.startTask();
+                }
 
             } else {
                 // ctp all (point) の実行
