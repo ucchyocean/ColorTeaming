@@ -6,7 +6,6 @@
 package com.github.ucchyocean.ct.command;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 
 import org.bukkit.Bukkit;
@@ -20,6 +19,7 @@ import org.bukkit.potion.PotionEffect;
 
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingAPI;
+import com.github.ucchyocean.ct.Utility;
 import com.github.ucchyocean.ct.config.ClassData;
 import com.github.ucchyocean.ct.config.KitParser;
 import com.github.ucchyocean.ct.config.TeamNameSetting;
@@ -116,7 +116,7 @@ public class CClassCommand implements CommandExecutor {
 
             // 全回復の実行
             if ( isHealOnSetClass ) {
-                heal(p);
+                Utility.heal(p);
             }
             
             // インベントリの消去
@@ -160,7 +160,7 @@ public class CClassCommand implements CommandExecutor {
 
             // 経験値の設定
             p.setTotalExperience(experience);
-            updateExp(p);
+            Utility.updateExp(p);
         }
 
         String targetName;
@@ -187,38 +187,5 @@ public class CClassCommand implements CommandExecutor {
     @SuppressWarnings("deprecation")
     private void updateInventory(Player player) {
         player.updateInventory();
-    }
-    
-    /**
-     * プレイヤーの全回復、および、全エフェクトの除去を行う
-     * @param player 対象プレイヤー
-     */
-    private void heal(Player player) {
-        
-        player.setHealth(player.getMaxHealth());
-        player.setFireTicks(0);
-        player.setFallDistance(0);
-        player.setFoodLevel(20);
-        Collection<PotionEffect> effects = player.getActivePotionEffects();
-        for ( PotionEffect e : effects ) {
-            player.removePotionEffect(e.getType());
-        }
-    }
-    
-    /**
-     * 経験値表示を更新する
-     * @param player 更新対象のプレイヤー
-     */
-    private static void updateExp(final Player player) {
-
-        int total = player.getTotalExperience();
-        player.setLevel(0);
-        player.setExp(0);
-        while ( total > player.getExpToLevel() ) {
-            total -= player.getExpToLevel();
-            player.setLevel(player.getLevel()+1);
-        }
-        float xp = (float)total / (float)player.getExpToLevel();
-        player.setExp(xp);
     }
 }

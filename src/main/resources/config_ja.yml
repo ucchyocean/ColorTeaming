@@ -26,6 +26,11 @@ friendlyFire: false
 # true → 透明化したメンバーが見える、false → 透明化したプレイヤーは誰からも見えない
 seeFriendlyInvisible: true
 
+# プレイヤー死亡時に、ゲームオーバーを表示せずにリスポーンするかどうかを設定します。
+# true → ゲームオーバー画面を表示しないでそのままリスポーンする
+# false → 通常通りゲームオーバーを表示する
+skipGameover: false
+
 # クラスを設定するときに、全回復するかどうかを設定します。
 # 同時に、空腹度が回復、ポーション効果が全て消去、経験値が0になります。
 healOnSetClass: true

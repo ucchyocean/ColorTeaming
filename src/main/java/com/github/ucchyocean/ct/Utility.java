@@ -15,10 +15,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
 
 /**
  * @author ucchy
@@ -175,5 +178,39 @@ public class Utility {
         }
 
         return contents;
+    }
+    
+    /**
+     * プレイヤーの全回復、および、全エフェクトの除去を行う
+     * @param player 対象プレイヤー
+     */
+    public static void heal(Player player) {
+        
+        player.setHealth(player.getMaxHealth());
+        player.setFireTicks(0);
+        player.setFallDistance(0);
+        player.setFoodLevel(20);
+        player.setRemainingAir(player.getMaximumAir());
+        Collection<PotionEffect> effects = player.getActivePotionEffects();
+        for ( PotionEffect e : effects ) {
+            player.removePotionEffect(e.getType());
+        }
+    }
+    
+    /**
+     * 経験値表示を更新する
+     * @param player 更新対象のプレイヤー
+     */
+    public static void updateExp(Player player) {
+
+        int total = player.getTotalExperience();
+        player.setLevel(0);
+        player.setExp(0);
+        while ( total > player.getExpToLevel() ) {
+            total -= player.getExpToLevel();
+            player.setLevel(player.getLevel()+1);
+        }
+        float xp = (float)total / (float)player.getExpToLevel();
+        player.setExp(xp);
     }
 }

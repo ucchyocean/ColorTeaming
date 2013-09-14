@@ -10,6 +10,7 @@ import java.util.HashMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -19,10 +20,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.scoreboard.Team;
+import org.bukkit.util.Vector;
 
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingAPI;
+import com.github.ucchyocean.ct.Utility;
 import com.github.ucchyocean.ct.config.ColorTeamingConfig;
 import com.github.ucchyocean.ct.config.TeamNameSetting;
 import com.github.ucchyocean.ct.event.ColorTeamingLeaderDefeatedEvent;
@@ -223,9 +228,34 @@ public class PlayerDeathListener implements Listener {
             }
         }
 
+        
         // スコア表示を更新する
         api.refreshSidebarScore();
         api.refreshTabkeyListScore();
         api.refreshBelowNameScore();
+        
+        
+        // ゲームオーバー画面をスキップする
+        if ( config.isSkipGameover() ) {
+            
+            // NOTE: 回復するとゲームオーバー画面が表示されない
+            Utility.heal(deader);
+            
+            // リスポーンイベントを呼び出す
+            Location respawnLocation = deader.getBedSpawnLocation();
+            PlayerRespawnEvent respawnEvent = 
+                    new PlayerRespawnEvent(deader, respawnLocation, true);
+            Bukkit.getServer().getPluginManager().callEvent(respawnEvent);
+            
+            // リスポーン場所へテレポートする
+            respawnLocation = respawnEvent.getRespawnLocation();
+            if ( respawnLocation == null ) {
+                respawnLocation = deader.getWorld().getSpawnLocation();
+            }
+            if ( respawnLocation != null ) {
+                deader.teleport(respawnLocation, TeleportCause.PLUGIN);
+                deader.setVelocity(new Vector()); // ノックバックの除去
+            }
+        }
     }
 }

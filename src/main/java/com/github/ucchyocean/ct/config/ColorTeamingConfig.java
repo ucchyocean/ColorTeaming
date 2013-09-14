@@ -30,19 +30,22 @@ public class ColorTeamingConfig {
     private List<String> worldNames;
 
     /** チームチャットのオンオフ */
-    private boolean isTeamChatMode;
+    private boolean teamChatMode;
 
     /** チームチャットのOP傍聴オンオフ */
-    private boolean isOPDisplayMode;
+    private boolean OPDisplayMode;
 
     /** チームチャットのロギング オンオフ */
-    private boolean isTeamChatLogMode;
+    private boolean teamChatLogMode;
 
     /** FriendlyFireの オンオフ */
-    private boolean isFriendlyFire;
+    private boolean friendlyFire;
 
     /** 仲間の透明が見えるかどうか のオンオフ */
     private boolean canSeeFriendlyInvisibles;
+    
+    /** ゲームオーバーを表示せずにリスポーンするかどうか のオンオフ */
+    private boolean skipGameover;
     
     /** クラス設定時の全回復設定 のオンオフ */
     private boolean healOnSetClass;
@@ -128,11 +131,12 @@ public class ColorTeamingConfig {
             ctconfig.worldNames = new ArrayList<String>();
         }
 
-        ctconfig.isTeamChatMode = config.getBoolean("teamChatMode", false);
-        ctconfig.isOPDisplayMode = config.getBoolean("opDisplayMode", false);
-        ctconfig.isTeamChatLogMode = config.getBoolean("teamChatLogMode", true);
-        ctconfig.isFriendlyFire = config.getBoolean("friendlyFire", true);
+        ctconfig.teamChatMode = config.getBoolean("teamChatMode", false);
+        ctconfig.OPDisplayMode = config.getBoolean("opDisplayMode", false);
+        ctconfig.teamChatLogMode = config.getBoolean("teamChatLogMode", true);
+        ctconfig.friendlyFire = config.getBoolean("friendlyFire", true);
         ctconfig.canSeeFriendlyInvisibles = config.getBoolean("seeFriendlyInvisible", true);
+        ctconfig.skipGameover = config.getBoolean("skipGameover", false);
 
         ctconfig.healOnSetClass = config.getBoolean("healOnSetClass", true);
         ctconfig.classes = new HashMap<String, ClassData>();
@@ -208,11 +212,12 @@ public class ColorTeamingConfig {
         }
 
         // 設定のデシリアライズ
-        config.set("teamChatMode", isTeamChatMode);
-        config.set("opDisplayMode", isOPDisplayMode);
-        config.set("teamChatLogMode", isTeamChatLogMode);
-        config.set("friendlyFire", isFriendlyFire);
+        config.set("teamChatMode", teamChatMode);
+        config.set("opDisplayMode", OPDisplayMode);
+        config.set("teamChatLogMode", teamChatLogMode);
+        config.set("friendlyFire", friendlyFire);
         config.set("seeFriendlyInvisible", canSeeFriendlyInvisibles);
+        config.set("skipGameover", skipGameover);
         config.set("healOnSetClass", healOnSetClass);
         config.set("colorRemoveOnDeath", colorRemoveOnDeath);
         config.set("colorRemoveOnQuit", colorRemoveOnQuit);
@@ -246,23 +251,27 @@ public class ColorTeamingConfig {
     }
 
     public boolean isTeamChatMode() {
-        return isTeamChatMode;
+        return teamChatMode;
     }
 
     public boolean isOPDisplayMode() {
-        return isOPDisplayMode;
+        return OPDisplayMode;
     }
 
     public boolean isTeamChatLogMode() {
-        return isTeamChatLogMode;
+        return teamChatLogMode;
     }
 
     public boolean isFriendlyFire() {
-        return isFriendlyFire;
+        return friendlyFire;
     }
 
     public boolean isCanSeeFriendlyInvisibles() {
         return canSeeFriendlyInvisibles;
+    }
+    
+    public boolean isSkipGameover() {
+        return skipGameover;
     }
 
     public boolean isHealOnSetClass() {
@@ -346,23 +355,27 @@ public class ColorTeamingConfig {
     }
 
     public void setTeamChatMode(boolean isTeamChatMode) {
-        this.isTeamChatMode = isTeamChatMode;
+        this.teamChatMode = isTeamChatMode;
     }
 
     public void setOPDisplayMode(boolean isOPDisplayMode) {
-        this.isOPDisplayMode = isOPDisplayMode;
+        this.OPDisplayMode = isOPDisplayMode;
     }
 
     public void setTeamChatLogMode(boolean isTeamChatLogMode) {
-        this.isTeamChatLogMode = isTeamChatLogMode;
+        this.teamChatLogMode = isTeamChatLogMode;
     }
 
     public void setFriendlyFire(boolean isFriendlyFire) {
-        this.isFriendlyFire = isFriendlyFire;
+        this.friendlyFire = isFriendlyFire;
     }
 
     public void setCanSeeFriendlyInvisibles(boolean canSeeFriendlyInvisibles) {
         this.canSeeFriendlyInvisibles = canSeeFriendlyInvisibles;
+    }
+    
+    public void setSkipGameover(boolean skipGameover) {
+        this.skipGameover = skipGameover;
     }
 
     public void setHealOnSetClass(boolean healOnSetClass) {

@@ -16,6 +16,7 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
 import com.github.ucchyocean.ct.ColorTeaming;
+import com.github.ucchyocean.ct.ColorTeamingAPI;
 import com.github.ucchyocean.ct.config.TeamNameSetting;
 
 /**
@@ -51,10 +52,7 @@ public class SidebarScoreDisplay {
 
         ArrayList<TeamNameSetting> teamNames = plugin.getAPI().getAllTeamNames();
         for ( TeamNameSetting tns : teamNames ) {
-            Team team = scoreboard.getTeam(tns.getID());
-            SidebarTeamScore ts = new SidebarTeamScore(team);
-            objective.getScore(ts).setScore(0);
-            teamscores.put(tns.getID(), ts);
+            setScore(tns.getID(), 0);
         }
         
         refreshCriteria();
@@ -121,18 +119,8 @@ public class SidebarScoreDisplay {
                 plugin.getAPI().getKillDeathCounts();
         
         for ( String key : killDeathCounts.keySet() ) {
-            
-            SidebarTeamScore ts;
-            if ( !teamscores.containsKey(key) ) {
-                Team team = plugin.getAPI().getScoreboard().getTeam(key);
-                ts = new SidebarTeamScore(team);
-                teamscores.put(key, ts);
-            } else {
-                ts = teamscores.get(key);
-            }
-            
             int[] data = killDeathCounts.get(key);
-            objective.getScore(ts).setScore(data[index]);
+            setScore(key, data[index]);
         }
     }
 
@@ -145,18 +133,7 @@ public class SidebarScoreDisplay {
                 plugin.getAPI().getAllTeamPoints();
 
         for ( String key : teamPoints.keySet() ) {
-            
-            SidebarTeamScore ts;
-            if ( !teamscores.containsKey(key) ) {
-                Team team = plugin.getAPI().getScoreboard().getTeam(key);
-                ts = new SidebarTeamScore(team);
-                teamscores.put(key, ts);
-            } else {
-                ts = teamscores.get(key);
-            }
-            
-            int point = teamPoints.get(key);
-            objective.getScore(ts).setScore(point);
+            setScore(key, teamPoints.get(key));
         }
     }
 
@@ -169,23 +146,38 @@ public class SidebarScoreDisplay {
                 plugin.getAPI().getAllTeamMembers();
         
         for ( String key : members.keySet() ) {
-            
-            SidebarTeamScore ts;
-            if ( !teamscores.containsKey(key) ) {
-                Team team = plugin.getAPI().getScoreboard().getTeam(key);
-                ts = new SidebarTeamScore(team);
-                teamscores.put(key, ts);
-            } else {
-                ts = teamscores.get(key);
-            }
-
-            if ( members.get(key) == null ) {
-                objective.getScore(ts).setScore(0);
-            } else {
-                int rest = members.get(key).size();
-                objective.getScore(ts).setScore(rest);
-            }
+            setScore(key, members.get(key).size());
         }
+    }
+    
+    /**
+     * 項目のスコアを設定する
+     * @param name 項目名
+     * @param point ポイント
+     */
+    private void setScore(String name, int point) {
+        
+        ColorTeamingAPI api = plugin.getAPI();
+        
+        SidebarTeamScore ts;
+        if ( !teamscores.containsKey(name) ) {
+            Team team = api.getScoreboard().getTeam(name);
+            if ( team == null ) {
+                return;
+            }
+            ts = new SidebarTeamScore(team);
+            teamscores.put(name, ts);
+        } else {
+            ts = teamscores.get(name);
+        }
+        
+        if ( point == 0 ) {
+            // NOTE: 全ての項目に0を設定すると表示が消えるので、
+            //       一旦1を設定することで回避する。
+            objective.getScore(ts).setScore(1);
+        }
+        
+        objective.getScore(ts).setScore(point);
     }
 
     /**
@@ -194,6 +186,7 @@ public class SidebarScoreDisplay {
     public void remove() {
         if ( plugin.getAPI().getScoreboard().getObjective("teamscore") != null ) {
             objective.unregister();
+            objective = null;
         }
     }
 }

@@ -116,6 +116,10 @@ public class CCountCommand implements CommandExecutor {
             }
 
             TeamNameSetting teamName = ColorTeaming.instance.getAPI().getTeamNameFromID(key);
+            if ( key.equals("") ) {
+                teamName = new TeamNameSetting("", "未所属", ChatColor.WHITE);
+            }
+            
             if ( !isBroadcast ) {
                 String color = ChatColor.GRAY.toString();
                 String team = teamName.toString();
