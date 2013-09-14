@@ -71,11 +71,6 @@ public class CJoinCommand implements CommandExecutor {
             }
 
             plugin.getAPI().addPlayerTeam(player, team);
-            player.sendMessage(
-                    ChatColor.GREEN + "あなたは " +
-                    team.toString() +
-                    ChatColor.GREEN +
-                    " チームになりました。");
 
             // メンバー情報をlastdataに保存する
             plugin.getAPI().getCTSaveDataHandler().save("lastdata");
@@ -105,11 +100,6 @@ public class CJoinCommand implements CommandExecutor {
             }
             TeamNameSetting tns = plugin.getAPI().getTeamNameConfig().getTeamNameFromID(target);
             plugin.getAPI().addPlayerTeam(player, tns);
-            player.sendMessage(
-                    ChatColor.GREEN + "あなたは " +
-                    tns.toString() +
-                    ChatColor.GREEN +
-                    " チームになりました。");
 
             // サイドバー更新、タブキーリスト更新
             plugin.getAPI().makeSidebarScore();

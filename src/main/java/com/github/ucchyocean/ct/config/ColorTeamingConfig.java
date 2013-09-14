@@ -225,9 +225,9 @@ public class ColorTeamingConfig {
         config.set("allowPlayerJoinAny", allowPlayerJoinAny);
         config.set("allowPlayerJoinRandom", allowPlayerJoinRandom);
         config.set("allowPlayerLeave", allowPlayerLeave);
-        config.set("killPoint", ctKillPoint);
-        config.set("deathPoint", ctDeathPoint);
-        config.set("tkPoint", ctTKPoint);
+        config.set("ctKillPoint", ctKillPoint);
+        config.set("ctDeathPoint", ctDeathPoint);
+        config.set("ctTKPoint", ctTKPoint);
         config.set("sideCriteria", sideCriteria.toString());
         config.set("listCriteria", listCriteria.toString());
         config.set("belowCriteria", belowCriteria.toString());

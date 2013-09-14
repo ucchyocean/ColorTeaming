@@ -212,7 +212,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         
         // 該当プレイヤーに通知
         player.sendMessage( Utility.replaceColorCode(
-                String.format("&aあなたは %s &aチームになりました。", teamName.toString() ) ) );
+                String.format("&aあなたはチーム %s &aになりました。", teamName.toString() ) ) );
 
         return team;
     }
