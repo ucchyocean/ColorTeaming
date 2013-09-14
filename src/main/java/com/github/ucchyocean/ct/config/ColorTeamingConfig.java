@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.Utility;
@@ -117,12 +117,11 @@ public class ColorTeamingConfig {
         if ( !configFile.exists() ) {
             Utility.copyFileFromJar(
                     ColorTeaming.instance.getPluginJarFile(),
-                    configFile, "config_ja.yml", false);
+                    configFile, "config_ja.yml");
         }
 
         // config取得
-        ColorTeaming.instance.reloadConfig();
-        FileConfiguration config = ColorTeaming.instance.getConfig();
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);
 
         ctconfig.worldNames = config.getStringList("worlds");
         if ( ctconfig.worldNames == null ) {
@@ -198,7 +197,7 @@ public class ColorTeamingConfig {
         if ( !configFile.exists() ) {
             Utility.copyFileFromJar(
                     ColorTeaming.instance.getPluginJarFile(),
-                    configFile, "config_ja.yml", false);
+                    configFile, "config_ja.yml");
         }
         YamlSetter config;
         try {

@@ -59,13 +59,13 @@ public class CTeamingCommand implements CommandExecutor {
 
             ColorTeamingAPI api = plugin.getAPI();
 
-            HashMap<TeamNameSetting, ArrayList<Player>> members =
+            HashMap<String, ArrayList<Player>> members =
                     api.getAllTeamMembers();
-            for ( TeamNameSetting group : members.keySet() ) {
-                for ( Player p : members.get(group) ) {
+            for ( String team : members.keySet() ) {
+                for ( Player p : members.get(team) ) {
                     api.leavePlayerTeam(p, Reason.TEAM_REMOVED);
                 }
-                api.removeTeam(group.getID());
+                api.removeTeam(team);
             }
 
             // サイドバー削除、タブキーリスト更新

@@ -17,7 +17,6 @@ import org.bukkit.entity.Player;
 
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingAPI;
-import com.github.ucchyocean.ct.config.TeamNameSetting;
 
 /**
  * colorexplode(ce)コマンドの実行クラス
@@ -47,13 +46,13 @@ public class CExplodeCommand implements CommandExecutor {
         String target = args[0]; // 制裁を加えるチームかユーザー
 
         ColorTeamingAPI api = plugin.getAPI();
-        HashMap<TeamNameSetting, ArrayList<Player>> members =
+        HashMap<String, ArrayList<Player>> members =
                 api.getAllTeamMembers();
         ArrayList<Player> playersToExplode = new ArrayList<Player>();
 
         if ( target.equalsIgnoreCase("all") ) {
             // target はallである場合
-            for ( TeamNameSetting key : members.keySet() ) {
+            for ( String key : members.keySet() ) {
                 playersToExplode.addAll(members.get(key));
             }
         } else if ( api.isExistTeam(target) ) {

@@ -70,7 +70,7 @@ public class CTPCommand implements CommandExecutor {
 
         if ( args[0].equalsIgnoreCase("all") ) {
 
-            HashMap<TeamNameSetting, ArrayList<Player>> members = 
+            HashMap<String, ArrayList<Player>> members = 
                     plugin.getAPI().getAllTeamMembers();
 
             if ( args[1].equalsIgnoreCase("spawn") ) {
@@ -81,15 +81,17 @@ public class CTPCommand implements CommandExecutor {
                 RespawnConfiguration respawnConfig = plugin.getAPI().getRespawnConfig();
                 HashMap<Player, Location> map = new HashMap<Player, Location>();
 
-                for ( TeamNameSetting tns : members.keySet() ) {
+                for ( String team : members.keySet() ) {
 
-                    Location location = respawnConfig.get(tns.getID(), respawnMapName);
+                    TeamNameSetting tns = plugin.getAPI().getTeamNameFromID(team);
+                    
+                    Location location = respawnConfig.get(team, respawnMapName);
                     if ( location == null ) {
                         sender.sendMessage(PREERR +
-                                "チーム " + tns.getID() + " にリスポーンポイントが指定されていません。");
+                                "チーム " + tns.getName() + " にリスポーンポイントが指定されていません。");
                     } else {
                         location = location.add(0.5, 0, 0.5);
-                        for ( Player p : members.get(tns) ) {
+                        for ( Player p : members.get(team) ) {
                             map.put(p, location);
                         }
                         sender.sendMessage(PREINFO +
@@ -116,10 +118,11 @@ public class CTPCommand implements CommandExecutor {
 
                 // テレポート実行
                 HashMap<Player, Location> map = new HashMap<Player, Location>();
-                for ( TeamNameSetting tns : members.keySet() ) {
-                    for ( Player p : members.get(tns) ) {
+                for ( String team : members.keySet() ) {
+                    for ( Player p : members.get(team) ) {
                         map.put(p, location);
                     }
+                    TeamNameSetting tns = plugin.getAPI().getTeamNameFromID(team);
                     sender.sendMessage(PREINFO +
                             "チーム " + tns.getName() + " のプレイヤーを全員テレポートします。");
                 }
@@ -195,7 +198,7 @@ public class CTPCommand implements CommandExecutor {
             // ctp (group) ほにゃらら の実行
 
             String group = args[0];
-            HashMap<TeamNameSetting, ArrayList<Player>> members =
+            HashMap<String, ArrayList<Player>> members =
                     plugin.getAPI().getAllTeamMembers();
 
             // 有効なチーム名が指定されたか確認する

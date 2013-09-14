@@ -52,8 +52,7 @@ public class CGiveCommand implements CommandExecutor {
         String targetDesc = "";
 
         ColorTeamingAPI api = plugin.getAPI();
-        HashMap<TeamNameSetting, ArrayList<Player>> members =
-                api.getAllTeamMembers();
+        HashMap<String, ArrayList<Player>> members = api.getAllTeamMembers();
         ArrayList<Player> playersForGive = new ArrayList<Player>();
 
         if ( target.equalsIgnoreCase("all") ) {
@@ -63,7 +62,7 @@ public class CGiveCommand implements CommandExecutor {
         } else if ( api.isExistTeam(target) ) {
             // target はチームである場合
             TeamNameSetting tns = api.getTeamNameFromID(target);
-            playersForGive = members.get(tns);
+            playersForGive = members.get(target);
             targetDesc = "チーム" + tns.getName();
         } else if ( Bukkit.getPlayerExact(target) != null ) {
             // target はプレイヤーである場合

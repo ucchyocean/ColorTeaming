@@ -51,9 +51,9 @@ public class TeamMemberSaveDataHandler {
         ColorTeamingAPI api = ColorTeaming.instance.getAPI();
 
         // メンバー情報の保存
-        HashMap<TeamNameSetting, ArrayList<Player>> members = api.getAllTeamMembers();
+        HashMap<String, ArrayList<Player>> members = api.getAllTeamMembers();
 
-        for ( TeamNameSetting key : members.keySet() ) {
+        for ( String key : members.keySet() ) {
 
             // プレイヤーを名前のリストに変換する
             ArrayList<String> names = new ArrayList<String>();
@@ -65,10 +65,10 @@ public class TeamMemberSaveDataHandler {
         }
 
         // チームポイント数の保存
-        HashMap<TeamNameSetting, Integer> teamPoints = api.getAllTeamPoints();
-        for ( TeamNameSetting key : teamPoints.keySet() ) {
+        HashMap<String, Integer> teamPoints = api.getAllTeamPoints();
+        for ( String key : teamPoints.keySet() ) {
             int point = teamPoints.get(key);
-            config.set("teamPoints." + key.getID(), point);
+            config.set("teamPoints." + key, point);
         }
 
         // ユーザーキルデス数の保存

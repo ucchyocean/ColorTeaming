@@ -130,7 +130,7 @@ public class CJoinCommand implements CommandExecutor {
      */
     private TeamNameSetting getLeastTeam() {
 
-        HashMap<TeamNameSetting, ArrayList<Player>> members =
+        HashMap<String, ArrayList<Player>> members =
                 plugin.getAPI().getAllTeamMembers();
         int least = 999;
         TeamNameSetting leastTeam = null;
@@ -140,8 +140,8 @@ public class CJoinCommand implements CommandExecutor {
         Collections.shuffle(teams);
 
         for ( TeamNameSetting tns : teams ) {
-            if ( least > members.get(tns).size() ) {
-                least = members.get(tns).size();
+            if ( least > members.get(tns.getID()).size() ) {
+                least = members.get(tns.getID()).size();
                 leastTeam = tns;
             }
         }

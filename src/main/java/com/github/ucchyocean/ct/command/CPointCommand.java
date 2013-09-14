@@ -46,11 +46,11 @@ public class CPointCommand implements CommandExecutor {
                 isBroadcast = true;
             }
 
-            HashMap<TeamNameSetting, int[]> killDeathCounts =
+            HashMap<String, int[]> killDeathCounts =
                     plugin.getAPI().getKillDeathCounts();
             HashMap<String, int[]> killDeathUserCounts =
                     plugin.getAPI().getKillDeathUserCounts();
-            HashMap<TeamNameSetting, Integer> teamPoints =
+            HashMap<String, Integer> teamPoints =
                     plugin.getAPI().getAllTeamPoints();
             int killpoint = plugin.getCTConfig().getCTKillPoint();
             int deathpoint = plugin.getCTConfig().getCTDeathPoint();
@@ -60,14 +60,16 @@ public class CPointCommand implements CommandExecutor {
             ArrayList<TeamNameSetting> teams = new ArrayList<TeamNameSetting>();
             ArrayList<Integer> points = new ArrayList<Integer>();
 
-            for ( TeamNameSetting tns : killDeathCounts.keySet() ) {
+            for ( String team : killDeathCounts.keySet() ) {
                 
-                int point = teamPoints.get(tns);
+                int point = teamPoints.get(team);
 
                 int index = 0;
                 while ( teams.size() > index && points.get(index) > point ) {
                     index++;
                 }
+                
+                TeamNameSetting tns = plugin.getAPI().getTeamNameFromID(team);
                 teams.add(index, tns);
                 points.add(index, point);
             }
@@ -90,7 +92,7 @@ public class CPointCommand implements CommandExecutor {
 
                 TeamNameSetting tns = teams.get(rank-1);
                 int point = points.get(rank-1);
-                int[] counts = killDeathCounts.get(tns);
+                int[] counts = killDeathCounts.get(tns.getID());
                 String message = String.format(
                         "%s%d. %s %s%dpoints (%dkill, %ddeath, %dtk)",
                         color, rank, tns.toString(), color, point, 

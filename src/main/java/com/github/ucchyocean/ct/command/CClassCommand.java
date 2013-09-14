@@ -68,7 +68,7 @@ public class CClassCommand implements CommandExecutor {
         String clas = args[1];
 
         ColorTeamingAPI api = plugin.getAPI();
-        HashMap<TeamNameSetting, ArrayList<Player>> members = api.getAllTeamMembers();
+        HashMap<String, ArrayList<Player>> members = api.getAllTeamMembers();
 
         // 有効なチーム名かユーザー名か'all'が指定されたかを確認する
         boolean isAll = false;
@@ -101,7 +101,7 @@ public class CClassCommand implements CommandExecutor {
 
         ArrayList<Player> playersToSet = new ArrayList<Player>();
         if ( isAll ) {
-            for ( TeamNameSetting key : members.keySet() ) {
+            for ( String key : members.keySet() ) {
                 playersToSet.addAll(members.get(key));
             }
         } else if ( isTeam ) {

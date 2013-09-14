@@ -132,9 +132,14 @@ public class PlayerDeathListener implements Listener {
         }
 
         // 倒したプレイヤー側の処理
+        TeamNameSetting tnsKiller = null;
+        String teamKiller = null;
         if ( killer != null ) {
-            TeamNameSetting tnsKiller = api.getPlayerTeamName(killer);
-            String teamKiller = tnsKiller.getID();
+            tnsKiller = api.getPlayerTeamName(killer);
+            teamKiller = tnsKiller.getID();
+        }
+        
+        if ( tnsKiller != null ) {
 
             // Kill数を加算
 
@@ -153,13 +158,12 @@ public class PlayerDeathListener implements Listener {
                 killDeathUserCounts.get(killer.getName())[0]++;
 
             // killReachTrophyが設定されていたら、超えたかどうかを判定する
-            HashMap<TeamNameSetting, int[]> killDeathCounts =
-                    api.getKillDeathCounts();
+            HashMap<String, int[]> killDeathCounts = api.getKillDeathCounts();
             
             if ( config.getKillReachTrophy() > 0 &&
                     leaders.size() == 0 ) {
 
-                if ( killDeathCounts.get(tnsKiller)[0] ==
+                if ( killDeathCounts.get(teamKiller)[0] ==
                         config.getKillReachTrophy() ) {
                     int rest = config.getKillTrophy() - config.getKillReachTrophy();
                     String message = String.format(
@@ -179,7 +183,7 @@ public class PlayerDeathListener implements Listener {
             if ( config.getKillTrophy() > 0 &&
                     leaders.size() == 0 ) {
 
-                if ( killDeathCounts.get(tnsKiller)[0] ==
+                if ( killDeathCounts.get(teamKiller)[0] ==
                         config.getKillTrophy() ) {
 
                     // 全体通知

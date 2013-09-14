@@ -105,9 +105,9 @@ public interface ColorTeamingAPI {
 
     /**
      * ユーザーをチームごとのメンバーに整理して返すメソッド
-     * @return 色をKey メンバーをValueとした Hashtable
+     * @return チームIDをKey メンバーをValueとした HashMap
      */
-    public HashMap<TeamNameSetting, ArrayList<Player>> getAllTeamMembers();
+    public HashMap<String, ArrayList<Player>> getAllTeamMembers();
 
     /**
      * チームメンバーを取得する
@@ -208,7 +208,7 @@ public interface ColorTeamingAPI {
      * チームのポイント数を全取得する
      * @return チームのポイント数
      */
-    public HashMap<TeamNameSetting, Integer> getAllTeamPoints();
+    public HashMap<String, Integer> getAllTeamPoints();
 
     /**
      * チームポイントを設定する。
@@ -234,7 +234,7 @@ public interface ColorTeamingAPI {
      * チーム単位のキルデス数を取得する
      * @return キルデス数
      */
-    public HashMap<TeamNameSetting, int[]> getKillDeathCounts();
+    public HashMap<String, int[]> getKillDeathCounts();
 
     /**
      * ユーザー単位のキルデス数を取得する

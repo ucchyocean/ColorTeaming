@@ -39,7 +39,7 @@ public class TeamNameConfig {
         if ( !file.exists() ) {
             Utility.copyFileFromJar(
                     ColorTeaming.instance.getPluginJarFile(), 
-                    file, FILE_NAME, false);
+                    file, FILE_NAME);
         }
 
         config = load(file);

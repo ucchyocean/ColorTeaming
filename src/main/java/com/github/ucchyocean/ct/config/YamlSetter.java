@@ -7,12 +7,10 @@ package com.github.ucchyocean.ct.config;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
@@ -24,10 +22,9 @@ public class YamlSetter {
     
     private ArrayList<String> contents;
     private String filename;
-    private String encode;
     
     /**
-     * コンストラクタ、エンコードはUTF-8とみなされる。
+     * コンストラクタ。
      * @param filename Yamlファイル名
      * @throws UnsupportedEncodingException
      * @throws FileNotFoundException
@@ -36,27 +33,12 @@ public class YamlSetter {
     public YamlSetter(String filename) 
             throws UnsupportedEncodingException, 
             FileNotFoundException, IOException {
-        this(filename, "UTF-8");
-    }
-    /**
-     * コンストラクタ
-     * @param filename ファイル名
-     * @param encode ファイルの読み込み書き込みエンコード
-     * @throws UnsupportedEncodingException
-     * @throws FileNotFoundException
-     * @throws IOException
-     */
-    public YamlSetter(String filename, String encode) 
-            throws UnsupportedEncodingException, 
-            FileNotFoundException, IOException {
         
         this.filename = filename;
-        this.encode = encode;
         
         BufferedReader reader = null;
         try {
-            reader = new BufferedReader(new InputStreamReader(
-                    new FileInputStream(filename), encode));
+            reader = new BufferedReader(new FileReader(filename));
             contents = new ArrayList<String>();
             while (reader.ready()) {
                 contents.add(reader.readLine());
@@ -145,8 +127,7 @@ public class YamlSetter {
         
         BufferedWriter writer = null;
         try {
-            writer = new BufferedWriter(new OutputStreamWriter(
-                    new FileOutputStream(filename), encode));
+            writer = new BufferedWriter(new FileWriter(filename));
             
             for ( String line : contents ) {
                 writer.write(line);

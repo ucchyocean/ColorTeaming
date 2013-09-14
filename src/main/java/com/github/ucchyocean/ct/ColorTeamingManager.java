@@ -63,7 +63,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     private BelowNameScoreDisplay belownameScore;
 
     private HashMap<String, ArrayList<String>> leaders;
-    private HashMap<TeamNameSetting, Integer> teamPoints;
+    private HashMap<String, Integer> teamPoints;
     private HashMap<String, int[]> killDeathUserCounts;
 
     private String respawnMapName;
@@ -81,7 +81,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         this.config = config;
 
         // 変数の初期化
-        teamPoints = new HashMap<TeamNameSetting, Integer>();
+        teamPoints = new HashMap<String, Integer>();
         killDeathUserCounts = new HashMap<String, int[]>();
         leaders = new HashMap<String, ArrayList<String>>();
         respawnConfig = new RespawnConfiguration();
@@ -209,6 +209,10 @@ public class ColorTeamingManager implements ColorTeamingAPI {
 
         team.addPlayer(player);
         player.setDisplayName(color + player.getName() + ChatColor.RESET);
+        
+        // 該当プレイヤーに通知
+        player.sendMessage( Utility.replaceColorCode(
+                String.format("&aあなたは %s &aチームになりました。", teamName.toString() ) ) );
 
         return team;
     }
@@ -321,17 +325,17 @@ public class ColorTeamingManager implements ColorTeamingAPI {
 
     /**
      * ユーザーをチームごとのメンバーに整理して返すメソッド
-     * @return 色をKey メンバーをValueとした Hashtable
+     * @return チームIDをKey メンバーをValueとした HashMap
      */
     @Override
-    public HashMap<TeamNameSetting, ArrayList<Player>> getAllTeamMembers() {
+    public HashMap<String, ArrayList<Player>> getAllTeamMembers() {
 
         ArrayList<TeamNameSetting> teamNames = getAllTeamNames();
-        HashMap<TeamNameSetting, ArrayList<Player>> result = 
-                new HashMap<TeamNameSetting, ArrayList<Player>>();
+        HashMap<String, ArrayList<Player>> result = 
+                new HashMap<String, ArrayList<Player>>();
 
-        for ( TeamNameSetting tn : teamNames ) {
-            result.put(tn, getTeamMembers(tn.getID()));
+        for ( TeamNameSetting tns : teamNames ) {
+            result.put(tns.getID(), getTeamMembers(tns.getID()));
         }
 
         return result;
@@ -652,7 +656,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      * @return チームのポイント数
      */
     @Override
-    public HashMap<TeamNameSetting, Integer> getAllTeamPoints() {
+    public HashMap<String, Integer> getAllTeamPoints() {
         return teamPoints;
     }
 
@@ -666,7 +670,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         
         TeamNameSetting tns = teamNameConfig.getTeamNameFromID(team);
         
-        teamPoints.put(tns, point);
+        teamPoints.put(tns.getID(), point);
         
         // サイドバーがポイント表示なら、表示内容を更新する
         if ( config.getSideCriteria() == SidebarCriteria.POINT ) {
@@ -686,11 +690,11 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         TeamNameSetting tns = teamNameConfig.getTeamNameFromID(team);
         
         int point = 0;
-        if ( teamPoints.containsKey(tns) ) {
-            point = teamPoints.get(tns);
+        if ( teamPoints.containsKey(tns.getID()) ) {
+            point = teamPoints.get(tns.getID());
         }
         
-        teamPoints.put(tns, point + amount);
+        teamPoints.put(tns.getID(), point + amount);
         
         // サイドバーがポイント表示なら、表示内容を更新する
         if ( config.getSideCriteria() == SidebarCriteria.POINT ) {
@@ -704,22 +708,23 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      * チーム単位のキルデス数を取得する
      * @return キルデス数
      */
-    public HashMap<TeamNameSetting, int[]> getKillDeathCounts() {
+    @Override
+    public HashMap<String, int[]> getKillDeathCounts() {
         
-        HashMap<TeamNameSetting, int[]> result = new HashMap<TeamNameSetting, int[]>();
-        HashMap<TeamNameSetting, ArrayList<Player>> members = getAllTeamMembers();
-        for ( TeamNameSetting tns : members.keySet() ) {
+        HashMap<String, int[]> result = new HashMap<String, int[]>();
+        HashMap<String, ArrayList<Player>> members = getAllTeamMembers();
+        for ( String teamID : members.keySet() ) {
             int[] data = new int[3];
-            ArrayList<Player> member = members.get(tns);
+            ArrayList<Player> member = members.get(teamID);
             for ( Player p : member ) {
                 if ( killDeathUserCounts.containsKey(p.getName()) ) {
-                    int[] userData = killDeathUserCounts.get(p);
+                    int[] userData = killDeathUserCounts.get(p.getName());
                     for ( int i=0; i<3; i++ ) {
                         data[i] += userData[i];
                     }
                 }
             }
-            result.put(tns, data);
+            result.put(teamID, data);
         }
         
         return result;
@@ -875,16 +880,6 @@ public class ColorTeamingManager implements ColorTeamingAPI {
             addPlayerTeam(players.get(i), teamName);
         }
 
-        // 各チームに、通知メッセージを出す
-        for ( int i=0; i<teamNum; i++ ) {
-            sendInfoToTeamChat(tns.get(i).getID(),
-                    "あなたは " +
-                    tns.get(i).getColor() +
-                    tns.get(i).getName() +
-                    ChatColor.GREEN +
-                    " チームになりました。");
-        }
-
         // キルデス情報のクリア
         clearKillDeathPoints();
 
@@ -926,7 +921,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         for ( int i=0; i<players.size(); i++ ) {
 
             // 人数の少ないチームの取得
-            HashMap<TeamNameSetting, ArrayList<Player>> members = getAllTeamMembers();
+            HashMap<String, ArrayList<Player>> members = getAllTeamMembers();
             int least = 999;
             TeamNameSetting leastTeam = null;
 
@@ -944,12 +939,6 @@ public class ColorTeamingManager implements ColorTeamingAPI {
             // チームへプレイヤーを追加
             if ( leastTeam != null ) {
                 addPlayerTeam(players.get(i), leastTeam);
-                players.get(i).sendMessage(
-                        ChatColor.GREEN + "あなたは " +
-                        leastTeam.getColor() +
-                        leastTeam.getName() +
-                        ChatColor.GREEN +
-                        " チームになりました。");
             } else {
 //                sender.sendMessage(
 //                        PREERR + "設定できるチームが無いようです。");

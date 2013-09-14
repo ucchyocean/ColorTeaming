@@ -58,24 +58,24 @@ public class CCountCommand implements CommandExecutor {
         }
 
         // メンバー情報の取得
-        HashMap<TeamNameSetting, ArrayList<Player>> members;
+        HashMap<String, ArrayList<Player>> members;
         if ( !isAll ) {
             members = plugin.getAPI().getAllTeamMembers();
         } else {
             TeamNameSetting emptyTeam = new TeamNameSetting("", "未所属", ChatColor.WHITE);
-            members = new HashMap<TeamNameSetting, ArrayList<Player>>();
+            members = new HashMap<String, ArrayList<Player>>();
             ArrayList<Player> players = plugin.getAPI().getAllPlayers();
             for ( Player p : players ) {
                 TeamNameSetting teamName = plugin.getAPI().getPlayerTeamName(p);
                 if ( teamName == null ) {
                     teamName = emptyTeam;
                 }
-                if ( members.containsKey(teamName) ) {
-                    members.get(teamName).add(p);
+                if ( members.containsKey(teamName.getID()) ) {
+                    members.get(teamName.getID()).add(p);
                 } else {
                     ArrayList<Player> data = new ArrayList<Player>();
                     data.add(p);
-                    members.put(teamName, data);
+                    members.put(teamName.getID(), data);
                 }
             }
         }
@@ -93,7 +93,7 @@ public class CCountCommand implements CommandExecutor {
      * @param isBroadcast ブロードキャストかどうか
      */
     protected static void sendCCMessage(CommandSender sender,
-            HashMap<TeamNameSetting, ArrayList<Player>> members, boolean isBroadcast) {
+            HashMap<String, ArrayList<Player>> members, boolean isBroadcast) {
 
         // 最初の行を送信
         if ( !isBroadcast ) {
@@ -103,7 +103,7 @@ public class CCountCommand implements CommandExecutor {
         }
 
         // メンバー情報を送信
-        for ( TeamNameSetting key : members.keySet() ) {
+        for ( String key : members.keySet() ) {
 
             ArrayList<Player> member = members.get(key);
 
@@ -115,15 +115,16 @@ public class CCountCommand implements CommandExecutor {
                 value.append(p.getName());
             }
 
+            TeamNameSetting teamName = ColorTeaming.instance.getAPI().getTeamNameFromID(key);
             if ( !isBroadcast ) {
                 String color = ChatColor.GRAY.toString();
-                String team = key.getColor() + key.getName();
+                String team = teamName.toString();
                 sender.sendMessage(String.format("%s* %s %s- %d",
                         color, team, color, member.size()));
                 sender.sendMessage(color + value);
             } else {
                 String color = ChatColor.RED.toString();
-                String team = key.getColor() + key.getName();
+                String team = teamName.toString();
                 Bukkit.broadcastMessage( String.format("%s* %s %s- %d",
                         color, team, color, member.size()));
                 Bukkit.broadcastMessage(color + value);
