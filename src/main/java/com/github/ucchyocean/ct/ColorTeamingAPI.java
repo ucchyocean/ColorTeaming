@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
@@ -296,6 +297,14 @@ public interface ColorTeamingAPI {
      * @param item カスタムアイテム
      */
     public void registerCustomItem(CustomItem item);
+    
+    /**
+     * カスタムアイテムを登録する
+     * @param item 登録するアイテム
+     * @param name アイテム名
+     * @param displayName 表示アイテム名
+     */
+    public void registerCustomItem(ItemStack item, String name, String displayName);
     
     /**
      * 登録されているカスタムアイテムを取得する

@@ -15,6 +15,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
@@ -816,6 +817,17 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         
         String name = item.getName();
         customItems.put(name, item);
+    }
+    
+    /**
+     * カスタムアイテムを登録する
+     * @param item 登録するアイテム
+     * @param name アイテム名
+     * @param displayName 表示アイテム名
+     */
+    @Override
+    public void registerCustomItem(ItemStack item, String name, String displayName) {
+        registerCustomItem(new CustomItem(item, name, displayName));
     }
     
     /**
