@@ -47,7 +47,7 @@ commands:
     description: メンバー間の攻撃の有効無効を切り替えるコマンド
     aliases: cff
     usage: |
-           /<command> (on|off) - 各色チームのメンバー間の攻撃を、onで無効に、offで有効に設定します。
+           /<command> (on|off) - 各色チームのメンバー間の攻撃を、onで有効に、offで無効に設定します。
            /<command> invisible (on|off) - 各色チームの透明なメンバーを、onで見えるように、offで見えないようにします。
     permission: colorteaming.friendlyfire
     permission-message: パーミッション "<permission>" が無いため、実行できません。
@@ -106,6 +106,8 @@ commands:
            /<command> - 全てのチームごとのキルデス数カウントを参照します。
            /<command> say - 全てのチームごとのキルデス数カウントを、サーバー全体メッセージで表示します。
            /<command> clear - 全てのチームごとのキルデス数カウントを初期化して0にします。
+           /<command> set (team) (point) - teamのチームポイントを、pointに設定します。
+           /<command> add (team) (point) - teamのチームポイントを、pointのぶん追加します。マイナス指定で減らします。
     permission: colorteaming.point
     permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorspawn:
@@ -153,14 +155,15 @@ commands:
     usage: |
            /<command> (team) - teamのメンバー全員が爆発して死亡します。
            /<command> (player) - playerが爆発して死亡します。
+           /<command> all - 全プレイヤーが爆発して死亡します。
     permission: colorteaming.explode
     permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorgive:
     description: チームメンバーのインベントリに、アイテムを追加するコマンド
     aliases: cgive
     usage: |
-           /<command> (team) (item-id) - 指定したIDのアイテムを、teamのメンバー全員に配布します。
-           /<command> (player) (item-id) - 指定したIDのアイテムを、playerに配布します。
+           /<command> (team) (item_id) - 指定したIDのアイテムを、teamのメンバー全員に配布します。
+           /<command> (player) (item_id) - 指定したIDのアイテムを、playerに配布します。
            /<command> (team) hand - 手に持ったアイテムを、teamのメンバー全員に配布します。
            /<command> (player) hand - 手に持ったアイテムを、playerに配布します。
     permission: colorteaming.give
@@ -175,15 +178,15 @@ commands:
     description: 一般プレイヤーが、任意のチームへ参加するためのコマンド
     aliases: cjoin
     usage: |
-           /<command> (team) - teamに参加します。
-           /<command> - 人数が少ないチームへ参加します。
+           /<command> (team) - teamに参加します。設定で allowPlayerJoinAny が true でないと使用できません。
+           /<command> - 人数が少ないチームへ参加します。設定で allowPlayerJoinRandom が true でないと使用できません。
            /<command> random - /<command> と同様です。
     permission: colorteaming-user.join
     permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorleave:
     description: 一般プレイヤーが、チームから離脱するためのコマンド
     aliases: cleave
-    usage: /<command> - チームから離脱します。
+    usage: /<command> - チームから離脱します。設定で allowPlayerLeave が true でないと使用できません。
     permission: colorteaming-user.leave
     permission-message: パーミッション "<permission>" が無いため、実行できません。
 permissions:
