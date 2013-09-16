@@ -129,9 +129,11 @@ public class CTPCommand implements CommandExecutor {
                             "チーム " + tns.getName() + " のプレイヤーを全員テレポートします。");
                 }
 
-                DelayedTeleportTask task = new DelayedTeleportTask(map,
-                        plugin.getCTConfig().getTeleportDelay());
-                task.startTask();
+                if ( map.size() > 0 ) {
+                    DelayedTeleportTask task = new DelayedTeleportTask(map,
+                            plugin.getCTConfig().getTeleportDelay());
+                    task.startTask();
+                }
             }
 
             return true;
@@ -269,9 +271,11 @@ public class CTPCommand implements CommandExecutor {
                 map.put(p, location);
             }
 
-            DelayedTeleportTask task = new DelayedTeleportTask(map,
-                    plugin.getCTConfig().getTeleportDelay());
-            task.startTask();
+            if ( map.size() > 0 ) {
+                DelayedTeleportTask task = new DelayedTeleportTask(map,
+                        plugin.getCTConfig().getTeleportDelay());
+                task.startTask();
+            }
 
             sender.sendMessage(PREINFO + "チーム " + group + " のプレイヤーを全員テレポートします。");
 
