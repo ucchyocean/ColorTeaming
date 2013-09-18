@@ -251,17 +251,12 @@ public class PlayerDeathListener implements Listener {
                         new PlayerRespawnEvent(deader, respawnLocation, true);
                 Bukkit.getServer().getPluginManager().callEvent(respawnEvent);
                 
-                // リスポーン場所へテレポートする
                 respawnLocation = respawnEvent.getRespawnLocation();
                 if ( respawnLocation != null ) {
                     
                     // 移送する場合は、経験値やインベントリのアイテムを落とさない
                     event.setDroppedExp(0);
-                    deader.getInventory().clear();
-                    deader.getInventory().setHelmet(null);
-                    deader.getInventory().setChestplate(null);
-                    deader.getInventory().setLeggings(null);
-                    deader.getInventory().setBoots(null);
+                    event.getDrops().clear();
                     
                     // リスポーン場所へテレポートする
                     deader.teleport(respawnLocation, TeleportCause.PLUGIN);
