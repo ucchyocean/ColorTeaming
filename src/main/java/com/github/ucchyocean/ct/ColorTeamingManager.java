@@ -930,8 +930,8 @@ public class ColorTeamingManager implements ColorTeamingAPI {
             Collections.shuffle(teams);
 
             for ( TeamNameSetting t : teams ) {
-                if ( least > members.get(t).size() ) {
-                    least = members.get(t).size();
+                if ( least > members.get(t.getID()).size() ) {
+                    least = members.get(t.getID()).size();
                     leastTeam = t;
                 }
             }
