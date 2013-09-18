@@ -243,18 +243,30 @@ public class PlayerDeathListener implements Listener {
                 
                 // リスポーンイベントを呼び出す
                 Location respawnLocation = deader.getBedSpawnLocation();
+                if ( respawnLocation == null ) {
+                    respawnLocation = deader.getWorld().getSpawnLocation();
+                    // TODO: ワールドの初期設定によっては、リスポーン後に埋まることがある
+                }
                 PlayerRespawnEvent respawnEvent = 
                         new PlayerRespawnEvent(deader, respawnLocation, true);
                 Bukkit.getServer().getPluginManager().callEvent(respawnEvent);
                 
                 // リスポーン場所へテレポートする
                 respawnLocation = respawnEvent.getRespawnLocation();
-                if ( respawnLocation == null ) {
-                    respawnLocation = deader.getWorld().getSpawnLocation();
-                }
                 if ( respawnLocation != null ) {
+                    
+                    // 移送する場合は、経験値やインベントリのアイテムを落とさない
+                    event.setDroppedExp(0);
+                    deader.getInventory().clear();
+                    deader.getInventory().setHelmet(null);
+                    deader.getInventory().setChestplate(null);
+                    deader.getInventory().setLeggings(null);
+                    deader.getInventory().setBoots(null);
+                    
+                    // リスポーン場所へテレポートする
                     deader.teleport(respawnLocation, TeleportCause.PLUGIN);
-                    deader.setVelocity(new Vector()); // ノックバックの除去
+                    // ノックバックの除去
+                    deader.setVelocity(new Vector()); 
                 }
             }
         }
