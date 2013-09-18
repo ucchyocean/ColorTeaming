@@ -80,7 +80,7 @@ public enum PlayerCriteria {
      * @param criteria
      * @return
      */
-    public static PlayerCriteria convert(Criterias criteria) {
+    public static PlayerCriteria convert(String criteria) {
 
         if ( criteria == null ) {
             return PlayerCriteria.NONE;

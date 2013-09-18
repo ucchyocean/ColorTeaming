@@ -63,15 +63,4 @@ public class TeamNameSetting {
         if ( color != null ) return color + name;
         return name;
     }
-
-    /**
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if ( !(obj instanceof TeamNameSetting) )
-            return false;
-        TeamNameSetting tns = (TeamNameSetting)obj;
-        return id.equals(tns.id);
-    }
 }
