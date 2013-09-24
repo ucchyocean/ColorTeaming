@@ -96,12 +96,12 @@ public class CSpawnCommand implements CommandExecutor {
             } else {
                 // cspawn (group) の実行
 
-                String group = args[0];
+                String target = args[0];
                 ColorTeamingAPI api = plugin.getAPI();
 
                 // 有効なチーム名が指定されたか確認する
-                if ( !api.getTeamNameConfig().containsID(group) ) {
-                    sender.sendMessage(PREERR + "チーム " + group + " は設定できないチーム名です。");
+                if ( !api.getTeamNameConfig().containsID(target) ) {
+                    sender.sendMessage(PREERR + "チーム " + target + " は設定できないチーム名です。");
                     return true;
                 }
 
@@ -116,11 +116,11 @@ public class CSpawnCommand implements CommandExecutor {
                 }
 
                 // spawnpoint設定を行う
-                respawnConfig.set(group, location);
+                respawnConfig.set(target, location);
 
                 String message = String.format(
                         "チーム %s のリスポーンポイントを (%d, %d, %d) に設定しました。",
-                        group, location.getBlockX(), location.getBlockY(), location.getBlockZ());
+                        target, location.getBlockX(), location.getBlockY(), location.getBlockZ());
                 sender.sendMessage(PREINFO + message);
 
                 return true;
@@ -203,12 +203,9 @@ public class CSpawnCommand implements CommandExecutor {
         }
 
 
-        String group;
-        String map;
+        String group = args[0];
+        String map = args[1];
         Location location;
-
-        group = args[0];
-        map = args[1];
 
         if ( args.length <= 3 ) {
             // cspawn (group) (map) の実行

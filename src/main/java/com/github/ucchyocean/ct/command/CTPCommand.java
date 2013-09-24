@@ -201,13 +201,18 @@ public class CTPCommand implements CommandExecutor {
         } else {
             // ctp (group) ほにゃらら の実行
 
-            String group = args[0];
+            String target = args[0];
             HashMap<String, ArrayList<Player>> members =
                     plugin.getAPI().getAllTeamMembers();
 
-            // 有効なチーム名が指定されたか確認する
-            if ( !members.containsKey(group) ) {
-                sender.sendMessage(PREERR + "チーム " + group + " が存在しません。");
+            // 有効なチーム名またはプレイヤー名が指定されたか確認する
+            boolean isPlayer = false;
+            if ( members.containsKey(target) ) {
+                //isTeam = true;
+            } else if ( Bukkit.getPlayerExact(target) != null ) {
+                isPlayer = true;
+            } else {
+                sender.sendMessage(PREERR + "指定された " + target + " に一致する、チームもプレイヤーも存在しません。");
                 return true;
             }
 
@@ -233,12 +238,31 @@ public class CTPCommand implements CommandExecutor {
                 // チームのリスポーンポイントを取得、登録されていなければ終了
                 String respawnMapName = plugin.getAPI().getRespawnMapName();
                 RespawnConfiguration respawnConfig = plugin.getAPI().getRespawnConfig();
-                location = respawnConfig.get(group, respawnMapName);
-                if ( location == null ) {
-                    sender.sendMessage(PREERR +
-                            "チーム " + group + " にリスポーンポイントが指定されていません。");
-                    return true;
+                
+                if ( isPlayer ) {
+                    Player player = Bukkit.getPlayerExact(target);
+                    String team = plugin.getAPI().getPlayerTeamName(player).getID();
+                    location = respawnConfig.get(team, respawnMapName);
+                    if ( location == null ) {
+                        location = player.getBedSpawnLocation();
+                        if ( location == null ) {
+                            location = player.getWorld().getSpawnLocation();
+                            if ( location == null ) {
+                                sender.sendMessage(PREERR +
+                                        "プレイヤー " + target + " のリスポーンポイントが取得できませんでした。");
+                                return true;
+                            }
+                        }
+                    }
+                } else {
+                    location = respawnConfig.get(target, respawnMapName);
+                    if ( location == null ) {
+                        sender.sendMessage(PREERR +
+                                "チーム " + target + " にリスポーンポイントが指定されていません。");
+                        return true;
+                    }
                 }
+                
                 location = location.add(0.5, 0, 0.5);
 
             } else if ( args.length <= 3 ) {
@@ -267,8 +291,15 @@ public class CTPCommand implements CommandExecutor {
 
             // テレポートの実行
             HashMap<Player, Location> map = new HashMap<Player, Location>();
-            for ( Player p : members.get(group) ) {
-                map.put(p, location);
+            if ( isPlayer ) {
+                Player player = Bukkit.getPlayerExact(target);
+                map.put(player, location);
+                sender.sendMessage(PREINFO + "プレイヤー " + target + " をテレポートします。");
+            } else {
+                for ( Player p : members.get(target) ) {
+                    map.put(p, location);
+                }
+                sender.sendMessage(PREINFO + "チーム " + target + " のプレイヤーを全員テレポートします。");
             }
 
             if ( map.size() > 0 ) {
@@ -276,8 +307,6 @@ public class CTPCommand implements CommandExecutor {
                         plugin.getCTConfig().getTeleportDelay());
                 task.startTask();
             }
-
-            sender.sendMessage(PREINFO + "チーム " + group + " のプレイヤーを全員テレポートします。");
 
             return true;
         }
