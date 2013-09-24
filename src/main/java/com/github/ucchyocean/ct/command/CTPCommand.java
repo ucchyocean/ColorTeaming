@@ -216,7 +216,7 @@ public class CTPCommand implements CommandExecutor {
                 return true;
             }
 
-            Location location;
+            Location location = null;
 
             if ( args[1].equalsIgnoreCase("here") ) {
                 // ctp (group) here
@@ -241,8 +241,10 @@ public class CTPCommand implements CommandExecutor {
                 
                 if ( isPlayer ) {
                     Player player = Bukkit.getPlayerExact(target);
-                    String team = plugin.getAPI().getPlayerTeamName(player).getID();
-                    location = respawnConfig.get(team, respawnMapName);
+                    TeamNameSetting tns = plugin.getAPI().getPlayerTeamName(player);
+                    if ( tns != null ) {
+                        location = respawnConfig.get(tns.getID(), respawnMapName);
+                    }
                     if ( location == null ) {
                         location = player.getBedSpawnLocation();
                         if ( location == null ) {
