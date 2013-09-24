@@ -180,9 +180,9 @@ public class CPointCommand implements CommandExecutor {
 
             ColorTeamingAPI api = plugin.getAPI();
             api.clearKillDeathPoints();
-            api.refreshSidebarScore();
-            api.refreshTabkeyListScore();
-            api.refreshBelowNameScore();
+            api.makeSidebarScore();
+            api.makeTabkeyListScore();
+            api.makeBelowNameScore();
             sender.sendMessage(ChatColor.GRAY + "KillDeath数をリセットしました。");
             return true;
             
