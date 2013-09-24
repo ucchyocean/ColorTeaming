@@ -49,6 +49,10 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     private static final String TEAM_CHAT_FORMAT = "&a[%s&a]<%s&r&a> %s";
     private static final String TEAM_INFORMATION_FORMAT = "&a[%s&a] %s";
 
+    private static SidebarScoreDisplay sidebarScore;
+    private static TabListScoreDisplay tablistScore;
+    private static BelowNameScoreDisplay belownameScore;
+    
     private ColorTeaming plugin;
     private ColorTeamingConfig config;
 
@@ -58,9 +62,6 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     private RespawnConfiguration respawnConfig;
     private TPPointConfiguration tppointConfig;
     private TeamNameConfig teamNameConfig;
-    private SidebarScoreDisplay sidebarScore;
-    private TabListScoreDisplay tablistScore;
-    private BelowNameScoreDisplay belownameScore;
 
     private HashMap<String, ArrayList<String>> leaders;
     private HashMap<String, Integer> teamPoints;
@@ -531,7 +532,10 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     @Override
     public void removeSidebarScore() {
 
-        getScoreboard().clearSlot(DisplaySlot.SIDEBAR);
+        if ( getScoreboard().getObjective(DisplaySlot.SIDEBAR) != null && 
+                getScoreboard().getObjective(DisplaySlot.SIDEBAR).getName().equals("teamscore") ) {
+            getScoreboard().clearSlot(DisplaySlot.SIDEBAR);
+        }
         if ( sidebarScore != null ) {
             sidebarScore.remove();
             sidebarScore = null;
@@ -568,7 +572,10 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     @Override
     public void removeTabkeyListScore() {
 
-        getScoreboard().clearSlot(DisplaySlot.PLAYER_LIST);
+        if ( getScoreboard().getObjective(DisplaySlot.PLAYER_LIST) != null && 
+                getScoreboard().getObjective(DisplaySlot.PLAYER_LIST).getName().equals("listscore") ) {
+            getScoreboard().clearSlot(DisplaySlot.PLAYER_LIST);
+        }
         if ( tablistScore != null ) {
             tablistScore.remove();
             tablistScore = null;
@@ -605,7 +612,10 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     @Override
     public void removeBelowNameScore() {
 
-        getScoreboard().clearSlot(DisplaySlot.BELOW_NAME);
+        if ( getScoreboard().getObjective(DisplaySlot.BELOW_NAME) != null && 
+                getScoreboard().getObjective(DisplaySlot.BELOW_NAME).getName().equals("belowscore") ) {
+            getScoreboard().clearSlot(DisplaySlot.BELOW_NAME);
+        }
         if ( belownameScore != null ) {
             belownameScore.remove();
             belownameScore = null;
