@@ -238,6 +238,11 @@ public class ColorTeamingManager implements ColorTeamingAPI {
             }
 
             team.removePlayer(player);
+            
+            // チーム削除により呼び出されたのでなければ、メンバー0人でチーム削除する
+            if ( reason != Reason.TEAM_REMOVED && team.getPlayers().size() == 0 ) {
+                removeTeam(team.getName());
+            }
         }
 
         player.setDisplayName(player.getName());

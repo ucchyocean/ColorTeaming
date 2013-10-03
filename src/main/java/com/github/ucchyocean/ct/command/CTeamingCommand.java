@@ -20,7 +20,6 @@ import com.github.ucchyocean.ct.ColorTeamingAPI;
 import com.github.ucchyocean.ct.Utility;
 import com.github.ucchyocean.ct.config.ColorTeamingConfig;
 import com.github.ucchyocean.ct.config.TeamNameSetting;
-import com.github.ucchyocean.ct.event.ColorTeamingPlayerLeaveEvent.Reason;
 import com.github.ucchyocean.ct.scoreboard.PlayerCriteria;
 import com.github.ucchyocean.ct.scoreboard.SidebarCriteria;
 
@@ -62,9 +61,6 @@ public class CTeamingCommand implements CommandExecutor {
             HashMap<String, ArrayList<Player>> members =
                     api.getAllTeamMembers();
             for ( String team : members.keySet() ) {
-                for ( Player p : members.get(team) ) {
-                    api.leavePlayerTeam(p, Reason.TEAM_REMOVED);
-                }
                 api.removeTeam(team);
             }
 
