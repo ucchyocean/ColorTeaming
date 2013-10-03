@@ -147,8 +147,20 @@ public class ColorTeamingConfig {
                 String i = c.getString("items");
                 String a = c.getString("armor");
                 String e = c.getString("effect");
-                int x = c.getInt("experience", 0);
-                ClassData data = new ClassData(i, a, e, x);
+                String temp = c.getString("experience");
+                int x = -1;
+                int l = -1;
+                if ( temp != null ) {
+                    if ( temp.toLowerCase().endsWith("l") ) {
+                        temp = temp.substring(0, temp.length() - 1); // 後ろの1文字を削る
+                        if ( temp.matches("[0-9]+") ) {
+                            l = Integer.parseInt(temp);
+                        }
+                    } else {
+                        x = c.getInt("experience", -1);
+                    }
+                }
+                ClassData data = new ClassData(i, a, e, x, l);
                 ctconfig.classes.put(clas, data);
             }
         }

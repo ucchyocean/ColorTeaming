@@ -32,7 +32,7 @@ seeFriendlyInvisible: true
 skipGameover: false
 
 # クラスを設定するときに、全回復するかどうかを設定します。
-# 同時に、空腹度が回復、ポーション効果が全て消去、経験値が0になります。
+# 同時に、空腹度が回復、ポーション効果が全て消去されます。
 healOnSetClass: true
 
 # クラスごとのインベントリーの内容を設定します。
@@ -45,7 +45,8 @@ healOnSetClass: true
 # effect : ポーション効果を設定します。(エフェクトID)-(レベル)
 #         レベルは0から始まりますので注意してください。
 #         例）effect: 1-0,5-1,8-2 → 移動速度I、攻撃力II、跳躍力III
-# experience : 経験値の量を設定します。
+# experience : 経験値の量を設定します。数値のみを指定すれば、経験値配布の量を、
+#              後ろにLをつければ、レベルでの配布量を指定できます。例）experience: 30L
 classes:
   Knight:
     items: 267,320:5
@@ -67,7 +68,7 @@ classes:
     items: 276^16-300@1561
     armor: 314,315,316,317
     effect: 1-5,5-5,8-5
-    experience: 2000
+    experience: 30L
   RedLeather:
     armor: 298$993333,299$993333,300$993333,301$993333
   BlueLeather:

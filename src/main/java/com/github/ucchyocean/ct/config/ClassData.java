@@ -27,6 +27,8 @@ public class ClassData {
     protected String effect;
     /** 経験値 */
     protected int experience;
+    /** レベル */
+    protected int level;
 
     /**
      * コンストラクタ
@@ -34,12 +36,14 @@ public class ClassData {
      * @param armors 防具データ
      * @param effects エフェクトデータ
      * @param experience 経験値
+     * @param level レベル
      */
-    public ClassData(String items, String armor, String effect, int experience) {
+    public ClassData(String items, String armor, String effect, int experience, int level) {
         this.items = items;
         this.armor = armor;
         this.effect = effect;
         this.experience = experience;
+        this.level = level;
     }
 
     public ArrayList<ItemStack> getItems() {
@@ -76,7 +80,10 @@ public class ClassData {
     }
     
     public int getExperience() {
-        
         return experience;
+    }
+    
+    public int getLevel() {
+        return level;
     }
 }

@@ -98,6 +98,7 @@ public class CClassCommand implements CommandExecutor {
         ArrayList<ItemStack> armorData = cdata.getArmor();
         ArrayList<PotionEffect> effectData = cdata.getEffect();
         int experience = cdata.getExperience();
+        int level = cdata.getLevel();
 
         ArrayList<Player> playersToSet = new ArrayList<Player>();
         if ( isAll ) {
@@ -159,8 +160,15 @@ public class CClassCommand implements CommandExecutor {
             }
 
             // 経験値の設定
-            p.setTotalExperience(experience);
-            Utility.updateExp(p);
+            if ( experience != -1 ) {
+                p.setTotalExperience(experience);
+                Utility.updateExp(p);
+            } else if ( level != -1 ) {
+                p.setTotalExperience(0);
+                Utility.updateExp(p);
+                p.setLevel(level);
+                ColorTeaming.instance.getLogger().finest("debug level : " + level);
+            }
         }
 
         String targetName;
