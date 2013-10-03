@@ -8,7 +8,9 @@ package com.github.ucchyocean.ct.scoreboard;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -28,7 +30,7 @@ public class SidebarScoreDisplay {
     private Objective objective;
     private ColorTeaming plugin;
     
-    private HashMap<String, SidebarTeamScore> teamscores;
+    private HashMap<String, OfflinePlayer> teamscores;
 
     /**
      * コンストラクタ。コンストラクト時に、現在のチーム状況を取得し、
@@ -48,7 +50,7 @@ public class SidebarScoreDisplay {
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
         // 項目を初期化
-        teamscores = new HashMap<String, SidebarTeamScore>();
+        teamscores = new HashMap<String, OfflinePlayer>();
 
         ArrayList<TeamNameSetting> teamNames = plugin.getAPI().getAllTeamNames();
         for ( TeamNameSetting tns : teamNames ) {
@@ -122,6 +124,11 @@ public class SidebarScoreDisplay {
             int[] data = killDeathCounts.get(key);
             setScore(key, data[index]);
         }
+        for ( String name : teamscores.keySet() ) {
+            if ( !killDeathCounts.keySet().contains(name) ) {
+                setScore(name, 0);
+            }
+        }
     }
 
     /**
@@ -134,6 +141,11 @@ public class SidebarScoreDisplay {
 
         for ( String key : teamPoints.keySet() ) {
             setScore(key, teamPoints.get(key));
+        }
+        for ( String name : teamscores.keySet() ) {
+            if ( !teamPoints.keySet().contains(name) ) {
+                setScore(name, 0);
+            }
         }
     }
 
@@ -148,6 +160,11 @@ public class SidebarScoreDisplay {
         for ( String key : members.keySet() ) {
             setScore(key, members.get(key).size());
         }
+        for ( String name : teamscores.keySet() ) {
+            if ( !members.keySet().contains(name) ) {
+                setScore(name, 0);
+            }
+        }
     }
     
     /**
@@ -159,22 +176,16 @@ public class SidebarScoreDisplay {
         
         ColorTeamingAPI api = plugin.getAPI();
         
-        SidebarTeamScore ts;
+        OfflinePlayer ts;
         if ( !teamscores.containsKey(name) ) {
             Team team = api.getScoreboard().getTeam(name);
             if ( team == null ) {
                 return;
             }
-            ts = new SidebarTeamScore(team);
+            ts = Bukkit.getOfflinePlayer(team.getDisplayName());
             teamscores.put(name, ts);
         } else {
             ts = teamscores.get(name);
-        }
-        
-        if ( point == 0 ) {
-            // NOTE: 全ての項目に0を設定すると表示が消えるので、
-            //       一旦1を設定することで回避する。
-            objective.getScore(ts).setScore(1);
         }
         
         objective.getScore(ts).setScore(point);
