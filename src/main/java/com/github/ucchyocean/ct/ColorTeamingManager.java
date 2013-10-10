@@ -946,7 +946,6 @@ public class ColorTeamingManager implements ColorTeamingAPI {
                 p.setTotalExperience(0);
                 Utility.updateExp(p);
                 p.setLevel(level);
-                ColorTeaming.instance.getLogger().finest("debug level : " + level);
             }
         }
         

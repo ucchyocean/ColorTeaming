@@ -266,7 +266,6 @@ public class CTeamingCommand implements CommandExecutor {
 
             ColorTeamingConfig config = plugin.getCTConfig();
 
-            // その他の指定の場合
             if ( args[1].equalsIgnoreCase("kill") ) {
                 config.setListCriteria(PlayerCriteria.KILL_COUNT);
             } else if ( args[1].equalsIgnoreCase("death") ) {
@@ -294,7 +293,6 @@ public class CTeamingCommand implements CommandExecutor {
 
             ColorTeamingConfig config = plugin.getCTConfig();
 
-            // その他の指定の場合
             if ( args[1].equalsIgnoreCase("kill") ) {
                 config.setBelowCriteria(PlayerCriteria.KILL_COUNT);
             } else if ( args[1].equalsIgnoreCase("death") ) {
