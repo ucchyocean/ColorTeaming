@@ -17,6 +17,9 @@ commands:
            /<command> removeAll - 全てのチームを解散します。
            /<command> trophy (amount) - キル数達成時の通知を設定します。
            /<command> reachTrophy (amount) - キル数リーチ時の通知を設定します。
+           /<command> allowJoinRandom (on|off) - /cjoin コマンドの利用許可をオンオフします。
+           /<command> allowJoinAny (on|off) - /cjoin (group) コマンドの利用許可をオンオフします。
+           /<command> allowLeave (on|off) - /cleave コマンドの利用許可をオンオフします。
            /<command> side (kill|death|point|rest) - サイドバーのスコア表示を変更します。
            /<command> side clear - サイドバーのスコア表示を消去します。
            /<command> list (kill|death|point|health) - TABキーリストのスコア表示を変更します。
