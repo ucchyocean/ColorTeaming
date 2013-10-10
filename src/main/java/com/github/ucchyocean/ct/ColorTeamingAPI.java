@@ -312,7 +312,16 @@ public interface ColorTeamingAPI {
      * @return カスタムアイテム、登録されていないアイテム名を指定した場合はnullが返される。
      */
     public CustomItem getCustomItem(String name);
-
+    
+    /**
+     * 指定されたプレイヤーに指定されたクラスを設定する
+     * @param players プレイヤー
+     * @param classname クラス名
+     * @return クラス設定を実行したかどうか。<br/>
+     * 例えば、指定されたクラス名が存在しない場合や、指定されたプレイヤーがオフラインの場合は、falseになる。
+     */
+    public boolean setClassToPlayer(ArrayList<Player> players, String classname);
+    
     /**
      * ランダムな順序で、プレイヤーをチームわけします。<br/>
      * 既にチームわけが存在する場合は、全部クリアしてから分けられます。

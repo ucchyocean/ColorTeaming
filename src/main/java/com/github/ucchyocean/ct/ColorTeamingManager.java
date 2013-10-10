@@ -16,10 +16,12 @@ import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
+import com.github.ucchyocean.ct.config.ClassData;
 import com.github.ucchyocean.ct.config.ColorTeamingConfig;
 import com.github.ucchyocean.ct.config.RespawnConfiguration;
 import com.github.ucchyocean.ct.config.TPPointConfiguration;
@@ -860,6 +862,106 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         return customItems.get(name);
     }
 
+    /**
+     * 指定されたプレイヤーに指定されたクラスを設定する
+     * @param players プレイヤー
+     * @param classname クラス名
+     * @return クラス設定を実行したかどうか。<br/>
+     * 例えば、指定されたクラス名が存在しない場合や、指定されたプレイヤーがオフラインの場合は、falseになる。
+     */
+    public boolean setClassToPlayer(ArrayList<Player> players, String classname) {
+        
+        // クラス設定が存在しない場合は falseを返す
+        if ( !plugin.getCTConfig().getClasses().containsKey(classname) ) {
+            return false;
+        }
+        
+        // 設定対象が居ない場合は falseを返す
+        if ( players == null || players.size() <= 0 ) {
+            return false;
+        }
+        
+        // 設定データの準備
+        ClassData cdata = plugin.getCTConfig().getClasses().get(classname);
+        ArrayList<ItemStack> items = cdata.getItems();
+        ArrayList<ItemStack> armor = cdata.getArmor();
+        ArrayList<PotionEffect> effect = cdata.getEffect();
+        int experience = cdata.getExperience();
+        int level = cdata.getLevel();
+
+        boolean isHealOnSetClass = plugin.getCTConfig().isHealOnSetClass();
+        
+        // クラスの適用を実行
+        for ( Player p : players ) {
+
+            // 全回復の実行
+            if ( isHealOnSetClass ) {
+                Utility.heal(p);
+            }
+            
+            // インベントリの消去
+            p.getInventory().clear();
+            p.getInventory().setHelmet(null);
+            p.getInventory().setChestplate(null);
+            p.getInventory().setLeggings(null);
+            p.getInventory().setBoots(null);
+
+            // アイテムの配布
+            for ( ItemStack item : items ) {
+                if ( item != null ) {
+                    p.getInventory().addItem(item);
+                }
+            }
+
+            // 防具の配布
+            if ( armor != null ) {
+
+                if (armor.size() >= 1 && armor.get(0) != null ) {
+                    p.getInventory().setHelmet(armor.get(0));
+                }
+                if (armor.size() >= 2 && armor.get(1) != null ) {
+                    p.getInventory().setChestplate(armor.get(1));
+                }
+                if (armor.size() >= 3 && armor.get(2) != null ) {
+                    p.getInventory().setLeggings(armor.get(2));
+                }
+                if (armor.size() >= 4 && armor.get(3) != null ) {
+                    p.getInventory().setBoots(armor.get(3));
+                }
+            }
+            
+            // インベントリ更新
+            updateInventory(p);
+
+            // ポーション効果の設定
+            if ( effect != null ) {
+                p.addPotionEffects(effect);
+            }
+
+            // 経験値の設定
+            if ( experience != -1 ) {
+                p.setTotalExperience(experience);
+                Utility.updateExp(p);
+            } else if ( level != -1 ) {
+                p.setTotalExperience(0);
+                Utility.updateExp(p);
+                p.setLevel(level);
+                ColorTeaming.instance.getLogger().finest("debug level : " + level);
+            }
+        }
+        
+        return true;
+    }
+
+    /**
+     * プレイヤーのインベントリをアップデートする
+     * @param player プレイヤー
+     */
+    @SuppressWarnings("deprecation")
+    private void updateInventory(Player player) {
+        player.updateInventory();
+    }
+    
     /**
      * ランダムな順序で、プレイヤーをチームわけします。<br/>
      * 既にチームわけが存在する場合は、全部クリアしてから分けられます。

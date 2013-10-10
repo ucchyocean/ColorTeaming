@@ -14,13 +14,9 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
 
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingAPI;
-import com.github.ucchyocean.ct.Utility;
-import com.github.ucchyocean.ct.config.ClassData;
 import com.github.ucchyocean.ct.config.KitParser;
 import com.github.ucchyocean.ct.config.TeamNameSetting;
 
@@ -92,14 +88,7 @@ public class CClassCommand implements CommandExecutor {
             return true;
         }
 
-        // クラス設定を実行する
-        ClassData cdata = plugin.getCTConfig().getClasses().get(clas);
-        ArrayList<ItemStack> itemData = cdata.getItems();
-        ArrayList<ItemStack> armorData = cdata.getArmor();
-        ArrayList<PotionEffect> effectData = cdata.getEffect();
-        int experience = cdata.getExperience();
-        int level = cdata.getLevel();
-
+        // クラス設定対象を取得する
         ArrayList<Player> playersToSet = new ArrayList<Player>();
         if ( isAll ) {
             for ( String key : members.keySet() ) {
@@ -110,66 +99,14 @@ public class CClassCommand implements CommandExecutor {
         } else {
             playersToSet.add(Bukkit.getPlayerExact(target));
         }
-
-        boolean isHealOnSetClass = plugin.getCTConfig().isHealOnSetClass();
         
-        for ( Player p : playersToSet ) {
-
-            // 全回復の実行
-            if ( isHealOnSetClass ) {
-                Utility.heal(p);
-            }
-            
-            // インベントリの消去
-            p.getInventory().clear();
-            p.getInventory().setHelmet(null);
-            p.getInventory().setChestplate(null);
-            p.getInventory().setLeggings(null);
-            p.getInventory().setBoots(null);
-
-            // アイテムの配布
-            for ( ItemStack item : itemData ) {
-                if ( item != null ) {
-                    p.getInventory().addItem(item);
-                }
-            }
-
-            // 防具の配布
-            if ( armorData != null ) {
-
-                if (armorData.size() >= 1 && armorData.get(0) != null ) {
-                    p.getInventory().setHelmet(armorData.get(0));
-                }
-                if (armorData.size() >= 2 && armorData.get(1) != null ) {
-                    p.getInventory().setChestplate(armorData.get(1));
-                }
-                if (armorData.size() >= 3 && armorData.get(2) != null ) {
-                    p.getInventory().setLeggings(armorData.get(2));
-                }
-                if (armorData.size() >= 4 && armorData.get(3) != null ) {
-                    p.getInventory().setBoots(armorData.get(3));
-                }
-            }
-            
-            // インベントリ更新
-            updateInventory(p);
-
-            // ポーション効果の設定
-            if ( effectData != null ) {
-                p.addPotionEffects(effectData);
-            }
-
-            // 経験値の設定
-            if ( experience != -1 ) {
-                p.setTotalExperience(experience);
-                Utility.updateExp(p);
-            } else if ( level != -1 ) {
-                p.setTotalExperience(0);
-                Utility.updateExp(p);
-                p.setLevel(level);
-                ColorTeaming.instance.getLogger().finest("debug level : " + level);
-            }
+        if ( playersToSet.size() <= 0 ) {
+            sender.sendMessage(PREERR + "設定先 " + target + " の対象プレイヤーが誰もいません。");
+            return true;
         }
+
+        // クラス設定を実行する
+        api.setClassToPlayer(playersToSet, clas);
 
         String targetName;
         if ( isAll ) {
@@ -186,14 +123,5 @@ public class CClassCommand implements CommandExecutor {
                         targetName, clas));
 
         return true;
-    }
-
-    /**
-     * プレイヤーのインベントリをアップデートする
-     * @param player プレイヤー
-     */
-    @SuppressWarnings("deprecation")
-    private void updateInventory(Player player) {
-        player.updateInventory();
     }
 }
