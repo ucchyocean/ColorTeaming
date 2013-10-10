@@ -72,6 +72,11 @@ public class CJoinCommand implements CommandExecutor {
 
             plugin.getAPI().addPlayerTeam(player, team);
 
+            // サイドバー更新、タブキーリスト更新
+            plugin.getAPI().makeSidebarScore();
+            plugin.getAPI().refreshTabkeyListScore();
+            plugin.getAPI().refreshBelowNameScore();
+
             // メンバー情報をlastdataに保存する
             plugin.getAPI().getCTSaveDataHandler().save("lastdata");
 

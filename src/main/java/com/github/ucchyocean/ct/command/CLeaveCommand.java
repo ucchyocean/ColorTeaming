@@ -55,8 +55,12 @@ public class CLeaveCommand implements CommandExecutor {
         }
 
         plugin.getAPI().leavePlayerTeam(player, Reason.SELF);
-        player.sendMessage(
-                ChatColor.GREEN + "チームから離脱しました。");
+        player.sendMessage(ChatColor.GREEN + "チームから離脱しました。");
+
+        // サイドバー更新、タブキーリスト更新
+        plugin.getAPI().makeSidebarScore();
+        plugin.getAPI().refreshTabkeyListScore();
+        plugin.getAPI().refreshBelowNameScore();
 
         // メンバー情報をlastdataに保存する
         plugin.getAPI().getCTSaveDataHandler().save("lastdata");
