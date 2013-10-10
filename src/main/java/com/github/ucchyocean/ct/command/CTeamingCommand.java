@@ -10,10 +10,12 @@ import java.util.HashMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.Team;
 
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingAPI;
@@ -370,15 +372,52 @@ public class CTeamingCommand implements CommandExecutor {
             return true;
         }
 
-        Player player = Bukkit.getPlayerExact(args[2]);
-        if ( player == null ) {
-            sender.sendMessage(PREERR + "プレイヤー " + args[2] + " は存在しません。");
-            return true;
-        }
+        boolean isNewGroup;
+        boolean isAll = args[2].equalsIgnoreCase("all");
+        
+        if ( isAll ) {
+            
+            // ゲームモードがクリエイティブの人や、既に色が設定されている人は除外する
+            ArrayList<Player> tempPlayers =
+                    api.getAllPlayersOnWorld(plugin.getCTConfig().getWorldNames());
+            ArrayList<Player> players = new ArrayList<Player>();
+            for ( Player p : tempPlayers ) {
+                Team team = api.getPlayerTeam(p);
+                if ( p.getGameMode() != GameMode.CREATIVE &&
+                        (team == null || team.getName().equals("") )) {
+                    players.add(p);
+                }
+            }
+            if ( players.size() == 0 ) {
+                sender.sendMessage(
+                        PREERR + "設定されたワールドに、対象プレイヤーがいないようです。");
+                return true;
+            }
 
-        boolean isNewGroup = !api.isExistTeam(target);
-        TeamNameSetting tns = api.getTeamNameFromID(target);
-        api.addPlayerTeam(player, tns);
+            isNewGroup = !api.isExistTeam(target);
+            TeamNameSetting tns = api.getTeamNameFromID(target);
+            for ( Player player : players ) {
+                api.addPlayerTeam(player, tns);
+            }
+
+            sender.sendMessage(PREINFO + "未所属のプレイヤーを、チーム " +
+                    tns.getName() + " に追加しました。");
+            
+        } else {
+            
+            Player player = Bukkit.getPlayerExact(args[2]);
+            if ( player == null ) {
+                sender.sendMessage(PREERR + "プレイヤー " + args[2] + " は存在しません。");
+                return true;
+            }
+
+            isNewGroup = !api.isExistTeam(target);
+            TeamNameSetting tns = api.getTeamNameFromID(target);
+            api.addPlayerTeam(player, tns);
+
+            sender.sendMessage(PREINFO + "プレイヤー " + player.getName() + " をチーム " +
+                    tns.getName() + " に追加しました。");
+        }
 
         // メンバー情報をlastdataに保存する
         api.getCTSaveDataHandler().save("lastdata");
@@ -390,9 +429,6 @@ public class CTeamingCommand implements CommandExecutor {
         api.refreshSidebarScore();
         api.refreshTabkeyListScore();
         api.refreshBelowNameScore();
-
-        sender.sendMessage(PREINFO + "プレイヤー " + player.getName() + " をチーム " +
-                tns.getName() + " に追加しました。");
 
         return true;
     }

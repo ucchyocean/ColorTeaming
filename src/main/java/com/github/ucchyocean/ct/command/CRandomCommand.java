@@ -100,8 +100,7 @@ public class CRandomCommand implements CommandExecutor {
         for ( Player p : tempPlayers ) {
             Team team = api.getPlayerTeam(p);
             if ( p.getGameMode() != GameMode.CREATIVE &&
-                    (team == null || team.getName().equals("") ||
-                            team.getName().equals("white")) ) {
+                    (team == null || team.getName().equals("") )) {
                 players.add(p);
             }
         }
