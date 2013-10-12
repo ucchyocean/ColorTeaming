@@ -374,8 +374,35 @@ public class CTeamingCommand implements CommandExecutor {
 
         boolean isNewGroup;
         boolean isAll = args[2].equalsIgnoreCase("all");
+        boolean isRest = args[2].equalsIgnoreCase("rest");
         
         if ( isAll ) {
+            
+            // ゲームモードがクリエイティブの人は除外する
+            ArrayList<Player> tempPlayers =
+                    api.getAllPlayersOnWorld(plugin.getCTConfig().getWorldNames());
+            ArrayList<Player> players = new ArrayList<Player>();
+            for ( Player p : tempPlayers ) {
+                if ( p.getGameMode() != GameMode.CREATIVE ) {
+                    players.add(p);
+                }
+            }
+            if ( players.size() == 0 ) {
+                sender.sendMessage(
+                        PREERR + "設定されたワールドに、対象プレイヤーがいないようです。");
+                return true;
+            }
+
+            isNewGroup = !api.isExistTeam(target);
+            TeamNameSetting tns = api.getTeamNameFromID(target);
+            for ( Player player : players ) {
+                api.addPlayerTeam(player, tns);
+            }
+
+            sender.sendMessage(PREINFO + "全てのプレイヤーを、チーム " +
+                    tns.getName() + " に追加しました。");
+        
+        } else if ( isRest ) {
             
             // ゲームモードがクリエイティブの人や、既に色が設定されている人は除外する
             ArrayList<Player> tempPlayers =

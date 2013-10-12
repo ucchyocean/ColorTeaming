@@ -13,7 +13,8 @@ commands:
     usage: |
            /<command> reload - ColorMeTeaming の config.yml を再読み込みします。
            /<command> add (team) (player) - playerをteamに追加します。
-           /<command> add (team) all - チーム未設定プレイヤー全員をteamに追加します。
+           /<command> add (team) all - プレイヤー全員をteamに追加します。
+           /<command> add (team) rest - チーム未設定プレイヤー全員をteamに追加します。
            /<command> remove (team) - teamを解散します。
            /<command> removeAll - 全てのチームを解散します。
            /<command> trophy (amount) - キル数達成時の通知を設定します。
