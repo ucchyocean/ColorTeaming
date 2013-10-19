@@ -44,6 +44,9 @@ public class ColorTeamingConfig {
     /** 仲間の透明が見えるかどうか のオンオフ */
     private boolean canSeeFriendlyInvisibles;
     
+    /** ベッドリスポーン地点を、チームリスポーン地点よりも優先するかどうか のオンオフ */
+    private boolean priorBedRespawn;
+    
     /** ゲームオーバーを表示せずにリスポーンするかどうか のオンオフ */
     private boolean skipGameover;
     
@@ -136,6 +139,7 @@ public class ColorTeamingConfig {
         ctconfig.teamChatLogMode = config.getBoolean("teamChatLogMode", true);
         ctconfig.friendlyFire = config.getBoolean("friendlyFire", true);
         ctconfig.canSeeFriendlyInvisibles = config.getBoolean("seeFriendlyInvisible", true);
+        ctconfig.priorBedRespawn = config.getBoolean("priorBedRespawn", false);
         ctconfig.skipGameover = config.getBoolean("skipGameover", false);
 
         ctconfig.healOnSetClass = config.getBoolean("healOnSetClass", true);
@@ -229,6 +233,7 @@ public class ColorTeamingConfig {
         config.set("teamChatLogMode", teamChatLogMode);
         config.set("friendlyFire", friendlyFire);
         config.set("seeFriendlyInvisible", canSeeFriendlyInvisibles);
+        config.set("priorBedRespawn", priorBedRespawn);
         config.set("skipGameover", skipGameover);
         config.set("healOnSetClass", healOnSetClass);
         config.set("colorRemoveOnDeath", colorRemoveOnDeath);
@@ -464,6 +469,14 @@ public class ColorTeamingConfig {
 
     public void setTeleportDelay(int teleportDelay) {
         this.teleportDelay = teleportDelay;
+    }
+
+    public boolean isPriorBedRespawn() {
+        return priorBedRespawn;
+    }
+
+    public void setPriorBedRespawn(boolean priorBedRespawn) {
+        this.priorBedRespawn = priorBedRespawn;
     }
 
 }

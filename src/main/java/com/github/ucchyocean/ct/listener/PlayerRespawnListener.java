@@ -40,11 +40,19 @@ public class PlayerRespawnListener implements Listener {
         // （死亡したあとも）チームに所属している場合
         if ( tns != null ) {
 
-            // チームのリスポーン場所に設定
-            RespawnConfiguration respawnConfig = plugin.getAPI().getRespawnConfig();
-            String respawnMapName = plugin.getAPI().getRespawnMapName();
-            Location respawn = respawnConfig.get(tns.getID(), respawnMapName);
-            
+            // チームのリスポーン場所を取得して設定
+            // ただし、priorBedRespawn = true かつ player.getBedSpawnLocation != null なら、
+            // ベッドリスポーンを優先する
+            Location respawn;
+            if ( ColorTeaming.instance.getCTConfig().isPriorBedRespawn() &&
+                    player.getBedSpawnLocation() != null ) {
+                respawn = player.getBedSpawnLocation();
+            } else {
+                RespawnConfiguration respawnConfig = plugin.getAPI().getRespawnConfig();
+                String respawnMapName = plugin.getAPI().getRespawnMapName();
+                respawn = respawnConfig.get(tns.getID(), respawnMapName);
+            }
+                
             if ( respawn != null ) {
                 respawn = respawn.add(0.5, 0, 0.5);
                 event.setRespawnLocation(respawn);
