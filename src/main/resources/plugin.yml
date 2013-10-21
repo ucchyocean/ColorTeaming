@@ -123,6 +123,7 @@ commands:
            /<command> (team) (MapName) - マップMapNameにおけるteamのメンバーのリスポーンポイントを、コマンドを実行した人の場所に設定します。
            /<command> (team) (x) (y) (z) - teamのメンバー全員のリスポーンポイントを、(x),(y),(z) の場所に設定します。
            /<command> switch (MapName) - リスポーンポイントの設定を、MapNameに変更します。
+           /<command> switch random - リスポーンポイントの設定を、登録されているマップ名からランダムに選択して変更します。
            /<command> switch - リスポーンポイントの設定を、デフォルトに戻します。
            /<command> remove (team) - teamのリスポーンポイント設定を削除します。
            /<command> remove all - 全てのチームのリスポーン設定を削除します。

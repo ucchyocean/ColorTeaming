@@ -80,4 +80,25 @@ public class RespawnConfiguration extends PointConfigAbst {
 
         return list(mkeys);
     }
+    
+    /**
+     * 現在登録されている全てのマップ名を取得します
+     * @return マップ名
+     */
+    public ArrayList<String> getAllMapNames() {
+        
+        ArrayList<String> results = new ArrayList<String>();
+        ArrayList<String> keys = keys();
+        
+        for ( String key : keys ) {
+            if ( key.contains("-") ) {
+                String map = key.substring(0, key.indexOf("-"));
+                if ( !results.contains(map) ) {
+                    results.add(map);
+                }
+            }
+        }
+        
+        return results;
+    }
 }

@@ -6,6 +6,7 @@
 package com.github.ucchyocean.ct.command;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -181,27 +182,64 @@ public class CSpawnCommand implements CommandExecutor {
             }
 
         } else if ( args[0].equalsIgnoreCase("switch") ) {
-            // cspawn switch (map) の実行
 
-            String map = args[1];
+            if ( args[1].equalsIgnoreCase("random") ) {
+                // cspawn switch random の実行
 
-            if ( !isValidMapName(map) ) {
-                sender.sendMessage(PREINFO + "マップ名 " + map + " は指定不可能な文字を含んでいます。");
+                // マップの取得
+                ArrayList<String> maps = plugin.getAPI().getRespawnConfig().getAllMapNames();
+
+                if ( maps.size() == 0 ) {
+                    sender.sendMessage(PREERR + "マップ名が1つも登録されていません。");
+                    return true;
+                }
+
+                // ランダムに1つを取り出す
+                Random rand = new Random(System.currentTimeMillis());
+                int index = rand.nextInt(maps.size());
+                String map = maps.get(index);
+
+                plugin.getAPI().setRespawnMapName(map);
+                sender.sendMessage(PREINFO + "リスポーン設定を、マップ " + map + " 用に切り替えました。");
+
+                // 切り替えたマップのリスポーン地点一覧を表示する
+                ArrayList<String> list = respawnConfig.list(map);
+                for ( String l : list ) {
+                    sender.sendMessage(PREINFO + l);
+                }
+
+                return true;
+
+            } else {
+                // cspawn switch (map) の実行
+
+                String map = args[1];
+
+                if ( !isValidMapName(map) ) {
+                    sender.sendMessage(PREERR + "マップ名 " + map + " は指定不可能な文字を含んでいます。");
+                    return true;
+                }
+
+                ArrayList<String> maps = plugin.getAPI().getRespawnConfig().getAllMapNames();
+                if ( !maps.contains(map) ) {
+                    sender.sendMessage(PREERR + "指定されたマップ名 " + map + " は登録されていません。");
+                    return true;
+                }
+
+                plugin.getAPI().setRespawnMapName(map);
+                sender.sendMessage(PREINFO + "リスポーン設定を、マップ " + map + " 用に切り替えました。");
+
+                // 切り替えたマップのリスポーン地点一覧を表示する
+                ArrayList<String> list = respawnConfig.list(map);
+                for ( String l : list ) {
+                    sender.sendMessage(PREINFO + l);
+                }
+
                 return true;
             }
-
-            plugin.getAPI().setRespawnMapName(map);
-            sender.sendMessage(PREINFO + "リスポーン設定を、マップ " + map + " 用に切り替えました。");
-
-            // 切り替えたマップのリスポーン地点一覧を表示する
-            ArrayList<String> list = respawnConfig.list(map);
-            for ( String l : list ) {
-                sender.sendMessage(PREINFO + l);
-            }
-
-            return true;
         }
 
+        // 以下、リスポーン地点の設定系処理
 
         String group = args[0];
         String map = args[1];
@@ -211,7 +249,7 @@ public class CSpawnCommand implements CommandExecutor {
             // cspawn (group) (map) の実行
 
             if ( !isValidMapName(map) ) {
-                sender.sendMessage(PREINFO + "マップ名 " + map + " は指定不可能な文字を含んでいます。");
+                sender.sendMessage(PREERR + "マップ名 " + map + " は指定不可能な文字を含んでいます。");
                 return true;
             }
 
@@ -253,7 +291,7 @@ public class CSpawnCommand implements CommandExecutor {
             // cspawn (group) (point) (x) (y) (z) の実行
 
             if ( !isValidMapName(map) ) {
-                sender.sendMessage(PREINFO + "マップ名 " + map + " は指定不可能な文字を含んでいます。");
+                sender.sendMessage(PREERR + "マップ名 " + map + " は指定不可能な文字を含んでいます。");
                 return true;
             }
 
