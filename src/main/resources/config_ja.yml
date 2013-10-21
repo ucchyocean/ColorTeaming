@@ -83,6 +83,11 @@ classes:
     armor: 298$E5E533,299$E5E533,300$E5E533,301$E5E533
   GreenLeather:
     armor: 298$667F33,299$667F33,300$667F33,301$667F33
+  Shooter:
+    items: (shooter),267^16-5,260:10
+    armor: 0,299,300,0
+    effect: 1-1
+    experience: 1500
 
 # cpointコマンド用の得点設定。
 #   ctKillPoint - 他のチームのプレイヤーを倒したときの獲得点数。
