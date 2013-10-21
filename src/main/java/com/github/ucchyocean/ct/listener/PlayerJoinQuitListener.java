@@ -84,11 +84,16 @@ public class PlayerJoinQuitListener implements Listener {
         // サイドバーを更新する
         api.refreshSidebarScore();
 
-        // colorRemoveOnQuitがfalseなら、以降の処理は何もしない。
+        // colorRemoveOnQuitがtrueなら処理する
         if ( config.isColorRemoveOnQuit() ) {
 
             Player player = event.getPlayer();
             TeamNameSetting tns = api.getPlayerTeamName(player);
+            
+            // チームに所属していないプレイヤーなら、処理しない
+            if ( tns == null ) {
+                return;
+            }
     
             // ログアウトしたプレイヤーが、大将だった場合、逃げたことを全体に通知する。
             HashMap<String, ArrayList<String>> leaders = api.getLeaders();
@@ -113,5 +118,4 @@ public class PlayerJoinQuitListener implements Listener {
             api.leavePlayerTeam(player, Reason.DEAD);
         }
     }
-
 }
