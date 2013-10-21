@@ -19,9 +19,11 @@ import java.util.Collection;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  * @author ucchy
@@ -184,7 +186,7 @@ public class Utility {
      * プレイヤーの全回復、および、全エフェクトの除去を行う
      * @param player 対象プレイヤー
      */
-    public static void heal(Player player) {
+    public static void heal(final Player player) {
         
         player.setHealth(player.getMaxHealth());
         player.setFireTicks(0);
@@ -195,6 +197,14 @@ public class Utility {
         for ( PotionEffect e : effects ) {
             player.removePotionEffect(e.getType());
         }
+        
+        // NOTE: Fire ticks は、少し遅れて設定しないと、火が消えない。
+        Bukkit.getScheduler().runTaskLater(ColorTeaming.instance, new BukkitRunnable() {
+            @Override
+            public void run() {
+                player.setFireTicks(0);
+            }
+        }, 1L);
     }
     
     /**
