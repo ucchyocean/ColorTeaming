@@ -22,7 +22,11 @@ import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingAPI;
 import com.github.ucchyocean.ct.config.ColorTeamingConfig;
 import com.github.ucchyocean.ct.config.TeamNameSetting;
+import com.github.ucchyocean.ct.event.ColorTeamingLeaderDefeatedEvent;
 import com.github.ucchyocean.ct.event.ColorTeamingPlayerLeaveEvent.Reason;
+import com.github.ucchyocean.ct.event.ColorTeamingTeamDefeatedEvent;
+import com.github.ucchyocean.ct.event.ColorTeamingWonLeaderEvent;
+import com.github.ucchyocean.ct.event.ColorTeamingWonTeamEvent;
 import com.github.ucchyocean.ct.scoreboard.SidebarCriteria;
 
 /**
@@ -70,7 +74,6 @@ public class PlayerJoinQuitListener implements Listener {
         }
     }
 
-
     /**
      * Playerがログアウトしたときに発生するイベント
      * @param event
@@ -107,15 +110,51 @@ public class PlayerJoinQuitListener implements Listener {
                 if ( leaders.get(tns.getID()).size() >= 1 ) {
                     message = String.format(PRENOTICE + "%s チームの残り大将は、あと %d 人です。",
                             tns.getName(), leaders.get(tns.getID()).size());
+                    Bukkit.broadcastMessage(message);
+                    
                 } else {
                     message = String.format(PRENOTICE + "%s チームの大将は全滅しました！", 
                             tns.getName());
+                    Bukkit.broadcastMessage(message);
+                    leaders.remove(tns.getID());
+                    
+                    // チームリーダー全滅イベントのコール
+                    ColorTeamingLeaderDefeatedEvent event2 =
+                            new ColorTeamingLeaderDefeatedEvent(tns, null, player.getName());
+                    Bukkit.getServer().getPluginManager().callEvent(event2);
+
+                    // リーダーが残っているチームがあと1チームなら、勝利イベントを更にコール
+                    if ( leaders.size() == 1 ) {
+                        TeamNameSetting wonTeam = null;
+                        for ( String t : leaders.keySet() ) {
+                            wonTeam = api.getTeamNameFromID(t);
+                        }
+                        ColorTeamingWonLeaderEvent event3 =
+                                new ColorTeamingWonLeaderEvent(wonTeam, event2);
+                        Bukkit.getServer().getPluginManager().callEvent(event3);
+                    }
                 }
-                Bukkit.broadcastMessage(message);
             }
     
             // 色設定を削除する
             api.leavePlayerTeam(player, Reason.DEAD);
+
+            // チームがなくなっていたなら、チーム全滅イベントをコール
+            ColorTeamingTeamDefeatedEvent event2 =
+                    new ColorTeamingTeamDefeatedEvent(tns, null, player.getName());
+            Bukkit.getServer().getPluginManager().callEvent(event2);
+
+            // 残っているチームがあと1チームなら、勝利イベントを更にコール
+            ArrayList<TeamNameSetting> teamNames = api.getAllTeamNames();
+            if ( teamNames.size() == 1 ) {
+                TeamNameSetting wonTeam = null;
+                for ( TeamNameSetting t : teamNames ) {
+                    wonTeam = t;
+                }
+                ColorTeamingWonTeamEvent event3 =
+                        new ColorTeamingWonTeamEvent(wonTeam, event2);
+                Bukkit.getServer().getPluginManager().callEvent(event3);
+            }
         }
     }
 }
