@@ -8,6 +8,7 @@ package com.github.ucchyocean.ct.scoreboard;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -48,7 +49,14 @@ public abstract class ScoreDisplayBase {
 
         objective.setDisplaySlot(getDisplaySlot());
 
-        refreshScore();
+        if ( getConfigData() == PlayerCriteria.HEALTH ) {
+            refreshScoreFromHealth();
+        } else if ( getConfigData() == PlayerCriteria.CUSTOM ||
+                getConfigData() == PlayerCriteria.DEATH_COUNT ||
+                getConfigData() == PlayerCriteria.KILL_COUNT || 
+                getConfigData() == PlayerCriteria.POINT ) {
+            refreshScore();
+        }
     }
 
     /**
@@ -86,6 +94,17 @@ public abstract class ScoreDisplayBase {
                 objective.getScore(player).setScore(1);
             }
             objective.getScore(player).setScore(point);
+        }
+    }
+    
+    /**
+     * スコアを、現在の体力値で更新する。（see issue #76）
+     */
+    public void refreshScoreFromHealth() {
+        
+        for ( Player player : Bukkit.getOnlinePlayers() ) {
+            double health = player.getHealth();
+            objective.getScore(player).setScore((int)health);
         }
     }
 
