@@ -71,6 +71,7 @@ public class CChatCommand implements CommandExecutor {
             sender.sendMessage(ChatColor.RED + "チームチャットのログ記録を無効にします。");
             return true;
         } else if ( args.length >= 2 ){
+            
             // チームにメッセージ送信
             String team = args[0];
             ColorTeamingAPI api = plugin.getAPI();
@@ -88,7 +89,7 @@ public class CChatCommand implements CommandExecutor {
             }
 
             // 送信
-            api.sendInfoToTeamChat(team, message.toString());
+            api.sendTeamChat(sender, team, message.toString());
         }
 
         return false;

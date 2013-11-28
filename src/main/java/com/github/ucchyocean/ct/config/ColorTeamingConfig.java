@@ -37,6 +37,9 @@ public class ColorTeamingConfig {
 
     /** チームチャットのロギング オンオフ */
     private boolean teamChatLogMode;
+    
+    /** チームチャットの表示フォーマット */
+    private String teamChatFormat;
 
     /** FriendlyFireの オンオフ */
     private boolean friendlyFire;
@@ -137,6 +140,9 @@ public class ColorTeamingConfig {
         ctconfig.teamChatMode = config.getBoolean("teamChatMode", false);
         ctconfig.OPDisplayMode = config.getBoolean("opDisplayMode", false);
         ctconfig.teamChatLogMode = config.getBoolean("teamChatLogMode", true);
+        ctconfig.teamChatFormat = config.getString("teamChatFormat", 
+                "&a[%team&a]<%prefix%name%suffix&r&a> %message");
+        
         ctconfig.friendlyFire = config.getBoolean("friendlyFire", true);
         ctconfig.canSeeFriendlyInvisibles = config.getBoolean("seeFriendlyInvisible", true);
         ctconfig.priorBedRespawn = config.getBoolean("priorBedRespawn", false);
@@ -231,6 +237,7 @@ public class ColorTeamingConfig {
         config.set("teamChatMode", teamChatMode);
         config.set("opDisplayMode", OPDisplayMode);
         config.set("teamChatLogMode", teamChatLogMode);
+        config.set("teamChatFormat", teamChatFormat);
         config.set("friendlyFire", friendlyFire);
         config.set("seeFriendlyInvisible", canSeeFriendlyInvisibles);
         config.set("priorBedRespawn", priorBedRespawn);
@@ -277,6 +284,10 @@ public class ColorTeamingConfig {
 
     public boolean isTeamChatLogMode() {
         return teamChatLogMode;
+    }
+    
+    public String getTeamChatFormat() {
+        return teamChatFormat;
     }
 
     public boolean isFriendlyFire() {

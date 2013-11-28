@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Scoreboard;
@@ -145,10 +146,11 @@ public interface ColorTeamingAPI {
 
     /**
      * 情報をチームチャットに送信する。
+     * @param sender 送信者
      * @param team 送信先のチーム
      * @param message 送信するメッセージ
      */
-    public void sendInfoToTeamChat(String team, String message);
+    public void sendTeamChat(CommandSender sender, String team, String message);
 
     /**
      * サイドバーを新しく作る。

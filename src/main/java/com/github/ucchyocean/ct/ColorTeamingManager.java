@@ -14,6 +14,7 @@ import java.util.Set;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -21,6 +22,7 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
+import com.github.ucchyocean.ct.bridge.VaultChatBridge;
 import com.github.ucchyocean.ct.config.ClassData;
 import com.github.ucchyocean.ct.config.ColorTeamingConfig;
 import com.github.ucchyocean.ct.config.RespawnConfiguration;
@@ -48,15 +50,13 @@ import com.github.ucchyocean.ct.scoreboard.TabListScoreDisplay;
  */
 public class ColorTeamingManager implements ColorTeamingAPI {
 
-    private static final String TEAM_CHAT_FORMAT = "&a[%s&a]<%s&r&a> %s";
-    private static final String TEAM_INFORMATION_FORMAT = "&a[%s&a] %s";
-
     private static SidebarScoreDisplay sidebarScore;
     private static TabListScoreDisplay tablistScore;
     private static BelowNameScoreDisplay belownameScore;
     
     private ColorTeaming plugin;
     private ColorTeamingConfig config;
+    private VaultChatBridge vaultchat;
 
     private Scoreboard sb;
     private TeamMemberSaveDataHandler sdhandler;
@@ -77,11 +77,14 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      * コンストラクタ
      * @param plugin
      * @param config
+     * @param vaultchat
      */
-    public ColorTeamingManager(ColorTeaming plugin, ColorTeamingConfig config) {
+    public ColorTeamingManager(ColorTeaming plugin, 
+            ColorTeamingConfig config, VaultChatBridge vaultchat) {
 
         this.plugin = plugin;
         this.config = config;
+        this.vaultchat = vaultchat;
 
         // 変数の初期化
         teamPoints = new HashMap<String, Integer>();
@@ -438,13 +441,32 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     @Override
     public void sendTeamChat(Player player, String message) {
 
+        // チームを取得する
         Team team = getPlayerTeam(player);
         if ( team == null ) {
             return;
         }
 
+        sendTeamChat(player, team.getName(), message);
+    }
+
+    /**
+     * 情報をチームチャットに送信する。
+     * @param sender 送信者
+     * @param team 送信先のチームID
+     * @param message 送信するメッセージ
+     */
+    @Override
+    public void sendTeamChat(CommandSender sender, String team, String message) {
+
+        // チームを取得する
+        Team t = getScoreboard().getTeam(team);
+        if ( t == null ) {
+            return;
+        }
+
         // 設定に応じて、Japanize化する
-        if ( config.isShowJapanizeTeamChat() ) {
+        if ( sender instanceof Player && config.isShowJapanizeTeamChat() ) {
             // 2byteコードを含む場合や、半角カタカナしか含まない場合は、
             // 処理しないようにする。
             if ( message.getBytes().length == message.length() &&
@@ -456,28 +478,44 @@ public class ColorTeamingManager implements ColorTeamingAPI {
 
         // イベントコール
         ColorTeamingTeamChatEvent event =
-                new ColorTeamingTeamChatEvent(player, message, team);
+                new ColorTeamingTeamChatEvent(sender, message, t);
         Bukkit.getServer().getPluginManager().callEvent(event);
         if ( event.isCancelled() ) {
             return;
         }
         message = event.getMessage();
+        
+        // キーワード生成
+        String teamName = t.getDisplayName();
+        String playerName = "";
+        String prefix = "";
+        String suffix = "";
+        if ( sender instanceof Player ) {
+            Player player = (Player)sender;
+            playerName = player.getDisplayName();
+            if ( vaultchat != null ) {
+                prefix = vaultchat.getPlayerPrefix(player);
+                suffix = vaultchat.getPlayerSuffix(player);
+            }
+        } else {
+            if ( sender != null ) {
+                playerName = sender.getName();
+            }
+        }
 
         // メッセージを生成
-        String partyMessage = String.format(
-                Utility.replaceColorCode(TEAM_CHAT_FORMAT),
-                team.getDisplayName(),
-                player.getDisplayName(),
-                message
-                );
+        String partyMessage = config.getTeamChatFormat();
+        partyMessage = partyMessage.replace("%team", teamName);
+        partyMessage = partyMessage.replace("%name", playerName);
+        partyMessage = partyMessage.replace("%prefix", prefix);
+        partyMessage = partyMessage.replace("%suffix", suffix);
 
         // チームメンバに送信する
-        ArrayList<Player> playersToSend = getTeamMembers(team.getName());
+        ArrayList<Player> playersToSend = getTeamMembers(t.getName());
         if ( config.isOPDisplayMode() ) {
-            Player[] players = plugin.getServer().getOnlinePlayers();
-            for ( Player p : players ) {
-                if ( p.isOp() && !playersToSend.contains(p) ) {
-                    playersToSend.add(p);
+            for ( OfflinePlayer p : plugin.getServer().getOperators() ) {
+                if ( p.isOnline() && !playersToSend.contains(p.getPlayer()) ) {
+                    playersToSend.add(p.getPlayer());
                 }
             }
         }
@@ -488,35 +526,6 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         // ログ記録する
         if ( config.isTeamChatLogMode() ) {
             plugin.getLogger().info(partyMessage);
-        }
-    }
-
-    /**
-     * 情報をチームチャットに送信する。
-     * @param team 送信先のチームID
-     * @param message 送信するメッセージ
-     */
-    @Override
-    public void sendInfoToTeamChat(String id, String message) {
-
-        // チームを取得する
-        Team team = getScoreboard().getTeam(id);
-        if ( team == null ) {
-            return;
-        }
-        
-        // メッセージを生成
-        String partyMessage = String.format(
-                Utility.replaceColorCode(TEAM_INFORMATION_FORMAT),
-                team.getDisplayName(), message
-                );
-
-        // チームメンバに送信する
-        ArrayList<Player> playersToSend = getTeamMembers(id);
-        if ( playersToSend != null ) {
-            for ( Player p : playersToSend ) {
-                p.sendMessage(partyMessage);
-            }
         }
     }
 

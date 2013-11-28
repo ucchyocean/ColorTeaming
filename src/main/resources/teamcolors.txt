@@ -12,7 +12,7 @@
 # 
 # 指定例）
 # teikoku, 帝国軍, &c
-# kaihou,  開放軍, &9
+# kaihou,  解放軍, &9
 # 
 red,     赤,   &c
 blue,    青,   &9

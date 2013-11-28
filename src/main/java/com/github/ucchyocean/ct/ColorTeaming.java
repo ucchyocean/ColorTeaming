@@ -9,6 +9,7 @@ import java.io.File;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.github.ucchyocean.ct.bridge.VaultChatBridge;
 import com.github.ucchyocean.ct.command.CChatCommand;
 import com.github.ucchyocean.ct.command.CChatGlobalCommand;
 import com.github.ucchyocean.ct.command.CClassCommand;
@@ -54,9 +55,16 @@ public class ColorTeaming extends JavaPlugin {
 
         // 設定の読み込み処理
         config = ColorTeamingConfig.loadConfig();
+        
+        // VaultChatをロード
+        VaultChatBridge vaultchat = null;
+        if ( getServer().getPluginManager().isPluginEnabled("Vault") ) {
+            vaultchat = VaultChatBridge.load(
+                    getServer().getPluginManager().getPlugin("Vault"));
+        }
 
         // マネージャの初期化
-        manager = new ColorTeamingManager(this, config);
+        manager = new ColorTeamingManager(this, config, vaultchat);
 
         // コマンドをサーバーに登録
         getCommand("colorcount").setExecutor(new CCountCommand(this));

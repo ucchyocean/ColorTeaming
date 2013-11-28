@@ -129,7 +129,7 @@ public class CLeaderCommand implements CommandExecutor {
                     l.append(name);
                 }
                 String message = String.format("%s チームの大将に、%s が選ばれました。", teamName.getName(), l);
-                plugin.getAPI().sendInfoToTeamChat(key, message);
+                plugin.getAPI().sendTeamChat(null, key, message);
                 sender.sendMessage(String.format(PREINFO + "%s チームの大将を、%d 人設定しました。", 
                         teamName.getName(), numberOfLeaders));
             }
@@ -168,7 +168,7 @@ public class CLeaderCommand implements CommandExecutor {
 
                 String message = String.format("%s チームの大将に、%s が選ばれました。", 
                         teamName.toString(), newLeader);
-                plugin.getAPI().sendInfoToTeamChat(team, message);
+                plugin.getAPI().sendTeamChat(null, team, message);
                 sender.sendMessage(String.format(PREINFO + "%s チームの大将を、1 人設定しました。", 
                         teamName.toString()));
 
@@ -187,7 +187,7 @@ public class CLeaderCommand implements CommandExecutor {
 
                 String message = String.format("%s チームの大将に、%s が選ばれました。", 
                         teamName.toString(), user);
-                plugin.getAPI().sendInfoToTeamChat(team, message);
+                plugin.getAPI().sendTeamChat(null, team, message);
                 sender.sendMessage(PRENOTICE + message);
 
                 return true;

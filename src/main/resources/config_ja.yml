@@ -18,6 +18,13 @@ opDisplayMode: false
 # 同時に、server.log にも記録されます。
 teamChatLogMode: true
 
+# チームチャットの表示フォーマットを設定します。
+# 次のキーワードが使用できます。
+# %team → チーム名、%name → プレイヤー名、%prefix → プレフィックス、%suffix → サフィックス
+# プレフィックスとサフィックスを有効にするには、
+# Vaultと、チャット装飾関連プラグイン(PermissionsExなど)がロードされている必要があります。
+teamChatFormat: '&a[%team&a]<%prefix%name%suffix&r&a> %message'
+
 # 同じチームメンバー同士の攻撃（剣などの直接攻撃と、弓矢やポーション）の
 # 有効/無効を設定します。true → 攻撃が有効、false → 攻撃が無効
 friendlyFire: false
@@ -28,8 +35,8 @@ seeFriendlyInvisible: true
 
 # ベッドリスポーン地点を、チームリスポーン地点よりも優先するかどうかを設定します。
 # （Rush形式のPVP用設定です。）
-# true → チームリスポーン地点＞ベッドリスポーン地点＞ワールドリスポーン地点
-# false → ベッドリスポーン地点＞チームリスポーン地点＞ワールドリスポーン地点
+# true → ベッドリスポーン地点＞チームリスポーン地点＞ワールドリスポーン地点
+# false → チームリスポーン地点＞ベッドリスポーン地点＞ワールドリスポーン地点
 priorBedRespawn: false
 
 # プレイヤー死亡時に、ゲームオーバーを表示せずにリスポーンするかどうかを設定します。

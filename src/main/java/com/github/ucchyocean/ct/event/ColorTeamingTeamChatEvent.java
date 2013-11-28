@@ -5,7 +5,7 @@
  */
 package com.github.ucchyocean.ct.event;
 
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 import org.bukkit.event.Cancellable;
 import org.bukkit.scoreboard.Team;
 
@@ -17,8 +17,8 @@ public class ColorTeamingTeamChatEvent extends ColorTeamingEvent implements Canc
 
     private boolean isCancelled;
 
-    /** 発言したプレイヤー */
-    private Player player;
+    /** 発言した人 */
+    private CommandSender sender;
 
     /** 発言したメッセージ */
     private String message;
@@ -28,12 +28,12 @@ public class ColorTeamingTeamChatEvent extends ColorTeamingEvent implements Canc
 
     /**
      * コンストラクタ
-     * @param player 発言したプレイヤー
+     * @param sender 発言した人
      * @param message 発言したメッセージ
      * @param team 発言先チーム
      */
-    public ColorTeamingTeamChatEvent(Player player, String message, Team team) {
-        this.player = player;
+    public ColorTeamingTeamChatEvent(CommandSender sender, String message, Team team) {
+        this.sender = sender;
         this.message = message;
         this.team = team;
     }
@@ -41,8 +41,8 @@ public class ColorTeamingTeamChatEvent extends ColorTeamingEvent implements Canc
     /**
      * @return 発言したプレイヤー
      */
-    public Player getPlayer() {
-        return player;
+    public CommandSender getSender() {
+        return sender;
     }
 
     /**
