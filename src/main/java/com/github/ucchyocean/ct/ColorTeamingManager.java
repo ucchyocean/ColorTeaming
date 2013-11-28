@@ -472,7 +472,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
             if ( message.getBytes().length == message.length() &&
                     !message.matches("[ \\uFF61-\\uFF9F]+") ) {
                 String kana = KanaConverter.conv(message);
-                message = message + "(" + kana + ")";
+                message = message + " (" + kana + ")";
             }
         }
 
@@ -509,6 +509,8 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         partyMessage = partyMessage.replace("%name", playerName);
         partyMessage = partyMessage.replace("%prefix", prefix);
         partyMessage = partyMessage.replace("%suffix", suffix);
+        partyMessage = partyMessage.replace("%message", message);
+        partyMessage = Utility.replaceColorCode(partyMessage);
 
         // チームメンバに送信する
         ArrayList<Player> playersToSend = getTeamMembers(t.getName());

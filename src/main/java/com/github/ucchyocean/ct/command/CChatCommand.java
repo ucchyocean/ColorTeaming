@@ -89,7 +89,9 @@ public class CChatCommand implements CommandExecutor {
             }
 
             // 送信
-            api.sendTeamChat(sender, team, message.toString());
+            api.sendTeamChat(sender, team, message.toString().trim());
+            
+            return true;
         }
 
         return false;
