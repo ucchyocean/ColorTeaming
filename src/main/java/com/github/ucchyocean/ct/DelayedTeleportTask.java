@@ -64,6 +64,7 @@ public class DelayedTeleportTask extends BukkitRunnable {
                     public void run() {
                         for ( Player playerA : locationMap.keySet() ) {
                             for ( Player playerB : locationMap.keySet() ) {
+                                playerA.hidePlayer(playerB);
                                 playerA.showPlayer(playerB);
                             }
                         }
