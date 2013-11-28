@@ -112,6 +112,10 @@ public class ColorTeamingConfig {
 
     /** テレポート実行時のディレイ間隔 */
     private int teleportDelay;
+    
+    /** テレポート実行後に、他プレイヤー非表示になる問題対策のための、
+     *  パケット再送信実行のディレイ。0ならパケットを送信しない。*/
+    private int teleportVisiblePacketSendDelay;
 
     /**
      * config.ymlの読み出し処理。
@@ -209,6 +213,8 @@ public class ColorTeamingConfig {
         ctconfig.showJapanizeGlobalChat = config.getBoolean("showJapanizeGlobalChat", false);
         ctconfig.showJapanizeTeamChat = config.getBoolean("showJapanizeTeamChat", true);
         ctconfig.teleportDelay = config.getInt("teleportDelay", 2);
+        ctconfig.teleportVisiblePacketSendDelay =
+                config.getInt("teleportVisiblePacketSendDelay", 20);
 
         return ctconfig;
     }
@@ -381,6 +387,10 @@ public class ColorTeamingConfig {
     public int getTeleportDelay() {
         return teleportDelay;
     }
+    
+    public int getTeleportVisiblePacketSendDelay() {
+        return teleportVisiblePacketSendDelay;
+    }
 
     public void setTeamChatMode(boolean isTeamChatMode) {
         this.teamChatMode = isTeamChatMode;
@@ -392,6 +402,10 @@ public class ColorTeamingConfig {
 
     public void setTeamChatLogMode(boolean isTeamChatLogMode) {
         this.teamChatLogMode = isTeamChatLogMode;
+    }
+    
+    public void setTeamChatFormat(String teamChatFormat) {
+        this.teamChatFormat = teamChatFormat;
     }
 
     public void setFriendlyFire(boolean isFriendlyFire) {
