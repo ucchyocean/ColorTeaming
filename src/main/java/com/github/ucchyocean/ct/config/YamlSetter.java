@@ -60,12 +60,7 @@ public class YamlSetter {
         }
     }
     
-    /**
-     * 文字列値を設定する。
-     * @param key キー
-     * @param value 値
-     */
-    public void setString(String key, String value) {
+    public void setValue(String key, String value) {
         
         for ( String line : contents ) {
             if ( line.startsWith(key + ":") ) {
@@ -82,12 +77,25 @@ public class YamlSetter {
     }
     
     /**
+     * 文字列値を設定する。
+     * @param key キー
+     * @param value 値
+     */
+    public void setString(String key, String value) {
+        if ( value.startsWith("'") && value.endsWith("'") ) {
+            setValue(key, value);
+        } else {
+            setValue(key, "'" + value + "'");
+        }
+    }
+    
+    /**
      * 真偽値を設定する。
      * @param key キー
      * @param value 値
      */
     public void setBoolean(String key, boolean value) {
-        setString(key, String.valueOf(value));
+        setValue(key, String.valueOf(value));
     }
     
     /**
@@ -96,7 +104,7 @@ public class YamlSetter {
      * @param value 値
      */
     public void setInt(String key, int value) {
-        setString(key, String.valueOf(value));
+        setValue(key, String.valueOf(value));
     }
     
     /**
