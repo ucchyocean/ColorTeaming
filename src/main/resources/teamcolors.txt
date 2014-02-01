@@ -1,7 +1,8 @@
-# Color Teaming v2.2.11
+# ${project.name} v${project.version}
 # @author     ucchy
 # @license    LGPLv3
 # @copyright  Copyright ucchy 2013
+# 
 # チーム名、チームカラー設定ファイル
 # 
 # 指定できる形式：  チームID, チーム表示名, チームカラー

@@ -11,14 +11,9 @@ import java.util.HashMap;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
@@ -72,19 +67,7 @@ public class PlayerDeathListener implements Listener {
             String teamDeader = tnsDeader.getID();
 
             // 倒したプレイヤーを取得
-            // 直接攻撃で倒された場合は、killerをそのまま使う
-            // 間接攻撃で倒された場合は、shooterを取得して使う
             Player killer = deader.getKiller();
-            EntityDamageEvent cause = event.getEntity().getLastDamageCause();
-            if ( cause != null && cause instanceof EntityDamageByEntityEvent ) {
-                Entity damager = ((EntityDamageByEntityEvent)cause).getDamager();
-                if ( damager instanceof Projectile ) {
-                    LivingEntity shooter = ((Projectile) damager).getShooter();
-                    if ( shooter instanceof Player ) {
-                        killer = (Player)shooter;
-                    }
-                }
-            }
             String killerName = null;
             if ( killer != null ) {
                 killerName = killer.getName();

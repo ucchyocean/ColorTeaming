@@ -273,7 +273,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
 
     /**
      * 仲間の可視化の設定。
-     * @param fi trueならフレンドリーファイア有効、falseなら無効
+     * @param fi trueなら仲間の可視化有効、falseなら無効
      */
     @Override
     public void setSeeFriendlyInvisibles(boolean fi) {

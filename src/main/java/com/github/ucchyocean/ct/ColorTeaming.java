@@ -29,7 +29,6 @@ import com.github.ucchyocean.ct.command.CSpawnCommand;
 import com.github.ucchyocean.ct.command.CTPCommand;
 import com.github.ucchyocean.ct.command.CTeamingCommand;
 import com.github.ucchyocean.ct.config.ColorTeamingConfig;
-import com.github.ucchyocean.ct.listener.EntityDamageListener;
 import com.github.ucchyocean.ct.listener.PlayerChatListener;
 import com.github.ucchyocean.ct.listener.PlayerDeathListener;
 import com.github.ucchyocean.ct.listener.PlayerJoinQuitListener;
@@ -91,7 +90,6 @@ public class ColorTeaming extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerDeathListener(this), this);
         getServer().getPluginManager().registerEvents(new PlayerJoinQuitListener(this), this);
         getServer().getPluginManager().registerEvents(new PlayerRespawnListener(this), this);
-        getServer().getPluginManager().registerEvents(new EntityDamageListener(this), this);
     }
 
     /**
