@@ -76,7 +76,6 @@ public class CTPCommand implements CommandExecutor {
             if ( args[1].equalsIgnoreCase("spawn") ) {
                 // ctp all spawn の実行
 
-                // テレポート実行
                 String respawnMapName = plugin.getAPI().getRespawnMapName();
                 RespawnConfiguration respawnConfig = plugin.getAPI().getRespawnConfig();
                 HashMap<Player, Location> map = new HashMap<Player, Location>();
@@ -99,12 +98,46 @@ public class CTPCommand implements CommandExecutor {
                     }
                 }
 
+                // テレポート実行
                 if ( map.size() > 0 ) {
                     DelayedTeleportTask task = new DelayedTeleportTask(map,
                             plugin.getCTConfig().getTeleportDelay());
                     task.startTask();
+                } else {
+                    sender.sendMessage(PREERR + "テレポート対象のプレイヤーがいませんでした。");
                 }
 
+            } else if ( args[1].equalsIgnoreCase("here") ) {
+                // ctp all here の実行
+
+                HashMap<Player, Location> map = new HashMap<Player, Location>();
+                Location location;
+                if ( sender instanceof Player ) {
+                    location = ((Player)sender).getLocation();
+                } else if ( sender instanceof BlockCommandSender ) {
+                    location = ((BlockCommandSender)sender).getBlock().getLocation().add(0.5, 1, 0.5);
+                } else {
+                    sender.sendMessage(PREERR +
+                            "ctp の here 指定は、コンソールからは実行できません。");
+                    return true;
+                }
+
+                for ( String team : members.keySet() ) {
+                    for ( Player player : members.get(team) ) {
+                        map.put(player, location);
+                    }
+                }
+
+                // テレポート実行
+                if ( map.size() > 0 ) {
+                    sender.sendMessage(PREINFO + "プレイヤーを全員テレポートします。");
+                    DelayedTeleportTask task = new DelayedTeleportTask(map,
+                            plugin.getCTConfig().getTeleportDelay());
+                    task.startTask();
+                } else {
+                    sender.sendMessage(PREERR + "テレポート対象のプレイヤーがいませんでした。");
+                }
+                
             } else {
                 // ctp all (point) の実行
 
@@ -133,6 +166,8 @@ public class CTPCommand implements CommandExecutor {
                     DelayedTeleportTask task = new DelayedTeleportTask(map,
                             plugin.getCTConfig().getTeleportDelay());
                     task.startTask();
+                } else {
+                    sender.sendMessage(PREERR + "テレポート対象のプレイヤーがいませんでした。");
                 }
             }
 
