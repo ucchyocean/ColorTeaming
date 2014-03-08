@@ -17,7 +17,7 @@ import org.bukkit.entity.Player;
 
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingAPI;
-import com.github.ucchyocean.ct.config.KitParser;
+import com.github.ucchyocean.ct.config.ClassData;
 import com.github.ucchyocean.ct.config.TeamNameSetting;
 
 /**
@@ -29,12 +29,10 @@ public class CClassCommand implements CommandExecutor {
     private static final String PREERR = ChatColor.RED.toString();
     private static final String PREINFO = ChatColor.GRAY.toString();
 
-    private KitParser handler;
     private ColorTeaming plugin;
 
     public CClassCommand(ColorTeaming plugin) {
         this.plugin = plugin;
-        handler = new KitParser();
     }
 
     /**
@@ -50,8 +48,9 @@ public class CClassCommand implements CommandExecutor {
                 return true;
             }
             Player player = (Player)sender;
-            String message = handler.getItemInfo(player.getItemInHand());
-            sender.sendMessage("アイテム情報 " + message);
+            for ( String message : ClassData.getItemInfo(player.getItemInHand()) ) {
+                sender.sendMessage(message);
+            }
             return true;
         }
 
@@ -83,7 +82,7 @@ public class CClassCommand implements CommandExecutor {
         }
 
         // 有効なクラス名が指定されたか確認する
-        if ( !plugin.getCTConfig().getClasses().containsKey(clas) ) {
+        if ( !plugin.getAPI().isExistClass(clas) ) {
             sender.sendMessage(PREERR + "クラス " + clas + " が存在しません。");
             return true;
         }

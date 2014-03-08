@@ -46,4 +46,12 @@ public class CustomItem {
     public ItemStack getItemStack() {
         return item;
     }
+    
+    /**
+     * このオブジェクトの文字列を返す。デバッグ用
+     * @see java.lang.Object#toString()
+     */
+    public String toString() {
+        return String.format("CustomItem{name=%s, display-name=%s, item=%s", name, displayName, item);
+    }
 }

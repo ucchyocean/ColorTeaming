@@ -8,11 +8,8 @@ package com.github.ucchyocean.ct.config;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import com.github.ucchyocean.ct.ColorTeaming;
@@ -52,12 +49,6 @@ public class ColorTeamingConfig {
     
     /** ゲームオーバーを表示せずにリスポーンするかどうか のオンオフ */
     private boolean skipGameover;
-    
-    /** クラス設定時の全回復設定 のオンオフ */
-    private boolean healOnSetClass;
-
-    /** クラス設定 */
-    private Map<String, ClassData> classes;
 
     /** 死亡時のチーム離脱 オンオフ */
     private boolean colorRemoveOnDeath;
@@ -152,33 +143,6 @@ public class ColorTeamingConfig {
         ctconfig.priorBedRespawn = config.getBoolean("priorBedRespawn", false);
         ctconfig.skipGameover = config.getBoolean("skipGameover", false);
 
-        ctconfig.healOnSetClass = config.getBoolean("healOnSetClass", true);
-        ctconfig.classes = new HashMap<String, ClassData>();
-        ConfigurationSection section = config.getConfigurationSection("classes");
-        if ( section != null ) {
-            for ( String clas : section.getKeys(false) ) {
-                ConfigurationSection c = section.getConfigurationSection(clas);
-                String i = c.getString("items");
-                String a = c.getString("armor");
-                String e = c.getString("effect");
-                String temp = c.getString("experience");
-                int x = -1;
-                int l = -1;
-                if ( temp != null ) {
-                    if ( temp.toLowerCase().endsWith("l") ) {
-                        temp = temp.substring(0, temp.length() - 1); // 後ろの1文字を削る
-                        if ( temp.matches("[0-9]+") ) {
-                            l = Integer.parseInt(temp);
-                        }
-                    } else {
-                        x = c.getInt("experience", -1);
-                    }
-                }
-                ClassData data = new ClassData(i, a, e, x, l);
-                ctconfig.classes.put(clas, data);
-            }
-        }
-
         ctconfig.colorRemoveOnDeath = config.getBoolean("colorRemoveOnDeath", false);
         ctconfig.colorRemoveOnQuit = config.getBoolean("colorRemoveOnQuit", false);
         ctconfig.noDamageSeconds = config.getInt("noDamageSeconds", 5);
@@ -248,7 +212,6 @@ public class ColorTeamingConfig {
         config.set("seeFriendlyInvisible", canSeeFriendlyInvisibles);
         config.set("priorBedRespawn", priorBedRespawn);
         config.set("skipGameover", skipGameover);
-        config.set("healOnSetClass", healOnSetClass);
         config.set("colorRemoveOnDeath", colorRemoveOnDeath);
         config.set("colorRemoveOnQuit", colorRemoveOnQuit);
         config.set("noDamageSeconds", noDamageSeconds);
@@ -306,14 +269,6 @@ public class ColorTeamingConfig {
     
     public boolean isSkipGameover() {
         return skipGameover;
-    }
-
-    public boolean isHealOnSetClass() {
-        return healOnSetClass;
-    }
-
-    public Map<String, ClassData> getClasses() {
-        return classes;
     }
 
     public boolean isColorRemoveOnDeath() {
@@ -418,10 +373,6 @@ public class ColorTeamingConfig {
     
     public void setSkipGameover(boolean skipGameover) {
         this.skipGameover = skipGameover;
-    }
-
-    public void setHealOnSetClass(boolean healOnSetClass) {
-        this.healOnSetClass = healOnSetClass;
     }
 
     public void setColorRemoveOnDeath(boolean colorRemoveOnDeath) {

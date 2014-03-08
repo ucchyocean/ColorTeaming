@@ -10,6 +10,7 @@ import java.util.HashMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -18,7 +19,6 @@ import org.bukkit.inventory.ItemStack;
 
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingAPI;
-import com.github.ucchyocean.ct.config.KitParser;
 import com.github.ucchyocean.ct.config.TeamNameSetting;
 
 /**
@@ -30,12 +30,10 @@ public class CGiveCommand implements CommandExecutor {
     private static final String PREERR = ChatColor.RED.toString();
     private static final String PREINFO = ChatColor.GRAY.toString();
 
-    private KitParser handler;
     private ColorTeaming plugin;
 
     public CGiveCommand(ColorTeaming plugin) {
         this.plugin = plugin;
-        handler = new KitParser();
     }
 
     /**
@@ -83,7 +81,7 @@ public class CGiveCommand implements CommandExecutor {
             Player player = (Player)sender;
             item = player.getItemInHand().clone();
         } else {
-            item = handler.parseItemInfoToItemStack(args[1]);
+            item = parseItemInfoToItemStack(args[1]);
             if ( item == null ) {
                 sender.sendMessage(PREERR + "指定した形式" + args[1] + "が正しくありません。");
                 return true;
@@ -98,5 +96,27 @@ public class CGiveCommand implements CommandExecutor {
                 item.getType().toString() + "を" + item.getAmount() + "個、配布しました。");
 
         return true;
+    }
+    
+    private static ItemStack parseItemInfoToItemStack(String info) {
+        
+        String name;
+        int amount = 1;
+        if ( info.contains(":") ) {
+            String[] datas = info.split(":");
+            name = datas[0];
+            if ( datas[1].matches("^[0-9]{1,9}$") ) {
+                amount = Integer.parseInt(datas[1]);
+            }
+        } else {
+            name = info;
+        }
+        
+        Material material = Material.getMaterial(name);
+        if ( material == null ) {
+            return null;
+        }
+        
+        return new ItemStack(material, amount);
     }
 }

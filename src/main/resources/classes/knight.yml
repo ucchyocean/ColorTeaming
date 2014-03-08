@@ -1,0 +1,89 @@
+# クラス設定のサンプルファイルです。
+
+# クラス名。
+title: knight
+
+# クラスの説明。他のプラグインと連携したときに使用されます。
+description: 
+- '強力な近接武器を持っていますが、'
+- '10回使うと壊れます。'
+- 'また、遠距離攻撃用の武器をもっていません。'
+
+# インベントリに配置されるアイテムです。
+# インデントの2段目の名前は自由に設定可能ですが、重複しないようにしてください。
+# この設定を省略した場合、クラスを設定したときに、
+# インベントリのアイテムが消去されずに残ります。
+items:
+  sword:
+    material: IRON_SWORD
+    enchants:
+      DAMAGE_ALL: 5
+      KNOCKBACK: 5
+    remain: 10
+  pork:
+    material: GRILLED_PORK
+    amount: 15
+  bricks_slab:
+    material: STEP
+    amount: 64
+    data: 4
+
+# 防具として配置されるアイテムです。
+# インデントの2段目は、boots、leggins、chestplate、helmet にしてください。
+# この設定を省略した場合、クラスを設定したときに、
+# 防具が消去されずに残ります。
+armors:
+  boots:
+    material: LEATHER_BOOTS
+    red: 255
+    blue: 255
+    green: 255
+    enchants:
+      PROTECTION_FALL: 1
+  leggings:
+    material: LEATHER_LEGGINGS
+    red: 255
+    blue: 255
+    green: 255
+    enchants:
+      PROTECTION_FIRE: 1
+  chestplate:
+    material: LEATHER_CHESTPLATE
+    red: 255
+    blue: 255
+    green: 255
+    enchants:
+      PROTECTION_ENVIRONMENTAL: 1
+  helmet:
+    material: LEATHER_HELMET
+    red: 255
+    blue: 255
+    green: 255
+    enchants:
+      OXYGEN: 1
+      WATER_WORKER: 1
+
+# 体力の最大値です。ハート1個分は2を指定してください。
+# 通常どおりハート10個分にするには、20を指定してください。
+# この設定を省略した場合、最大体力値は変更されません。
+health: 30
+
+# 特殊効果と、その強さです。省略可能です。
+effects:
+  SPEED: 1
+  INCREASE_DAMAGE: 2
+  JUMP: 3
+
+# 経験値です。省略可能です。
+# 1000を指定すると、1000ポイント（だいたい32レベルと半分くらい）の経験値を与えます。
+# 30Lのように、後ろにLをつけると、30レベルの経験値を与えます。
+experience: 1000
+
+# このクラスのプレイヤーが倒されたときに、倒した側のチームに加算されるポイントです。
+# この設定を省略した場合、config.yml の ctKillPoint が使用されます。
+kill_point: 3
+
+# このクラスのプレイヤーが倒されたときに、倒された側のチームに加算されるポイントです。
+# この設定を省略した場合、config.yml の ctDeathPoint が使用されます。
+death_point: -3
+

@@ -16,6 +16,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Enumeration;
+import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 
@@ -41,6 +43,7 @@ public class Utility {
     public static void copyFileFromJar(
             File jarFile, File targetFile, String sourceFilePath) {
 
+        JarFile jar = null;
         InputStream is = null;
         FileOutputStream fos = null;
         BufferedReader reader = null;
@@ -52,7 +55,7 @@ public class Utility {
         }
 
         try {
-            JarFile jar = new JarFile(jarFile);
+            jar = new JarFile(jarFile);
             ZipEntry zipEntry = jar.getEntry(sourceFilePath);
             is = jar.getInputStream(zipEntry);
 
@@ -72,6 +75,13 @@ public class Utility {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
+            if ( jar != null ) {
+                try {
+                    jar.close();
+                } catch (IOException e) {
+                    // do nothing.
+                }
+            }
             if ( writer != null ) {
                 try {
                     writer.flush();
@@ -106,39 +116,102 @@ public class Utility {
     }
 
     /**
-     * 文字列内のカラーコードを置き換えする
-     * @param source 置き換え元の文字列
-     * @return 置き換え後の文字列
+     * jarファイルの中に格納されているフォルダを、中のファイルごとまとめてjarファイルの外にコピーするメソッド<br/>
+     * テキストファイルは、WindowsだとS-JISで、MacintoshやLinuxだとUTF-8で保存されます。
+     * @param jarFile jarファイル
+     * @param targetFile コピー先のフォルダ
+     * @param sourceFilePath コピー元のフォルダ
      */
-    public static String replaceColorCode(String source) {
+    public static void copyFolderFromJar(
+            File jarFile, File targetFilePath, String sourceFilePath) {
 
-        //return source.replaceAll("&([0-9a-fk-or])", "\u00A7$1");
-        return ChatColor.translateAlternateColorCodes('&', source);
-    }
+        JarFile jar = null;
 
-    /**
-     * 文字列が整数値に変換可能かどうかを判定する
-     * @param source 変換対象の文字列
-     * @return 整数に変換可能かどうか
-     */
-    public static boolean tryIntParse(String source) {
-
-        return source.matches("^-?[0-9]+$");
-    }
-
-    /**
-     * カラーコードをChatColorに変換する
-     * @param colorCode カラーコード
-     * @return ChatColorオブジェクト
-     */
-    public static ChatColor getChatColorFromColorCode(String colorCode) {
-        
-        if ( !colorCode.matches("&[0-9a-fk-or]") ) {
-            return ChatColor.WHITE;
+        if ( !targetFilePath.exists() ) {
+            targetFilePath.mkdirs();
         }
-        
-        char code = colorCode.charAt(1);
-        return ChatColor.getByChar(code);
+
+        try {
+            jar = new JarFile(jarFile);
+            Enumeration<JarEntry> entries = jar.entries();
+
+            while ( entries.hasMoreElements() ) {
+
+                JarEntry entry = entries.nextElement();
+                if ( !entry.isDirectory() && entry.getName().startsWith(sourceFilePath) ) {
+
+                    File targetFile = new File(targetFilePath, 
+                            entry.getName().substring(sourceFilePath.length() + 1));
+                    if ( !targetFile.getParentFile().exists() ) {
+                        targetFile.getParentFile().mkdirs();
+                    }
+                    
+                    InputStream is = null;
+                    FileOutputStream fos = null;
+                    BufferedReader reader = null;
+                    BufferedWriter writer = null;
+
+                    try {
+                        is = jar.getInputStream(entry);
+                        reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+                        fos = new FileOutputStream(targetFile);
+                        writer = new BufferedWriter(new OutputStreamWriter(fos));
+
+                        String line;
+                        while ((line = reader.readLine()) != null) {
+                            writer.write(line);
+                            writer.newLine();
+                        }
+
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+                        if ( writer != null ) {
+                            try {
+                                writer.flush();
+                                writer.close();
+                            } catch (IOException e) {
+                                // do nothing.
+                            }
+                        }
+                        if ( reader != null ) {
+                            try {
+                                reader.close();
+                            } catch (IOException e) {
+                                // do nothing.
+                            }
+                        }
+                        if ( fos != null ) {
+                            try {
+                                fos.flush();
+                                fos.close();
+                            } catch (IOException e) {
+                                // do nothing.
+                            }
+                        }
+                        if ( is != null ) {
+                            try {
+                                is.close();
+                            } catch (IOException e) {
+                                // do nothing.
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if ( jar != null ) {
+                try {
+                    jar.close();
+                } catch (IOException e) {
+                    // do nothing.
+                }
+            }
+        }
     }
 
     /**
@@ -181,7 +254,42 @@ public class Utility {
 
         return contents;
     }
-    
+
+    /**
+     * 文字列内のカラーコードを置き換えする
+     * @param source 置き換え元の文字列
+     * @return 置き換え後の文字列
+     */
+    public static String replaceColorCode(String source) {
+
+        return ChatColor.translateAlternateColorCodes('&', source);
+    }
+
+    /**
+     * 文字列が整数値に変換可能かどうかを判定する
+     * @param source 変換対象の文字列
+     * @return 整数に変換可能かどうか
+     */
+    public static boolean checkIntParse(String source) {
+
+        return source.matches("^-?[0-9]{1,9}$");
+    }
+
+    /**
+     * カラーコードをChatColorに変換する
+     * @param colorCode カラーコード
+     * @return ChatColorオブジェクト
+     */
+    public static ChatColor getChatColorFromColorCode(String colorCode) {
+        
+        if ( !colorCode.matches("&[0-9a-fk-or]") ) {
+            return ChatColor.WHITE;
+        }
+        
+        char code = colorCode.charAt(1);
+        return ChatColor.getByChar(code);
+    }
+
     /**
      * プレイヤーの全回復、および、全エフェクトの除去を行う
      * @param player 対象プレイヤー

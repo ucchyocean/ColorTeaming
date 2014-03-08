@@ -198,7 +198,7 @@ public class CTeamingCommand implements CommandExecutor {
     private boolean doTrophy(
             CommandSender sender, Command command, String label, String[] args) {
 
-        if ( !Utility.tryIntParse(args[1]) && !args[1].equalsIgnoreCase("off") ) {
+        if ( !Utility.checkIntParse(args[1]) && !args[1].equalsIgnoreCase("off") ) {
             sender.sendMessage(PREERR + "キル数 " + args[1] + " は、数値として解釈できません。");
             return true;
         }
@@ -238,7 +238,7 @@ public class CTeamingCommand implements CommandExecutor {
     private boolean doReachTrophy(
             CommandSender sender, Command command, String label, String[] args) {
 
-        if ( !Utility.tryIntParse(args[1]) && !args[1].equalsIgnoreCase("off") ) {
+        if ( !Utility.checkIntParse(args[1]) && !args[1].equalsIgnoreCase("off") ) {
             sender.sendMessage(PREERR + "キル数 " + args[1] + " は、数値として解釈できません。");
             return true;
         }

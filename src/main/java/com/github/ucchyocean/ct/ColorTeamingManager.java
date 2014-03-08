@@ -5,6 +5,7 @@
  */
 package com.github.ucchyocean.ct;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -17,7 +18,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
@@ -72,6 +72,8 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     private String respawnMapName;
 
     private HashMap<String, CustomItem> customItems;
+    
+    private HashMap<String, ClassData> classDatas;
 
     /**
      * コンストラクタ
@@ -95,6 +97,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         teamNameConfig = new TeamNameConfig();
         sdhandler = new TeamMemberSaveDataHandler(plugin.getDataFolder());
         customItems = new HashMap<String, CustomItem>();
+        classDatas = ClassData.loadAllClasses(new File(plugin.getDataFolder(), "classes"));
     }
 
     /**
@@ -872,18 +875,28 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     public CustomItem getCustomItem(String name) {
         return customItems.get(name);
     }
+    
+    /**
+     * 登録されているカスタムアイテムの名前を取得する
+     * @return カスタムアイテムの名前
+     */
+    @Override
+    public Set<String> getCustomItemNames() {
+        return customItems.keySet();
+    }
 
     /**
      * 指定されたプレイヤーに指定されたクラスを設定する
      * @param players プレイヤー
      * @param classname クラス名
      * @return クラス設定を実行したかどうか。<br/>
-     * 例えば、指定されたクラス名が存在しない場合や、指定されたプレイヤーがオフラインの場合は、falseになる。
+     * 例えば、指定されたクラス名が存在しない場合は、falseになる。
      */
+    @Override
     public boolean setClassToPlayer(ArrayList<Player> players, String classname) {
         
         // クラス設定が存在しない場合は falseを返す
-        if ( !plugin.getCTConfig().getClasses().containsKey(classname) ) {
+        if ( !classDatas.containsKey(classname) ) {
             return false;
         }
         
@@ -892,84 +905,35 @@ public class ColorTeamingManager implements ColorTeamingAPI {
             return false;
         }
         
-        // 設定データの準備
-        ClassData cdata = plugin.getCTConfig().getClasses().get(classname);
-        ArrayList<ItemStack> items = cdata.getItems();
-        ArrayList<ItemStack> armor = cdata.getArmor();
-        ArrayList<PotionEffect> effect = cdata.getEffect();
-        int experience = cdata.getExperience();
-        int level = cdata.getLevel();
-
-        boolean isHealOnSetClass = plugin.getCTConfig().isHealOnSetClass();
-        
-        // クラスの適用を実行
-        for ( Player p : players ) {
-
-            // 全回復の実行
-            if ( isHealOnSetClass ) {
-                Utility.heal(p);
-            }
-            
-            // インベントリの消去
-            p.getInventory().clear();
-            p.getInventory().setHelmet(null);
-            p.getInventory().setChestplate(null);
-            p.getInventory().setLeggings(null);
-            p.getInventory().setBoots(null);
-
-            // アイテムの配布
-            for ( ItemStack item : items ) {
-                if ( item != null ) {
-                    p.getInventory().addItem(item);
-                }
-            }
-
-            // 防具の配布
-            if ( armor != null ) {
-
-                if (armor.size() >= 1 && armor.get(0) != null ) {
-                    p.getInventory().setHelmet(armor.get(0));
-                }
-                if (armor.size() >= 2 && armor.get(1) != null ) {
-                    p.getInventory().setChestplate(armor.get(1));
-                }
-                if (armor.size() >= 3 && armor.get(2) != null ) {
-                    p.getInventory().setLeggings(armor.get(2));
-                }
-                if (armor.size() >= 4 && armor.get(3) != null ) {
-                    p.getInventory().setBoots(armor.get(3));
-                }
-            }
-            
-            // インベントリ更新
-            updateInventory(p);
-
-            // ポーション効果の設定
-            if ( effect != null ) {
-                p.addPotionEffects(effect);
-            }
-
-            // 経験値の設定
-            if ( experience != -1 ) {
-                p.setTotalExperience(experience);
-                Utility.updateExp(p);
-            } else if ( level != -1 ) {
-                p.setTotalExperience(0);
-                Utility.updateExp(p);
-                p.setLevel(level);
-            }
+        // 設定の実行
+        ClassData cd = classDatas.get(classname);
+        for ( Player player : players ) {
+            cd.setClassToPlayer(player);
         }
         
         return true;
     }
-
+    
     /**
-     * プレイヤーのインベントリをアップデートする
-     * @param player プレイヤー
+     * 指定されたクラス名が存在するかどうかを確認する
+     * @param classname クラス名
+     * @return 存在するかどうか
      */
-    @SuppressWarnings("deprecation")
-    private void updateInventory(Player player) {
-        player.updateInventory();
+    @Override
+    public boolean isExistClass(String classname) {
+        
+        return classDatas.containsKey(classname);
+    }
+    
+    /**
+     * クラスデータを設定する。同名のクラスが存在する場合は上書きに、無い場合は新規追加になる。
+     * @param classdata クラスデータ
+     */
+    @Override
+    public void setClassData(ClassData classdata) {
+        
+        String name = classdata.getTitle();
+        classDatas.put(name, classdata);
     }
     
     /**

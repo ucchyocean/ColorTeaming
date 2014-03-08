@@ -62,6 +62,13 @@ public class ColorTeaming extends JavaPlugin {
                     getServer().getPluginManager().getPlugin("Vault"));
         }
 
+        // クラスフォルダが存在しない場合は、jarファイルの中からデフォルトをコピーする
+        File classDir = new File(getDataFolder(), "classes");
+        if ( !classDir.exists() || !classDir.isDirectory() ) {
+            classDir.mkdirs();
+            Utility.copyFolderFromJar(getFile(), classDir, "classes");
+        }
+        
         // マネージャの初期化
         manager = new ColorTeamingManager(this, config, vaultchat);
 

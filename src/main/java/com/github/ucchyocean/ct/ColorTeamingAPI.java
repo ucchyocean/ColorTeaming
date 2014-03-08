@@ -8,6 +8,7 @@ package com.github.ucchyocean.ct;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -15,6 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
+import com.github.ucchyocean.ct.config.ClassData;
 import com.github.ucchyocean.ct.config.RespawnConfiguration;
 import com.github.ucchyocean.ct.config.TPPointConfiguration;
 import com.github.ucchyocean.ct.config.TeamMemberSaveDataHandler;
@@ -316,6 +318,12 @@ public interface ColorTeamingAPI {
     public CustomItem getCustomItem(String name);
     
     /**
+     * 登録されているカスタムアイテムの名前を取得する
+     * @return カスタムアイテムの名前
+     */
+    public Set<String> getCustomItemNames();
+    
+    /**
      * 指定されたプレイヤーに指定されたクラスを設定する
      * @param players プレイヤー
      * @param classname クラス名
@@ -323,6 +331,19 @@ public interface ColorTeamingAPI {
      * 例えば、指定されたクラス名が存在しない場合や、指定されたプレイヤーがオフラインの場合は、falseになる。
      */
     public boolean setClassToPlayer(ArrayList<Player> players, String classname);
+    
+    /**
+     * 指定されたクラス名が存在するかどうかを確認する
+     * @param classname クラス名
+     * @return 存在するかどうか
+     */
+    public boolean isExistClass(String classname);
+    
+    /**
+     * クラスデータを設定する。同名のクラスが存在する場合は上書きに、無い場合は新規追加になる。
+     * @param classdata クラスデータ
+     */
+    public void setClassData(ClassData classdata);
     
     /**
      * ランダムな順序で、プレイヤーをチームわけします。<br/>

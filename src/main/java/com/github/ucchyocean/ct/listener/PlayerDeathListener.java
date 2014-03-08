@@ -23,6 +23,7 @@ import org.bukkit.util.Vector;
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingAPI;
 import com.github.ucchyocean.ct.Utility;
+import com.github.ucchyocean.ct.config.ClassData;
 import com.github.ucchyocean.ct.config.ColorTeamingConfig;
 import com.github.ucchyocean.ct.config.TeamNameSetting;
 import com.github.ucchyocean.ct.event.ColorTeamingLeaderDefeatedEvent;
@@ -76,7 +77,7 @@ public class PlayerDeathListener implements Listener {
             // Death数を加算
 
             // チームへ加算
-            api.addTeamPoint(teamDeader, config.getCTDeathPoint());
+            api.addTeamPoint(teamDeader, getDeathPoint(deader));
             
             // ユーザーへ加算
             if ( !killDeathUserCounts.containsKey(deader.getName()) ) {
@@ -137,7 +138,7 @@ public class PlayerDeathListener implements Listener {
                 if ( teamDeader.equals(teamKiller) ) // 同じチームだった場合のペナルティ
                     api.addTeamPoint(teamKiller, config.getCTTKPoint());
                 else
-                    api.addTeamPoint(teamKiller, config.getCTKillPoint());
+                    api.addTeamPoint(teamKiller, getKillPoint(deader));
                 // ユーザーへ加算
                 if ( !killDeathUserCounts.containsKey(killer.getName()) ) {
                     killDeathUserCounts.put(killer.getName(), new int[3]);
@@ -248,5 +249,25 @@ public class PlayerDeathListener implements Listener {
                 }
             }
         }
+    }
+    
+    private int getDeathPoint(Player deader) {
+        
+        int point = plugin.getCTConfig().getCTDeathPoint();
+        if ( deader.hasMetadata(ClassData.DEATH_POINT_NAME) ) {
+            point = deader.getMetadata(ClassData.DEATH_POINT_NAME).get(0).asInt();
+            deader.removeMetadata(ClassData.DEATH_POINT_NAME, ColorTeaming.instance);
+        }
+        return point;
+    }
+    
+    private int getKillPoint(Player deader) {
+        
+        int point = plugin.getCTConfig().getCTKillPoint();
+        if ( deader.hasMetadata(ClassData.KILL_POINT_NAME) ) {
+            point = deader.getMetadata(ClassData.KILL_POINT_NAME).get(0).asInt();
+            deader.removeMetadata(ClassData.KILL_POINT_NAME, ColorTeaming.instance);
+        }
+        return point;
     }
 }
