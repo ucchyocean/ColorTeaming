@@ -486,11 +486,11 @@ public class ClassData {
         
         @SuppressWarnings("deprecation") // TODO
         byte data = item.getData().getData();
-        if ( data > 0 ) {
-            message.add(indent + "data: " + data);
-        } else if ( item.getDurability() > 0 ) {
+        if ( item.getDurability() > 0 ) {
             int remain = item.getType().getMaxDurability() - item.getDurability() + 1;
             message.add(indent + "remain: " + remain);
+        } else if ( data > 0 ) {
+            message.add(indent + "data: " + data);
         }
         
         if ( item.hasItemMeta() ) {
@@ -499,7 +499,7 @@ public class ClassData {
                 message.add(indent + "display_name: " + meta.getDisplayName());
             }
             if ( meta.hasLore() ) {
-                message.add(indent + "lore : ");
+                message.add(indent + "lore: ");
                 for ( String l : meta.getLore() ) {
                     message.add(indent + "- '" + l + "'");
                 }
@@ -507,7 +507,7 @@ public class ClassData {
         }
         
         if ( item.getEnchantments().size() > 0 ) {
-            message.add(indent + "enchants : ");
+            message.add(indent + "enchants: ");
             for ( Enchantment ench : item.getEnchantments().keySet() ) {
                 message.add(indent + "  " + ench.getName() + ": " + 
                         item.getEnchantmentLevel(ench));
@@ -587,16 +587,16 @@ public class ClassData {
             
             // 防具の配布
             if (armors.size() >= 1 && armors.get(0) != null ) {
-                player.getInventory().setHelmet(armors.get(0));
+                player.getInventory().setBoots(armors.get(0));
             }
             if (armors.size() >= 2 && armors.get(1) != null ) {
-                player.getInventory().setChestplate(armors.get(1));
+                player.getInventory().setLeggings(armors.get(1));
             }
             if (armors.size() >= 3 && armors.get(2) != null ) {
-                player.getInventory().setLeggings(armors.get(2));
+                player.getInventory().setChestplate(armors.get(2));
             }
             if (armors.size() >= 4 && armors.get(3) != null ) {
-                player.getInventory().setBoots(armors.get(3));
+                player.getInventory().setHelmet(armors.get(3));
             }
             
             needToUpdateInventory = true;

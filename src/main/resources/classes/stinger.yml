@@ -19,6 +19,14 @@ items:
     material: ENDER_PEARL
     amount: 10
 
+# 防具として配置されるアイテムです。
+# インデントの2段目は、boots、leggins、chestplate、helmet にしてください。
+# この設定を省略した場合、クラスを設定したときに、
+# 防具が消去されずに残ります。
+armors:
+  helmet:
+    material: GLASS
+
 # 特殊効果と、その強さです。省略可能です。
 effects:
   SPEED: 3
