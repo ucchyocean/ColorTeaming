@@ -27,7 +27,6 @@ import com.github.ucchyocean.ct.event.ColorTeamingPlayerLeaveEvent.Reason;
 import com.github.ucchyocean.ct.event.ColorTeamingTeamDefeatedEvent;
 import com.github.ucchyocean.ct.event.ColorTeamingWonLeaderEvent;
 import com.github.ucchyocean.ct.event.ColorTeamingWonTeamEvent;
-import com.github.ucchyocean.ct.scoreboard.SidebarCriteria;
 
 /**
  * プレイヤーがログアウトしたときに、通知を受け取って処理するクラス
@@ -53,11 +52,8 @@ public class PlayerJoinQuitListener implements Listener {
         ColorTeamingConfig config = plugin.getCTConfig();
         ColorTeamingAPI api = plugin.getAPI();
 
-        // クライテリアが残り人数に設定されているなら、
-        if ( config.getSideCriteria() == SidebarCriteria.REST_PLAYER ) {
-            // サイドバーを更新する
-            api.refreshSidebarScore();
-        }
+        // チーム人数を更新する
+        api.refreshRestTeamMemberScore();
 
         // worldRespawn が設定されていて、初参加のプレイヤーや、
         // チームが無くてベッドリスポーンが設定されていないプレイヤーは、
@@ -84,8 +80,8 @@ public class PlayerJoinQuitListener implements Listener {
         ColorTeamingConfig config = plugin.getCTConfig();
         ColorTeamingAPI api = plugin.getAPI();
 
-        // サイドバーを更新する
-        api.refreshSidebarScore();
+        // チーム人数を更新する
+        api.refreshRestTeamMemberScore();
 
         // colorRemoveOnQuitがtrueなら処理する
         if ( config.isColorRemoveOnQuit() ) {

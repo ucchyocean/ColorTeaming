@@ -13,7 +13,6 @@ import java.util.Set;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
 import com.github.ucchyocean.ct.config.ClassData;
@@ -29,12 +28,6 @@ import com.github.ucchyocean.ct.item.CustomItem;
  * @author ucchy
  */
 public interface ColorTeamingAPI {
-
-    /**
-     * スコアボードを返す。
-     * @return スコアボード
-     */
-    public Scoreboard getScoreboard();
     
     /**
      * 指定されたチームIDが存在するかどうかを返す。
@@ -152,55 +145,17 @@ public interface ColorTeamingAPI {
      * @param message 送信するメッセージ
      */
     public void sendTeamChat(CommandSender sender, String team, String message);
-
+    
     /**
-     * サイドバーを新しく作る。
-     * もともとサイドバーがあった場合は、削除して再作成される。
+     * スコアボードの表示を行う
      */
-    public void makeSidebarScore();
-
+    public void displayScoreboard();
+    
     /**
-     * サイドバーを消去する。
+     * 残りチームメンバーのスコアボードを更新する。
      */
-    public void removeSidebarScore();
-
-    /**
-     * サイドバーのスコアを更新する。
-     */
-    public void refreshSidebarScore();
-
-    /**
-     * タブキーリストのスコアを新しく作る。
-     * もともとスコアがあった場合は、削除して再作成される。
-     */
-    public void makeTabkeyListScore();
-
-    /**
-     * タブキーリストのスコアを消去する。
-     */
-    public void removeTabkeyListScore();
-
-    /**
-     * タブキーリストのスコアを更新する。
-     */
-    public void refreshTabkeyListScore();
-
-    /**
-     * 名前下のスコアを新しく作る。
-     * もともとスコアがあった場合は、削除して再作成される。
-     */
-    public void makeBelowNameScore();
-
-    /**
-     * 名前下のスコアを消去する。
-     */
-    public void removeBelowNameScore();
-
-    /**
-     * 名前下のスコアを更新する。
-     */
-    public void refreshBelowNameScore();
-
+    public void refreshRestTeamMemberScore();
+    
     /**
      * チームのポイント数を全取得する
      * @return チームのポイント数
@@ -244,9 +199,8 @@ public interface ColorTeamingAPI {
      * @param playerName プレイヤー名
      * @param kill キル数
      * @param death デス数
-     * @param tk TK数
      */
-    public void setKillDeathUserCounts(String playerName, int kill, int death, int tk);
+    public void setKillDeathUserCounts(String playerName, int kill, int death);
 
     /**
      * リーダー設定を全てクリアする

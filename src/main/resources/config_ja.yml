@@ -48,10 +48,8 @@ skipGameover: false
 # ただし、クラス設定にkill_pointやdeath_pointが設定されている場合は、そちらが優先されます。
 #   ctKillPoint - 他のチームのプレイヤーを倒したときの獲得点数。
 #   ctDeathPoint - 誰かに倒されたときの獲得点数。
-#   ctTKPoint - 自分のチームのプレイヤーを倒したときの獲得点数。
 ctKillPoint: 1
 ctDeathPoint: -1
-ctTKPoint: -3
 
 # 死んでリスポンしたときに、チームから自動で抜けるかどうかを設定します。
 colorRemoveOnDeath: false

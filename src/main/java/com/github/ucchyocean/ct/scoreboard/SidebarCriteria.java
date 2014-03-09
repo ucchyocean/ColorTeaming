@@ -66,25 +66,4 @@ public enum SidebarCriteria {
 
         return SidebarCriteria.NONE;
     }
-
-    /**
-     * サイドバーのタイトル部分に表示する文字列
-     * @return 対応したタイトル文字列
-     */
-    public String getSidebarTitle() {
-
-        switch (this) {
-        case KILL_COUNT:
-            return "スコア(キル数)";
-        case DEATH_COUNT:
-            return "スコア(デス数)";
-        case POINT:
-            return "チームスコア";
-        case REST_PLAYER:
-            return "チーム人数";
-        case NONE:
-        default:
-            return "";
-        }
-    }
 }

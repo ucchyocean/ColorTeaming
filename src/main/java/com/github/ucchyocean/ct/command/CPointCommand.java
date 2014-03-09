@@ -53,9 +53,8 @@ public class CPointCommand implements CommandExecutor {
                     plugin.getAPI().getKillDeathUserCounts();
             HashMap<String, Integer> teamPoints =
                     plugin.getAPI().getAllTeamPoints();
-            int killpoint = plugin.getCTConfig().getCTKillPoint();
-            int deathpoint = plugin.getCTConfig().getCTDeathPoint();
-            int tkpoint = plugin.getCTConfig().getCTTKPoint();
+            HashMap<String, Integer> personalPoints =
+                    plugin.getAPI().getAllTeamPoints();
 
             // 全チームの得点を集計して、得点順に並べる
             ArrayList<TeamNameSetting> teams = new ArrayList<TeamNameSetting>();
@@ -98,9 +97,9 @@ public class CPointCommand implements CommandExecutor {
                 int point = points.get(rank-1);
                 int[] counts = killDeathCounts.get(tns.getID());
                 String message = String.format(
-                        "%s%d. %s %s%dpoints (%dkill, %ddeath, %dtk)",
+                        "%s%d. %s %s%dpoints (%dkill, %ddeath)",
                         color, rank, tns.toString(), color, point, 
-                        counts[0], counts[1], counts[2]);
+                        counts[0], counts[1]);
 
                 if ( !isBroadcast ) {
                     sender.sendMessage(message);
@@ -116,40 +115,29 @@ public class CPointCommand implements CommandExecutor {
                 return true;
             }
 
-            ArrayList<String> users = new ArrayList<String>();
-            ArrayList<Integer> userPoints = new ArrayList<Integer>();
-
-            for ( String playerName : killDeathUserCounts.keySet() ) {
-                int[] counts = killDeathUserCounts.get(playerName);
-                int point = counts[0] * killpoint +
-                            counts[1] * deathpoint +
-                            counts[2] * tkpoint;
-
-                int index = 0;
-                while ( users.size() > index && userPoints.get(index) > point ) {
-                    index++;
-                }
-                users.add(index, playerName);
-                userPoints.add(index, point);
-            }
-
             // 1位と、1位と同じ得点の人を、MVPにする
-            ArrayList<String> mvp = new ArrayList<String>();
-            mvp.add(users.get(0));
-            int index = 1;
-            while ( userPoints.size() > index && userPoints.get(0) == userPoints.get(index) ) {
-                mvp.add(users.get(index));
-                index++;
+            int maxPersonalPoints = -99999;
+            for ( String name : personalPoints.keySet() ) {
+                if ( maxPersonalPoints < personalPoints.get(name) ) {
+                    maxPersonalPoints = personalPoints.get(name);
+                }
             }
-
+            
+            ArrayList<String> mvp = new ArrayList<String>();
+            for ( String name : personalPoints.keySet() ) {
+                if ( maxPersonalPoints == personalPoints.get(name) ) {
+                    mvp.add(name);
+                }
+            }
+            
             // MVPの得点を表示する
-            for ( int i=0; i<mvp.size(); i++ ) {
-                String mvpName = users.get(i);
-                int point = userPoints.get(i);
-                int[] counts = killDeathUserCounts.get(users.get(i));
+            for ( String mvpName : mvp ) {
+                
+                int point = personalPoints.get(mvpName);
+                int[] counts = killDeathUserCounts.get(mvpName);
                 String message = String.format(
-                        "[MVP] %s %dpoints (%dkill, %ddeath, %dtk)",
-                        mvpName, point, counts[0], counts[1], counts[2]);
+                        "[MVP] %s %dpoints (%dkill, %ddeath)",
+                        mvpName, point, counts[0], counts[1]);
                 if ( !isBroadcast ) {
                     sender.sendMessage(ChatColor.GRAY + message);
                 } else {
@@ -159,13 +147,13 @@ public class CPointCommand implements CommandExecutor {
 
             // 個人の得点を個人のコンソールに表示する
             if ( isBroadcast ) {
-                for ( int i=0; i<users.size(); i++ ) {
-                    String playerName = users.get(i);
-                    int point = userPoints.get(i);
-                    int[] counts = killDeathUserCounts.get(users.get(i));
+                for ( String playerName : killDeathUserCounts.keySet() ) {
+                    
+                    int point = personalPoints.get(playerName);
+                    int[] counts = killDeathUserCounts.get(playerName);
                     String message = String.format(
-                            "[Your Score] %s %dpoints (%dkill, %ddeath, %dtk)",
-                            playerName, point, counts[0], counts[1], counts[2]);
+                            "[Your Score] %s %dpoints (%dkill, %ddeath)",
+                            playerName, point, counts[0], counts[1]);
 
                     Player player = Bukkit.getPlayerExact(playerName);
                     if ( player != null ) {
@@ -180,9 +168,6 @@ public class CPointCommand implements CommandExecutor {
 
             ColorTeamingAPI api = plugin.getAPI();
             api.clearKillDeathPoints();
-            api.makeSidebarScore();
-            api.makeTabkeyListScore();
-            api.makeBelowNameScore();
             sender.sendMessage(ChatColor.GRAY + "KillDeath数をリセットしました。");
             return true;
             

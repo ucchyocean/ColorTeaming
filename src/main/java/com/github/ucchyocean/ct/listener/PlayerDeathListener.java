@@ -140,10 +140,8 @@ public class PlayerDeathListener implements Listener {
                 // Kill数を加算
 
                 // チームへ加算
-                if ( teamDeader.equals(teamKiller) ) // 同じチームだった場合のペナルティ
-                    api.addTeamPoint(teamKiller, config.getCTTKPoint());
-                else
-                    api.addTeamPoint(teamKiller, getKillPoint(deader));
+                api.addTeamPoint(teamKiller, getKillPoint(deader));
+                
                 // ユーザーへ加算
                 if ( !killDeathUserCounts.containsKey(killer.getName()) ) {
                     killDeathUserCounts.put(killer.getName(), new int[3]);
@@ -219,10 +217,8 @@ public class PlayerDeathListener implements Listener {
                 }
             }
             
-            // スコア表示を更新する
-            api.refreshSidebarScore();
-            api.refreshTabkeyListScore();
-            api.refreshBelowNameScore();
+            // チーム残り人数を更新する
+            api.refreshRestTeamMemberScore();
             
             // ゲームオーバー画面をスキップする
             if ( config.isSkipGameover() ) {

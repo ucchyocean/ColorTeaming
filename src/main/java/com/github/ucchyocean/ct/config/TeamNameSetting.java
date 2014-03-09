@@ -5,7 +5,9 @@
  */
 package com.github.ucchyocean.ct.config;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 
 
 /**
@@ -52,6 +54,13 @@ public class TeamNameSetting {
      */
     public ChatColor getColor() {
         return color;
+    }
+    
+    /**
+     * @return スコアボード用の項目名（ダミーのオフラインプレイヤー）を返す
+     */
+    public OfflinePlayer getScoreItem() {
+        return Bukkit.getOfflinePlayer(toString());
     }
 
     /**

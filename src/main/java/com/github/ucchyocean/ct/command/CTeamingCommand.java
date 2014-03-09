@@ -144,10 +144,8 @@ public class CTeamingCommand implements CommandExecutor {
             return true; // イベントによる実行キャンセル
         }
 
-        // サイドバー削除、タブキーリスト更新
-        api.removeSidebarScore();
-        api.refreshTabkeyListScore();
-        api.refreshBelowNameScore();
+        // スコア削除
+        api.clearKillDeathPoints();
 
         sender.sendMessage(PREINFO + "全てのチームが解散しました。");
 
@@ -177,10 +175,8 @@ public class CTeamingCommand implements CommandExecutor {
             return true; // イベントによる実行キャンセル
         }
 
-        // サイドバー再作成、タブキーリスト更新
-        api.makeSidebarScore();
-        api.refreshTabkeyListScore();
-        api.refreshBelowNameScore();
+        // チームの残り人数更新
+        api.refreshRestTeamMemberScore();
         
         sender.sendMessage(PREINFO + "チーム " + target + " が解散しました。");
 
@@ -372,7 +368,6 @@ public class CTeamingCommand implements CommandExecutor {
             return true;
         }
 
-        boolean isNewGroup;
         boolean isAll = args[2].equalsIgnoreCase("all");
         boolean isRest = args[2].equalsIgnoreCase("rest");
         
@@ -393,7 +388,6 @@ public class CTeamingCommand implements CommandExecutor {
                 return true;
             }
 
-            isNewGroup = !api.isExistTeam(target);
             TeamNameSetting tns = api.getTeamNameFromID(target);
             for ( Player player : players ) {
                 api.addPlayerTeam(player, tns);
@@ -421,7 +415,6 @@ public class CTeamingCommand implements CommandExecutor {
                 return true;
             }
 
-            isNewGroup = !api.isExistTeam(target);
             TeamNameSetting tns = api.getTeamNameFromID(target);
             for ( Player player : players ) {
                 api.addPlayerTeam(player, tns);
@@ -438,7 +431,6 @@ public class CTeamingCommand implements CommandExecutor {
                 return true;
             }
 
-            isNewGroup = !api.isExistTeam(target);
             TeamNameSetting tns = api.getTeamNameFromID(target);
             api.addPlayerTeam(player, tns);
 
@@ -446,13 +438,8 @@ public class CTeamingCommand implements CommandExecutor {
                     tns.getName() + " に追加しました。");
         }
 
-        // サイドバーの更新 チームが増える場合は、再生成する
-        if ( isNewGroup ) {
-            api.makeSidebarScore();
-        }
-        api.refreshSidebarScore();
-        api.refreshTabkeyListScore();
-        api.refreshBelowNameScore();
+        // チームの残り人数を更新
+        api.refreshRestTeamMemberScore();
 
         return true;
     }
@@ -485,8 +472,8 @@ public class CTeamingCommand implements CommandExecutor {
         }
         config.saveConfig();
 
-        // サイドバーの更新
-        plugin.getAPI().makeSidebarScore();
+        // スコア表示の更新
+        plugin.getAPI().displayScoreboard();
 
         String criteria = config.getSideCriteria().toString();
         sender.sendMessage(PREINFO + "サイドバーの表示を" + criteria + "にしました。");
@@ -522,8 +509,8 @@ public class CTeamingCommand implements CommandExecutor {
         }
         config.saveConfig();
 
-        // スコアボードの更新
-        plugin.getAPI().makeTabkeyListScore();
+        // スコア表示の更新
+        plugin.getAPI().displayScoreboard();
 
         String criteria = config.getListCriteria().toString();
         sender.sendMessage(PREINFO + "リストの表示を" + criteria + "にしました。");
@@ -559,8 +546,8 @@ public class CTeamingCommand implements CommandExecutor {
         }
         config.saveConfig();
 
-        // スコアボードの更新
-        plugin.getAPI().makeBelowNameScore();
+        // スコア表示の更新
+        plugin.getAPI().displayScoreboard();
 
         // 設定の保存
         String criteria = config.getBelowCriteria().toString();

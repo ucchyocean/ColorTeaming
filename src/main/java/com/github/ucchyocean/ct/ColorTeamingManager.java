@@ -19,6 +19,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
@@ -37,11 +38,6 @@ import com.github.ucchyocean.ct.event.ColorTeamingTeamChatEvent;
 import com.github.ucchyocean.ct.event.ColorTeamingTeamCreateEvent;
 import com.github.ucchyocean.ct.event.ColorTeamingTeamRemoveEvent;
 import com.github.ucchyocean.ct.item.CustomItem;
-import com.github.ucchyocean.ct.scoreboard.BelowNameScoreDisplay;
-import com.github.ucchyocean.ct.scoreboard.PlayerCriteria;
-import com.github.ucchyocean.ct.scoreboard.SidebarCriteria;
-import com.github.ucchyocean.ct.scoreboard.SidebarScoreDisplay;
-import com.github.ucchyocean.ct.scoreboard.TabListScoreDisplay;
 
 /**
  * ColorTeamingAPIの実体クラス
@@ -49,23 +45,18 @@ import com.github.ucchyocean.ct.scoreboard.TabListScoreDisplay;
  */
 public class ColorTeamingManager implements ColorTeamingAPI {
 
-    private static SidebarScoreDisplay sidebarScore;
-    private static TabListScoreDisplay tablistScore;
-    private static BelowNameScoreDisplay belownameScore;
-
     private ColorTeaming plugin;
     private ColorTeamingConfig config;
     private VaultChatBridge vaultchat;
 
-    private Scoreboard sb;
+    private Scoreboard scoreboard;
+    private ObjectiveManager objectives;
 
     private RespawnConfiguration respawnConfig;
     private TPPointConfiguration tppointConfig;
     private TeamNameConfig teamNameConfig;
 
     private HashMap<String, ArrayList<String>> leaders;
-    private HashMap<String, Integer> teamPoints;
-    private HashMap<String, int[]> killDeathUserCounts;
 
     private String respawnMapName;
 
@@ -85,28 +76,16 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         this.plugin = plugin;
         this.config = config;
         this.vaultchat = vaultchat;
+        this.scoreboard = plugin.getServer().getScoreboardManager().getMainScoreboard();
 
         // 変数の初期化
-        teamPoints = new HashMap<String, Integer>();
-        killDeathUserCounts = new HashMap<String, int[]>();
         leaders = new HashMap<String, ArrayList<String>>();
         respawnConfig = new RespawnConfiguration();
         tppointConfig = new TPPointConfiguration();
         teamNameConfig = new TeamNameConfig();
         customItems = new HashMap<String, CustomItem>();
         classDatas = ClassData.loadAllClasses(new File(plugin.getDataFolder(), "classes"));
-    }
-
-    /**
-     * スコアボードを返す。
-     * @return スコアボード
-     */
-    @Override
-    public Scoreboard getScoreboard() {
-        if ( sb == null ) {
-            sb = plugin.getServer().getScoreboardManager().getMainScoreboard();
-        }
-        return sb;
+        objectives = new ObjectiveManager(scoreboard, this);
     }
     
     /**
@@ -117,7 +96,6 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     @Override
     public boolean isExistTeam(String id) {
         
-        Scoreboard scoreboard = getScoreboard();
         Set<Team> teams = scoreboard.getTeams();
         for ( Team team : teams ) {
             if ( team.getName().equals(id) ) {
@@ -146,7 +124,6 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     @Override
     public Team getPlayerTeam(Player player) {
 
-        Scoreboard scoreboard = getScoreboard();
         Set<Team> teams = scoreboard.getTeams();
         for ( Team team : teams ) {
             for ( OfflinePlayer p : team.getPlayers() ) {
@@ -179,8 +156,6 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      */
     @Override
     public Team addPlayerTeam(Player player, TeamNameSetting teamName) {
-
-        Scoreboard scoreboard = getScoreboard();
 
         String id = teamName.getID();
         String name = teamName.getName();
@@ -260,8 +235,6 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     @Override
     public void setFriendlyFire(boolean ff) {
 
-        Scoreboard scoreboard = getScoreboard();
-
         Set<Team> teams = scoreboard.getTeams();
         for ( Team t : teams ) {
             t.setAllowFriendlyFire(ff);
@@ -277,8 +250,6 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      */
     @Override
     public void setSeeFriendlyInvisibles(boolean fi) {
-
-        Scoreboard scoreboard = getScoreboard();
 
         Set<Team> teams = scoreboard.getTeams();
         for ( Team t : teams ) {
@@ -307,7 +278,6 @@ public class ColorTeamingManager implements ColorTeamingAPI {
             return false;
         }
 
-        Scoreboard scoreboard = getScoreboard();
         Team team = scoreboard.getTeam(id);
         if ( team != null ) {
             for ( OfflinePlayer player : team.getPlayers() ) {
@@ -325,8 +295,6 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      */
     @Override
     public void removeAllTeam() {
-
-        Scoreboard scoreboard = getScoreboard();
 
         Set<Team> teams = scoreboard.getTeams();
         for ( Team team : teams ) {
@@ -360,7 +328,6 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     @Override
     public ArrayList<Player> getTeamMembers(String id) {
         
-        Scoreboard scoreboard = getScoreboard();
         Team team = scoreboard.getTeam(id);
         
         if ( team == null ) {
@@ -424,7 +391,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     public ArrayList<TeamNameSetting> getAllTeamNames() {
 
         ArrayList<TeamNameSetting> result = new ArrayList<TeamNameSetting>();
-        Set<Team> teams = getScoreboard().getTeams();
+        Set<Team> teams = scoreboard.getTeams();
 
         for ( Team team : teams ) {
             result.add(teamNameConfig.getTeamNameFromID(team.getName()));
@@ -460,7 +427,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     public void sendTeamChat(CommandSender sender, String team, String message) {
 
         // チームを取得する
-        Team t = getScoreboard().getTeam(team);
+        Team t = scoreboard.getTeam(team);
         if ( t == null ) {
             return;
         }
@@ -532,125 +499,93 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     }
 
     /**
-     * サイドバーを新しく作る。
-     * もともとサイドバーがあった場合は、削除して再作成される。
+     * スコアボードの表示を行う
      */
     @Override
-    public void makeSidebarScore() {
-
-        removeSidebarScore();
-        if ( config.getSideCriteria() != SidebarCriteria.NONE ) {
-            sidebarScore = new SidebarScoreDisplay(ColorTeaming.instance);
+    public void displayScoreboard() {
+        
+        // サイドバー
+        switch (config.getSideCriteria()) {
+        case POINT:
+            objectives.getTeamPointObjective().setDisplaySlot(DisplaySlot.SIDEBAR);
+            break;
+        case KILL_COUNT:
+            objectives.getTeamKillObjective().setDisplaySlot(DisplaySlot.SIDEBAR);
+            break;
+        case DEATH_COUNT:
+            objectives.getTeamDeathObjective().setDisplaySlot(DisplaySlot.SIDEBAR);
+            break;
+        case REST_PLAYER:
+            objectives.getTeamRestObjective().setDisplaySlot(DisplaySlot.SIDEBAR);
+            break;
+        case NONE:
+            break;
+        default:
+            break;
+        }
+        
+        // リスト
+        switch (config.getListCriteria()) {
+        case POINT:
+            objectives.getPersonalPointObjective().setDisplaySlot(DisplaySlot.PLAYER_LIST);
+            break;
+        case KILL_COUNT:
+            objectives.getPersonalKillObjective().setDisplaySlot(DisplaySlot.PLAYER_LIST);
+            break;
+        case DEATH_COUNT:
+            objectives.getPersonalDeathObjective().setDisplaySlot(DisplaySlot.PLAYER_LIST);
+            break;
+        case HEALTH:
+            objectives.getPersonalHealthObjective().setDisplaySlot(DisplaySlot.PLAYER_LIST);
+            break;
+        case NONE:
+            break;
+        default:
+            break;
+        }
+        
+        // 頭の上
+        switch (config.getBelowCriteria()) {
+        case POINT:
+            objectives.getPersonalPointObjective().setDisplaySlot(DisplaySlot.BELOW_NAME);
+            break;
+        case KILL_COUNT:
+            objectives.getPersonalKillObjective().setDisplaySlot(DisplaySlot.BELOW_NAME);
+            break;
+        case DEATH_COUNT:
+            objectives.getPersonalDeathObjective().setDisplaySlot(DisplaySlot.BELOW_NAME);
+            break;
+        case HEALTH:
+            objectives.getPersonalHealthObjective().setDisplaySlot(DisplaySlot.BELOW_NAME);
+            break;
+        case NONE:
+            break;
+        default:
+            break;
         }
     }
 
     /**
-     * サイドバーを消去する。
+     * 残りチームメンバーのスコアボードを更新する。
      */
     @Override
-    public void removeSidebarScore() {
-
-        if ( getScoreboard().getObjective(DisplaySlot.SIDEBAR) != null && 
-                getScoreboard().getObjective(DisplaySlot.SIDEBAR).getName().equals("teamscore") ) {
-            getScoreboard().clearSlot(DisplaySlot.SIDEBAR);
+    public void refreshRestTeamMemberScore() {
+        
+        Objective obj = objectives.getTeamRestObjective();
+        
+        // まず、全ての項目をいったんリセットする
+        for ( TeamNameSetting tns : getTeamNameConfig().getTeamNames() ) {
+            scoreboard.resetScores(tns.getScoreItem());
         }
-        if ( sidebarScore != null ) {
-            sidebarScore.remove();
-            sidebarScore = null;
-        }
-    }
-
-    /**
-     * サイドバーのスコアを更新する。
-     */
-    @Override
-    public void refreshSidebarScore() {
-
-        if ( sidebarScore != null ) {
-            sidebarScore.refreshScore();
+        
+        // チーム人数を取得して設定する
+        HashMap<String, ArrayList<Player>> members = getAllTeamMembers();
+        for ( String id : members.keySet() ) {
+            TeamNameSetting tns = getTeamNameFromID(id);
+            obj.getScore(tns.getScoreItem()).setScore(members.get(id).size());
         }
     }
-
-    /**
-     * タブキーリストのスコアを新しく作る。
-     * もともとスコアがあった場合は、削除して再作成される。
-     */
-    @Override
-    public void makeTabkeyListScore() {
-
-        removeTabkeyListScore();
-        if ( config.getListCriteria() != PlayerCriteria.NONE ) {
-            tablistScore = new TabListScoreDisplay(ColorTeaming.instance);
-        }
-    }
-
-    /**
-     * タブキーリストのスコアを消去する。
-     */
-    @Override
-    public void removeTabkeyListScore() {
-
-        if ( getScoreboard().getObjective(DisplaySlot.PLAYER_LIST) != null && 
-                getScoreboard().getObjective(DisplaySlot.PLAYER_LIST).getName().equals("listscore") ) {
-            getScoreboard().clearSlot(DisplaySlot.PLAYER_LIST);
-        }
-        if ( tablistScore != null ) {
-            tablistScore.remove();
-            tablistScore = null;
-        }
-    }
-
-    /**
-     * タブキーリストのスコアを更新する。
-     */
-    @Override
-    public void refreshTabkeyListScore() {
-
-        if ( tablistScore != null ) {
-            tablistScore.refreshScore();
-        }
-    }
-
-    /**
-     * 名前下のスコアを新しく作る。
-     * もともとスコアがあった場合は、削除して再作成される。
-     */
-    @Override
-    public void makeBelowNameScore() {
-
-        removeBelowNameScore();
-        if ( config.getBelowCriteria() != PlayerCriteria.NONE ) {
-            belownameScore = new BelowNameScoreDisplay(ColorTeaming.instance);
-        }
-    }
-
-    /**
-     * 名前下のスコアを消去する。
-     */
-    @Override
-    public void removeBelowNameScore() {
-
-        if ( getScoreboard().getObjective(DisplaySlot.BELOW_NAME) != null && 
-                getScoreboard().getObjective(DisplaySlot.BELOW_NAME).getName().equals("belowscore") ) {
-            getScoreboard().clearSlot(DisplaySlot.BELOW_NAME);
-        }
-        if ( belownameScore != null ) {
-            belownameScore.remove();
-            belownameScore = null;
-        }
-    }
-
-    /**
-     * 名前下のスコアを更新する。
-     */
-    @Override
-    public void refreshBelowNameScore() {
-
-        if ( belownameScore != null ) {
-            belownameScore.refreshScore();
-        }
-    }
-
+    
     /**
      * キルデス数やポイントを全てクリアする
      */
@@ -665,9 +600,8 @@ public class ColorTeamingManager implements ColorTeamingAPI {
             return;
         }
 
-        // クリア
-        teamPoints.clear();
-        killDeathUserCounts.clear();
+        // 各オブジェクティブを初期化
+        objectives.resetAll();
     }
 
     /**
@@ -676,7 +610,16 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      */
     @Override
     public HashMap<String, Integer> getAllTeamPoints() {
-        return teamPoints;
+        
+        HashMap<String, Integer> points = new HashMap<String, Integer>();
+        Objective obj = objectives.getTeamPointObjective();
+        
+        for ( TeamNameSetting tns : getAllTeamNames() ) {
+            int p = obj.getScore(tns.getScoreItem()).getScore();
+            points.put(tns.getID(), p);
+        }
+        
+        return points;
     }
 
     /**
@@ -687,14 +630,14 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     @Override
     public void setTeamPoint(String team, int point) {
         
+        Objective obj = objectives.getTeamPointObjective();
         TeamNameSetting tns = teamNameConfig.getTeamNameFromID(team);
         
-        teamPoints.put(tns.getID(), point);
-        
-        // サイドバーがポイント表示なら、表示内容を更新する
-        if ( config.getSideCriteria() == SidebarCriteria.POINT ) {
-            refreshSidebarScore();
+        if ( point == 0 ) {
+            // NOTE: ポイント0を設定する場合は、一旦1を設定して項目を表示させる。
+            obj.getScore(tns.getScoreItem()).setScore(1);
         }
+        obj.getScore(tns.getScoreItem()).setScore(point);
     }
     
     /**
@@ -706,19 +649,11 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     @Override
     public int addTeamPoint(String team, int amount) {
         
+        Objective obj = objectives.getTeamPointObjective();
         TeamNameSetting tns = teamNameConfig.getTeamNameFromID(team);
         
-        int point = 0;
-        if ( teamPoints.containsKey(tns.getID()) ) {
-            point = teamPoints.get(tns.getID());
-        }
-        
-        teamPoints.put(tns.getID(), point + amount);
-        
-        // サイドバーがポイント表示なら、表示内容を更新する
-        if ( config.getSideCriteria() == SidebarCriteria.POINT ) {
-            refreshSidebarScore();
-        }
+        int point = obj.getScore(tns.getScoreItem()).getScore();
+        obj.getScore(tns.getScoreItem()).setScore(point + amount);
         
         return point + amount;
     }
@@ -730,18 +665,16 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     @Override
     public HashMap<String, int[]> getKillDeathCounts() {
         
+        Objective kills = objectives.getPersonalKillObjective();
+        Objective deaths = objectives.getPersonalDeathObjective();
+        
         HashMap<String, int[]> result = new HashMap<String, int[]>();
         HashMap<String, ArrayList<Player>> members = getAllTeamMembers();
         for ( String teamID : members.keySet() ) {
-            int[] data = new int[3];
-            ArrayList<Player> member = members.get(teamID);
-            for ( Player p : member ) {
-                if ( killDeathUserCounts.containsKey(p.getName()) ) {
-                    int[] userData = killDeathUserCounts.get(p.getName());
-                    for ( int i=0; i<3; i++ ) {
-                        data[i] += userData[i];
-                    }
-                }
+            int[] data = new int[2];
+            for ( Player player : members.get(teamID) ) {
+                data[0] += kills.getScore(player).getScore();
+                data[1] += deaths.getScore(player).getScore();
             }
             result.put(teamID, data);
         }
@@ -755,7 +688,21 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      */
     @Override
     public HashMap<String, int[]> getKillDeathUserCounts() {
-        return killDeathUserCounts;
+        
+        Objective kills = objectives.getPersonalKillObjective();
+        Objective deaths = objectives.getPersonalDeathObjective();
+        
+        HashMap<String, int[]> result = new HashMap<String, int[]>();
+        HashMap<String, ArrayList<Player>> members = getAllTeamMembers();
+        for ( String teamID : members.keySet() ) {
+            for ( Player player : members.get(teamID) ) {
+                int[] data = new int[2];
+                data[0] = kills.getScore(player).getScore();
+                data[1] = deaths.getScore(player).getScore();
+            }
+        }
+        
+        return result;
     }
 
     /**
@@ -763,11 +710,19 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      * @param playerName プレイヤー名
      * @param kill キル数
      * @param death デス数
-     * @param tk TK数
      */
-    public void setKillDeathUserCounts(String playerName, int kill, int death, int tk) {
-        int[] data = new int[]{kill, death, tk};
-        killDeathUserCounts.put(playerName, data);
+    public void setKillDeathUserCounts(String playerName, int kill, int death) {
+        
+        Player player = Bukkit.getPlayer(playerName);
+        if ( player == null ) {
+            return;
+        }
+        
+        Objective kills = objectives.getPersonalKillObjective();
+        Objective deaths = objectives.getPersonalDeathObjective();
+        
+        kills.getScore(player).setScore(kill);
+        deaths.getScore(player).setScore(death);
     }
     
     /**
@@ -970,10 +925,8 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         // キルデス情報のクリア
         clearKillDeathPoints();
 
-        // スコアボードの作成
-        makeSidebarScore();
-        makeTabkeyListScore();
-        makeBelowNameScore();
+        // スコアボードの表示
+        displayScoreboard();
     }
     
     /**
@@ -1024,16 +977,13 @@ public class ColorTeamingManager implements ColorTeamingAPI {
             if ( leastTeam != null ) {
                 addPlayerTeam(players.get(i), leastTeam);
             } else {
-//                sender.sendMessage(
-//                        PREERR + "設定できるチームが無いようです。");
+                // 参加できるチームが無い
                 return false;
             }
         }
 
-        // スコアボードの作成
-        makeSidebarScore();
-        refreshTabkeyListScore();
-        refreshBelowNameScore();
+        // スコアボードの表示
+        displayScoreboard();
         
         return true;
     }

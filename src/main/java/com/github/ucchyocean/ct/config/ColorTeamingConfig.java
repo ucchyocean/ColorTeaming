@@ -78,9 +78,6 @@ public class ColorTeamingConfig {
     /** デス時のポイント設定 */
     private int ctDeathPoint;
 
-    /** チームメンバーキル時のポイント設定 */
-    private int ctTKPoint;
-
     /** サイドバーのスコア設定 */
     private SidebarCriteria sideCriteria;
 
@@ -158,7 +155,6 @@ public class ColorTeamingConfig {
 
         ctconfig.ctKillPoint = config.getInt("ctKillPoint", 1);
         ctconfig.ctDeathPoint = config.getInt("ctDeathPoint", -1);
-        ctconfig.ctTKPoint = config.getInt("ctTKPoint", -3);
 
         String criteriaTemp = config.getString("sideCriteria", "rest");
         ctconfig.sideCriteria = SidebarCriteria.fromString(criteriaTemp);
@@ -225,7 +221,6 @@ public class ColorTeamingConfig {
         config.set("allowPlayerLeave", allowPlayerLeave);
         config.set("ctKillPoint", ctKillPoint);
         config.set("ctDeathPoint", ctDeathPoint);
-        config.set("ctTKPoint", ctTKPoint);
         config.set("sideCriteria", sideCriteria.toString());
         config.set("listCriteria", listCriteria.toString());
         config.set("belowCriteria", belowCriteria.toString());
@@ -310,10 +305,6 @@ public class ColorTeamingConfig {
 
     public int getCTDeathPoint() {
         return ctDeathPoint;
-    }
-
-    public int getCTTKPoint() {
-        return ctTKPoint;
     }
 
     public SidebarCriteria getSideCriteria() {
@@ -418,10 +409,6 @@ public class ColorTeamingConfig {
 
     public void setCTDeathPoint(int deathPoint) {
         this.ctDeathPoint = deathPoint;
-    }
-
-    public void setCTTKPoint(int tkPoint) {
-        this.ctTKPoint = tkPoint;
     }
 
     public void setSideCriteria(SidebarCriteria sideCriteria) {

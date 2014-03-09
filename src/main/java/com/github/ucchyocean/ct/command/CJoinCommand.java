@@ -72,8 +72,8 @@ public class CJoinCommand implements CommandExecutor {
 
             plugin.getAPI().addPlayerTeam(player, team);
 
-            // サイドバー更新
-            plugin.getAPI().refreshSidebarScore();
+            // スコアボード更新
+            plugin.getAPI().refreshRestTeamMemberScore();
 
             return true;
 
@@ -101,8 +101,8 @@ public class CJoinCommand implements CommandExecutor {
             TeamNameSetting tns = plugin.getAPI().getTeamNameConfig().getTeamNameFromID(target);
             plugin.getAPI().addPlayerTeam(player, tns);
 
-            // サイドバー更新
-            plugin.getAPI().makeSidebarScore();
+            // スコアボード更新
+            plugin.getAPI().refreshRestTeamMemberScore();
 
             return true;
 
