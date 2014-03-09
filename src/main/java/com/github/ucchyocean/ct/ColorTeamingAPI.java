@@ -340,6 +340,12 @@ public interface ColorTeamingAPI {
     public boolean isExistClass(String classname);
     
     /**
+     * 登録されている全てのクラスデータをまとめて取得する。
+     * @return 全てのクラスデータ
+     */
+    public HashMap<String, ClassData> getClasses();
+    
+    /**
      * クラスデータを設定する。同名のクラスが存在する場合は上書きに、無い場合は新規追加になる。
      * @param classdata クラスデータ
      */

@@ -8,6 +8,7 @@ package com.github.ucchyocean.ct.config;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -467,4 +468,12 @@ public class ColorTeamingConfig {
         this.priorBedRespawn = priorBedRespawn;
     }
 
+    /**
+     * 全てのクラスデータを返す。
+     * @return 全てのクラスデータ
+     * @deprecated このメソッドは、ColorTeaming ClassSign v0.4.0 以前の後方互換性のために残す。
+     */
+    public HashMap<String, ClassData> getClasses() {
+        return ColorTeaming.instance.getAPI().getClasses();
+    }
 }

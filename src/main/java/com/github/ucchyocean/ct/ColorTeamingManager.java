@@ -921,8 +921,16 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      */
     @Override
     public boolean isExistClass(String classname) {
-        
         return classDatas.containsKey(classname);
+    }
+    
+    /**
+     * 登録されている全てのクラスデータをまとめて取得する。
+     * @return 全てのクラスデータ
+     */
+    @Override
+    public HashMap<String, ClassData> getClasses() {
+        return classDatas;
     }
     
     /**
