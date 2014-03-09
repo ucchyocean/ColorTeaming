@@ -82,10 +82,10 @@ commands:
     description: 各チームをテレポートするためのコマンド
     aliases: ctp
     usage: |
-           /<command> (team|player) [(world)] (x) (y) (z) - teamのメンバー全員を、(world):(x),(y),(z) の場所にテレポートします。
-           /<command> (team|player) here - teamのメンバー全員を、コマンドを実行した人の場所にテレポートします。
-           /<command> (team|player) spawn - teamのメンバー全員を、チームのリスポーンポイントにテレポートします。
-           /<command> (team|player) (point) - teamのメンバー全員を、指定されたポイントにテレポートします。
+           /<command> (team|player) [(world)] (x) (y) (z) - teamのメンバー全員、または指定したプレイヤーを、(world):(x),(y),(z) の場所にテレポートします。
+           /<command> (team|player) here - teamのメンバー全員、または指定したプレイヤーを、コマンドを実行した人の場所にテレポートします。
+           /<command> (team|player) spawn - teamのメンバー全員、または指定したプレイヤーを、チームのリスポーンポイントにテレポートします。
+           /<command> (team|player) (point) - teamのメンバー全員、または指定したプレイヤーを、指定されたポイントにテレポートします。
            /<command> set (point) [(world)] (x) (y) (z) - (world):(x),(y),(z) の場所に、新しいポイントを登録します。
            /<command> set (point) here - コマンドを実行した人の場所に、新しいポイントを登録します。
            /<command> remove (point) - 登録されたポイントを削除します。
