@@ -104,7 +104,7 @@ public class ColorTeamingConfig {
 
     /** テレポート実行時のディレイ間隔 */
     private int teleportDelay;
-    
+
     /** テレポート実行後に、他プレイヤー非表示になる問題対策のための、
      *  パケット再送信実行のディレイ。0ならパケットを送信しない。*/
     private int teleportVisiblePacketSendDelay;

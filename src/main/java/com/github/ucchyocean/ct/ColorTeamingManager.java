@@ -38,6 +38,7 @@ import com.github.ucchyocean.ct.event.ColorTeamingPlayerLeaveEvent.Reason;
 import com.github.ucchyocean.ct.event.ColorTeamingTeamChatEvent;
 import com.github.ucchyocean.ct.event.ColorTeamingTeamCreateEvent;
 import com.github.ucchyocean.ct.event.ColorTeamingTeamRemoveEvent;
+import com.github.ucchyocean.ct.event.ColorTeamingTeamscoreChangeEvent;
 import com.github.ucchyocean.ct.item.CustomItem;
 
 /**
@@ -644,11 +645,18 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         Objective obj = objectives.getTeamPointObjective();
         TeamNameSetting tns = teamNameConfig.getTeamNameFromID(team);
         
+        int pointBefore = obj.getScore(tns.getScoreItem()).getScore();
+        
         if ( point == 0 ) {
             // NOTE: ポイント0を設定する場合は、一旦1を設定して項目を表示させる。
             obj.getScore(tns.getScoreItem()).setScore(1);
         }
         obj.getScore(tns.getScoreItem()).setScore(point);
+        
+        // イベント呼び出し
+        ColorTeamingTeamscoreChangeEvent event = 
+                new ColorTeamingTeamscoreChangeEvent(tns, pointBefore, point);
+        Bukkit.getPluginManager().callEvent(event);
     }
     
     /**
@@ -665,6 +673,11 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         
         int point = obj.getScore(tns.getScoreItem()).getScore();
         obj.getScore(tns.getScoreItem()).setScore(point + amount);
+        
+        // イベント呼び出し
+        ColorTeamingTeamscoreChangeEvent event = 
+                new ColorTeamingTeamscoreChangeEvent(tns, point, point + amount);
+        Bukkit.getPluginManager().callEvent(event);
         
         return point + amount;
     }
@@ -975,8 +988,9 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         // キルデス情報のクリア
         clearKillDeathPoints();
 
-        // チーム人数の更新
+        // チーム人数の更新、スコアボードの表示
         refreshRestTeamMemberScore();
+        displayScoreboard();
     }
     
     /**
@@ -1032,8 +1046,9 @@ public class ColorTeamingManager implements ColorTeamingAPI {
             }
         }
 
-        // チーム人数の更新
+        // チーム人数の更新、スコアボードの表示
         refreshRestTeamMemberScore();
+        displayScoreboard();
         
         return true;
     }
