@@ -111,8 +111,8 @@ commands:
            /<command> - 全てのチームごとのキルデス数カウントを参照します。
            /<command> say - 全てのチームごとのキルデス数カウントを、サーバー全体メッセージで表示します。
            /<command> clear - 全てのチームごとのキルデス数カウントを初期化して0にします。
-           /<command> set (team) (point) - teamのチームポイントを、pointに設定します。
-           /<command> add (team) (point) - teamのチームポイントを、pointのぶん追加します。マイナス指定で減らします。
+           /<command> set (team|player) (point) - teamまたはplayerのポイントを、pointに設定します。
+           /<command> add (team|player) (point) - teamまたはplayerのポイントを、pointのぶん追加します。マイナス指定で減らします。
     permission: colorteaming.point
     permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorspawn:
