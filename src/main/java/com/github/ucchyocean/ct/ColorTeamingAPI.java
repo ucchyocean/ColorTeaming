@@ -193,6 +193,25 @@ public interface ColorTeamingAPI {
      * @return キルデス数
      */
     public HashMap<String, int[]> getKillDeathUserCounts();
+    
+    /**
+     * チームのキル数カウントを、+1する。
+     * @param team チームID
+     */
+    public void increaseTeamKillCount(String team);
+    
+    /**
+     * チームのデス数カウントを、+1する。
+     * @param team チームID
+     */
+    public void increaseTeamDeathCount(String team);
+    
+    /**
+     * 指定したプレイヤーのポイントを追加する。
+     * @param player プレイヤー
+     * @param amount 追加ポイント（マイナス指定でポイントを減らす。）
+     */
+    public void addPlayerPoint(Player player, int amount);
 
     /**
      * ユーザー単位のキルデス数を設定する

@@ -20,6 +20,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
@@ -573,9 +574,11 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         
         Objective obj = objectives.getTeamRestObjective();
         
-        // まず、全ての項目をいったんリセットする
+        // まず、全ての項目をいったん0にする
         for ( TeamNameSetting tns : getTeamNameConfig().getTeamNames() ) {
-            scoreboard.resetScores(tns.getScoreItem());
+            if ( obj.getScore(tns.getScoreItem()).getScore() > 0 ) {
+                obj.getScore(tns.getScoreItem()).setScore(0);
+            }
         }
         
         // チーム人数を取得して設定する
@@ -704,13 +707,52 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         
         return result;
     }
-
+    
+    /**
+     * チームのキル数カウントを、+1する。
+     * @param team チームID
+     */
+    @Override
+    public void increaseTeamKillCount(String team) {
+        
+        TeamNameSetting tns = getTeamNameFromID(team);
+        Objective obj = objectives.getTeamKillObjective();
+        Score score = obj.getScore(tns.getScoreItem());
+        score.setScore(score.getScore() + 1);
+    }
+    
+    /**
+     * チームのデス数カウントを、+1する。
+     * @param team チームID
+     */
+    @Override
+    public void increaseTeamDeathCount(String team) {
+        
+        TeamNameSetting tns = getTeamNameFromID(team);
+        Objective obj = objectives.getTeamDeathObjective();
+        Score score = obj.getScore(tns.getScoreItem());
+        score.setScore(score.getScore() + 1);
+    }
+    
+    /**
+     * 指定したプレイヤーのポイントを追加する。
+     * @param player プレイヤー
+     * @param amount 追加ポイント（マイナス指定でポイントを減らす。）
+     */
+    @Override
+    public void addPlayerPoint(Player player, int amount) {
+        
+        Score score = objectives.getPersonalPointObjective().getScore(player);
+        score.setScore(score.getScore() + amount);
+    }
+    
     /**
      * ユーザー単位のキルデス数を設定する
      * @param playerName プレイヤー名
      * @param kill キル数
      * @param death デス数
      */
+    @Override
     public void setKillDeathUserCounts(String playerName, int kill, int death) {
         
         Player player = Bukkit.getPlayer(playerName);

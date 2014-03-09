@@ -60,7 +60,6 @@ public class PlayerDeathListener implements Listener {
         ColorTeamingConfig config = plugin.getCTConfig();
         ColorTeamingAPI api = plugin.getAPI();
         
-        HashMap<String, int[]> killDeathUserCounts = api.getKillDeathUserCounts();
         HashMap<String, ArrayList<String>> leaders = api.getLeaders();
         TeamNameSetting tnsDeader = api.getPlayerTeamName(deader);
         
@@ -82,13 +81,12 @@ public class PlayerDeathListener implements Listener {
             // Death数を加算
 
             // チームへ加算
-            api.addTeamPoint(teamDeader, getDeathPoint(deader));
+            int deathPoint = getDeathPoint(deader);
+            api.addTeamPoint(teamDeader, deathPoint);
+            api.increaseTeamDeathCount(teamDeader);
             
             // ユーザーへ加算
-            if ( !killDeathUserCounts.containsKey(deader.getName()) ) {
-                killDeathUserCounts.put(deader.getName(), new int[3]);
-            }
-            killDeathUserCounts.get(deader.getName())[1]++;
+            api.addPlayerPoint(deader, deathPoint);
 
             // 死亡したプレイヤーが、大将だった場合、倒されたことを全体に通知する。
             if ( leaders.containsKey(teamDeader) &&
@@ -140,16 +138,12 @@ public class PlayerDeathListener implements Listener {
                 // Kill数を加算
 
                 // チームへ加算
-                api.addTeamPoint(teamKiller, getKillPoint(deader));
+                int killPoint = getKillPoint(deader);
+                api.addTeamPoint(teamKiller, killPoint);
+                api.increaseTeamKillCount(teamKiller);
                 
                 // ユーザーへ加算
-                if ( !killDeathUserCounts.containsKey(killer.getName()) ) {
-                    killDeathUserCounts.put(killer.getName(), new int[3]);
-                }
-                if ( teamDeader.equals(teamKiller) ) // 同じチームだった場合のペナルティ
-                    killDeathUserCounts.get(killer.getName())[2]++;
-                else
-                    killDeathUserCounts.get(killer.getName())[0]++;
+                api.addPlayerPoint(killer, killPoint);
 
                 // killReachTrophyが設定されていたら、超えたかどうかを判定する
                 HashMap<String, int[]> killDeathCounts = api.getKillDeathCounts();
