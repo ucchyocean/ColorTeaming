@@ -75,9 +75,6 @@ public class CJoinCommand implements CommandExecutor {
             // サイドバー更新
             plugin.getAPI().refreshSidebarScore();
 
-            // メンバー情報をlastdataに保存する
-            plugin.getAPI().getCTSaveDataHandler().save("lastdata");
-
             return true;
 
         } else {
@@ -106,9 +103,6 @@ public class CJoinCommand implements CommandExecutor {
 
             // サイドバー更新
             plugin.getAPI().makeSidebarScore();
-
-            // メンバー情報をlastdataに保存する
-            plugin.getAPI().getCTSaveDataHandler().save("lastdata");
 
             return true;
 

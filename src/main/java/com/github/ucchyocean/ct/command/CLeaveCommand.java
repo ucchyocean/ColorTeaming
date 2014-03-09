@@ -60,9 +60,6 @@ public class CLeaveCommand implements CommandExecutor {
         // サイドバー更新
         plugin.getAPI().makeSidebarScore();
 
-        // メンバー情報をlastdataに保存する
-        plugin.getAPI().getCTSaveDataHandler().save("lastdata");
-
         return true;
     }
 }

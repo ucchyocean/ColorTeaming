@@ -446,9 +446,6 @@ public class CTeamingCommand implements CommandExecutor {
                     tns.getName() + " に追加しました。");
         }
 
-        // メンバー情報をlastdataに保存する
-        api.getCTSaveDataHandler().save("lastdata");
-
         // サイドバーの更新 チームが増える場合は、再生成する
         if ( isNewGroup ) {
             api.makeSidebarScore();

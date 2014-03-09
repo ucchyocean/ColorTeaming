@@ -19,7 +19,6 @@ import org.bukkit.scoreboard.Team;
 import com.github.ucchyocean.ct.config.ClassData;
 import com.github.ucchyocean.ct.config.RespawnConfiguration;
 import com.github.ucchyocean.ct.config.TPPointConfiguration;
-import com.github.ucchyocean.ct.config.TeamMemberSaveDataHandler;
 import com.github.ucchyocean.ct.config.TeamNameConfig;
 import com.github.ucchyocean.ct.config.TeamNameSetting;
 import com.github.ucchyocean.ct.event.ColorTeamingPlayerLeaveEvent.Reason;
@@ -201,12 +200,6 @@ public interface ColorTeamingAPI {
      * 名前下のスコアを更新する。
      */
     public void refreshBelowNameScore();
-
-    /**
-     * TeamMemberSaveDataHandler を取得する
-     * @return TeamMemberSaveDataHandler
-     */
-    public TeamMemberSaveDataHandler getCTSaveDataHandler();
 
     /**
      * チームのポイント数を全取得する

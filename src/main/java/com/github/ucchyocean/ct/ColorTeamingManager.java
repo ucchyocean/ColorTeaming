@@ -27,7 +27,6 @@ import com.github.ucchyocean.ct.config.ClassData;
 import com.github.ucchyocean.ct.config.ColorTeamingConfig;
 import com.github.ucchyocean.ct.config.RespawnConfiguration;
 import com.github.ucchyocean.ct.config.TPPointConfiguration;
-import com.github.ucchyocean.ct.config.TeamMemberSaveDataHandler;
 import com.github.ucchyocean.ct.config.TeamNameConfig;
 import com.github.ucchyocean.ct.config.TeamNameSetting;
 import com.github.ucchyocean.ct.event.ColorTeamingKillDeathClearedEvent;
@@ -59,7 +58,6 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     private VaultChatBridge vaultchat;
 
     private Scoreboard sb;
-    private TeamMemberSaveDataHandler sdhandler;
 
     private RespawnConfiguration respawnConfig;
     private TPPointConfiguration tppointConfig;
@@ -95,7 +93,6 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         respawnConfig = new RespawnConfiguration();
         tppointConfig = new TPPointConfiguration();
         teamNameConfig = new TeamNameConfig();
-        sdhandler = new TeamMemberSaveDataHandler(plugin.getDataFolder());
         customItems = new HashMap<String, CustomItem>();
         classDatas = ClassData.loadAllClasses(new File(plugin.getDataFolder(), "classes"));
     }
@@ -655,15 +652,6 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     }
 
     /**
-     * TeamMemberSaveDataHandler を取得する
-     * @return TeamMemberSaveDataHandler
-     */
-    @Override
-    public TeamMemberSaveDataHandler getCTSaveDataHandler() {
-        return sdhandler;
-    }
-
-    /**
      * キルデス数やポイントを全てクリアする
      */
     @Override
@@ -986,9 +974,6 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         makeSidebarScore();
         makeTabkeyListScore();
         makeBelowNameScore();
-
-        // メンバー情報をlastdataに保存する
-        getCTSaveDataHandler().save("lastdata");
     }
     
     /**
@@ -1049,9 +1034,6 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         makeSidebarScore();
         refreshTabkeyListScore();
         refreshBelowNameScore();
-
-        // メンバー情報をlastdataに保存する
-        getCTSaveDataHandler().save("lastdata");
         
         return true;
     }
