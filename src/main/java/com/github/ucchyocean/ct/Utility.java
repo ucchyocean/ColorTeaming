@@ -294,10 +294,9 @@ public class Utility {
      * プレイヤーの全回復、および、全エフェクトの除去を行う
      * @param player 対象プレイヤー
      */
-    public static void heal(final Player player) {
+    public static void resetPlayerStatus(final Player player) {
         
         player.setHealth(player.getMaxHealth());
-        player.setFireTicks(0);
         player.setFallDistance(0);
         player.setFoodLevel(20);
         player.setRemainingAir(player.getMaximumAir());

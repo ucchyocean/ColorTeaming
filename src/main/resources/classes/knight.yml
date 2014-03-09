@@ -16,6 +16,10 @@ description:
 items:
   sword:
     material: IRON_SWORD
+    display_name: '伝説の剣'
+    lore: 
+    - 'この剣は、伝説の剣…'
+    - 'その名も、エクスカリパーである。'
     enchants:
       DAMAGE_ALL: 5
       KNOCKBACK: 5

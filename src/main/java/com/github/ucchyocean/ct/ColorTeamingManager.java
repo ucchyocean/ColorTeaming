@@ -53,7 +53,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     private static SidebarScoreDisplay sidebarScore;
     private static TabListScoreDisplay tablistScore;
     private static BelowNameScoreDisplay belownameScore;
-    
+
     private ColorTeaming plugin;
     private ColorTeamingConfig config;
     private VaultChatBridge vaultchat;
@@ -72,7 +72,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     private String respawnMapName;
 
     private HashMap<String, CustomItem> customItems;
-    
+
     private HashMap<String, ClassData> classDatas;
 
     /**

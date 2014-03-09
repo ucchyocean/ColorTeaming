@@ -67,6 +67,11 @@ public class PlayerDeathListener implements Listener {
         if ( tnsDeader != null ) {
             String teamDeader = tnsDeader.getID();
 
+            // チーム所属で死亡したプレイヤーは、ここで体力最大値を20に戻す
+            if ( config.isResetMaxHealthOnDeath() ) {
+                deader.setMaxHealth(20);
+            }
+            
             // 倒したプレイヤーを取得
             Player killer = deader.getKiller();
             String killerName = null;
@@ -223,7 +228,7 @@ public class PlayerDeathListener implements Listener {
             if ( config.isSkipGameover() ) {
                 
                 // NOTE: 回復するとゲームオーバー画面が表示されない
-                Utility.heal(deader);
+                Utility.resetPlayerStatus(deader);
                 
                 // リスポーンイベントを呼び出す
                 Location respawnLocation = deader.getBedSpawnLocation();

@@ -544,7 +544,7 @@ public class ClassData {
         boolean needToUpdateInventory = false;
         
         // 全回復の実行
-        Utility.heal(player);
+        Utility.resetPlayerStatus(player);
         
         if ( items != null ) {
         

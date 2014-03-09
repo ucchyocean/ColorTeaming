@@ -58,6 +58,9 @@ public class ColorTeamingConfig {
 
     /** リスポーン後の無敵時間(秒) */
     private int noDamageSeconds;
+    
+    /** 死亡時の体力最大値のリセット オンオフ */
+    private boolean resetMaxHealthOnDeath;
 
     /** /cjoin (group) を一般ユーザーに使用させるかどうか */
     private boolean allowPlayerJoinAny;
@@ -146,6 +149,7 @@ public class ColorTeamingConfig {
         ctconfig.colorRemoveOnDeath = config.getBoolean("colorRemoveOnDeath", false);
         ctconfig.colorRemoveOnQuit = config.getBoolean("colorRemoveOnQuit", false);
         ctconfig.noDamageSeconds = config.getInt("noDamageSeconds", 5);
+        ctconfig.resetMaxHealthOnDeath = config.getBoolean("resetMaxHealthOnDeath", true);
 
         ctconfig.allowPlayerJoinAny = config.getBoolean("allowPlayerJoinAny", false);
         ctconfig.allowPlayerJoinRandom = config.getBoolean("allowPlayerJoinRandom", true);
@@ -254,7 +258,7 @@ public class ColorTeamingConfig {
     public boolean isTeamChatLogMode() {
         return teamChatLogMode;
     }
-    
+
     public String getTeamChatFormat() {
         return teamChatFormat;
     }
@@ -266,7 +270,7 @@ public class ColorTeamingConfig {
     public boolean isCanSeeFriendlyInvisibles() {
         return canSeeFriendlyInvisibles;
     }
-    
+
     public boolean isSkipGameover() {
         return skipGameover;
     }
@@ -281,6 +285,10 @@ public class ColorTeamingConfig {
 
     public int getNoDamageSeconds() {
         return noDamageSeconds;
+    }
+
+    public boolean isResetMaxHealthOnDeath() {
+        return resetMaxHealthOnDeath;
     }
 
     public boolean isAllowPlayerJoinAny() {
@@ -342,7 +350,7 @@ public class ColorTeamingConfig {
     public int getTeleportDelay() {
         return teleportDelay;
     }
-    
+
     public int getTeleportVisiblePacketSendDelay() {
         return teleportVisiblePacketSendDelay;
     }
@@ -370,7 +378,7 @@ public class ColorTeamingConfig {
     public void setCanSeeFriendlyInvisibles(boolean canSeeFriendlyInvisibles) {
         this.canSeeFriendlyInvisibles = canSeeFriendlyInvisibles;
     }
-    
+
     public void setSkipGameover(boolean skipGameover) {
         this.skipGameover = skipGameover;
     }
@@ -385,6 +393,10 @@ public class ColorTeamingConfig {
 
     public void setNoDamageSeconds(int noDamageSeconds) {
         this.noDamageSeconds = noDamageSeconds;
+    }
+
+    public void setResetMaxHealthOnDeath(boolean resetMaxHealthOnDeath) {
+        this.resetMaxHealthOnDeath = resetMaxHealthOnDeath;
     }
 
     public void setAllowPlayerJoinAny(boolean allowPlayerJoinAny) {
