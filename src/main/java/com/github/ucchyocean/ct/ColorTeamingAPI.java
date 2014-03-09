@@ -221,8 +221,16 @@ public interface ColorTeamingAPI {
      * 指定したプレイヤーのポイントを追加する。
      * @param player プレイヤー
      * @param amount 追加ポイント（マイナス指定でポイントを減らす。）
+     * @return 設定後のポイント
      */
-    public void addPlayerPoint(Player player, int amount);
+    public int addPlayerPoint(Player player, int amount);
+    
+    /**
+     * 指定したプレイヤーのポイントを設定する。
+     * @param player プレイヤー
+     * @param amount ポイント
+     */
+    public void setPlayerPoint(Player player, int amount);
 
     /**
      * ユーザー単位のキルデス数を設定する

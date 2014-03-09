@@ -781,12 +781,25 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      * 指定したプレイヤーのポイントを追加する。
      * @param player プレイヤー
      * @param amount 追加ポイント（マイナス指定でポイントを減らす。）
+     * @return 設定後のポイント
      */
     @Override
-    public void addPlayerPoint(Player player, int amount) {
+    public int addPlayerPoint(Player player, int amount) {
         
         Score score = objectives.getPersonalPointObjective().getScore(player);
-        score.setScore(score.getScore() + amount);
+        int point = score.getScore() + amount;
+        score.setScore(point);
+        return point;
+    }
+    
+    /**
+     * 指定したプレイヤーのポイントを設定する。
+     * @param player プレイヤー
+     * @param amount ポイント
+     */
+    @Override
+    public void setPlayerPoint(Player player, int amount) {
+        objectives.getPersonalPointObjective().getScore(player).setScore(amount);
     }
     
     /**

@@ -182,16 +182,32 @@ public class CPointCommand implements CommandExecutor {
             String id = args[1];
             int point = Integer.parseInt(args[2]);
             
-            if ( !plugin.getAPI().isExistTeam(id) ) {
-                sender.sendMessage(ChatColor.RED + "チーム" + id + "が存在しません。");
+            if ( plugin.getAPI().isExistTeam(id) ) {
+                // 指定された対象がチームの場合
+                
+                plugin.getAPI().setTeamPoint(id, point);
+                
+                sender.sendMessage(ChatColor.RED + 
+                        "チーム" + id + "のポイントを、" + point + "に設定しました。");
+                return true;
+                
+            } else if ( Bukkit.getPlayerExact(id) != null ) {
+                // 指定された対象がプレイヤーの場合
+                
+                Player player = Bukkit.getPlayerExact(id);
+                plugin.getAPI().setPlayerPoint(player, point);
+                
+                sender.sendMessage(ChatColor.RED + 
+                        "プレイヤー" + id + "のポイントを、" + point + "に設定しました。");
+                return true;
+                
+            } else {
+                // 指定対象が見つからない
+                
+                sender.sendMessage(ChatColor.RED + "指定された" + id + "が存在しません。");
                 return true;
             }
             
-            plugin.getAPI().setTeamPoint(id, point);
-            
-            sender.sendMessage(ChatColor.RED + 
-                    "チーム" + id + "のポイントを、" + point + "に設定しました。");
-            return true;
 
         } else if ( args.length >= 3 && args[0].equalsIgnoreCase("add") ) {
             
@@ -204,16 +220,31 @@ public class CPointCommand implements CommandExecutor {
             String id = args[1];
             int amount = Integer.parseInt(args[2]);
             
-            if ( !plugin.getAPI().isExistTeam(id) ) {
-                sender.sendMessage(ChatColor.RED + "チーム" + id + "が存在しません。");
+            if ( plugin.getAPI().isExistTeam(id) ) {
+                // 指定された対象がチームの場合
+                
+                int point = plugin.getAPI().addTeamPoint(id, amount);
+                
+                sender.sendMessage(ChatColor.RED + 
+                        "チーム" + id + "のポイントを、" + point + "に設定しました。");
+                return true;
+                
+            } else if ( Bukkit.getPlayerExact(id) != null ) {
+                // 指定された対象がプレイヤーの場合
+                
+                Player player = Bukkit.getPlayerExact(id);
+                int point = plugin.getAPI().addPlayerPoint(player, amount);
+                
+                sender.sendMessage(ChatColor.RED + 
+                        "プレイヤー" + id + "のポイントを、" + point + "に設定しました。");
+                return true;
+                
+            } else {
+                // 指定対象が見つからない
+                
+                sender.sendMessage(ChatColor.RED + "指定された" + id + "が存在しません。");
                 return true;
             }
-            
-            int point = plugin.getAPI().addTeamPoint(id, amount);
-            
-            sender.sendMessage(ChatColor.RED + 
-                    "チーム" + id + "のポイントを、" + point + "に設定しました。");
-            return true;
 
         }
 
