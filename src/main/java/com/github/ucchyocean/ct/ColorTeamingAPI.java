@@ -157,6 +157,11 @@ public interface ColorTeamingAPI {
     public void refreshRestTeamMemberScore();
     
     /**
+     * @deprecated このメソッドは、refreshRestTeamMemberScoreに変わりました。
+     */
+    public void makeSidebarScore();
+    
+    /**
      * チームのポイント数を全取得する
      * @return チームのポイント数
      */

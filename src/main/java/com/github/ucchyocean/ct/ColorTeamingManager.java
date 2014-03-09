@@ -590,6 +590,14 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     }
     
     /**
+     * @deprecated このメソッドは、refreshRestTeamMemberScoreに変わりました。
+     */
+    @Override
+    public void makeSidebarScore() {
+        refreshRestTeamMemberScore();
+    }
+    
+    /**
      * キルデス数やポイントを全てクリアする
      */
     @Override
@@ -967,8 +975,8 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         // キルデス情報のクリア
         clearKillDeathPoints();
 
-        // スコアボードの表示
-        displayScoreboard();
+        // チーム人数の更新
+        refreshRestTeamMemberScore();
     }
     
     /**
@@ -1024,8 +1032,8 @@ public class ColorTeamingManager implements ColorTeamingAPI {
             }
         }
 
-        // スコアボードの表示
-        displayScoreboard();
+        // チーム人数の更新
+        refreshRestTeamMemberScore();
         
         return true;
     }
