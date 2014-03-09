@@ -633,6 +633,27 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         
         return points;
     }
+    
+    /**
+     * プレイヤーのポイント数を全取得する
+     * @return プレイヤーのポイント数
+     */
+    @Override
+    public HashMap<String, Integer> getAllPlayerPoints() {
+
+        HashMap<String, Integer> points = new HashMap<String, Integer>();
+        Objective obj = objectives.getPersonalPointObjective();
+        HashMap<String, ArrayList<Player>> members = getAllTeamMembers();
+        
+        for ( String team : members.keySet() ) {
+            for ( Player player : members.get(team) ) {
+                int point = obj.getScore(player).getScore();
+                points.put(player.getName(), point);
+            }
+        }
+        
+        return points;
+    }
 
     /**
      * チームポイントを設定する。
@@ -711,7 +732,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      * @return キルデス数
      */
     @Override
-    public HashMap<String, int[]> getKillDeathUserCounts() {
+    public HashMap<String, int[]> getKillDeathPersonalCounts() {
         
         Objective kills = objectives.getPersonalKillObjective();
         Objective deaths = objectives.getPersonalDeathObjective();
@@ -723,6 +744,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
                 int[] data = new int[2];
                 data[0] = kills.getScore(player).getScore();
                 data[1] = deaths.getScore(player).getScore();
+                result.put(player.getName(), data);
             }
         }
         

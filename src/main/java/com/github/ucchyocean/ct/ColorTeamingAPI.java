@@ -166,7 +166,13 @@ public interface ColorTeamingAPI {
      * @return チームのポイント数
      */
     public HashMap<String, Integer> getAllTeamPoints();
-
+    
+    /**
+     * プレイヤーのポイント数を全取得する
+     * @return プレイヤーのポイント数
+     */
+    public HashMap<String, Integer> getAllPlayerPoints();
+    
     /**
      * チームポイントを設定する。
      * @param team チーム名
@@ -197,7 +203,7 @@ public interface ColorTeamingAPI {
      * ユーザー単位のキルデス数を取得する
      * @return キルデス数
      */
-    public HashMap<String, int[]> getKillDeathUserCounts();
+    public HashMap<String, int[]> getKillDeathPersonalCounts();
     
     /**
      * チームのキル数カウントを、+1する。

@@ -49,12 +49,12 @@ public class CPointCommand implements CommandExecutor {
 
             HashMap<String, int[]> killDeathCounts =
                     plugin.getAPI().getKillDeathCounts();
-            HashMap<String, int[]> killDeathUserCounts =
-                    plugin.getAPI().getKillDeathUserCounts();
+            HashMap<String, int[]> killDeathPersonalCounts =
+                    plugin.getAPI().getKillDeathPersonalCounts();
             HashMap<String, Integer> teamPoints =
                     plugin.getAPI().getAllTeamPoints();
             HashMap<String, Integer> personalPoints =
-                    plugin.getAPI().getAllTeamPoints();
+                    plugin.getAPI().getAllPlayerPoints();
 
             // 全チームの得点を集計して、得点順に並べる
             ArrayList<TeamNameSetting> teams = new ArrayList<TeamNameSetting>();
@@ -111,7 +111,7 @@ public class CPointCommand implements CommandExecutor {
             // ユーザー得点の集計
 
             // まだ1つも得点が記録されていないなら、ここでコマンドは終わる。
-            if ( killDeathUserCounts.size() <= 0 ) {
+            if ( killDeathPersonalCounts.size() <= 0 ) {
                 return true;
             }
 
@@ -134,7 +134,7 @@ public class CPointCommand implements CommandExecutor {
             for ( String mvpName : mvp ) {
                 
                 int point = personalPoints.get(mvpName);
-                int[] counts = killDeathUserCounts.get(mvpName);
+                int[] counts = killDeathPersonalCounts.get(mvpName);
                 String message = String.format(
                         "[MVP] %s %dpoints (%dkill, %ddeath)",
                         mvpName, point, counts[0], counts[1]);
@@ -147,10 +147,10 @@ public class CPointCommand implements CommandExecutor {
 
             // 個人の得点を個人のコンソールに表示する
             if ( isBroadcast ) {
-                for ( String playerName : killDeathUserCounts.keySet() ) {
+                for ( String playerName : killDeathPersonalCounts.keySet() ) {
                     
                     int point = personalPoints.get(playerName);
-                    int[] counts = killDeathUserCounts.get(playerName);
+                    int[] counts = killDeathPersonalCounts.get(playerName);
                     String message = String.format(
                             "[Your Score] %s %dpoints (%dkill, %ddeath)",
                             playerName, point, counts[0], counts[1]);
