@@ -213,12 +213,6 @@ permissions:
   colorteaming.remove:
     description: colorremove(cr)コマンドの使用権限
     default: op
-  colorteaming.save:
-    description: colorsave(csave)コマンドの使用権限
-    default: op
-  colorteaming.restore:
-    description: colorrestore(crestore)コマンドの使用権限
-    default: op
   colorteaming.explode:
     description: colorexplode(cexplode)コマンドの使用権限
     default: op
@@ -238,8 +232,6 @@ permissions:
       colorteaming.kill: true
       colorteaming.spawn: true
       colorteaming.remove: true
-      colorteaming.save: true
-      colorteaming.restore: true
       colorteaming.explode: true
       colorteaming.give: true
     description: ColorTeamingプラグインの管理系コマンド全ての使用権限
