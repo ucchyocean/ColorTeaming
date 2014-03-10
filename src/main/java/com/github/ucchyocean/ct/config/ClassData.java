@@ -10,6 +10,7 @@ import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -293,7 +294,8 @@ public class ClassData {
                     config.getConfigurationSection("items");
             for ( String sub : itemsSection.getKeys(false) ) {
                 items.add(getItemFromSection(
-                        itemsSection.getConfigurationSection(sub)));
+                            itemsSection.getConfigurationSection(sub), 
+                            cd.getTitle() + " - items - " + sub));
             }
             cd.setItems(items);
         }
@@ -302,15 +304,12 @@ public class ClassData {
             ArrayList<ItemStack> armors = new ArrayList<ItemStack>();
             ConfigurationSection armorsSection = 
                     config.getConfigurationSection("armors");
-            armors.add(getItemFromSection(
-                    armorsSection.getConfigurationSection("boots")));
-            armors.add(getItemFromSection(
-                    armorsSection.getConfigurationSection("leggings")));
-            armors.add(getItemFromSection(
-                    armorsSection.getConfigurationSection("chestplate")));
-            armors.add(getItemFromSection(
-                    armorsSection.getConfigurationSection("helmet")));
-            cd.setArmors(armors);
+            
+            for ( String parts : new String[]{"boots", "leggings", "chestplate", "helmet"} ) {
+                armors.add(getItemFromSection(
+                        armorsSection.getConfigurationSection(parts), 
+                        cd.getTitle() + " - armors - " + parts));
+            }
         }
         
         cd.setHealth(config.getDouble("health", -1));
@@ -325,6 +324,9 @@ public class ClassData {
                 
                 PotionEffectType type = PotionEffectType.getByName(name);
                 if ( type == null ) {
+                    Logger logger = ColorTeaming.instance.getLogger();
+                    logger.warning("指定されたエフェクト形式 " + name + " が正しくありません。");
+                    logger.warning("└ " + cd.getTitle() + " - effects");
                     continue;
                 }
                 
@@ -361,9 +363,10 @@ public class ClassData {
     /**
      * コンフィグセクションから、アイテム設定を読みだして、ItemStackを生成して返します。
      * @param section コンフィグセクション
+     * @param info セクションの情報、パースに失敗した時の警告に使用されます。
      * @return ItemStack
      */
-    private static ItemStack getItemFromSection(ConfigurationSection section) {
+    private static ItemStack getItemFromSection(ConfigurationSection section, String info) {
         
         if ( section == null ) {
             return null;
@@ -375,10 +378,16 @@ public class ClassData {
             // 通常のアイテム設定
             
             // materialは大文字に変換して読み込ませる
-            // （事前にcontainsでチェックしているので、非nullは保証されている）
-            Material material = Material.getMaterial(section.getString("material").toUpperCase());
-            if ( material == null || material == Material.AIR ) {
+            String name = section.getString("material");
+            Material material = Material.getMaterial(name.toUpperCase());
+            if ( material == null ) {
+                Logger logger = ColorTeaming.instance.getLogger();
+                logger.warning("materialの指定 " + name + " が正しくありません。");
+                logger.warning("└ " + info);
                 return null;
+            }
+            if ( material == Material.AIR ) {
+                return new ItemStack(Material.AIR);
             }
             
             // データ値は、ここで設定する（たぶん、将来サポートされなくなるので注意）
@@ -395,9 +404,11 @@ public class ClassData {
             item.setItemMeta(meta);
             
             return item;
-        }
-        
-        if ( item == null ) {
+            
+        } else {
+            Logger logger = ColorTeaming.instance.getLogger();
+            logger.warning("アイテム設定に必須項目（material または custom_item）がありません。");
+            logger.warning("└ " + info);
             return null;
         }
         
@@ -474,15 +485,20 @@ public class ClassData {
             for ( String type_str : enchants_sec.getKeys(false) ) {
                 Enchantment enchant = Enchantment.getByName(type_str);
                 
-                if ( enchant != null ) {
-                    int level = enchants_sec.getInt(type_str, 1);
-                    if ( level < enchant.getStartLevel() ) {
-                        level = enchant.getStartLevel();
-                    } else if ( level > 1000 ) {
-                        level = 1000;
-                    }
-                    item.addUnsafeEnchantment(enchant, level);
+                if ( enchant == null ) {
+                    Logger logger = ColorTeaming.instance.getLogger();
+                    logger.warning("指定されたエンチャント形式 " + type_str + " が正しくありません。");
+                    logger.warning("└ " + info);
+                    continue;
                 }
+                
+                int level = enchants_sec.getInt(type_str, 1);
+                if ( level < enchant.getStartLevel() ) {
+                    level = enchant.getStartLevel();
+                } else if ( level > 1000 ) {
+                    level = 1000;
+                }
+                item.addUnsafeEnchantment(enchant, level);
             }
         }
         
