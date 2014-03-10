@@ -219,6 +219,12 @@ public class ColorTeamingManager implements ColorTeamingAPI {
                 return;
             }
 
+            // チーム所属に所属していたプレイヤーは、ここで体力最大値を20に戻す
+            if ( config.isResetMaxHealthOnDeath() ) {
+                player.setMaxHealth(20);
+            }
+            
+            // チーム脱退
             team.removePlayer(player);
             
             // チーム削除により呼び出されたのでなければ、メンバー0人でチーム削除する
