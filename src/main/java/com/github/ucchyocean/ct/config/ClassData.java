@@ -20,6 +20,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -433,6 +434,15 @@ public class ClassData {
             item.setItemMeta(lam);
         }
         
+        // スカルの詳細設定 TODO: 要検証
+        if ( item.getType() == Material.SKULL_ITEM && section.contains("owner") ) {
+            
+            SkullMeta sm = (SkullMeta)item.getItemMeta();
+            if ( sm.setOwner(section.getString("owner")) ) {
+                item.setItemMeta(sm);
+            }
+        }
+        
         // エンチャント
         if ( section.contains("enchants") ) {
             ConfigurationSection enchants_sec = section.getConfigurationSection("enchants");
@@ -525,6 +535,15 @@ public class ClassData {
             message.add(indent + "red: " + lam.getColor().getRed());
             message.add(indent + "blue: " + lam.getColor().getBlue());
             message.add(indent + "green: " + lam.getColor().getGreen());
+        }
+        
+        // TODO: リリースする前に、要検証
+        if ( item.getType() == Material.SKULL_ITEM ) {
+            
+            SkullMeta sm = (SkullMeta)item.getItemMeta();
+            if ( sm.hasOwner() ) {
+                message.add(indent + "owner: " + sm.getOwner() );
+            }
         }
         
         return message;
