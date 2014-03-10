@@ -18,6 +18,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -434,12 +435,36 @@ public class ClassData {
             item.setItemMeta(lam);
         }
         
-        // スカルの詳細設定 TODO: 要検証
-        if ( item.getType() == Material.SKULL_ITEM && section.contains("owner") ) {
+        // スカルの詳細設定
+        if ( item.getType() == Material.SKULL_ITEM && 
+                section.contains("owner") ) {
             
             SkullMeta sm = (SkullMeta)item.getItemMeta();
             if ( sm.setOwner(section.getString("owner")) ) {
                 item.setItemMeta(sm);
+            }
+        }
+        
+        // 本の詳細設定
+        if ( item.getType() == Material.WRITTEN_BOOK || 
+                item.getType() == Material.BOOK_AND_QUILL ) {
+            
+            BookMeta bm = (BookMeta)item.getItemMeta();
+            boolean needToSet = false;
+            if ( section.contains("author") ) {
+                bm.setAuthor(section.getString("author"));
+                needToSet = true;
+            }
+            if ( section.contains("title") ) {
+                bm.setTitle(section.getString("title"));
+                needToSet = true;
+            }
+            if ( section.contains("pages") ) {
+                bm.setPages(section.getStringList("pages"));
+                needToSet = true;
+            }
+            if ( needToSet ) {
+                item.setItemMeta(bm);
             }
         }
         
@@ -498,7 +523,7 @@ public class ClassData {
         
         @SuppressWarnings("deprecation") // TODO
         byte data = item.getData().getData();
-        if ( item.getDurability() > 0 ) {
+        if ( item.getDurability() > 0 && item.getType().getMaxDurability() > 1 ) {
             int remain = item.getType().getMaxDurability() - item.getDurability() + 1;
             message.add(indent + "remain: " + remain);
         } else if ( data > 0 ) {
@@ -537,12 +562,29 @@ public class ClassData {
             message.add(indent + "green: " + lam.getColor().getGreen());
         }
         
-        // TODO: リリースする前に、要検証
         if ( item.getType() == Material.SKULL_ITEM ) {
             
             SkullMeta sm = (SkullMeta)item.getItemMeta();
             if ( sm.hasOwner() ) {
                 message.add(indent + "owner: " + sm.getOwner() );
+            }
+        }
+        
+        if ( item.getType() == Material.WRITTEN_BOOK || 
+                item.getType() == Material.BOOK_AND_QUILL ) {
+            
+            BookMeta bm = (BookMeta)item.getItemMeta();
+            if ( bm.hasAuthor() ) {
+                message.add(indent + "author: " + bm.getAuthor() );
+            }
+            if ( bm.hasTitle() ) {
+                message.add(indent + "title: " + bm.getTitle() );
+            }
+            if ( bm.hasPages() ) {
+                message.add(indent + "pages:");
+                for ( String page : bm.getPages() ) {
+                    message.add(indent + "- " + page);
+                }
             }
         }
         
