@@ -372,7 +372,9 @@ public class ClassData {
         if ( section.contains("material") ) {
             // 通常のアイテム設定
             
-            Material material = Material.getMaterial(section.getString("material"));
+            // materialは大文字に変換して読み込ませる
+            // （事前にcontainsでチェックしているので、非nullは保証されている）
+            Material material = Material.getMaterial(section.getString("material").toUpperCase());
             if ( material == null || material == Material.AIR ) {
                 return null;
             }
