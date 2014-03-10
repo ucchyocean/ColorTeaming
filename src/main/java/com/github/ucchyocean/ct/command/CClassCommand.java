@@ -44,19 +44,40 @@ public class CClassCommand implements CommandExecutor {
         if ( args.length >= 1 && args[0].equalsIgnoreCase("check") ) {
             // cclass check コマンドの処理
             if ( !(sender instanceof Player) ) {
-                sender.sendMessage(PREERR + "cclass check コマンドは、ゲーム内でのみ実行できます。");
+                sender.sendMessage(PREERR + label + " check コマンドは、ゲーム内でのみ実行できます。");
                 return true;
             }
             Player player = (Player)sender;
-            for ( String message : ClassData.getItemInfo(player.getItemInHand()) ) {
-                sender.sendMessage(message);
+            if ( player.getItemInHand() != null ) {
+                sender.sendMessage("===== アイテム情報 =====");
+                for ( String message : ClassData.getItemInfo(player.getItemInHand()) ) {
+                    sender.sendMessage(message);
+                }
             }
             return true;
+            
         }
 
         // ここ以下は引数が2つ以上必要である。
         if ( args.length < 2 ) {
             return false;
+        }
+        
+        if ( args[0].equalsIgnoreCase("export") ) {
+            // cclass export コマンドの処理
+            
+            if ( !(sender instanceof Player) ) {
+                sender.sendMessage(PREERR + label + " export コマンドは、ゲーム内でのみ実行できます。");
+                return true;
+            }
+            Player player = (Player)sender;
+            String name = args[1];
+            
+            if ( ClassData.exportClassFromPlayer(player, name) ) {
+                sender.sendMessage(PREINFO + "クラス設定 " + name + " をエクスポートしました。");
+            }
+            return true;
+            
         }
 
         String target = args[0];

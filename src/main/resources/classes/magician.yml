@@ -1,0 +1,43 @@
+title: magician
+description: 
+- '多様な効果の投擲アイテムを持っています。'
+- 'しかし、体力が全クラス中で最低です。'
+items:
+  item1:
+    material: POTION
+    potion_type: SLOWNESS
+    potion_level: 2
+    splash: true
+  item2:
+    material: POTION
+    potion_type: STRENGTH
+    potion_level: 2
+    splash: true
+  item3:
+    material: POTION
+    potion_type: WEAKNESS
+    potion_level: 1
+    splash: true
+    extend: true
+  item4:
+    material: POTION
+    potion_type: SPEED
+    potion_level: 1
+    splash: true
+  item5:
+    material: POTION
+    potion_type: FIRE_RESISTANCE
+    potion_level: 1
+    splash: true
+    extend: true
+  item6:
+    material: POTION
+    potion_type: REGEN
+    potion_level: 2
+    splash: true
+    amount: 5
+  item7:
+    material: BREAD
+    amount: 5
+
+health: 12

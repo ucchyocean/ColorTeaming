@@ -5,8 +5,11 @@
  */
 package com.github.ucchyocean.ct.config;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,13 +22,16 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionType;
 
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.Utility;
@@ -310,6 +316,7 @@ public class ClassData {
                         armorsSection.getConfigurationSection(parts), 
                         cd.getTitle() + " - armors - " + parts));
             }
+            cd.setArmors(armors);
         }
         
         cd.setHealth(config.getDouble("health", -1));
@@ -431,6 +438,40 @@ public class ClassData {
             item.setItemMeta(meta);
         }
         
+        // エンチャント
+        if ( section.contains("enchants") ) {
+            ConfigurationSection enchants_sec = section.getConfigurationSection("enchants");
+            for ( String type_str : enchants_sec.getKeys(false) ) {
+                Enchantment enchant = Enchantment.getByName(type_str);
+                
+                if ( enchant == null ) {
+                    Logger logger = ColorTeaming.instance.getLogger();
+                    logger.warning("指定されたエンチャント形式 " + type_str + " が正しくありません。");
+                    logger.warning("└ " + info);
+                    continue;
+                }
+                
+                int level = enchants_sec.getInt(type_str, 1);
+                if ( level < enchant.getStartLevel() ) {
+                    level = enchant.getStartLevel();
+                } else if ( level > 1000 ) {
+                    level = 1000;
+                }
+                item.addUnsafeEnchantment(enchant, level);
+            }
+        }
+        
+        // 消耗度
+        if ( section.contains("remain") ) {
+            
+            short remain = (short)section.getInt("remain");
+            short durability = (short)(item.getType().getMaxDurability() - remain + 1);
+            if ( durability < 0 ) {
+                durability = 0;
+            }
+            item.setDurability(durability);
+        }
+        
         // 革防具の染色設定
         if ( item.getType() == Material.LEATHER_BOOTS ||
                 item.getType() == Material.LEATHER_LEGGINGS ||
@@ -479,38 +520,28 @@ public class ClassData {
             }
         }
         
-        // エンチャント
-        if ( section.contains("enchants") ) {
-            ConfigurationSection enchants_sec = section.getConfigurationSection("enchants");
-            for ( String type_str : enchants_sec.getKeys(false) ) {
-                Enchantment enchant = Enchantment.getByName(type_str);
-                
-                if ( enchant == null ) {
-                    Logger logger = ColorTeaming.instance.getLogger();
-                    logger.warning("指定されたエンチャント形式 " + type_str + " が正しくありません。");
-                    logger.warning("└ " + info);
-                    continue;
-                }
-                
-                int level = enchants_sec.getInt(type_str, 1);
-                if ( level < enchant.getStartLevel() ) {
-                    level = enchant.getStartLevel();
-                } else if ( level > 1000 ) {
-                    level = 1000;
-                }
-                item.addUnsafeEnchantment(enchant, level);
-            }
-        }
-        
-        // 消耗度
-        if ( section.contains("remain") ) {
+        // ポーションの詳細設定
+        if ( item.getType() == Material.POTION && section.contains("potion_type") ) {
             
-            short remain = (short)section.getInt("remain");
-            short durability = (short)(item.getType().getMaxDurability() - remain + 1);
-            if ( durability < 0 ) {
-                durability = 0;
+            String name = section.getString("potion_type");
+            PotionType type = getPotionTypeByName(name);
+            if ( type == null ) {
+                Logger logger = ColorTeaming.instance.getLogger();
+                logger.warning("指定されたポーション形式 " + name + " が正しくありません。");
+                logger.warning("└ " + info);
+            } else {
+                int amp = section.getInt("potion_level", 1);
+                if ( amp < 1 ) {
+                    amp = 1;
+                } else if ( amp > type.getMaxLevel() ) {
+                    amp = type.getMaxLevel();
+                }
+                Potion potion = new Potion(type, amp);
+                potion.setSplash(section.getBoolean("splash", false));
+                potion.setHasExtendedDuration(
+                        !type.isInstant() && section.getBoolean("extend", false));
+                potion.apply(item);
             }
-            item.setDurability(durability);
         }
         
         return item;
@@ -523,15 +554,13 @@ public class ClassData {
      */
     public static ArrayList<String> getItemInfo(ItemStack item) {
         
-        ArrayList<String> message = new ArrayList<String>();
-        
         if ( item == null ) {
-            return message;
+            return null;
         }
         
         String indent = "    ";
+        ArrayList<String> message = new ArrayList<String>();
         
-        message.add("===== アイテム情報 =====");
         message.add(indent + "material: " + item.getType());
         if ( item.getAmount() > 1 ) {
             message.add(indent + "amount: " + item.getAmount());
@@ -542,7 +571,7 @@ public class ClassData {
         if ( item.getDurability() > 0 && item.getType().getMaxDurability() > 1 ) {
             int remain = item.getType().getMaxDurability() - item.getDurability() + 1;
             message.add(indent + "remain: " + remain);
-        } else if ( data > 0 ) {
+        } else if ( data > 0 && item.getType() != Material.POTION ) {
             message.add(indent + "data: " + data);
         }
         
@@ -601,6 +630,21 @@ public class ClassData {
                 for ( String page : bm.getPages() ) {
                     message.add(indent + "- " + page);
                 }
+            }
+        }
+        
+        // NOTE: POTIONで、データ値が0（水ボトル）の場合、Potion.fromItemStack() すると、
+        //       例外が発生してしまう。水ボトルの判定方法は、データ値以外に確立できていない。
+        if ( item.getType() == Material.POTION && data != 0 ) {
+
+            Potion potion = Potion.fromItemStack(item);
+            message.add(indent + "potion_type: " + potion.getType());
+            message.add(indent + "potion_level: " + potion.getLevel());
+            if ( potion.isSplash() ) {
+                message.add(indent + "splash: true");
+            }
+            if ( potion.hasExtendedDuration() ) {
+                message.add(indent + "extend: true");
             }
         }
         
@@ -692,7 +736,7 @@ public class ClassData {
             player.setHealth(health);
         }
         
-        // ポーション効果の設定
+        // エフェクトの設定
         if ( effects != null ) {
             player.addPotionEffects(effects);
         }
@@ -720,6 +764,131 @@ public class ClassData {
         return true;
     }
     
+    /**
+     * プレイヤーの状態から、クラス情報をエクスポートする。
+     * @param player エクスポート元のプレイヤー
+     * @param name エクスポート先のクラス名
+     * @return エクスポートに成功したかどうか
+     */
+    public static boolean exportClassFromPlayer(Player player, String name) {
+        
+        ArrayList<String> contents = new ArrayList<String>();
+        PlayerInventory inv = player.getInventory();
+        
+        contents.add("title: " + name);
+        
+        if ( countItem(inv.getContents()) > 0 ) {
+            
+            contents.add("items:");
+            
+            int index = 1;
+            
+            for ( ItemStack item : inv.getContents() ) {
+                if ( item != null && item.getType() != Material.AIR ) {
+                    contents.add("  item" + index + ":");
+                    index++;
+                    contents.addAll(getItemInfo(item));
+                }
+            }
+        }
+        
+        if ( countItem(inv.getArmorContents()) > 0 ) {
+            
+            String[] armorNames = new String[]{"boots", "leggings", "chestplate", "helmet"};
+            contents.add("armors:");
+            
+            for ( int i=0; i<4; i++ ) {
+                ItemStack item = inv.getArmorContents()[i];
+                if ( item != null && item.getType() != Material.AIR ) {
+                    contents.add("  " + armorNames[i] + ":");
+                    contents.addAll(getItemInfo(item));
+                }
+            }
+        }
+        
+        if ( player.getMaxHealth() != 20.0 ) {
+            contents.add("health: " + (int)player.getMaxHealth());
+        }
+        
+        if ( !player.getActivePotionEffects().isEmpty() ) {
+            contents.add("effects:");
+            for ( PotionEffect effect : player.getActivePotionEffects() ) {
+                contents.add("  " + effect.getType().getName() + ": " + 
+                        (effect.getAmplifier() + 1) );
+            }
+        }
+        
+        if ( player.getTotalExperience() > 0 ) {
+            contents.add("experience: " + player.getTotalExperience());
+        }
+        
+        // ファイルへ書き込み
+        File folder = new File(ColorTeaming.instance.getDataFolder(), "classes");
+        if ( !folder.exists() ) {
+            folder.mkdirs();
+        }
+        
+        File file = new File(folder, name + ".yml");
+        BufferedWriter writer = null;
+        try {
+            writer = new BufferedWriter(new FileWriter(file));
+            for ( String line : contents ) {
+                writer.write(line);
+                writer.newLine();
+            }
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            if ( writer != null ) {
+                try {
+                    writer.flush();
+                    writer.close();
+                } catch (IOException e) {
+                    // do nothing.
+                }
+            }
+        }
+        
+        // ロードして、オンメモリにも反映する。
+        ClassData cd = loadFromConfigFile(file);
+        ColorTeaming.instance.getAPI().setClassData(cd);
+        
+        return true;
+    }
+    
+    /**
+     * ItemStackの配列で、有効なアイテムが設定されている個数を調べて返す
+     * @param items 
+     * @return
+     */
+    private static int countItem(ItemStack[] items) {
+        
+        int count = 0;
+        for ( ItemStack item : items ) {
+            if ( item != null && item.getType() != Material.AIR ) {
+                count++;
+            }
+        }
+        return count;
+    }
+    
+    /**
+     * 指定された文字列に一致するPotionTypeを返します。
+     * @param name 
+     * @return
+     */
+    private static PotionType getPotionTypeByName(String name) {
+        
+        for ( PotionType type : PotionType.values() ) {
+            if ( type.name().equalsIgnoreCase(name) ) {
+                return type;
+            }
+        }
+        return null;
+    }
+     
     /**
      * プレイヤーのインベントリを更新します。
      * @param player 

@@ -26,6 +26,13 @@ items:
   bread:
     material: BREAD
     amount: 4
+  book:
+    material: Written_Book
+    author: ucchy
+    title: '本のタイトルだよ！'
+    pages:
+    - '1ページ目だよ！'
+    - '2ページ目だよ！'
 
 # 防具として配置されるアイテムです。
 # インデントの2段目は、boots、leggins、chestplate、helmet にしてください。
@@ -46,6 +53,10 @@ armors:
     green: 0
     enchants:
       PROTECTION_ENVIRONMENTAL: 1
+  helmet:
+    material: skull_item
+    data: 3
+    owner: ucchy
 
 # 体力の最大値です。ハート1個分は2を指定してください。
 # 通常どおりハート10個分にするには、20を指定してください。
