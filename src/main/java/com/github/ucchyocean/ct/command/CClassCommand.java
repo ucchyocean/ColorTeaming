@@ -72,6 +72,10 @@ public class CClassCommand implements CommandExecutor {
             }
             Player player = (Player)sender;
             String name = args[1];
+            if ( !name.matches("^[a-zA-Z0-9\\-_]{1,20}$") ) {
+                sender.sendMessage(PREERR + "指定されたクラス名 " + name + " は使用できません。");
+                return true;
+            }
             
             if ( ClassData.exportClassFromPlayer(player, name) ) {
                 sender.sendMessage(PREINFO + "クラス設定 " + name + " をエクスポートしました。");
