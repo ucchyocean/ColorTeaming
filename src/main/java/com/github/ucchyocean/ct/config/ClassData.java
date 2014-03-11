@@ -538,8 +538,9 @@ public class ClassData {
                 }
                 Potion potion = new Potion(type, amp);
                 potion.setSplash(section.getBoolean("splash", false));
-                potion.setHasExtendedDuration(
-                        !type.isInstant() && section.getBoolean("extend", false));
+                if ( !type.isInstant() ) {
+                    potion.setHasExtendedDuration(section.getBoolean("extend", false));
+                }
                 potion.apply(item);
             }
         }

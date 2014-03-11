@@ -5,38 +5,49 @@ description:
 items:
   item1:
     material: POTION
+    potion_type: INSTANT_HEAL
+    potion_level: 2
+    splash: true
+    amount: 5
+  item2:
+    material: POTION
+    potion_type: INSTANT_DAMAGE
+    potion_level: 1
+    splash: true
+    amount: 5
+  item3:
+    material: POTION
     potion_type: SLOWNESS
     potion_level: 2
     splash: true
-  item2:
+  item4:
     material: POTION
     potion_type: STRENGTH
     potion_level: 2
     splash: true
-  item3:
+  item5:
     material: POTION
     potion_type: WEAKNESS
     potion_level: 1
     splash: true
     extend: true
-  item4:
+  item6:
     material: POTION
     potion_type: SPEED
     potion_level: 1
     splash: true
-  item5:
+  item7:
     material: POTION
     potion_type: FIRE_RESISTANCE
     potion_level: 1
     splash: true
     extend: true
-  item6:
+  item8:
     material: POTION
     potion_type: REGEN
     potion_level: 2
     splash: true
-    amount: 5
-  item7:
+  item9:
     material: BREAD
     amount: 5
 
