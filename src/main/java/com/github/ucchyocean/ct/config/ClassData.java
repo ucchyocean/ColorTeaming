@@ -633,10 +633,10 @@ public class ClassData {
             }
         }
         
-        // NOTE: POTIONで、データ値が0（水ボトル）の場合、Potion.fromItemStack() すると、
-        //       例外が発生してしまう。水ボトルの判定方法は、データ値以外に確立できていない。
-        if ( item.getType() == Material.POTION && data != 0 ) {
-
+        if ( item.getType() == Material.POTION && !isWaterBottle(item) ) {
+            
+            cleanupInvalidExtendedPotionFlag(item);
+            
             Potion potion = Potion.fromItemStack(item);
             message.add(indent + "potion_type: " + potion.getType());
             message.add(indent + "potion_level: " + potion.getLevel());
@@ -887,6 +887,36 @@ public class ClassData {
             }
         }
         return null;
+    }
+    
+    /**
+     * 指定されたポーションが、水ボトル（データ値が0）かどうかを確認します。
+     * @param item ポーション
+     * @return 水ボトルかどうか
+     */
+    private static boolean isWaterBottle(ItemStack item) {
+        return item.getDurability() == 0;
+    }
+    
+    /**
+     * ポーションのデータ値を調べ、タイプにそぐわないextendフラグが立っている場合、
+     * 強制的にフラグを降ろします。
+     * @param item ポーション
+     */
+    private static void cleanupInvalidExtendedPotionFlag(ItemStack item) {
+        
+        short data = item.getDurability();
+        int typeFlag = data & 0xF;
+        
+        if ( typeFlag == 5 || typeFlag == 12 ) {
+            // INSTANT_DAMAGE か INSTANT_HEAL なら、extendフラグを確認し、
+            // フラグが立っているなら降ろす。
+            
+            if ( (data & 0x40) > 0 ) {
+                data -= 0x40;
+                item.setDurability(data);
+            }
+        }
     }
      
     /**
