@@ -59,10 +59,10 @@ public class PlayerDeathListener implements Listener {
         Player deader = event.getEntity();
         ColorTeamingConfig config = plugin.getCTConfig();
         ColorTeamingAPI api = plugin.getAPI();
-        
+
         HashMap<String, ArrayList<String>> leaders = api.getLeaders();
         TeamNameSetting tnsDeader = api.getPlayerTeamName(deader);
-        
+
         if ( tnsDeader != null ) {
             String teamDeader = tnsDeader.getID();
 
@@ -70,7 +70,7 @@ public class PlayerDeathListener implements Listener {
             if ( config.isResetMaxHealthOnDeath() ) {
                 deader.setMaxHealth(20);
             }
-            
+
             // 倒したプレイヤーを取得
             Player killer = deader.getKiller();
             String killerName = null;
@@ -84,7 +84,7 @@ public class PlayerDeathListener implements Listener {
             int deathPoint = getDeathPoint(deader);
             api.addTeamPoint(teamDeader, deathPoint);
             api.increaseTeamDeathCount(teamDeader);
-            
+
             // ユーザーへ加算
             api.addPlayerPoint(deader, deathPoint);
 
@@ -102,7 +102,7 @@ public class PlayerDeathListener implements Listener {
                     Bukkit.broadcastMessage(message);
                 } else {
 
-                    message = String.format(PRENOTICE + "%s チームの大将は全滅しました！", 
+                    message = String.format(PRENOTICE + "%s チームの大将は全滅しました！",
                             tnsDeader.getName());
                     Bukkit.broadcastMessage(message);
                     leaders.remove(teamDeader);
@@ -127,13 +127,13 @@ public class PlayerDeathListener implements Listener {
 
             // 倒したプレイヤー側の処理
             TeamNameSetting tnsKiller = null;
-            String teamKiller = null;
             if ( killer != null ) {
                 tnsKiller = api.getPlayerTeamName(killer);
-                teamKiller = tnsKiller.getID();
             }
-            
+
             if ( tnsKiller != null ) {
+
+                String teamKiller = tnsKiller.getID();
 
                 // Kill数を加算
 
@@ -141,13 +141,13 @@ public class PlayerDeathListener implements Listener {
                 int killPoint = getKillPoint(deader);
                 api.addTeamPoint(teamKiller, killPoint);
                 api.increaseTeamKillCount(teamKiller);
-                
+
                 // ユーザーへ加算
                 api.addPlayerPoint(killer, killPoint);
 
                 // killReachTrophyが設定されていたら、超えたかどうかを判定する
                 HashMap<String, int[]> killDeathCounts = api.getKillDeathCounts();
-                
+
                 if ( config.getKillReachTrophy() > 0 &&
                         leaders.size() == 0 ) {
 
@@ -210,44 +210,44 @@ public class PlayerDeathListener implements Listener {
                     Bukkit.getServer().getPluginManager().callEvent(event3);
                 }
             }
-            
+
             // チーム残り人数を更新する
             api.refreshRestTeamMemberScore();
-            
+
             // ゲームオーバー画面をスキップする
             if ( config.isSkipGameover() ) {
-                
+
                 // NOTE: 回復するとゲームオーバー画面が表示されない
                 Utility.resetPlayerStatus(deader);
-                
+
                 // リスポーンイベントを呼び出す
                 Location respawnLocation = deader.getBedSpawnLocation();
                 if ( respawnLocation == null ) {
                     respawnLocation = deader.getWorld().getSpawnLocation();
                     // TODO: ワールドの初期設定によっては、リスポーン後に埋まることがある
                 }
-                PlayerRespawnEvent respawnEvent = 
+                PlayerRespawnEvent respawnEvent =
                         new PlayerRespawnEvent(deader, respawnLocation, true);
                 Bukkit.getServer().getPluginManager().callEvent(respawnEvent);
-                
+
                 respawnLocation = respawnEvent.getRespawnLocation();
                 if ( respawnLocation != null ) {
-                    
+
                     // 移送する場合は、経験値やインベントリのアイテムを落とさない
                     event.setDroppedExp(0);
                     event.getDrops().clear();
-                    
+
                     // リスポーン場所へテレポートする
                     deader.teleport(respawnLocation, TeleportCause.PLUGIN);
                     // ノックバックの除去
-                    deader.setVelocity(new Vector()); 
+                    deader.setVelocity(new Vector());
                 }
             }
         }
     }
-    
+
     private int getDeathPoint(Player deader) {
-        
+
         int point = plugin.getCTConfig().getCTDeathPoint();
         if ( deader.hasMetadata(ClassData.DEATH_POINT_NAME) ) {
             point = deader.getMetadata(ClassData.DEATH_POINT_NAME).get(0).asInt();
@@ -255,9 +255,9 @@ public class PlayerDeathListener implements Listener {
         }
         return point;
     }
-    
+
     private int getKillPoint(Player deader) {
-        
+
         int point = plugin.getCTConfig().getCTKillPoint();
         if ( deader.hasMetadata(ClassData.KILL_POINT_NAME) ) {
             point = deader.getMetadata(ClassData.KILL_POINT_NAME).get(0).asInt();
