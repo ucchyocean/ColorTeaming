@@ -65,7 +65,7 @@ public class CRandomCommand implements CommandExecutor {
         }
         if ( players.size() == 0 ) {
             sender.sendMessage(
-                    PREERR + "対象のワールドに、誰も居ないようです。");
+                    PREERR + "設定されたワールドに、対象プレイヤーがいないようです。");
             return true;
         }
 
@@ -73,7 +73,7 @@ public class CRandomCommand implements CommandExecutor {
         api.makeColorTeamsWithRandomSelection(players, numberOfGroups);
 
         // メンバー情報の取得
-        HashMap<String, ArrayList<Player>> members = 
+        HashMap<String, ArrayList<Player>> members =
                 api.getAllTeamMembers();
 
         // コマンド完了を、CCメッセージで通知する
@@ -109,7 +109,7 @@ public class CRandomCommand implements CommandExecutor {
                     PREERR + "設定されたワールドに、対象プレイヤーがいないようです。");
             return true;
         }
-        
+
         // チームがあるかどうかを確認する
         if ( api.getAllTeamNames().size() == 0 ) {
             sender.sendMessage(

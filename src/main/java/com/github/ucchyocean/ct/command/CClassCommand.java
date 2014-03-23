@@ -18,6 +18,7 @@ import org.bukkit.entity.Player;
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingAPI;
 import com.github.ucchyocean.ct.config.ClassData;
+import com.github.ucchyocean.ct.config.ItemConfigParser;
 import com.github.ucchyocean.ct.config.TeamNameSetting;
 
 /**
@@ -50,22 +51,22 @@ public class CClassCommand implements CommandExecutor {
             Player player = (Player)sender;
             if ( player.getItemInHand() != null ) {
                 sender.sendMessage("===== アイテム情報 =====");
-                for ( String message : ClassData.getItemInfo(player.getItemInHand()) ) {
+                for ( String message : ItemConfigParser.getItemInfo(player.getItemInHand(), "") ) {
                     sender.sendMessage(message);
                 }
             }
             return true;
-            
+
         }
 
         // ここ以下は引数が2つ以上必要である。
         if ( args.length < 2 ) {
             return false;
         }
-        
+
         if ( args[0].equalsIgnoreCase("export") ) {
             // cclass export コマンドの処理
-            
+
             if ( !(sender instanceof Player) ) {
                 sender.sendMessage(PREERR + label + " export コマンドは、ゲーム内でのみ実行できます。");
                 return true;
@@ -76,12 +77,12 @@ public class CClassCommand implements CommandExecutor {
                 sender.sendMessage(PREERR + "指定されたクラス名 " + name + " は使用できません。");
                 return true;
             }
-            
+
             if ( ClassData.exportClassFromPlayer(player, name) ) {
                 sender.sendMessage(PREINFO + "クラス設定 " + name + " をエクスポートしました。");
             }
             return true;
-            
+
         }
 
         String target = args[0];
@@ -123,7 +124,7 @@ public class CClassCommand implements CommandExecutor {
         } else {
             playersToSet.add(Bukkit.getPlayerExact(target));
         }
-        
+
         if ( playersToSet.size() <= 0 ) {
             sender.sendMessage(PREERR + "設定先 " + target + " の対象プレイヤーが誰もいません。");
             return true;
@@ -143,7 +144,7 @@ public class CClassCommand implements CommandExecutor {
         }
 
         sender.sendMessage(PREINFO +
-                String.format("%s に、%s クラスの装備とアイテムを配布しました。", 
+                String.format("%s に、%s クラスの装備とアイテムを配布しました。",
                         targetName, clas));
 
         return true;
