@@ -65,9 +65,9 @@
       <url>http://repo.bukkit.org/content/groups/public</url>
     </repository>
     <repository>
-      <id>herocraft-repo</id>
-      <name>Herocraft Repository</name>
-      <url>http://ci.herocraftonline.com/plugin/repository/everything</url>
+      <id>vault-repo</id>
+      <name>Vault Repository</name>
+      <url>http://nexus.theyeticave.net/content/repositories/pub_releases/</url>
     </repository>
   </repositories>
 
@@ -80,7 +80,7 @@
     <dependency>
       <groupId>net.milkbowl.vault</groupId>
       <artifactId>Vault</artifactId>
-      <version>1.2.27</version>
+      <version>1.2.32</version>
     </dependency>
   </dependencies>
 </project>

@@ -72,7 +72,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      * @param config
      * @param vaultchat
      */
-    public ColorTeamingManager(ColorTeaming plugin, 
+    public ColorTeamingManager(ColorTeaming plugin,
             ColorTeamingConfig config, VaultChatBridge vaultchat) {
 
         this.plugin = plugin;
@@ -89,7 +89,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         classDatas = ClassData.loadAllClasses(new File(plugin.getDataFolder(), "classes"));
         objectives = new ObjectiveManager(scoreboard, this);
     }
-    
+
     /**
      * 指定されたチームIDが存在するかどうかを返す。
      * @param id チームID
@@ -97,7 +97,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      */
     @Override
     public boolean isExistTeam(String id) {
-        
+
         Set<Team> teams = scoreboard.getTeams();
         for ( Team team : teams ) {
             if ( team.getName().equals(id) ) {
@@ -106,7 +106,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         }
         return false;
     }
-    
+
     /**
      * チーム名をチームIDから取得する。
      * @param id チームID
@@ -114,10 +114,10 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      */
     @Override
     public TeamNameSetting getTeamNameFromID(String id) {
-        
+
         return teamNameConfig.getTeamNameFromID(id);
     }
-    
+
     /**
      * Player に設定されている、チームを取得する。
      * @param player プレイヤー
@@ -136,7 +136,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         }
         return null;
     }
-    
+
     /**
      * Player に設定されている、チームのチーム名を取得する。
      * @param player プレイヤー
@@ -162,7 +162,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         String id = teamName.getID();
         String name = teamName.getName();
         ChatColor color = teamName.getColor();
-        
+
         Team team = scoreboard.getTeam(id);
         if ( team == null ) {
 
@@ -192,7 +192,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
 
         team.addPlayer(player);
         player.setDisplayName(color + player.getName() + ChatColor.RESET);
-        
+
         // 該当プレイヤーに通知
         player.sendMessage( Utility.replaceColorCode(
                 String.format("&aあなたはチーム %s &aになりました。", teamName.toString() ) ) );
@@ -223,10 +223,10 @@ public class ColorTeamingManager implements ColorTeamingAPI {
             if ( config.isResetMaxHealthOnDeath() ) {
                 player.setMaxHealth(20);
             }
-            
+
             // チーム脱退
             team.removePlayer(player);
-            
+
             // チーム削除により呼び出されたのでなければ、メンバー0人でチーム削除する
             if ( reason != Reason.TEAM_REMOVED && team.getPlayers().size() == 0 ) {
                 removeTeam(team.getName());
@@ -277,7 +277,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     public boolean removeTeam(String id) {
 
         TeamNameSetting teamName = teamNameConfig.getTeamNameFromID(id);
-        
+
         // イベントコール
         ColorTeamingTeamRemoveEvent event =
                 new ColorTeamingTeamRemoveEvent(teamName);
@@ -318,7 +318,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     public HashMap<String, ArrayList<Player>> getAllTeamMembers() {
 
         ArrayList<TeamNameSetting> teamNames = getAllTeamNames();
-        HashMap<String, ArrayList<Player>> result = 
+        HashMap<String, ArrayList<Player>> result =
                 new HashMap<String, ArrayList<Player>>();
 
         for ( TeamNameSetting tns : teamNames ) {
@@ -327,7 +327,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
 
         return result;
     }
-    
+
     /**
      * チームメンバーを取得する
      * @param id チームID
@@ -335,13 +335,13 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      */
     @Override
     public ArrayList<Player> getTeamMembers(String id) {
-        
+
         Team team = scoreboard.getTeam(id);
-        
+
         if ( team == null ) {
             return null;
         }
-        
+
         Set<OfflinePlayer> playersTemp = team.getPlayers();
         ArrayList<Player> players = new ArrayList<Player>();
         for ( OfflinePlayer player : playersTemp ) {
@@ -359,7 +359,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      */
     @Override
     public ArrayList<Player> getAllPlayers() {
-        
+
         Player[] temp = plugin.getServer().getOnlinePlayers();
         ArrayList<Player> result = new ArrayList<Player>();
         for ( Player p : temp ) {
@@ -459,7 +459,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
             return;
         }
         message = event.getMessage();
-        
+
         // キーワード生成
         String teamName = t.getDisplayName();
         String playerName = "";
@@ -511,7 +511,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      */
     @Override
     public void displayScoreboard() {
-        
+
         // サイドバー
         switch (config.getSideCriteria()) {
         case POINT:
@@ -531,7 +531,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         default:
             break;
         }
-        
+
         // リスト
         switch (config.getListCriteria()) {
         case POINT:
@@ -551,7 +551,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         default:
             break;
         }
-        
+
         // 頭の上
         switch (config.getBelowCriteria()) {
         case POINT:
@@ -578,16 +578,16 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      */
     @Override
     public void refreshRestTeamMemberScore() {
-        
+
         Objective obj = objectives.getTeamRestObjective();
-        
+
         // まず、全ての項目をいったん0にする
         for ( TeamNameSetting tns : getTeamNameConfig().getTeamNames() ) {
             if ( obj.getScore(tns.getScoreItem()).getScore() > 0 ) {
                 obj.getScore(tns.getScoreItem()).setScore(0);
             }
         }
-        
+
         // チーム人数を取得して設定する
         HashMap<String, ArrayList<Player>> members = getAllTeamMembers();
         for ( String id : members.keySet() ) {
@@ -595,7 +595,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
             obj.getScore(tns.getScoreItem()).setScore(members.get(id).size());
         }
     }
-    
+
     /**
      * @deprecated このメソッドは、refreshRestTeamMemberScoreに変わりました。
      */
@@ -603,7 +603,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     public void makeSidebarScore() {
         refreshRestTeamMemberScore();
     }
-    
+
     /**
      * キルデス数やポイントを全てクリアする
      */
@@ -628,18 +628,18 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      */
     @Override
     public HashMap<String, Integer> getAllTeamPoints() {
-        
+
         HashMap<String, Integer> points = new HashMap<String, Integer>();
         Objective obj = objectives.getTeamPointObjective();
-        
+
         for ( TeamNameSetting tns : getAllTeamNames() ) {
             int p = obj.getScore(tns.getScoreItem()).getScore();
             points.put(tns.getID(), p);
         }
-        
+
         return points;
     }
-    
+
     /**
      * プレイヤーのポイント数を全取得する
      * @return プレイヤーのポイント数
@@ -650,14 +650,14 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         HashMap<String, Integer> points = new HashMap<String, Integer>();
         Objective obj = objectives.getPersonalPointObjective();
         HashMap<String, ArrayList<Player>> members = getAllTeamMembers();
-        
+
         for ( String team : members.keySet() ) {
             for ( Player player : members.get(team) ) {
                 int point = obj.getScore(player).getScore();
                 points.put(player.getName(), point);
             }
         }
-        
+
         return points;
     }
 
@@ -668,24 +668,24 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      */
     @Override
     public void setTeamPoint(String team, int point) {
-        
+
         Objective obj = objectives.getTeamPointObjective();
         TeamNameSetting tns = teamNameConfig.getTeamNameFromID(team);
-        
+
         int pointBefore = obj.getScore(tns.getScoreItem()).getScore();
-        
+
         if ( point == 0 ) {
             // NOTE: ポイント0を設定する場合は、一旦1を設定して項目を表示させる。
             obj.getScore(tns.getScoreItem()).setScore(1);
         }
         obj.getScore(tns.getScoreItem()).setScore(point);
-        
+
         // イベント呼び出し
-        ColorTeamingTeamscoreChangeEvent event = 
+        ColorTeamingTeamscoreChangeEvent event =
                 new ColorTeamingTeamscoreChangeEvent(tns, pointBefore, point);
         Bukkit.getPluginManager().callEvent(event);
     }
-    
+
     /**
      * チームポイントを増減する。
      * @param team チーム名
@@ -694,55 +694,52 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      */
     @Override
     public int addTeamPoint(String team, int amount) {
-        
+
         Objective obj = objectives.getTeamPointObjective();
         TeamNameSetting tns = teamNameConfig.getTeamNameFromID(team);
-        
+
         int point = obj.getScore(tns.getScoreItem()).getScore();
         obj.getScore(tns.getScoreItem()).setScore(point + amount);
-        
+
         // イベント呼び出し
-        ColorTeamingTeamscoreChangeEvent event = 
+        ColorTeamingTeamscoreChangeEvent event =
                 new ColorTeamingTeamscoreChangeEvent(tns, point, point + amount);
         Bukkit.getPluginManager().callEvent(event);
-        
+
         return point + amount;
     }
-    
+
     /**
      * チーム単位のキルデス数を取得する
      * @return キルデス数
      */
     @Override
     public HashMap<String, int[]> getKillDeathCounts() {
-        
-        Objective kills = objectives.getPersonalKillObjective();
-        Objective deaths = objectives.getPersonalDeathObjective();
-        
+
+        Objective kills = objectives.getTeamKillObjective();
+        Objective deaths = objectives.getTeamDeathObjective();
+
         HashMap<String, int[]> result = new HashMap<String, int[]>();
-        HashMap<String, ArrayList<Player>> members = getAllTeamMembers();
-        for ( String teamID : members.keySet() ) {
+        for ( TeamNameSetting tns : getAllTeamNames() ) {
             int[] data = new int[2];
-            for ( Player player : members.get(teamID) ) {
-                data[0] += kills.getScore(player).getScore();
-                data[1] += deaths.getScore(player).getScore();
-            }
-            result.put(teamID, data);
+            data[0] = kills.getScore(tns.getScoreItem()).getScore();
+            data[1] = deaths.getScore(tns.getScoreItem()).getScore();
+            result.put(tns.getID(), data);
         }
-        
+
         return result;
     }
-    
+
     /**
      * ユーザー単位のキルデス数を取得する
      * @return キルデス数
      */
     @Override
     public HashMap<String, int[]> getKillDeathPersonalCounts() {
-        
+
         Objective kills = objectives.getPersonalKillObjective();
         Objective deaths = objectives.getPersonalDeathObjective();
-        
+
         HashMap<String, int[]> result = new HashMap<String, int[]>();
         HashMap<String, ArrayList<Player>> members = getAllTeamMembers();
         for ( String teamID : members.keySet() ) {
@@ -753,36 +750,36 @@ public class ColorTeamingManager implements ColorTeamingAPI {
                 result.put(player.getName(), data);
             }
         }
-        
+
         return result;
     }
-    
+
     /**
      * チームのキル数カウントを、+1する。
      * @param team チームID
      */
     @Override
     public void increaseTeamKillCount(String team) {
-        
+
         TeamNameSetting tns = getTeamNameFromID(team);
         Objective obj = objectives.getTeamKillObjective();
         Score score = obj.getScore(tns.getScoreItem());
         score.setScore(score.getScore() + 1);
     }
-    
+
     /**
      * チームのデス数カウントを、+1する。
      * @param team チームID
      */
     @Override
     public void increaseTeamDeathCount(String team) {
-        
+
         TeamNameSetting tns = getTeamNameFromID(team);
         Objective obj = objectives.getTeamDeathObjective();
         Score score = obj.getScore(tns.getScoreItem());
         score.setScore(score.getScore() + 1);
     }
-    
+
     /**
      * 指定したプレイヤーのポイントを追加する。
      * @param player プレイヤー
@@ -791,13 +788,13 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      */
     @Override
     public int addPlayerPoint(Player player, int amount) {
-        
+
         Score score = objectives.getPersonalPointObjective().getScore(player);
         int point = score.getScore() + amount;
         score.setScore(point);
         return point;
     }
-    
+
     /**
      * 指定したプレイヤーのポイントを設定する。
      * @param player プレイヤー
@@ -807,7 +804,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     public void setPlayerPoint(Player player, int amount) {
         objectives.getPersonalPointObjective().getScore(player).setScore(amount);
     }
-    
+
     /**
      * ユーザー単位のキルデス数を設定する
      * @param playerName プレイヤー名
@@ -816,19 +813,19 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      */
     @Override
     public void setKillDeathUserCounts(String playerName, int kill, int death) {
-        
-        Player player = Bukkit.getPlayer(playerName);
+
+        Player player = Bukkit.getPlayerExact(playerName);
         if ( player == null ) {
             return;
         }
-        
+
         Objective kills = objectives.getPersonalKillObjective();
         Objective deaths = objectives.getPersonalDeathObjective();
-        
+
         kills.getScore(player).setScore(kill);
         deaths.getScore(player).setScore(death);
     }
-    
+
     /**
      * リーダー設定を全てクリアする
      */
@@ -863,7 +860,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     public TPPointConfiguration getTppointConfig() {
         return tppointConfig;
     }
-    
+
     /**
      * チーム名設定を取得する
      * @return チーム名設定
@@ -890,18 +887,18 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     public void setRespawnMapName(String respawnMapName) {
         this.respawnMapName = respawnMapName;
     }
-    
+
     /**
      * カスタムアイテムを登録する
      * @param item カスタムアイテム
      */
     @Override
     public void registerCustomItem(CustomItem item) {
-        
+
         String name = item.getName();
         customItems.put(name, item);
     }
-    
+
     /**
      * カスタムアイテムを登録する
      * @param item 登録するアイテム
@@ -912,7 +909,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     public void registerCustomItem(ItemStack item, String name, String displayName) {
         registerCustomItem(new CustomItem(item, name, displayName));
     }
-    
+
     /**
      * 登録されているカスタムアイテムを取得する
      * @param name カスタムアイテム名
@@ -922,7 +919,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     public CustomItem getCustomItem(String name) {
         return customItems.get(name);
     }
-    
+
     /**
      * 登録されているカスタムアイテムの名前を取得する
      * @return カスタムアイテムの名前
@@ -941,26 +938,26 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      */
     @Override
     public boolean setClassToPlayer(ArrayList<Player> players, String classname) {
-        
+
         // クラス設定が存在しない場合は falseを返す
         if ( !classDatas.containsKey(classname) ) {
             return false;
         }
-        
+
         // 設定対象が居ない場合は falseを返す
         if ( players == null || players.size() <= 0 ) {
             return false;
         }
-        
+
         // 設定の実行
         ClassData cd = classDatas.get(classname);
         for ( Player player : players ) {
             cd.setClassToPlayer(player);
         }
-        
+
         return true;
     }
-    
+
     /**
      * 指定されたクラス名が存在するかどうかを確認する
      * @param classname クラス名
@@ -970,7 +967,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     public boolean isExistClass(String classname) {
         return classDatas.containsKey(classname);
     }
-    
+
     /**
      * 登録されている全てのクラスデータをまとめて取得する。
      * @return 全てのクラスデータ
@@ -979,18 +976,18 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     public HashMap<String, ClassData> getClasses() {
         return classDatas;
     }
-    
+
     /**
      * クラスデータを設定する。同名のクラスが存在する場合は上書きに、無い場合は新規追加になる。
      * @param classdata クラスデータ
      */
     @Override
     public void setClassData(ClassData classdata) {
-        
+
         String name = classdata.getTitle();
         classDatas.put(name, classdata);
     }
-    
+
     /**
      * ランダムな順序で、プレイヤーをチームわけします。<br/>
      * 既にチームわけが存在する場合は、全部クリアしてから分けられます。
@@ -1012,10 +1009,10 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      */
     @Override
     public void makeColorTeamsWithOrderSelection(ArrayList<Player> players, int teamNum) {
-        
+
         // 全てのチームをいったん削除する
         removeAllTeam();
-        
+
         // チーム名設定を取得する
         ArrayList<TeamNameSetting> tns = teamNameConfig.getTeamNames();
 
@@ -1033,7 +1030,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         refreshRestTeamMemberScore();
         displayScoreboard();
     }
-    
+
     /**
      * 既存のチームわけをそのままに、指定されたプレイヤーを既存のチームへ加えていきます。<br/>
      * プレイヤーはランダムな順序で追加が行われます。<br/>
@@ -1047,7 +1044,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         Collections.shuffle(players);
         return addPlayerToColorTeamsWithOrderSelection(players);
     }
-    
+
     /**
      * 既存のチームわけをそのままに、指定されたプレイヤーを既存のチームへ加えていきます。<br/>
      * プレイヤーは指定の順序で追加が行われます。<br/>
@@ -1058,7 +1055,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      */
     @Override
     public boolean addPlayerToColorTeamsWithOrderSelection(ArrayList<Player> players) {
-        
+
         // 人数の少ないチームに設定していく
         for ( int i=0; i<players.size(); i++ ) {
 
@@ -1077,7 +1074,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
                     leastTeam = t;
                 }
             }
-            
+
             // チームへプレイヤーを追加
             if ( leastTeam != null ) {
                 addPlayerTeam(players.get(i), leastTeam);
@@ -1090,23 +1087,23 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         // チーム人数の更新、スコアボードの表示
         refreshRestTeamMemberScore();
         displayScoreboard();
-        
+
         return true;
     }
-    
+
     /**
      * ColorTeamingの設定ファイルを全て再読み込みする
      */
     @Override
     public void realod() {
-        
+
         ColorTeaming.instance.config = ColorTeamingConfig.loadConfig();
         respawnConfig = new RespawnConfiguration();
         tppointConfig = new TPPointConfiguration();
         teamNameConfig = new TeamNameConfig();
-        
+
         // クラスデータの再読み込み
-        HashMap<String, ClassData> reloadClassData = 
+        HashMap<String, ClassData> reloadClassData =
                 ClassData.loadAllClasses(new File(plugin.getDataFolder(), "classes"));
         for ( String key : reloadClassData.keySet() ) {
             classDatas.put(key, reloadClassData.get(key));

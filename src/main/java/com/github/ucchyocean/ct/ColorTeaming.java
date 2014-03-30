@@ -52,7 +52,7 @@ public class ColorTeaming extends JavaPlugin {
 
         // 設定の読み込み処理
         config = ColorTeamingConfig.loadConfig();
-        
+
         // VaultChatをロード
         VaultChatBridge vaultchat = null;
         if ( getServer().getPluginManager().isPluginEnabled("Vault") ) {
@@ -66,7 +66,7 @@ public class ColorTeaming extends JavaPlugin {
             classDir.mkdirs();
             Utility.copyFolderFromJar(getFile(), classDir, "classes");
         }
-        
+
         // マネージャの初期化
         manager = new ColorTeamingManager(this, config, vaultchat);
 
