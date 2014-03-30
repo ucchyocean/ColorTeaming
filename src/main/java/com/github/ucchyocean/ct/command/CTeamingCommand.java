@@ -8,7 +8,6 @@ package com.github.ucchyocean.ct.command;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.command.Command;
@@ -102,18 +101,18 @@ public class CTeamingCommand implements CommandExecutor {
 
         return false;
     }
-    
+
     /**
      * reloadコマンドの実行
-     * @param sender 
-     * @param command 
-     * @param label 
-     * @param args 
+     * @param sender
+     * @param command
+     * @param label
+     * @param args
      * @return
      */
     private boolean doReload(
             CommandSender sender, Command command, String label, String[] args) {
-        
+
         plugin.getAPI().realod();
         sender.sendMessage("config.ymlの再読み込みを行いました。");
         return true;
@@ -121,15 +120,15 @@ public class CTeamingCommand implements CommandExecutor {
 
     /**
      * 全チーム解散コマンドの実行
-     * @param sender 
-     * @param command 
-     * @param label 
-     * @param args 
+     * @param sender
+     * @param command
+     * @param label
+     * @param args
      * @return
      */
     private boolean doRemoveAll(
             CommandSender sender, Command command, String label, String[] args) {
-        
+
         ColorTeamingAPI api = plugin.getAPI();
 
         HashMap<String, ArrayList<Player>> members =
@@ -154,10 +153,10 @@ public class CTeamingCommand implements CommandExecutor {
 
     /**
      * チーム解散コマンドの実行
-     * @param sender 
-     * @param command 
-     * @param label 
-     * @param args 
+     * @param sender
+     * @param command
+     * @param label
+     * @param args
      * @return
      */
     private boolean doRemove(
@@ -177,18 +176,18 @@ public class CTeamingCommand implements CommandExecutor {
 
         // チームの残り人数更新
         api.refreshRestTeamMemberScore();
-        
+
         sender.sendMessage(PREINFO + "チーム " + target + " が解散しました。");
 
         return true;
     }
-    
+
     /**
      * trophyコマンドの実行
-     * @param sender 
-     * @param command 
-     * @param label 
-     * @param args 
+     * @param sender
+     * @param command
+     * @param label
+     * @param args
      * @return
      */
     private boolean doTrophy(
@@ -222,13 +221,13 @@ public class CTeamingCommand implements CommandExecutor {
         }
         return true;
     }
-    
+
     /**
      * reachTrophyコマンドの実行
-     * @param sender 
-     * @param command 
-     * @param label 
-     * @param args 
+     * @param sender
+     * @param command
+     * @param label
+     * @param args
      * @return
      */
     private boolean doReachTrophy(
@@ -265,13 +264,13 @@ public class CTeamingCommand implements CommandExecutor {
         }
         return true;
     }
-    
+
     /**
      * allowJoinAnyコマンドの実行
-     * @param sender 
-     * @param command 
-     * @param label 
-     * @param args 
+     * @param sender
+     * @param command
+     * @param label
+     * @param args
      * @return
      */
     private boolean doAllowJoinAny(
@@ -293,13 +292,13 @@ public class CTeamingCommand implements CommandExecutor {
 
         return false;
     }
-    
+
     /**
      * allowJoinRandomコマンドの実行
-     * @param sender 
-     * @param command 
-     * @param label 
-     * @param args 
+     * @param sender
+     * @param command
+     * @param label
+     * @param args
      * @return
      */
     private boolean doAllowJoinRandom(
@@ -321,13 +320,13 @@ public class CTeamingCommand implements CommandExecutor {
 
         return false;
     }
-    
+
     /**
      * allowLeaveコマンドの実行
-     * @param sender 
-     * @param command 
-     * @param label 
-     * @param args 
+     * @param sender
+     * @param command
+     * @param label
+     * @param args
      * @return
      */
     private boolean doAllowLeave(
@@ -349,13 +348,13 @@ public class CTeamingCommand implements CommandExecutor {
 
         return false;
     }
-    
+
     /**
      * addコマンドの実行
-     * @param sender 
-     * @param command 
-     * @param label 
-     * @param args 
+     * @param sender
+     * @param command
+     * @param label
+     * @param args
      * @return
      */
     private boolean doAdd(
@@ -370,9 +369,9 @@ public class CTeamingCommand implements CommandExecutor {
 
         boolean isAll = args[2].equalsIgnoreCase("all");
         boolean isRest = args[2].equalsIgnoreCase("rest");
-        
+
         if ( isAll ) {
-            
+
             // ゲームモードがクリエイティブの人は除外する
             ArrayList<Player> tempPlayers =
                     api.getAllPlayersOnWorld(plugin.getCTConfig().getWorldNames());
@@ -395,9 +394,9 @@ public class CTeamingCommand implements CommandExecutor {
 
             sender.sendMessage(PREINFO + "全てのプレイヤーを、チーム " +
                     tns.getName() + " に追加しました。");
-        
+
         } else if ( isRest ) {
-            
+
             // ゲームモードがクリエイティブの人や、既に色が設定されている人は除外する
             ArrayList<Player> tempPlayers =
                     api.getAllPlayersOnWorld(plugin.getCTConfig().getWorldNames());
@@ -422,10 +421,10 @@ public class CTeamingCommand implements CommandExecutor {
 
             sender.sendMessage(PREINFO + "未所属のプレイヤーを、チーム " +
                     tns.getName() + " に追加しました。");
-            
+
         } else {
-            
-            Player player = Bukkit.getPlayerExact(args[2]);
+
+            Player player = Utility.getPlayerExact(args[2]);
             if ( player == null ) {
                 sender.sendMessage(PREERR + "プレイヤー " + args[2] + " は存在しません。");
                 return true;
@@ -443,18 +442,18 @@ public class CTeamingCommand implements CommandExecutor {
 
         return true;
     }
-    
+
     /**
      * sideコマンドの実行
-     * @param sender 
-     * @param command 
-     * @param label 
-     * @param args 
+     * @param sender
+     * @param command
+     * @param label
+     * @param args
      * @return
      */
     private boolean doSide(
             CommandSender sender, Command command, String label, String[] args) {
-        
+
         ColorTeamingConfig config = plugin.getCTConfig();
 
         if ( args[1].equalsIgnoreCase("kill") ) {
@@ -480,18 +479,18 @@ public class CTeamingCommand implements CommandExecutor {
 
         return true;
     }
-    
+
     /**
      * listコマンドの実行
-     * @param sender 
-     * @param command 
-     * @param label 
-     * @param args 
+     * @param sender
+     * @param command
+     * @param label
+     * @param args
      * @return
      */
     private boolean doList(
             CommandSender sender, Command command, String label, String[] args) {
-        
+
         ColorTeamingConfig config = plugin.getCTConfig();
 
         if ( args[1].equalsIgnoreCase("kill") ) {
@@ -517,13 +516,13 @@ public class CTeamingCommand implements CommandExecutor {
 
         return true;
     }
-    
+
     /**
      * belowコマンドの実行
-     * @param sender 
-     * @param command 
-     * @param label 
-     * @param args 
+     * @param sender
+     * @param command
+     * @param label
+     * @param args
      * @return
      */
     private boolean doBelow(

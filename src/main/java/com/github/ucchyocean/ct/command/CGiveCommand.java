@@ -8,7 +8,6 @@ package com.github.ucchyocean.ct.command;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -19,6 +18,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingAPI;
+import com.github.ucchyocean.ct.Utility;
 import com.github.ucchyocean.ct.config.TeamNameSetting;
 
 /**
@@ -62,9 +62,9 @@ public class CGiveCommand implements CommandExecutor {
             TeamNameSetting tns = api.getTeamNameFromID(target);
             playersForGive = members.get(target);
             targetDesc = "チーム" + tns.getName();
-        } else if ( Bukkit.getPlayerExact(target) != null ) {
+        } else if ( Utility.getPlayerExact(target) != null ) {
             // target はプレイヤーである場合
-            playersForGive.add(Bukkit.getPlayerExact(target));
+            playersForGive.add(Utility.getPlayerExact(target));
             targetDesc = "プレイヤー" + target;
         } else {
             sender.sendMessage(PREERR + target +
@@ -97,9 +97,9 @@ public class CGiveCommand implements CommandExecutor {
 
         return true;
     }
-    
+
     private static ItemStack parseItemInfoToItemStack(String info) {
-        
+
         String name;
         int amount = 1;
         if ( info.contains(":") ) {
@@ -111,12 +111,12 @@ public class CGiveCommand implements CommandExecutor {
         } else {
             name = info;
         }
-        
+
         Material material = Material.getMaterial(name);
         if ( material == null ) {
             return null;
         }
-        
+
         return new ItemStack(material, amount);
     }
 }

@@ -22,7 +22,7 @@ public class TeamNameSetting {
     private String name;
     /** チームカラー */
     private ChatColor color;
-    
+
     /**
      * コンストラクタ
      * @param id チームID
@@ -41,7 +41,7 @@ public class TeamNameSetting {
     public String getID() {
         return id;
     }
-    
+
     /**
      * @return チーム名を返す
      */
@@ -55,10 +55,11 @@ public class TeamNameSetting {
     public ChatColor getColor() {
         return color;
     }
-    
+
     /**
      * @return スコアボード用の項目名（ダミーのオフラインプレイヤー）を返す
      */
+    @SuppressWarnings("deprecation")
     public OfflinePlayer getScoreItem() {
         return Bukkit.getOfflinePlayer(toString());
     }

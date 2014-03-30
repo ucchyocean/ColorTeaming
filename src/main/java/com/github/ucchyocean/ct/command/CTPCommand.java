@@ -19,6 +19,7 @@ import org.bukkit.entity.Player;
 
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.DelayedTeleportTask;
+import com.github.ucchyocean.ct.Utility;
 import com.github.ucchyocean.ct.config.RespawnConfiguration;
 import com.github.ucchyocean.ct.config.TeamNameSetting;
 
@@ -70,7 +71,7 @@ public class CTPCommand implements CommandExecutor {
 
         if ( args[0].equalsIgnoreCase("all") ) {
 
-            HashMap<String, ArrayList<Player>> members = 
+            HashMap<String, ArrayList<Player>> members =
                     plugin.getAPI().getAllTeamMembers();
 
             if ( args[1].equalsIgnoreCase("spawn") ) {
@@ -83,7 +84,7 @@ public class CTPCommand implements CommandExecutor {
                 for ( String team : members.keySet() ) {
 
                     TeamNameSetting tns = plugin.getAPI().getTeamNameFromID(team);
-                    
+
                     Location location = respawnConfig.get(team, respawnMapName);
                     if ( location == null ) {
                         sender.sendMessage(PREERR +
@@ -137,7 +138,7 @@ public class CTPCommand implements CommandExecutor {
                 } else {
                     sender.sendMessage(PREERR + "テレポート対象のプレイヤーがいませんでした。");
                 }
-                
+
             } else {
                 // ctp all (point) の実行
 
@@ -244,7 +245,7 @@ public class CTPCommand implements CommandExecutor {
             boolean isPlayer = false;
             if ( members.containsKey(target) ) {
                 //isTeam = true;
-            } else if ( Bukkit.getPlayerExact(target) != null ) {
+            } else if ( Utility.getPlayerExact(target) != null ) {
                 isPlayer = true;
             } else {
                 sender.sendMessage(PREERR + "指定された " + target + " に一致する、チームもプレイヤーも存在しません。");
@@ -273,9 +274,9 @@ public class CTPCommand implements CommandExecutor {
                 // チームのリスポーンポイントを取得、登録されていなければ終了
                 String respawnMapName = plugin.getAPI().getRespawnMapName();
                 RespawnConfiguration respawnConfig = plugin.getAPI().getRespawnConfig();
-                
+
                 if ( isPlayer ) {
-                    Player player = Bukkit.getPlayerExact(target);
+                    Player player = Utility.getPlayerExact(target);
                     TeamNameSetting tns = plugin.getAPI().getPlayerTeamName(player);
                     if ( tns != null ) {
                         location = respawnConfig.get(tns.getID(), respawnMapName);
@@ -299,7 +300,7 @@ public class CTPCommand implements CommandExecutor {
                         return true;
                     }
                 }
-                
+
                 location = location.add(0.5, 0, 0.5);
 
             } else if ( args.length <= 3 ) {
@@ -329,7 +330,7 @@ public class CTPCommand implements CommandExecutor {
             // テレポートの実行
             HashMap<Player, Location> map = new HashMap<Player, Location>();
             if ( isPlayer ) {
-                Player player = Bukkit.getPlayerExact(target);
+                Player player = Utility.getPlayerExact(target);
                 map.put(player, location);
                 sender.sendMessage(PREINFO + "プレイヤー " + target + " をテレポートします。");
             } else {

@@ -140,12 +140,12 @@ public class Utility {
                 JarEntry entry = entries.nextElement();
                 if ( !entry.isDirectory() && entry.getName().startsWith(sourceFilePath) ) {
 
-                    File targetFile = new File(targetFilePath, 
+                    File targetFile = new File(targetFilePath,
                             entry.getName().substring(sourceFilePath.length() + 1));
                     if ( !targetFile.getParentFile().exists() ) {
                         targetFile.getParentFile().mkdirs();
                     }
-                    
+
                     InputStream is = null;
                     FileOutputStream fos = null;
                     BufferedReader reader = null;
@@ -281,11 +281,11 @@ public class Utility {
      * @return ChatColorオブジェクト
      */
     public static ChatColor getChatColorFromColorCode(String colorCode) {
-        
+
         if ( !colorCode.matches("&[0-9a-fk-or]") ) {
             return ChatColor.WHITE;
         }
-        
+
         char code = colorCode.charAt(1);
         return ChatColor.getByChar(code);
     }
@@ -295,7 +295,7 @@ public class Utility {
      * @param player 対象プレイヤー
      */
     public static void resetPlayerStatus(final Player player) {
-        
+
         player.setHealth(player.getMaxHealth());
         player.setFallDistance(0);
         player.setFoodLevel(20);
@@ -304,7 +304,7 @@ public class Utility {
         for ( PotionEffect e : effects ) {
             player.removePotionEffect(e.getType());
         }
-        
+
         // NOTE: Fire ticks は、少し遅れて設定しないと、火が消えない。
         Bukkit.getScheduler().runTaskLater(ColorTeaming.instance, new BukkitRunnable() {
             @Override
@@ -313,7 +313,7 @@ public class Utility {
             }
         }, 1L);
     }
-    
+
     /**
      * 経験値表示を更新する
      * @param player 更新対象のプレイヤー
@@ -329,5 +329,15 @@ public class Utility {
         }
         float xp = (float)total / (float)player.getExpToLevel();
         player.setExp(xp);
+    }
+
+    /**
+     * 指定された名前のプレイヤーを返す
+     * @param name プレイヤー名
+     * @return プレイヤー、該当プレイヤーがオンラインでない場合はnullになる。
+     */
+    @SuppressWarnings("deprecation")
+    public static Player getPlayerExact(String name) {
+        return Bukkit.getPlayerExact(name);
     }
 }

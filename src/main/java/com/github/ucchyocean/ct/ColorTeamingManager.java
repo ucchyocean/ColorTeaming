@@ -129,7 +129,9 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         Set<Team> teams = scoreboard.getTeams();
         for ( Team team : teams ) {
             for ( OfflinePlayer p : team.getPlayers() ) {
-                if ( p.getName().equalsIgnoreCase(player.getName()) ) {
+                @SuppressWarnings("deprecation")
+                String name = p.getName();
+                if ( name.equalsIgnoreCase(player.getName()) ) {
                     return team;
                 }
             }
@@ -814,7 +816,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     @Override
     public void setKillDeathUserCounts(String playerName, int kill, int death) {
 
-        Player player = Bukkit.getPlayerExact(playerName);
+        Player player = Utility.getPlayerExact(playerName);
         if ( player == null ) {
             return;
         }

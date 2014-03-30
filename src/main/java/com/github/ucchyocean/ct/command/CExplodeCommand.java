@@ -8,7 +8,6 @@ package com.github.ucchyocean.ct.command;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -17,6 +16,7 @@ import org.bukkit.entity.Player;
 
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingAPI;
+import com.github.ucchyocean.ct.Utility;
 
 /**
  * colorexplode(ce)コマンドの実行クラス
@@ -58,9 +58,9 @@ public class CExplodeCommand implements CommandExecutor {
         } else if ( api.isExistTeam(target) ) {
             // target はチームである場合
             playersToExplode = members.get(target);
-        } else if ( Bukkit.getPlayerExact(target) != null ) {
+        } else if ( Utility.getPlayerExact(target) != null ) {
             // target はプレイヤーである場合
-            playersToExplode.add(Bukkit.getPlayerExact(target));
+            playersToExplode.add(Utility.getPlayerExact(target));
         } else {
             sender.sendMessage(PREERR + target +
                     " というチームまたはプレイヤーは存在しません。");

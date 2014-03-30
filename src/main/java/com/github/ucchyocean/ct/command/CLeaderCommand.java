@@ -17,6 +17,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.github.ucchyocean.ct.ColorTeaming;
+import com.github.ucchyocean.ct.Utility;
 import com.github.ucchyocean.ct.config.TeamNameSetting;
 
 /**
@@ -106,7 +107,7 @@ public class CLeaderCommand implements CommandExecutor {
             for ( String key : members.keySet() ) {
 
                 TeamNameSetting teamName = plugin.getAPI().getTeamNameFromID(key);
-                
+
                 // 人数が少なすぎるチームは無視
                 if ( numberOfLeaders > members.get(key).size() ) {
                     sender.sendMessage(PREERR + teamName.getName() + " チームは人数が少なすぎて、大将を設定できません！");
@@ -130,7 +131,7 @@ public class CLeaderCommand implements CommandExecutor {
                 }
                 String message = String.format("%s チームの大将に、%s が選ばれました。", teamName.getName(), l);
                 plugin.getAPI().sendTeamChat(null, key, message);
-                sender.sendMessage(String.format(PREINFO + "%s チームの大将を、%d 人設定しました。", 
+                sender.sendMessage(String.format(PREINFO + "%s チームの大将を、%d 人設定しました。",
                         teamName.getName(), numberOfLeaders));
             }
 
@@ -150,12 +151,12 @@ public class CLeaderCommand implements CommandExecutor {
             }
 
             TeamNameSetting teamName = plugin.getAPI().getTeamNameFromID(team);
-            
+
             HashMap<String, ArrayList<Player>> members =
                     plugin.getAPI().getAllTeamMembers();
 
             String user = args[1];
-            Player player = Bukkit.getPlayerExact(user);
+            Player player = Utility.getPlayerExact(user);
 
             if ( user.equalsIgnoreCase("random") ) {
 
@@ -166,10 +167,10 @@ public class CLeaderCommand implements CommandExecutor {
                 String newLeader = members.get(team).get(value).getName();
                 leaders.get(team).add(newLeader);
 
-                String message = String.format("%s チームの大将に、%s が選ばれました。", 
+                String message = String.format("%s チームの大将に、%s が選ばれました。",
                         teamName.toString(), newLeader);
                 plugin.getAPI().sendTeamChat(null, team, message);
-                sender.sendMessage(String.format(PREINFO + "%s チームの大将を、1 人設定しました。", 
+                sender.sendMessage(String.format(PREINFO + "%s チームの大将を、1 人設定しました。",
                         teamName.toString()));
 
                 return true;
@@ -185,7 +186,7 @@ public class CLeaderCommand implements CommandExecutor {
                 leaders.put(team, new ArrayList<String>());
                 leaders.get(team).add(user);
 
-                String message = String.format("%s チームの大将に、%s が選ばれました。", 
+                String message = String.format("%s チームの大将に、%s が選ばれました。",
                         teamName.toString(), user);
                 plugin.getAPI().sendTeamChat(null, team, message);
                 sender.sendMessage(PRENOTICE + message);

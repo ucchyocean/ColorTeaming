@@ -8,7 +8,6 @@ package com.github.ucchyocean.ct.command;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -17,6 +16,7 @@ import org.bukkit.entity.Player;
 
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingAPI;
+import com.github.ucchyocean.ct.Utility;
 import com.github.ucchyocean.ct.config.ClassData;
 import com.github.ucchyocean.ct.config.ItemConfigParser;
 import com.github.ucchyocean.ct.config.TeamNameSetting;
@@ -100,7 +100,7 @@ public class CClassCommand implements CommandExecutor {
         } else if ( api.isExistTeam(target) ) {
             // チーム指定
             isTeam = true;
-        } else if ( api.getAllPlayers().contains(Bukkit.getPlayerExact(target)) ) {
+        } else if ( api.getAllPlayers().contains(Utility.getPlayerExact(target)) ) {
             // ユーザー指定
         } else {
             sender.sendMessage(PREERR + "チームまたはプレイヤー " + target + " が存在しません。");
@@ -122,7 +122,7 @@ public class CClassCommand implements CommandExecutor {
         } else if ( isTeam ) {
             playersToSet = members.get(target);
         } else {
-            playersToSet.add(Bukkit.getPlayerExact(target));
+            playersToSet.add(Utility.getPlayerExact(target));
         }
 
         if ( playersToSet.size() <= 0 ) {
