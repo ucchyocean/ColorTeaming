@@ -7,12 +7,13 @@ package com.github.ucchyocean.ct.command;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Team;
 
@@ -24,7 +25,7 @@ import com.github.ucchyocean.ct.config.ColorTeamingConfig;
  * ColorRandom(rc)コマンドの実行クラス
  * @author ucchy
  */
-public class CRandomCommand implements CommandExecutor {
+public class CRandomCommand implements TabExecutor {
 
     private static final String PREERR = ChatColor.RED.toString();
 
@@ -128,5 +129,27 @@ public class CRandomCommand implements CommandExecutor {
         CCountCommand.sendCCMessage(sender, members, false);
 
         return true;
+    }
+
+    /**
+     * @see org.bukkit.command.TabCompleter#onTabComplete(org.bukkit.command.CommandSender, org.bukkit.command.Command, java.lang.String, java.lang.String[])
+     */
+    @Override
+    public List<String> onTabComplete(
+            CommandSender sender, Command command, String label, String[] args) {
+
+        if ( args.length == 1 ) {
+
+            String prefix = args[0].toLowerCase();
+            ArrayList<String> commands = new ArrayList<String>();
+            for ( String c : new String[]{"rest"} ) {
+                if ( c.startsWith(prefix) ) {
+                    commands.add(c);
+                }
+            }
+            return commands;
+        }
+
+        return null;
     }
 }

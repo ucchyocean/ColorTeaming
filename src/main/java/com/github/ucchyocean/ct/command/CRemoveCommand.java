@@ -5,10 +5,13 @@
  */
 package com.github.ucchyocean.ct.command;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
 
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.config.ColorTeamingConfig;
@@ -17,7 +20,7 @@ import com.github.ucchyocean.ct.config.ColorTeamingConfig;
  * ColorRemove(CR)コマンドの実行クラス
  * @author ucchy
  */
-public class CRemoveCommand implements CommandExecutor {
+public class CRemoveCommand implements TabExecutor {
 
     private ColorTeaming plugin;
 
@@ -88,5 +91,40 @@ public class CRemoveCommand implements CommandExecutor {
         String msg = enable ? "有効" : "無効";
         sender.sendMessage(ChatColor.GRAY +
                 "ログアウト時のチーム離脱が" + msg + "になりました。");
+    }
+
+    /**
+     * @see org.bukkit.command.TabCompleter#onTabComplete(org.bukkit.command.CommandSender, org.bukkit.command.Command, java.lang.String, java.lang.String[])
+     */
+    @Override
+    public List<String> onTabComplete(
+            CommandSender sender, Command command, String label, String[] args) {
+
+        if ( args.length == 1 ) {
+
+            String prefix = args[0].toLowerCase();
+            ArrayList<String> commands = new ArrayList<String>();
+            for ( String c : new String[]{"on", "off", "death", "quit"} ) {
+                if ( c.startsWith(prefix) ) {
+                    commands.add(c);
+                }
+            }
+            return commands;
+
+        } else if ( args.length == 2 &&
+                (args[0].equalsIgnoreCase("death") || args[0].equalsIgnoreCase("quit")) ) {
+
+            String prefix = args[1].toLowerCase();
+            ArrayList<String> commands = new ArrayList<String>();
+            for ( String c : new String[]{"on", "off"} ) {
+                if ( c.startsWith(prefix) ) {
+                    commands.add(c);
+                }
+            }
+            return commands;
+
+        }
+
+        return null;
     }
 }

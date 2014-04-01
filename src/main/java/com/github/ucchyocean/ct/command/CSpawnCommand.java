@@ -6,6 +6,7 @@
 package com.github.ucchyocean.ct.command;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
@@ -14,19 +15,20 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingAPI;
 import com.github.ucchyocean.ct.config.RespawnConfiguration;
+import com.github.ucchyocean.ct.config.TeamNameSetting;
 
 /**
  * colorspawn(cs)コマンドの実行クラス
  * @author ucchy
  */
-public class CSpawnCommand implements CommandExecutor {
+public class CSpawnCommand implements TabExecutor {
 
     private static final String PRE_LINE_MESSAGE =
             "=== Team Spawn Point Information ===";
@@ -361,5 +363,68 @@ public class CSpawnCommand implements CommandExecutor {
 
     private boolean isValidMapName(String name) {
         return name.matches("[a-zA-Z0-9_]{1,10}");
+    }
+
+    /**
+     * @see org.bukkit.command.TabCompleter#onTabComplete(org.bukkit.command.CommandSender, org.bukkit.command.Command, java.lang.String, java.lang.String[])
+     */
+    @Override
+    public List<String> onTabComplete(
+            CommandSender sender, Command command, String label, String[] args) {
+
+        if ( args.length == 1 ) {
+
+            String prefix = args[0].toLowerCase();
+            ArrayList<String> commands = new ArrayList<String>();
+            for ( String c : new String[]{"list", "world", "remove", "switch"} ) {
+                if ( c.startsWith(prefix) ) {
+                    commands.add(c);
+                }
+            }
+            for ( TeamNameSetting tns : plugin.getAPI().getAllTeamNames() ) {
+                String name = tns.getID();
+                if ( name.startsWith(prefix) ) {
+                    commands.add(name);
+                }
+            }
+            return commands;
+
+        } else if ( args.length == 2 && args[0].equalsIgnoreCase("remove") ) {
+
+            String prefix = args[0].toLowerCase();
+            ArrayList<String> commands = new ArrayList<String>();
+            for ( String c : new String[]{"all"} ) {
+                if ( c.startsWith(prefix) ) {
+                    commands.add(c);
+                }
+            }
+            for ( TeamNameSetting tns : plugin.getAPI().getAllTeamNames() ) {
+                String name = tns.getID();
+                if ( name.startsWith(prefix) ) {
+                    commands.add(name);
+                }
+            }
+            return commands;
+
+        } else if ( args.length == 2 && args[0].equalsIgnoreCase("switch") ) {
+
+            String prefix = args[0].toLowerCase();
+            ArrayList<String> commands = new ArrayList<String>();
+            for ( String c : new String[]{"random"} ) {
+                if ( c.startsWith(prefix) ) {
+                    commands.add(c);
+                }
+            }
+            for ( String name :
+                    plugin.getAPI().getRespawnConfig().getAllMapNames() ) {
+                if ( name.startsWith(prefix) ) {
+                    commands.add(name);
+                }
+            }
+            return commands;
+
+        }
+
+        return null;
     }
 }

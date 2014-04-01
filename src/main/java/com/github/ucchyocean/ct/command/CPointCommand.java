@@ -7,12 +7,13 @@ package com.github.ucchyocean.ct.command;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 
 import com.github.ucchyocean.ct.ColorTeaming;
@@ -24,7 +25,7 @@ import com.github.ucchyocean.ct.config.TeamNameSetting;
  * colorpoint(cpoint)コマンドの実行クラス
  * @author ucchy
  */
-public class CPointCommand implements CommandExecutor {
+public class CPointCommand implements TabExecutor {
 
     private static final String PRE_LINE_MESSAGE =
             "=== Team Point Information ===";
@@ -252,4 +253,39 @@ public class CPointCommand implements CommandExecutor {
         return false;
     }
 
+    /**
+     * @see org.bukkit.command.TabCompleter#onTabComplete(org.bukkit.command.CommandSender, org.bukkit.command.Command, java.lang.String, java.lang.String[])
+     */
+    @Override
+    public List<String> onTabComplete(
+            CommandSender sender, Command command, String label, String[] args) {
+
+        if ( args.length == 1 ) {
+
+            String prefix = args[0].toLowerCase();
+            ArrayList<String> commands = new ArrayList<String>();
+            for ( String c : new String[]{"say", "clear", "set", "add"} ) {
+                if ( c.startsWith(prefix) ) {
+                    commands.add(c);
+                }
+            }
+            return commands;
+
+        } else if ( args.length == 2 &&
+                (args[0].equalsIgnoreCase("set") || args[0].equalsIgnoreCase("add")) ) {
+
+            String prefix = args[1].toLowerCase();
+            ArrayList<String> commands = new ArrayList<String>();
+            for ( TeamNameSetting tns : plugin.getAPI().getAllTeamNames() ) {
+                String name = tns.getID();
+                if ( name.startsWith(prefix) ) {
+                    commands.add(name);
+                }
+            }
+            return commands;
+
+        }
+
+        return null;
+    }
 }

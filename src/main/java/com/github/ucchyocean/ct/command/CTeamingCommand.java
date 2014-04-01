@@ -7,12 +7,13 @@ package com.github.ucchyocean.ct.command;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Team;
 
@@ -28,7 +29,7 @@ import com.github.ucchyocean.ct.scoreboard.SidebarCriteria;
  * colorteaming(ct)コマンドの実行クラス
  * @author ucchy
  */
-public class CTeamingCommand implements CommandExecutor {
+public class CTeamingCommand implements TabExecutor {
 
     private static final String PREERR = ChatColor.RED.toString();
     private static final String PREINFO = ChatColor.GRAY.toString();
@@ -161,6 +162,10 @@ public class CTeamingCommand implements CommandExecutor {
      */
     private boolean doRemove(
             CommandSender sender, Command command, String label, String[] args) {
+
+        if ( args[1].equalsIgnoreCase("all") ) {
+            doRemoveAll(sender, command, label, args);
+        }
 
         ColorTeamingAPI api = plugin.getAPI();
 
@@ -553,5 +558,102 @@ public class CTeamingCommand implements CommandExecutor {
         sender.sendMessage(PREINFO + "名前欄のスコア表示を" + criteria + "にしました。");
 
         return true;
+    }
+
+    /**
+     * @see org.bukkit.command.TabCompleter#onTabComplete(org.bukkit.command.CommandSender, org.bukkit.command.Command, java.lang.String, java.lang.String[])
+     */
+    @Override
+    public List<String> onTabComplete(
+            CommandSender sender, Command command, String label, String[] args) {
+
+        if ( args.length == 1 ) {
+
+            String prefix = args[0].toLowerCase();
+            ArrayList<String> commands = new ArrayList<String>();
+            for ( String c : new String[]{"reload", "removeall", "remove", "trophy",
+                    "reachTrophy", "allowJoinAny", "allowJoinRandom", "allowLeave",
+                    "add", "side", "list", "below"} ) {
+                if ( c.startsWith(prefix) ) {
+                    commands.add(c);
+                }
+            }
+            return commands;
+
+        } else if ( args.length == 2 &&
+                (args[0].equalsIgnoreCase("allowJoinAny") ||
+                args[0].equalsIgnoreCase("allowJoinRandom") ||
+                args[0].equalsIgnoreCase("allowLeave")) ) {
+
+            String prefix = args[1].toLowerCase();
+            ArrayList<String> commands = new ArrayList<String>();
+            for ( String c : new String[]{"on", "off"} ) {
+                if ( c.startsWith(prefix) ) {
+                    commands.add(c);
+                }
+            }
+            return commands;
+
+        } else if ( args.length == 2 &&
+                (args[0].equalsIgnoreCase("remove") ||
+                args[0].equalsIgnoreCase("add")) ) {
+
+            String prefix = args[1].toLowerCase();
+            ArrayList<String> commands = new ArrayList<String>();
+            for ( String c : new String[]{"all", "rest"} ) {
+                if ( c.startsWith(prefix) ) {
+                    commands.add(c);
+                }
+            }
+            for ( TeamNameSetting tns : plugin.getAPI().getAllTeamNames() ) {
+                String name = tns.getID();
+                if ( name.startsWith(prefix) ) {
+                    commands.add(name);
+                }
+            }
+            return commands;
+
+        } else if ( args.length == 2 &&
+                (args[0].equalsIgnoreCase("below") ||
+                args[0].equalsIgnoreCase("list"))) {
+
+            String prefix = args[1].toLowerCase();
+            ArrayList<String> commands = new ArrayList<String>();
+            for ( String c : new String[]{
+                    "kill", "death", "point", "health", "clear", "none"} ) {
+                if ( c.startsWith(prefix) ) {
+                    commands.add(c);
+                }
+            }
+            for ( TeamNameSetting tns : plugin.getAPI().getAllTeamNames() ) {
+                String name = tns.getID();
+                if ( name.startsWith(prefix) ) {
+                    commands.add(name);
+                }
+            }
+            return commands;
+
+        } else if ( args.length == 2 &&
+                (args[0].equalsIgnoreCase("side")) ) {
+
+            String prefix = args[1].toLowerCase();
+            ArrayList<String> commands = new ArrayList<String>();
+            for ( String c : new String[]{
+                    "kill", "death", "point", "rest", "clear", "none"} ) {
+                if ( c.startsWith(prefix) ) {
+                    commands.add(c);
+                }
+            }
+            for ( TeamNameSetting tns : plugin.getAPI().getAllTeamNames() ) {
+                String name = tns.getID();
+                if ( name.startsWith(prefix) ) {
+                    commands.add(name);
+                }
+            }
+            return commands;
+
+        }
+
+        return null;
     }
 }

@@ -6,7 +6,12 @@
 package com.github.ucchyocean.ct;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.List;
 
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.ucchyocean.ct.bridge.VaultChatBridge;
@@ -41,6 +46,7 @@ public class ColorTeaming extends JavaPlugin {
     public static ColorTeaming instance;
     protected ColorTeamingConfig config;
     private ColorTeamingManager manager;
+    private HashMap<String, TabExecutor> commands;
 
     /**
      * @see org.bukkit.plugin.java.JavaPlugin#onEnable()
@@ -71,28 +77,47 @@ public class ColorTeaming extends JavaPlugin {
         manager = new ColorTeamingManager(this, config, vaultchat);
 
         // コマンドをサーバーに登録
-        getCommand("colorcount").setExecutor(new CCountCommand(this));
-        getCommand("colorfriendlyfire").setExecutor(new CFriendlyFireCommand(this));
-        getCommand("colorchat").setExecutor(new CChatCommand(this));
-        getCommand("colorglobal").setExecutor(new CChatGlobalCommand());
-        getCommand("colorleader").setExecutor(new CLeaderCommand(this));
-        getCommand("colortp").setExecutor(new CTPCommand(this));
-        getCommand("colorclass").setExecutor(new CClassCommand(this));
-        getCommand("colorpoint").setExecutor(new CPointCommand(this));
-        getCommand("colorspawn").setExecutor(new CSpawnCommand(this));
-        getCommand("colorrandom").setExecutor(new CRandomCommand(this));
-        getCommand("colorremove").setExecutor(new CRemoveCommand(this));
-        getCommand("colorexplode").setExecutor(new CExplodeCommand(this));
-        getCommand("colorgive").setExecutor(new CGiveCommand(this));
-        getCommand("colorjoin").setExecutor(new CJoinCommand(this));
-        getCommand("colorleave").setExecutor(new CLeaveCommand(this));
-        getCommand("colorteaming").setExecutor(new CTeamingCommand(this));
+        commands = new HashMap<String, TabExecutor>();
+        commands.put("colorcount", new CCountCommand(this));
+        commands.put("colorfriendlyfire", new CFriendlyFireCommand(this));
+        commands.put("colorchat", new CChatCommand(this));
+        commands.put("colorglobal", new CChatGlobalCommand());
+        commands.put("colorleader", new CLeaderCommand(this));
+        commands.put("colortp", new CTPCommand(this));
+        commands.put("colorclass", new CClassCommand(this));
+        commands.put("colorpoint", new CPointCommand(this));
+        commands.put("colorspawn", new CSpawnCommand(this));
+        commands.put("colorrandom", new CRandomCommand(this));
+        commands.put("colorremove", new CRemoveCommand(this));
+        commands.put("colorexplode", new CExplodeCommand(this));
+        commands.put("colorgive", new CGiveCommand(this));
+        commands.put("colorjoin", new CJoinCommand(this));
+        commands.put("colorleave", new CLeaveCommand(this));
+        commands.put("colorteaming", new CTeamingCommand(this));
 
         // イベント購読をサーバーに登録
         getServer().getPluginManager().registerEvents(new PlayerChatListener(this), this);
         getServer().getPluginManager().registerEvents(new PlayerDeathListener(this), this);
         getServer().getPluginManager().registerEvents(new PlayerJoinQuitListener(this), this);
         getServer().getPluginManager().registerEvents(new PlayerRespawnListener(this), this);
+    }
+
+    /**
+     * @see org.bukkit.plugin.java.JavaPlugin#onCommand(org.bukkit.command.CommandSender, org.bukkit.command.Command, java.lang.String, java.lang.String[])
+     */
+    @Override
+    public boolean onCommand(
+            CommandSender sender, Command command, String label, String[] args) {
+        return commands.get(command.getName()).onCommand(sender, command, label, args);
+    }
+
+    /**
+     * @see org.bukkit.plugin.java.JavaPlugin#onTabComplete(org.bukkit.command.CommandSender, org.bukkit.command.Command, java.lang.String, java.lang.String[])
+     */
+    @Override
+    public List<String> onTabComplete(
+            CommandSender sender, Command command, String label, String[] args) {
+        return commands.get(command.getName()).onTabComplete(sender, command, label, args);
     }
 
     /**

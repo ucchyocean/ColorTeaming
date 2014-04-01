@@ -5,17 +5,19 @@
  */
 package com.github.ucchyocean.ct.command;
 
+import java.util.List;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 
 /**
  * colorglobal(g)コマンドの実行クラス
  * @author ucchy
  */
-public class CChatGlobalCommand implements CommandExecutor {
+public class CChatGlobalCommand implements TabExecutor {
 
     private static final String GLOBAL_CHAT_MARKER = "#GLOBAL#";
 
@@ -49,4 +51,13 @@ public class CChatGlobalCommand implements CommandExecutor {
         return true;
     }
 
+    /**
+     * @see org.bukkit.command.TabCompleter#onTabComplete(org.bukkit.command.CommandSender, org.bukkit.command.Command, java.lang.String, java.lang.String[])
+     */
+    @Override
+    public List<String> onTabComplete(
+            CommandSender sender, Command command, String label, String[] args) {
+
+        return null;
+    }
 }

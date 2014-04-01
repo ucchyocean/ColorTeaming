@@ -7,11 +7,13 @@ package com.github.ucchyocean.ct.command;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 
 import com.github.ucchyocean.ct.ColorTeaming;
@@ -25,7 +27,7 @@ import com.github.ucchyocean.ct.config.TeamNameSetting;
  * colorclass(cclass)コマンドの実行クラス
  * @author ucchy
  */
-public class CClassCommand implements CommandExecutor {
+public class CClassCommand implements TabExecutor {
 
     private static final String PREERR = ChatColor.RED.toString();
     private static final String PREINFO = ChatColor.GRAY.toString();
@@ -148,5 +150,56 @@ public class CClassCommand implements CommandExecutor {
                         targetName, clas));
 
         return true;
+    }
+
+    /**
+     * @see org.bukkit.command.TabCompleter#onTabComplete(org.bukkit.command.CommandSender, org.bukkit.command.Command, java.lang.String, java.lang.String[])
+     */
+    @Override
+    public List<String> onTabComplete(
+            CommandSender sender, Command command, String label, String[] args) {
+
+        if ( args.length == 1 ) {
+
+            String prefix = args[0].toLowerCase();
+            ArrayList<String> commands = new ArrayList<String>();
+            for ( String c : new String[]{"check", "export", "all"} ) {
+                if ( c.startsWith(prefix) ) {
+                    commands.add(c);
+                }
+            }
+            for ( TeamNameSetting tns : plugin.getAPI().getAllTeamNames() ) {
+                String name = tns.getID();
+                if ( name.startsWith(prefix) ) {
+                    commands.add(name);
+                }
+            }
+            for ( Player player : Bukkit.getOnlinePlayers() ) {
+                String name = player.getName();
+                if ( name.startsWith(prefix) ) {
+                    commands.add(name);
+                }
+            }
+            return commands;
+        }
+
+        if ( args.length == 2 ) {
+
+            if ( args[0].equalsIgnoreCase("check") ||
+                    args[0].equalsIgnoreCase("export") ) {
+                return null;
+            }
+
+            String prefix = args[1].toLowerCase();
+            ArrayList<String> commands = new ArrayList<String>();
+            for ( String name : plugin.getAPI().getClasses().keySet() ) {
+                if ( name.startsWith(prefix) ) {
+                    commands.add(name);
+                }
+            }
+            return commands;
+        }
+
+        return null;
     }
 }

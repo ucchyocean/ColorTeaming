@@ -7,12 +7,13 @@ package com.github.ucchyocean.ct.command;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 
 import com.github.ucchyocean.ct.ColorTeaming;
@@ -22,7 +23,7 @@ import com.github.ucchyocean.ct.config.TeamNameSetting;
  * colorcount(cc)コマンド、colorcountsay(ccsay)コマンドの実行クラス
  * @author ucchy
  */
-public class CCountCommand implements CommandExecutor {
+public class CCountCommand implements TabExecutor {
 
     private static final String PRE_LINE_MESSAGE =
             "=== Team Member Information ===";
@@ -43,12 +44,7 @@ public class CCountCommand implements CommandExecutor {
         boolean isBroadcast = false;
         boolean isAll = false;
 
-        if ( command.getName().equals("colorcountsay") ) {
-            isBroadcast = true;
-            if ( args.length >= 1 && args[0].equalsIgnoreCase("all") ) {
-                isAll = true;
-            }
-        } else if ( args.length >= 1 && args[0].equalsIgnoreCase("say") ) {
+        if ( args.length >= 1 && args[0].equalsIgnoreCase("say") ) {
             isBroadcast = true;
             if ( args.length >= 2 && args[1].equalsIgnoreCase("all") ) {
                 isAll = true;
@@ -119,7 +115,7 @@ public class CCountCommand implements CommandExecutor {
             if ( key.equals("") ) {
                 teamName = new TeamNameSetting("", "未所属", ChatColor.WHITE);
             }
-            
+
             if ( !isBroadcast ) {
                 String color = ChatColor.GRAY.toString();
                 String team = teamName.toString();
@@ -134,5 +130,39 @@ public class CCountCommand implements CommandExecutor {
                 Bukkit.broadcastMessage(color + value);
             }
         }
+    }
+
+    /**
+     * @see org.bukkit.command.TabCompleter#onTabComplete(org.bukkit.command.CommandSender, org.bukkit.command.Command, java.lang.String, java.lang.String[])
+     */
+    @Override
+    public List<String> onTabComplete(
+            CommandSender sender, Command command, String label, String[] args) {
+
+        if ( args.length == 1 ) {
+
+            String prefix = args[0].toLowerCase();
+            ArrayList<String> commands = new ArrayList<String>();
+            for ( String c : new String[]{"say", "all"} ) {
+                if ( c.startsWith(prefix) ) {
+                    commands.add(c);
+                }
+            }
+            return commands;
+
+        } else if ( args.length == 2 && args[0].equalsIgnoreCase("say") ) {
+
+            String prefix = args[1].toLowerCase();
+            ArrayList<String> commands = new ArrayList<String>();
+            for ( String c : new String[]{"all"} ) {
+                if ( c.startsWith(prefix) ) {
+                    commands.add(c);
+                }
+            }
+            return commands;
+
+        }
+
+        return null;
     }
 }
