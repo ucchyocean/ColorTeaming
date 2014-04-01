@@ -16,6 +16,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.github.ucchyocean.ct.ColorTeaming;
+import com.github.ucchyocean.ct.ColorTeamingAPI;
 import com.github.ucchyocean.ct.config.TeamNameConfig;
 import com.github.ucchyocean.ct.config.TeamNameSetting;
 
@@ -98,11 +99,17 @@ public class CJoinCommand implements CommandExecutor {
                 sender.sendMessage(PREERR + target + " は設定できないチーム名です。");
                 return true;
             }
-            TeamNameSetting tns = plugin.getAPI().getTeamNameConfig().getTeamNameFromID(target);
-            plugin.getAPI().addPlayerTeam(player, tns);
+
+            ColorTeamingAPI api = plugin.getAPI();
+            boolean needToDisplayScore = (api.getAllTeamNames().size() == 0);
+            TeamNameSetting tns = api.getTeamNameConfig().getTeamNameFromID(target);
+            api.addPlayerTeam(player, tns);
 
             // スコアボード更新
-            plugin.getAPI().refreshRestTeamMemberScore();
+            api.refreshRestTeamMemberScore();
+            if ( needToDisplayScore ) {
+                api.displayScoreboard();
+            }
 
             return true;
 
