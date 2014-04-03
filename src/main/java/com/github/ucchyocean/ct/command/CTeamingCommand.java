@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.command.Command;
@@ -615,14 +616,26 @@ public class CTeamingCommand implements TabExecutor {
 
             String prefix = args[1].toLowerCase();
             ArrayList<String> commands = new ArrayList<String>();
+            for ( TeamNameSetting tns :
+                    plugin.getAPI().getTeamNameConfig().getTeamNames() ) {
+                String name = tns.getID();
+                if ( name.startsWith(prefix) ) {
+                    commands.add(name);
+                }
+            }
+            return commands;
+
+        } else if ( args.length == 3 && args[0].equalsIgnoreCase("add") ) {
+
+            String prefix = args[2].toLowerCase();
+            ArrayList<String> commands = new ArrayList<String>();
             for ( String c : new String[]{"all", "rest"} ) {
                 if ( c.startsWith(prefix) ) {
                     commands.add(c);
                 }
             }
-            for ( TeamNameSetting tns :
-                    plugin.getAPI().getTeamNameConfig().getTeamNames() ) {
-                String name = tns.getID();
+            for ( Player player : Bukkit.getOnlinePlayers() ) {
+                String name = player.getName();
                 if ( name.startsWith(prefix) ) {
                     commands.add(name);
                 }
