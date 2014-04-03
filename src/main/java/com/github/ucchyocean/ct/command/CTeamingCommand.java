@@ -594,9 +594,24 @@ public class CTeamingCommand implements TabExecutor {
             }
             return commands;
 
-        } else if ( args.length == 2 &&
-                (args[0].equalsIgnoreCase("remove") ||
-                args[0].equalsIgnoreCase("add")) ) {
+        } else if ( args.length == 2 && args[0].equalsIgnoreCase("remove") ) {
+
+            String prefix = args[1].toLowerCase();
+            ArrayList<String> commands = new ArrayList<String>();
+            for ( String c : new String[]{"all"} ) {
+                if ( c.startsWith(prefix) ) {
+                    commands.add(c);
+                }
+            }
+            for ( TeamNameSetting tns : plugin.getAPI().getAllTeamNames() ) {
+                String name = tns.getID();
+                if ( name.startsWith(prefix) ) {
+                    commands.add(name);
+                }
+            }
+            return commands;
+
+        } else if ( args.length == 2 && args[0].equalsIgnoreCase("add") ) {
 
             String prefix = args[1].toLowerCase();
             ArrayList<String> commands = new ArrayList<String>();
@@ -605,7 +620,8 @@ public class CTeamingCommand implements TabExecutor {
                     commands.add(c);
                 }
             }
-            for ( TeamNameSetting tns : plugin.getAPI().getAllTeamNames() ) {
+            for ( TeamNameSetting tns :
+                    plugin.getAPI().getTeamNameConfig().getTeamNames() ) {
                 String name = tns.getID();
                 if ( name.startsWith(prefix) ) {
                     commands.add(name);
@@ -625,12 +641,6 @@ public class CTeamingCommand implements TabExecutor {
                     commands.add(c);
                 }
             }
-            for ( TeamNameSetting tns : plugin.getAPI().getAllTeamNames() ) {
-                String name = tns.getID();
-                if ( name.startsWith(prefix) ) {
-                    commands.add(name);
-                }
-            }
             return commands;
 
         } else if ( args.length == 2 &&
@@ -642,12 +652,6 @@ public class CTeamingCommand implements TabExecutor {
                     "kill", "death", "point", "rest", "clear", "none"} ) {
                 if ( c.startsWith(prefix) ) {
                     commands.add(c);
-                }
-            }
-            for ( TeamNameSetting tns : plugin.getAPI().getAllTeamNames() ) {
-                String name = tns.getID();
-                if ( name.startsWith(prefix) ) {
-                    commands.add(name);
                 }
             }
             return commands;

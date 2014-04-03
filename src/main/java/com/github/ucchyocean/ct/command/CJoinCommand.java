@@ -149,6 +149,19 @@ public class CJoinCommand implements TabExecutor {
     public List<String> onTabComplete(
             CommandSender sender, Command command, String label, String[] args) {
 
+        if ( args.length == 1 && plugin.getCTConfig().isAllowPlayerJoinAny() ) {
+
+            String prefix = args[0].toLowerCase();
+            ArrayList<String> commands = new ArrayList<String>();
+            for ( TeamNameSetting tns : plugin.getAPI().getTeamNameConfig().getTeamNames() ) {
+                String name = tns.getID();
+                if ( name.startsWith(prefix) ) {
+                    commands.add(name);
+                }
+            }
+            return commands;
+        }
+
         return null;
     }
 }

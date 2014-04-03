@@ -381,7 +381,8 @@ public class CSpawnCommand implements TabExecutor {
                     commands.add(c);
                 }
             }
-            for ( TeamNameSetting tns : plugin.getAPI().getAllTeamNames() ) {
+            for ( TeamNameSetting tns :
+                    plugin.getAPI().getTeamNameConfig().getTeamNames() ) {
                 String name = tns.getID();
                 if ( name.startsWith(prefix) ) {
                     commands.add(name);
