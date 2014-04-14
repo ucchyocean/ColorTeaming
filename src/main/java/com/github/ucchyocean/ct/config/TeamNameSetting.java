@@ -14,7 +14,7 @@ import org.bukkit.OfflinePlayer;
  * チーム名とチームカラーのセット
  * @author ucchy
  */
-public class TeamNameSetting {
+public class TeamNameSetting implements Comparable<TeamNameSetting> {
 
     /** チームID */
     private String id;
@@ -72,5 +72,17 @@ public class TeamNameSetting {
     public String toString() {
         if ( color != null ) return color + name;
         return name;
+    }
+
+    /**
+     * インスタンス同士の比較を行う。このメソッドを実装しておくことで、
+     * Java8でのHashMapのキー挿入における高速化が期待できる（らしい）。
+     * @param other
+     * @return
+     * @see java.lang.Comparable#compareTo(T)
+     */
+    @Override
+    public int compareTo(TeamNameSetting other) {
+        return this.toString().compareTo(other.toString());
     }
 }
