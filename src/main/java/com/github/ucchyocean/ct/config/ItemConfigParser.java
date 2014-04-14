@@ -17,8 +17,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.potion.Potion;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 
 /**
@@ -207,6 +210,46 @@ public class ItemConfigParser {
                     potion.setHasExtendedDuration(section.getBoolean("extend", false));
                 }
                 potion.apply(item);
+
+                // カスタムポーションの詳細設定
+                if ( section.contains("custom_effects") ) {
+
+                    PotionMeta meta = (PotionMeta)item.getItemMeta();
+                    PotionEffectType mainType = null;
+
+                    for ( String key :
+                            section.getConfigurationSection("custom_effects").getKeys(false) ) {
+
+                        ConfigurationSection custom_sec =
+                                section.getConfigurationSection("custom_effects." + key);
+                        String cname = custom_sec.getString("type");
+                        if ( cname == null ) {
+                            logger.warning("指定されたポーション形式 type の指定がありません。");
+                            logger.warning("└ " + info);
+                            continue;
+                        }
+                        PotionEffectType ctype = PotionEffectType.getByName(cname.toUpperCase());
+                        if ( type == null ) {
+                            logger.warning("指定されたポーション形式 " + cname + " が正しくありません。");
+                            logger.warning("└ " + info);
+                            continue;
+                        }
+                        if ( mainType == null ) {
+                            mainType = ctype;
+                        }
+                        int amplifier = custom_sec.getInt("amplifier", 1);
+                        int duration = custom_sec.getInt("duration", 100);
+                        boolean ambient = custom_sec.getBoolean("ambient", true);
+                        PotionEffect effect = new PotionEffect(ctype, duration, amplifier, ambient);
+                        meta.addCustomEffect(effect, ambient);
+                    }
+
+                    if ( mainType == null ) {
+                        meta.setMainEffect(mainType);
+                    }
+
+                    item.setItemMeta(meta);
+                }
             }
         }
 
@@ -310,6 +353,22 @@ public class ItemConfigParser {
             }
             if ( potion.hasExtendedDuration() ) {
                 message.add(indent + "extend: true");
+            }
+
+            PotionMeta meta = (PotionMeta)item.getItemMeta();
+            if ( meta.hasCustomEffects() ) {
+                // カスタムポーションの設定
+
+                message.add(indent + "custom_effects:");
+                List<PotionEffect> customs = meta.getCustomEffects();
+                for ( int i=0; i<customs.size(); i++ ) {
+                    PotionEffect custom = customs.get(i);
+                    message.add(indent + "  effect" + (i+1) + ":");
+                    message.add(indent + "    type: " + custom.getType().getName());
+                    message.add(indent + "    amplifier: " + custom.getAmplifier());
+                    message.add(indent + "    duration: " + custom.getDuration());
+                    message.add(indent + "    ambient: " + custom.isAmbient());
+                }
             }
         }
 
