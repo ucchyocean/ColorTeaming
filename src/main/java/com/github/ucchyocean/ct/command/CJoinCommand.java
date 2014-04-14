@@ -6,8 +6,6 @@
 package com.github.ucchyocean.ct.command;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -49,7 +47,6 @@ public class CJoinCommand implements TabExecutor {
 
         Player player = (Player)sender;
 
-        TeamNameSetting team = null;
         if ( args.length == 0 || args[0].equalsIgnoreCase("random") ) {
 
             if ( !plugin.getCTConfig().isAllowPlayerJoinRandom() ) {
@@ -65,17 +62,15 @@ public class CJoinCommand implements TabExecutor {
                 return true;
             }
 
-            team = getLeastTeam();
-            if ( team == null ) {
+            ArrayList<Player> players = new ArrayList<Player>();
+            players.add(player);
+            boolean result = plugin.getAPI().addPlayerToColorTeamsWithOrderSelection(players);
+
+            if ( !result ) {
                 sender.sendMessage(
                         PREERR + "参加できるチームが無いようです。");
                 return true;
             }
-
-            plugin.getAPI().addPlayerTeam(player, team);
-
-            // スコアボード更新
-            plugin.getAPI().refreshRestTeamMemberScore();
 
             return true;
 
@@ -115,31 +110,6 @@ public class CJoinCommand implements TabExecutor {
             return true;
 
         }
-    }
-
-    /**
-     * メンバー人数が最小のチームを返す。
-     * @return メンバー人数が最小のチーム
-     */
-    private TeamNameSetting getLeastTeam() {
-
-        HashMap<String, ArrayList<Player>> members =
-                plugin.getAPI().getAllTeamMembers();
-        int least = 999;
-        TeamNameSetting leastTeam = null;
-
-        ArrayList<TeamNameSetting> teams = plugin.getAPI().getAllTeamNames();
-        // ランダム要素を入れるため、チーム名をシャッフルする
-        Collections.shuffle(teams);
-
-        for ( TeamNameSetting tns : teams ) {
-            if ( least > members.get(tns.getID()).size() ) {
-                least = members.get(tns.getID()).size();
-                leastTeam = tns;
-            }
-        }
-
-        return leastTeam;
     }
 
     /**

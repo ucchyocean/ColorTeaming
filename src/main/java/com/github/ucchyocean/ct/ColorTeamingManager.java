@@ -306,9 +306,11 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     @Override
     public void removeAllTeam() {
 
-        Set<Team> teams = scoreboard.getTeams();
-        for ( Team team : teams ) {
-            removeTeam(team.getName());
+        for ( TeamNameSetting tns : getAllTeamNames() ) {
+            Team team = scoreboard.getTeam(tns.getID());
+            if ( team != null ) {
+                removeTeam(team.getName());
+            }
         }
     }
 
@@ -401,10 +403,12 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     public ArrayList<TeamNameSetting> getAllTeamNames() {
 
         ArrayList<TeamNameSetting> result = new ArrayList<TeamNameSetting>();
-        Set<Team> teams = scoreboard.getTeams();
 
-        for ( Team team : teams ) {
-            result.add(teamNameConfig.getTeamNameFromID(team.getName()));
+        for ( TeamNameSetting tns : teamNameConfig.getTeamNames() ) {
+            Team team = scoreboard.getTeam(tns.getID());
+            if ( team != null ) {
+                result.add(tns);
+            }
         }
 
         return result;
@@ -1065,8 +1069,13 @@ public class ColorTeamingManager implements ColorTeamingAPI {
             HashMap<String, ArrayList<Player>> members = getAllTeamMembers();
             int least = 999;
             TeamNameSetting leastTeam = null;
-
             ArrayList<TeamNameSetting> teams = getAllTeamNames();
+
+            // 例外チームが含まれている場合は、あらかじめ除外する（see issue #99）
+            if ( teams.contains(teamNameConfig.getIgnoreTeam()) ) {
+                teams.remove(teamNameConfig.getIgnoreTeam());
+            }
+
             // ランダム要素を入れるため、チーム名をシャッフルする
             Collections.shuffle(teams);
 
