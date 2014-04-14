@@ -1112,12 +1112,6 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         respawnConfig = new RespawnConfiguration();
         tppointConfig = new TPPointConfiguration();
         teamNameConfig = new TeamNameConfig();
-
-        // クラスデータの再読み込み
-        HashMap<String, ClassData> reloadClassData =
-                ClassData.loadAllClasses(new File(plugin.getDataFolder(), "classes"));
-        for ( String key : reloadClassData.keySet() ) {
-            classDatas.put(key, reloadClassData.get(key));
-        }
+        classDatas = ClassData.loadAllClasses(new File(plugin.getDataFolder(), "classes"));
     }
 }
