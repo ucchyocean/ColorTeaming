@@ -129,7 +129,6 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         Set<Team> teams = scoreboard.getTeams();
         for ( Team team : teams ) {
             for ( OfflinePlayer p : team.getPlayers() ) {
-                @SuppressWarnings("deprecation")
                 String name = p.getName();
                 if ( name.equalsIgnoreCase(player.getName()) ) {
                     return team;
@@ -589,8 +588,9 @@ public class ColorTeamingManager implements ColorTeamingAPI {
 
         // まず、全ての項目をいったん0にする
         for ( TeamNameSetting tns : getTeamNameConfig().getTeamNames() ) {
-            if ( obj.getScore(tns.getScoreItem()).getScore() > 0 ) {
-                obj.getScore(tns.getScoreItem()).setScore(0);
+            Score score = getScore(obj, tns);
+            if ( score.getScore() > 0 ) {
+                score.setScore(0);
             }
         }
 
@@ -598,7 +598,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         HashMap<String, ArrayList<Player>> members = getAllTeamMembers();
         for ( String id : members.keySet() ) {
             TeamNameSetting tns = getTeamNameFromID(id);
-            obj.getScore(tns.getScoreItem()).setScore(members.get(id).size());
+            getScore(obj, tns).setScore(members.get(id).size());
         }
     }
 
@@ -639,7 +639,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         Objective obj = objectives.getTeamPointObjective();
 
         for ( TeamNameSetting tns : getAllTeamNames() ) {
-            int p = obj.getScore(tns.getScoreItem()).getScore();
+            int p = getScore(obj, tns).getScore();
             points.put(tns.getID(), p);
         }
 
@@ -659,7 +659,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
 
         for ( String team : members.keySet() ) {
             for ( Player player : members.get(team) ) {
-                int point = obj.getScore(player).getScore();
+                int point = getScore(obj, player).getScore();
                 points.put(player.getName(), point);
             }
         }
@@ -678,13 +678,14 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         Objective obj = objectives.getTeamPointObjective();
         TeamNameSetting tns = teamNameConfig.getTeamNameFromID(team);
 
-        int pointBefore = obj.getScore(tns.getScoreItem()).getScore();
+        Score score = getScore(obj, tns);
+        int pointBefore = score.getScore();
 
         if ( point == 0 ) {
             // NOTE: ポイント0を設定する場合は、一旦1を設定して項目を表示させる。
-            obj.getScore(tns.getScoreItem()).setScore(1);
+            score.setScore(1);
         }
-        obj.getScore(tns.getScoreItem()).setScore(point);
+        score.setScore(point);
 
         // イベント呼び出し
         ColorTeamingTeamscoreChangeEvent event =
@@ -704,8 +705,9 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         Objective obj = objectives.getTeamPointObjective();
         TeamNameSetting tns = teamNameConfig.getTeamNameFromID(team);
 
-        int point = obj.getScore(tns.getScoreItem()).getScore();
-        obj.getScore(tns.getScoreItem()).setScore(point + amount);
+        Score score = getScore(obj, tns);
+        int point = score.getScore();
+        score.setScore(point + amount);
 
         // イベント呼び出し
         ColorTeamingTeamscoreChangeEvent event =
@@ -728,8 +730,8 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         HashMap<String, int[]> result = new HashMap<String, int[]>();
         for ( TeamNameSetting tns : getAllTeamNames() ) {
             int[] data = new int[2];
-            data[0] = kills.getScore(tns.getScoreItem()).getScore();
-            data[1] = deaths.getScore(tns.getScoreItem()).getScore();
+            data[0] = getScore(kills, tns).getScore();
+            data[1] = getScore(deaths, tns).getScore();
             result.put(tns.getID(), data);
         }
 
@@ -751,8 +753,8 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         for ( String teamID : members.keySet() ) {
             for ( Player player : members.get(teamID) ) {
                 int[] data = new int[2];
-                data[0] = kills.getScore(player).getScore();
-                data[1] = deaths.getScore(player).getScore();
+                data[0] = getScore(kills, player).getScore();
+                data[1] = getScore(deaths, player).getScore();
                 result.put(player.getName(), data);
             }
         }
@@ -769,7 +771,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
 
         TeamNameSetting tns = getTeamNameFromID(team);
         Objective obj = objectives.getTeamKillObjective();
-        Score score = obj.getScore(tns.getScoreItem());
+        Score score = getScore(obj, tns);
         score.setScore(score.getScore() + 1);
     }
 
@@ -782,7 +784,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
 
         TeamNameSetting tns = getTeamNameFromID(team);
         Objective obj = objectives.getTeamDeathObjective();
-        Score score = obj.getScore(tns.getScoreItem());
+        Score score = getScore(obj, tns);
         score.setScore(score.getScore() + 1);
     }
 
@@ -795,7 +797,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     @Override
     public int addPlayerPoint(Player player, int amount) {
 
-        Score score = objectives.getPersonalPointObjective().getScore(player);
+        Score score = getScore(objectives.getPersonalPointObjective(), player);
         int point = score.getScore() + amount;
         score.setScore(point);
         return point;
@@ -808,7 +810,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      */
     @Override
     public void setPlayerPoint(Player player, int amount) {
-        objectives.getPersonalPointObjective().getScore(player).setScore(amount);
+        getScore(objectives.getPersonalPointObjective(), player).setScore(amount);
     }
 
     /**
@@ -828,8 +830,8 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         Objective kills = objectives.getPersonalKillObjective();
         Objective deaths = objectives.getPersonalDeathObjective();
 
-        kills.getScore(player).setScore(kill);
-        deaths.getScore(player).setScore(death);
+        getScore(kills, player).setScore(kill);
+        getScore(deaths, player).setScore(death);
     }
 
     /**
@@ -1113,5 +1115,28 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         tppointConfig = new TPPointConfiguration();
         teamNameConfig = new TeamNameConfig();
         classDatas = ClassData.loadAllClasses(new File(plugin.getDataFolder(), "classes"));
+    }
+
+
+    private static Score getScore(Objective objective, Player player) {
+
+        if ( Utility.isCB178orLater() ) {
+            return objective.getScore(player.getName());
+        } else {
+            @SuppressWarnings("deprecation")
+            Score score = objective.getScore(player);
+            return score;
+        }
+    }
+
+    private static Score getScore(Objective objective, TeamNameSetting tns) {
+
+        if ( Utility.isCB178orLater() ) {
+            return objective.getScore(tns.toString());
+        } else {
+            @SuppressWarnings("deprecation")
+            Score score = objective.getScore(tns.getScoreItem());
+            return score;
+        }
     }
 }
