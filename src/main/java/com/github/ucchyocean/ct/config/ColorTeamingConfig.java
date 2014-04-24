@@ -35,7 +35,7 @@ public class ColorTeamingConfig {
 
     /** チームチャットのロギング オンオフ */
     private boolean teamChatLogMode;
-    
+
     /** チームチャットの表示フォーマット */
     private String teamChatFormat;
 
@@ -44,10 +44,10 @@ public class ColorTeamingConfig {
 
     /** 仲間の透明が見えるかどうか のオンオフ */
     private boolean canSeeFriendlyInvisibles;
-    
+
     /** ベッドリスポーン地点を、チームリスポーン地点よりも優先するかどうか のオンオフ */
     private boolean priorBedRespawn;
-    
+
     /** ゲームオーバーを表示せずにリスポーンするかどうか のオンオフ */
     private boolean skipGameover;
 
@@ -59,7 +59,7 @@ public class ColorTeamingConfig {
 
     /** リスポーン後の無敵時間(秒) */
     private int noDamageSeconds;
-    
+
     /** 死亡時の体力最大値のリセット オンオフ */
     private boolean resetMaxHealthOnDeath;
 
@@ -136,9 +136,9 @@ public class ColorTeamingConfig {
         ctconfig.teamChatMode = config.getBoolean("teamChatMode", false);
         ctconfig.OPDisplayMode = config.getBoolean("opDisplayMode", false);
         ctconfig.teamChatLogMode = config.getBoolean("teamChatLogMode", true);
-        ctconfig.teamChatFormat = config.getString("teamChatFormat", 
-                "&a[%team&a]<%prefix%name%suffix&r&a> %message");
-        
+        ctconfig.teamChatFormat = config.getString("teamChatFormat",
+                "&a[%team&a]%prefix<%name>%suffix %message");
+
         ctconfig.friendlyFire = config.getBoolean("friendlyFire", true);
         ctconfig.canSeeFriendlyInvisibles = config.getBoolean("seeFriendlyInvisible", true);
         ctconfig.priorBedRespawn = config.getBoolean("priorBedRespawn", false);
@@ -358,7 +358,7 @@ public class ColorTeamingConfig {
     public void setTeamChatLogMode(boolean isTeamChatLogMode) {
         this.teamChatLogMode = isTeamChatLogMode;
     }
-    
+
     public void setTeamChatFormat(String teamChatFormat) {
         this.teamChatFormat = teamChatFormat;
     }

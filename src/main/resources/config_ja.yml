@@ -23,7 +23,7 @@ teamChatLogMode: true
 # %team → チーム名、%name → プレイヤー名、%prefix → プレフィックス、%suffix → サフィックス
 # プレフィックスとサフィックスを有効にするには、
 # Vaultと、チャット装飾関連プラグイン(PermissionsExなど)がロードされている必要があります。
-teamChatFormat: '&a[%team&a]<%prefix%name%suffix&r&a> %message'
+teamChatFormat: '&a[%team&a]%prefix<%name>%suffix %message'
 
 # 同じチームメンバー同士の攻撃（剣などの直接攻撃と、弓矢やポーション）の
 # 有効/無効を設定します。true → 攻撃が有効、false → 攻撃が無効
@@ -79,7 +79,7 @@ allowPlayerLeave: false
 # サイドバーに表示するチームスコアの種類を指定します。
 #   kill - キル数
 #   death - デス数
-#   point - ポイント(上記のpointsの項目を参照)
+#   point - ポイント(上記のctKillPoint,ctDeathPointの項目を参照)
 #   rest - 残り人数
 #   none - 非表示
 sideCriteria: rest
@@ -87,7 +87,7 @@ sideCriteria: rest
 # listCriteria: TABキーリストに表示する個人スコアの種類を指定します。
 #   kill - キル数
 #   death - デス数
-#   point - ポイント(上記のpointsの項目を参照)
+#   point - ポイント(上記のctKillPoint,ctDeathPointの項目を参照)
 #   health - 残り体力
 #   none - 非表示
 listCriteria: point
