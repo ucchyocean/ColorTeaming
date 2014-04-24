@@ -476,11 +476,13 @@ public class ClassData {
      * プレイヤーの状態から、クラス情報をエクスポートする。
      * @param player エクスポート元のプレイヤー
      * @param name エクスポート先のクラス名
+     * @param isOverwrite 防具やインベントリがからっぽでも、設定を上書きするかどうか
      * @return エクスポートに成功したかどうか
      */
-    public static boolean exportClassFromPlayer(Player player, String name) {
+    public static boolean exportClassFromPlayer(Player player, String name, boolean isOverwrite) {
 
         ArrayList<String> contents = new ArrayList<String>();
+        updateInventory(player);
         PlayerInventory inv = player.getInventory();
 
         contents.add("title: " + name);
@@ -498,6 +500,12 @@ public class ClassData {
                     contents.addAll(ItemConfigParser.getItemInfo(item, "    "));
                 }
             }
+
+        } else if ( isOverwrite ) {
+
+            contents.add("items:");
+            contents.add("  item1:");
+            contents.add("    material: AIR");
         }
 
         if ( countItem(inv.getArmorContents()) > 0 ) {
@@ -512,6 +520,12 @@ public class ClassData {
                     contents.addAll(ItemConfigParser.getItemInfo(item, "    "));
                 }
             }
+
+        } else if ( isOverwrite ) {
+
+            contents.add("armors:");
+            contents.add("  helmet:");
+            contents.add("    material: AIR");
         }
 
         if ( player.getMaxHealth() != 20.0 ) {
@@ -587,7 +601,7 @@ public class ClassData {
      * @param player
      */
     @SuppressWarnings("deprecation")
-    private void updateInventory(Player player) {
+    private static void updateInventory(Player player) {
         player.updateInventory();
     }
 }

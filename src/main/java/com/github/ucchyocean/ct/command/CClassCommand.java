@@ -80,7 +80,10 @@ public class CClassCommand implements TabExecutor {
                 return true;
             }
 
-            if ( ClassData.exportClassFromPlayer(player, name) ) {
+            boolean isOverwrite =
+                    ( args.length >= 3 && args[2].equalsIgnoreCase("overwrite") );
+
+            if ( ClassData.exportClassFromPlayer(player, name, isOverwrite) ) {
                 sender.sendMessage(PREINFO + "クラス設定 " + name + " をエクスポートしました。");
             }
             return true;
