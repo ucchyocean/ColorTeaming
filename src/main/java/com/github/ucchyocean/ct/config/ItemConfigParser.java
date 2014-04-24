@@ -453,7 +453,7 @@ public class ItemConfigParser {
                         String indent1 = indent + "    ";
                         message.add(indent1 + "colors:");
                         for ( int j=0; j<colors.size(); j++ ) {
-                            Color color = colors.get(i);
+                            Color color = colors.get(j);
                             message.add(indent1 + "  color" + (j+1) + ":");
                             message.add(indent1 + "    red: " + color.getRed());
                             message.add(indent1 + "    blue: " + color.getBlue());
@@ -466,11 +466,11 @@ public class ItemConfigParser {
                         String indent1 = indent + "    ";
                         message.add(indent1 + "fades:");
                         for ( int j=0; j<fades.size(); j++ ) {
-                            Color color = fades.get(i);
+                            Color fade = fades.get(j);
                             message.add(indent1 + "  fade" + (j+1) + ":");
-                            message.add(indent1 + "    red: " + color.getRed());
-                            message.add(indent1 + "    blue: " + color.getBlue());
-                            message.add(indent1 + "    green: " + color.getGreen());
+                            message.add(indent1 + "    red: " + fade.getRed());
+                            message.add(indent1 + "    blue: " + fade.getBlue());
+                            message.add(indent1 + "    green: " + fade.getGreen());
                         }
                     }
                 }
