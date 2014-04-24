@@ -10,11 +10,14 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.bukkit.Color;
+import org.bukkit.FireworkEffect;
+import org.bukkit.FireworkEffect.Builder;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.PotionMeta;
@@ -229,7 +232,7 @@ public class ItemConfigParser {
                             continue;
                         }
                         PotionEffectType ctype = PotionEffectType.getByName(cname.toUpperCase());
-                        if ( type == null ) {
+                        if ( ctype == null ) {
                             logger.warning("指定されたポーション形式 " + cname + " が正しくありません。");
                             logger.warning("└ " + info);
                             continue;
@@ -251,6 +254,63 @@ public class ItemConfigParser {
                     item.setItemMeta(meta);
                 }
             }
+        }
+
+        // 花火の詳細設定
+        if ( item.getType() == Material.FIREWORK ) {
+
+            FireworkMeta meta = (FireworkMeta)item.getItemMeta();
+            meta.setPower(section.getInt("power", 1));
+
+            for ( String key :
+                    section.getConfigurationSection("effects").getKeys(false) ) {
+
+                ConfigurationSection effect_sec =
+                        section.getConfigurationSection("effects." + key);
+                String tname = effect_sec.getString("type");
+                if ( tname == null ) {
+                    logger.warning("指定されたエフェクト形式 type の指定がありません。");
+                    logger.warning("└ " + info);
+                    continue;
+                }
+                FireworkEffect.Type type = getFireworkEffectTypeByName(tname);
+                if ( type == null ) {
+                    logger.warning("指定されたエフェクト形式 " + tname + " が正しくありません。");
+                    logger.warning("└ " + info);
+                    continue;
+                }
+
+                Builder effect = FireworkEffect.builder();
+                effect.with(type);
+                effect.flicker(effect_sec.getBoolean("flicker", false));
+                effect.trail(effect_sec.getBoolean("trail", false));
+
+                for ( String ckey :
+                        effect_sec.getConfigurationSection("colors").getKeys(false) ) {
+
+                    ConfigurationSection color_sec =
+                            effect_sec.getConfigurationSection("colors." + ckey);
+                    int red = color_sec.getInt("red", 255);
+                    int blue = color_sec.getInt("blue", 255);
+                    int green = color_sec.getInt("green", 255);
+                    effect.withColor(Color.fromBGR(blue, green, red));
+                }
+
+                for ( String fkey :
+                        effect_sec.getConfigurationSection("fades").getKeys(false) ) {
+
+                    ConfigurationSection fade_sec =
+                            effect_sec.getConfigurationSection("fades." + fkey);
+                    int red = fade_sec.getInt("red", 255);
+                    int blue = fade_sec.getInt("blue", 255);
+                    int green = fade_sec.getInt("green", 255);
+                    effect.withFade(Color.fromBGR(blue, green, red));
+                }
+
+                meta.addEffect(effect.build());
+            }
+
+            item.setItemMeta(meta);
         }
 
         return item;
@@ -372,6 +432,51 @@ public class ItemConfigParser {
             }
         }
 
+        if ( item.getType() == Material.FIREWORK ) {
+
+            FireworkMeta meta = (FireworkMeta)item.getItemMeta();
+            message.add(indent + "power: " + meta.getPower());
+
+            if ( meta.hasEffects() ) {
+                message.add(indent + "effects:");
+                List<FireworkEffect> effects = meta.getEffects();
+
+                for ( int i=0; i<effects.size(); i++ ) {
+                    FireworkEffect effect = effects.get(i);
+                    message.add(indent + "  effect" + (i+1) + ":");
+                    message.add(indent + "    type: " + effect.getType().name());
+                    message.add(indent + "    flicker: " + effect.hasFlicker());
+                    message.add(indent + "    trail: " + effect.hasTrail());
+
+                    List<Color> colors = effect.getColors();
+                    if ( colors.size() > 0 ) {
+                        String indent1 = indent + "    ";
+                        message.add(indent1 + "colors:");
+                        for ( int j=0; j<colors.size(); j++ ) {
+                            Color color = colors.get(i);
+                            message.add(indent1 + "  color" + (j+1) + ":");
+                            message.add(indent1 + "    red: " + color.getRed());
+                            message.add(indent1 + "    blue: " + color.getBlue());
+                            message.add(indent1 + "    green: " + color.getGreen());
+                        }
+                    }
+
+                    List<Color> fades = effect.getFadeColors();
+                    if ( fades.size() > 0 ) {
+                        String indent1 = indent + "    ";
+                        message.add(indent1 + "fades:");
+                        for ( int j=0; j<fades.size(); j++ ) {
+                            Color color = fades.get(i);
+                            message.add(indent1 + "  fade" + (j+1) + ":");
+                            message.add(indent1 + "    red: " + color.getRed());
+                            message.add(indent1 + "    blue: " + color.getBlue());
+                            message.add(indent1 + "    green: " + color.getGreen());
+                        }
+                    }
+                }
+            }
+        }
+
         return message;
     }
 
@@ -383,6 +488,21 @@ public class ItemConfigParser {
     private static PotionType getPotionTypeByName(String name) {
 
         for ( PotionType type : PotionType.values() ) {
+            if ( type.name().equalsIgnoreCase(name) ) {
+                return type;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 指定された文字列に一致するFireworkEffectTypeを返します。
+     * @param name
+     * @return
+     */
+    private static FireworkEffect.Type getFireworkEffectTypeByName(String name) {
+
+        for ( FireworkEffect.Type type : FireworkEffect.Type.values() ) {
             if ( type.name().equalsIgnoreCase(name) ) {
                 return type;
             }
