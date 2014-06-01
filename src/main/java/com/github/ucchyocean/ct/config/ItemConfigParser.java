@@ -262,52 +262,55 @@ public class ItemConfigParser {
             FireworkMeta meta = (FireworkMeta)item.getItemMeta();
             meta.setPower(section.getInt("power", 1));
 
-            for ( String key :
-                    section.getConfigurationSection("effects").getKeys(false) ) {
+            if ( section.contains("effects") ) {
 
-                ConfigurationSection effect_sec =
-                        section.getConfigurationSection("effects." + key);
-                String tname = effect_sec.getString("type");
-                if ( tname == null ) {
-                    logger.warning("指定されたエフェクト形式 type の指定がありません。");
-                    logger.warning("└ " + info);
-                    continue;
+                for ( String key :
+                        section.getConfigurationSection("effects").getKeys(false) ) {
+
+                    ConfigurationSection effect_sec =
+                            section.getConfigurationSection("effects." + key);
+                    String tname = effect_sec.getString("type");
+                    if ( tname == null ) {
+                        logger.warning("指定されたエフェクト形式 type の指定がありません。");
+                        logger.warning("└ " + info);
+                        continue;
+                    }
+                    FireworkEffect.Type type = getFireworkEffectTypeByName(tname);
+                    if ( type == null ) {
+                        logger.warning("指定されたエフェクト形式 " + tname + " が正しくありません。");
+                        logger.warning("└ " + info);
+                        continue;
+                    }
+
+                    Builder effect = FireworkEffect.builder();
+                    effect.with(type);
+                    effect.flicker(effect_sec.getBoolean("flicker", false));
+                    effect.trail(effect_sec.getBoolean("trail", false));
+
+                    for ( String ckey :
+                            effect_sec.getConfigurationSection("colors").getKeys(false) ) {
+
+                        ConfigurationSection color_sec =
+                                effect_sec.getConfigurationSection("colors." + ckey);
+                        int red = color_sec.getInt("red", 255);
+                        int blue = color_sec.getInt("blue", 255);
+                        int green = color_sec.getInt("green", 255);
+                        effect.withColor(Color.fromBGR(blue, green, red));
+                    }
+
+                    for ( String fkey :
+                            effect_sec.getConfigurationSection("fades").getKeys(false) ) {
+
+                        ConfigurationSection fade_sec =
+                                effect_sec.getConfigurationSection("fades." + fkey);
+                        int red = fade_sec.getInt("red", 255);
+                        int blue = fade_sec.getInt("blue", 255);
+                        int green = fade_sec.getInt("green", 255);
+                        effect.withFade(Color.fromBGR(blue, green, red));
+                    }
+
+                    meta.addEffect(effect.build());
                 }
-                FireworkEffect.Type type = getFireworkEffectTypeByName(tname);
-                if ( type == null ) {
-                    logger.warning("指定されたエフェクト形式 " + tname + " が正しくありません。");
-                    logger.warning("└ " + info);
-                    continue;
-                }
-
-                Builder effect = FireworkEffect.builder();
-                effect.with(type);
-                effect.flicker(effect_sec.getBoolean("flicker", false));
-                effect.trail(effect_sec.getBoolean("trail", false));
-
-                for ( String ckey :
-                        effect_sec.getConfigurationSection("colors").getKeys(false) ) {
-
-                    ConfigurationSection color_sec =
-                            effect_sec.getConfigurationSection("colors." + ckey);
-                    int red = color_sec.getInt("red", 255);
-                    int blue = color_sec.getInt("blue", 255);
-                    int green = color_sec.getInt("green", 255);
-                    effect.withColor(Color.fromBGR(blue, green, red));
-                }
-
-                for ( String fkey :
-                        effect_sec.getConfigurationSection("fades").getKeys(false) ) {
-
-                    ConfigurationSection fade_sec =
-                            effect_sec.getConfigurationSection("fades." + fkey);
-                    int red = fade_sec.getInt("red", 255);
-                    int blue = fade_sec.getInt("blue", 255);
-                    int green = fade_sec.getInt("green", 255);
-                    effect.withFade(Color.fromBGR(blue, green, red));
-                }
-
-                meta.addEffect(effect.build());
             }
 
             item.setItemMeta(meta);
