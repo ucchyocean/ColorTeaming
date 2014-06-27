@@ -363,9 +363,8 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     @Override
     public ArrayList<Player> getAllPlayers() {
 
-        Player[] temp = plugin.getServer().getOnlinePlayers();
         ArrayList<Player> result = new ArrayList<Player>();
-        for ( Player p : temp ) {
+        for ( Player p : Bukkit.getOnlinePlayers() ) {
             result.add(p);
         }
         return result;
@@ -384,9 +383,8 @@ public class ColorTeamingManager implements ColorTeamingAPI {
             return null;
         }
 
-        Player[] temp = plugin.getServer().getOnlinePlayers();
         ArrayList<Player> result = new ArrayList<Player>();
-        for ( Player p : temp ) {
+        for ( Player p : Bukkit.getOnlinePlayers() ) {
             if ( worldNames.contains(p.getWorld().getName()) ) {
                 result.add(p);
             }
