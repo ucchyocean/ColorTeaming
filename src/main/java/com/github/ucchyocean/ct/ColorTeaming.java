@@ -12,6 +12,8 @@ import java.util.List;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
+import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.ucchyocean.ct.bridge.VaultChatBridge;
@@ -42,6 +44,8 @@ import com.github.ucchyocean.ct.listener.PlayerRespawnListener;
  * @author ucchy
  */
 public class ColorTeaming extends JavaPlugin {
+
+    private static final String TEAM_PERMISSION_PREFIX = "colorteaming.teammember.";
 
     public static ColorTeaming instance;
     protected ColorTeamingConfig config;
@@ -142,5 +146,29 @@ public class ColorTeaming extends JavaPlugin {
      */
     public ColorTeamingAPI getAPI() {
         return manager;
+    }
+
+    /**
+     * 対象のプレイヤーに、チームメンバー用の権限を与える。
+     * @param player プレイヤー
+     * @param teamID チームID
+     */
+    public void addMemberPermission(Player player, String teamID) {
+
+        removeAllMemberPermission(player);
+        player.addAttachment(this, TEAM_PERMISSION_PREFIX + teamID, true);
+    }
+
+    /**
+     * 対象のプレイヤーの、チームメンバー用の権限を全て剥奪する。
+     * @param player プレイヤー
+     */
+    public void removeAllMemberPermission(Player player) {
+
+        for ( PermissionAttachmentInfo info : player.getEffectivePermissions() ) {
+            if ( info.getPermission().startsWith(TEAM_PERMISSION_PREFIX) ) {
+                player.removeAttachment(info.getAttachment());
+            }
+        }
     }
 }

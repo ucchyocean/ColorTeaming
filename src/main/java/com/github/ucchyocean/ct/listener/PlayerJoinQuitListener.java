@@ -68,6 +68,12 @@ public class PlayerJoinQuitListener implements Listener {
                 player.teleport(location, TeleportCause.PLUGIN);
             }
         }
+
+        // チームに所属しているなら、チーム所属パーミッションを与える
+        TeamNameSetting tns = api.getPlayerTeamName(player);
+        if ( tns != null ) {
+            plugin.addMemberPermission(player, tns.getID());
+        }
     }
 
     /**
@@ -88,12 +94,12 @@ public class PlayerJoinQuitListener implements Listener {
 
             Player player = event.getPlayer();
             TeamNameSetting tns = api.getPlayerTeamName(player);
-            
+
             // チームに所属していないプレイヤーなら、処理しない
             if ( tns == null ) {
                 return;
             }
-    
+
             // ログアウトしたプレイヤーが、大将だった場合、逃げたことを全体に通知する。
             HashMap<String, ArrayList<String>> leaders = api.getLeaders();
             if ( leaders.containsKey(tns.getID()) &&
@@ -102,18 +108,18 @@ public class PlayerJoinQuitListener implements Listener {
                         tns.getName(), player.getName());
                 Bukkit.broadcastMessage(message);
                 leaders.get(tns.getID()).remove(player.getName());
-    
+
                 if ( leaders.get(tns.getID()).size() >= 1 ) {
                     message = String.format(PRENOTICE + "%s チームの残り大将は、あと %d 人です。",
                             tns.getName(), leaders.get(tns.getID()).size());
                     Bukkit.broadcastMessage(message);
-                    
+
                 } else {
-                    message = String.format(PRENOTICE + "%s チームの大将は全滅しました！", 
+                    message = String.format(PRENOTICE + "%s チームの大将は全滅しました！",
                             tns.getName());
                     Bukkit.broadcastMessage(message);
                     leaders.remove(tns.getID());
-                    
+
                     // チームリーダー全滅イベントのコール
                     ColorTeamingLeaderDefeatedEvent event2 =
                             new ColorTeamingLeaderDefeatedEvent(tns, null, player.getName());
@@ -131,7 +137,7 @@ public class PlayerJoinQuitListener implements Listener {
                     }
                 }
             }
-    
+
             // 色設定を削除する
             api.leavePlayerTeam(player, Reason.DEAD);
 

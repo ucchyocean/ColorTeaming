@@ -191,8 +191,12 @@ public class ColorTeamingManager implements ColorTeamingAPI {
             return null;
         }
 
+        // チームに所属させる
         team.addPlayer(player);
         player.setDisplayName(color + player.getName() + ChatColor.RESET);
+
+        // パーミッションを設定する
+        plugin.addMemberPermission(player, id);
 
         // 該当プレイヤーに通知
         player.sendMessage( Utility.replaceColorCode(
@@ -227,6 +231,9 @@ public class ColorTeamingManager implements ColorTeamingAPI {
 
             // チーム脱退
             team.removePlayer(player);
+
+            // パーミッションを削除する
+            plugin.removeAllMemberPermission(player);
 
             // チーム削除により呼び出されたのでなければ、メンバー0人でチーム削除する
             if ( reason != Reason.TEAM_REMOVED && team.getPlayers().size() == 0 ) {
@@ -1115,7 +1122,12 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         classDatas = ClassData.loadAllClasses(new File(plugin.getDataFolder(), "classes"));
     }
 
-
+    /**
+     * スコアオブジェクトを取得します（CB178前後の仕様差異を埋めるための実装です）
+     * @param objective オブジェクティブ
+     * @param player プレイヤー
+     * @return スコアオブジェクト
+     */
     private static Score getScore(Objective objective, Player player) {
 
         if ( Utility.isCB178orLater() ) {
@@ -1127,6 +1139,12 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         }
     }
 
+    /**
+     * スコアオブジェクトを取得します（CB178前後の仕様差異を埋めるための実装です）
+     * @param objective オブジェクティブ
+     * @param tns チーム
+     * @return スコアオブジェクト
+     */
     private static Score getScore(Objective objective, TeamNameSetting tns) {
 
         if ( Utility.isCB178orLater() ) {
