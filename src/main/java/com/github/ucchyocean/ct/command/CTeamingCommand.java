@@ -482,6 +482,9 @@ public class CTeamingCommand implements TabExecutor {
         sender.sendMessage(PREINFO + "プレイヤー " + player.getName() + " をチーム " +
                 tns.getName() + " から離脱しました。");
 
+        // チームの残り人数を更新
+        api.refreshRestTeamMemberScore();
+
         return true;
     }
 
