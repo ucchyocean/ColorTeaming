@@ -15,6 +15,7 @@ commands:
            /<command> add (team) (player) - playerをteamに追加します。
            /<command> add (team) all - プレイヤー全員をteamに追加します。
            /<command> add (team) rest - チーム未設定プレイヤー全員をteamに追加します。
+           /<command> leave (player) - playerがチームに所属している場合、チームから離脱させます。
            /<command> remove (team) - teamを解散します。
            /<command> removeAll - 全てのチームを解散します。
            /<command> trophy (amount) - キル数達成時の通知を設定します。
