@@ -23,6 +23,7 @@ import com.github.ucchyocean.ct.ColorTeamingAPI;
 import com.github.ucchyocean.ct.Utility;
 import com.github.ucchyocean.ct.config.ColorTeamingConfig;
 import com.github.ucchyocean.ct.config.TeamNameSetting;
+import com.github.ucchyocean.ct.event.ColorTeamingPlayerLeaveEvent.Reason;
 import com.github.ucchyocean.ct.scoreboard.PlayerCriteria;
 import com.github.ucchyocean.ct.scoreboard.SidebarCriteria;
 
@@ -86,6 +87,10 @@ public class CTeamingCommand implements TabExecutor {
         } else if ( args.length >= 3 && args[0].equalsIgnoreCase("add") ) {
 
             return doAdd(sender, command, label, args);
+
+        } else if ( args.length >= 2 && args[0].equalsIgnoreCase("leave") ) {
+
+            return doLeave(sender, command, label, args);
 
         } else if ( args.length >= 2 && args[0].equalsIgnoreCase("side") ) {
 
@@ -445,6 +450,37 @@ public class CTeamingCommand implements TabExecutor {
 
         // チームの残り人数を更新
         api.refreshRestTeamMemberScore();
+
+        return true;
+    }
+
+    /**
+     * leaveコマンドの実行
+     * @param sender
+     * @param command
+     * @param label
+     * @param args
+     * @return
+     */
+    private boolean doLeave(CommandSender sender, Command command, String label, String[] args) {
+
+        ColorTeamingAPI api = plugin.getAPI();
+
+        Player player = Utility.getPlayerExact(args[1]);
+        if ( player == null ) {
+            sender.sendMessage(PREERR + "プレイヤー " + args[1] + " は存在しません。");
+            return true;
+        }
+
+        TeamNameSetting tns = api.getPlayerTeamName(player);
+        if ( tns == null ) {
+            sender.sendMessage(PREERR + "プレイヤー " + args[1] + " はチームに所属していません。");
+            return true;
+        }
+
+        api.leavePlayerTeam(player, Reason.ADMIN_COMMAND);
+        sender.sendMessage(PREINFO + "プレイヤー " + player.getName() + " をチーム " +
+                tns.getName() + " から離脱しました。");
 
         return true;
     }
