@@ -138,6 +138,7 @@ commands:
     usage: |
            /<command> death (on|off) - 死亡時に自動でチームから抜けるかどうかを設定します。
            /<command> quit (on|off) - ログアウト時に自動でチームから抜けるかどうかを設定します。
+           /<command> changeworld (on|off) - ワールド変更時に自動でチームから抜けるかどうかを設定します。
     permission: colorteaming.remove
     permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorexplode:
