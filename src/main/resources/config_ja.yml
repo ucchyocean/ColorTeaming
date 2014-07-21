@@ -57,6 +57,10 @@ colorRemoveOnDeath: false
 # ログアウトしたときに、チームから自動で抜けるかどうかを設定します。
 colorRemoveOnQuit: false
 
+# worlds設定に書かれていないワールドへ移動したときに、
+# チームから自動で抜けるかどうかを設定します。
+colorRemoveOnChangeWorld: false
+
 # 死んでリスポンしたときに、ダメージを無効にする秒数を設定します。
 # colorRemoveOnDeath が true だと、この設定は無視されますので注意してください。
 noDamageSeconds: 5

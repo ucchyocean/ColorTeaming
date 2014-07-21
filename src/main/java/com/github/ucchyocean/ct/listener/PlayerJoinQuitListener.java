@@ -14,6 +14,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
@@ -91,72 +92,103 @@ public class PlayerJoinQuitListener implements Listener {
 
         // colorRemoveOnQuitがtrueなら処理する
         if ( config.isColorRemoveOnQuit() ) {
+            leaveTeam(event.getPlayer());
+        }
+    }
 
-            Player player = event.getPlayer();
-            TeamNameSetting tns = api.getPlayerTeamName(player);
+    /**
+     * プレイヤーがワールドを変更したときに発生するイベント
+     * @param event
+     */
+    @EventHandler
+    public void onChangeWorld(PlayerChangedWorldEvent event) {
 
-            // チームに所属していないプレイヤーなら、処理しない
-            if ( tns == null ) {
-                return;
-            }
+        ColorTeamingConfig config = plugin.getCTConfig();
+        ColorTeamingAPI api = plugin.getAPI();
+        String wname = event.getPlayer().getWorld().getName();
 
-            // ログアウトしたプレイヤーが、大将だった場合、逃げたことを全体に通知する。
-            HashMap<String, ArrayList<String>> leaders = api.getLeaders();
-            if ( leaders.containsKey(tns.getID()) &&
-                    leaders.get(tns.getID()).contains(player.getName()) ) {
-                String message = String.format(PRENOTICE + "%s チームの大将、%s は逃げ出した！",
-                        tns.getName(), player.getName());
+        // colorRemoveOnQuitがtrueなら処理する
+        if ( config.isColorRemoveOnChangeWorld() &&
+                !config.getWorldNames().contains(wname) ) {
+
+            leaveTeam(event.getPlayer());
+
+            // チーム人数を更新する
+            api.refreshRestTeamMemberScore();
+        }
+    }
+
+    /**
+     * 指定したプレイヤーをチームから離脱させる
+     * @param player
+     */
+    private void leaveTeam(Player player) {
+
+        ColorTeamingAPI api = plugin.getAPI();
+
+        TeamNameSetting tns = api.getPlayerTeamName(player);
+
+        // チームに所属していないプレイヤーなら、処理しない
+        if ( tns == null ) {
+            return;
+        }
+
+        // ログアウトしたプレイヤーが、大将だった場合、逃げたことを全体に通知する。
+        HashMap<String, ArrayList<String>> leaders = api.getLeaders();
+        if ( leaders.containsKey(tns.getID()) &&
+                leaders.get(tns.getID()).contains(player.getName()) ) {
+            String message = String.format(PRENOTICE + "%s チームの大将、%s は逃げ出した！",
+                    tns.getName(), player.getName());
+            Bukkit.broadcastMessage(message);
+            leaders.get(tns.getID()).remove(player.getName());
+
+            if ( leaders.get(tns.getID()).size() >= 1 ) {
+                message = String.format(PRENOTICE + "%s チームの残り大将は、あと %d 人です。",
+                        tns.getName(), leaders.get(tns.getID()).size());
                 Bukkit.broadcastMessage(message);
-                leaders.get(tns.getID()).remove(player.getName());
 
-                if ( leaders.get(tns.getID()).size() >= 1 ) {
-                    message = String.format(PRENOTICE + "%s チームの残り大将は、あと %d 人です。",
-                            tns.getName(), leaders.get(tns.getID()).size());
-                    Bukkit.broadcastMessage(message);
+            } else {
+                message = String.format(PRENOTICE + "%s チームの大将は全滅しました！",
+                        tns.getName());
+                Bukkit.broadcastMessage(message);
+                leaders.remove(tns.getID());
 
-                } else {
-                    message = String.format(PRENOTICE + "%s チームの大将は全滅しました！",
-                            tns.getName());
-                    Bukkit.broadcastMessage(message);
-                    leaders.remove(tns.getID());
+                // チームリーダー全滅イベントのコール
+                ColorTeamingLeaderDefeatedEvent event2 =
+                        new ColorTeamingLeaderDefeatedEvent(tns, null, player.getName());
+                Bukkit.getServer().getPluginManager().callEvent(event2);
 
-                    // チームリーダー全滅イベントのコール
-                    ColorTeamingLeaderDefeatedEvent event2 =
-                            new ColorTeamingLeaderDefeatedEvent(tns, null, player.getName());
-                    Bukkit.getServer().getPluginManager().callEvent(event2);
-
-                    // リーダーが残っているチームがあと1チームなら、勝利イベントを更にコール
-                    if ( leaders.size() == 1 ) {
-                        TeamNameSetting wonTeam = null;
-                        for ( String t : leaders.keySet() ) {
-                            wonTeam = api.getTeamNameFromID(t);
-                        }
-                        ColorTeamingWonLeaderEvent event3 =
-                                new ColorTeamingWonLeaderEvent(wonTeam, event2);
-                        Bukkit.getServer().getPluginManager().callEvent(event3);
+                // リーダーが残っているチームがあと1チームなら、勝利イベントを更にコール
+                if ( leaders.size() == 1 ) {
+                    TeamNameSetting wonTeam = null;
+                    for ( String t : leaders.keySet() ) {
+                        wonTeam = api.getTeamNameFromID(t);
                     }
+                    ColorTeamingWonLeaderEvent event3 =
+                            new ColorTeamingWonLeaderEvent(wonTeam, event2);
+                    Bukkit.getServer().getPluginManager().callEvent(event3);
                 }
             }
+        }
 
-            // 色設定を削除する
-            api.leavePlayerTeam(player, Reason.DEAD);
+        // 色設定を削除する
+        api.leavePlayerTeam(player, Reason.DEAD);
 
-            // チームがなくなっていたなら、チーム全滅イベントをコール
-            ColorTeamingTeamDefeatedEvent event2 =
-                    new ColorTeamingTeamDefeatedEvent(tns, null, player.getName());
-            Bukkit.getServer().getPluginManager().callEvent(event2);
+        // チームがなくなっていたなら、チーム全滅イベントをコール
+        ColorTeamingTeamDefeatedEvent event2 =
+                new ColorTeamingTeamDefeatedEvent(tns, null, player.getName());
+        Bukkit.getServer().getPluginManager().callEvent(event2);
 
-            // 残っているチームがあと1チームなら、勝利イベントを更にコール
-            ArrayList<TeamNameSetting> teamNames = api.getAllTeamNames();
-            if ( teamNames.size() == 1 ) {
-                TeamNameSetting wonTeam = null;
-                for ( TeamNameSetting t : teamNames ) {
-                    wonTeam = t;
-                }
-                ColorTeamingWonTeamEvent event3 =
-                        new ColorTeamingWonTeamEvent(wonTeam, event2);
-                Bukkit.getServer().getPluginManager().callEvent(event3);
+        // 残っているチームがあと1チームなら、勝利イベントを更にコール
+        ArrayList<TeamNameSetting> teamNames = api.getAllTeamNames();
+        if ( teamNames.size() == 1 ) {
+            TeamNameSetting wonTeam = null;
+            for ( TeamNameSetting t : teamNames ) {
+                wonTeam = t;
             }
+            ColorTeamingWonTeamEvent event3 =
+                    new ColorTeamingWonTeamEvent(wonTeam, event2);
+            Bukkit.getServer().getPluginManager().callEvent(event3);
         }
     }
 }

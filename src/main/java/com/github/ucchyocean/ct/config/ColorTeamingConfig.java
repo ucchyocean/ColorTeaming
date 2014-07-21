@@ -57,6 +57,9 @@ public class ColorTeamingConfig {
     /** ログアウト時のチーム離脱 オンオフ */
     private boolean colorRemoveOnQuit;
 
+    /** ワールド離脱時のチーム離脱 オンオフ */
+    private boolean colorRemoveOnChangeWorld;
+
     /** リスポーン後の無敵時間(秒) */
     private int noDamageSeconds;
 
@@ -146,6 +149,7 @@ public class ColorTeamingConfig {
 
         ctconfig.colorRemoveOnDeath = config.getBoolean("colorRemoveOnDeath", false);
         ctconfig.colorRemoveOnQuit = config.getBoolean("colorRemoveOnQuit", false);
+        ctconfig.colorRemoveOnChangeWorld = config.getBoolean("colorRemoveOnChangeWorld", false);
         ctconfig.noDamageSeconds = config.getInt("noDamageSeconds", 5);
         ctconfig.resetMaxHealthOnDeath = config.getBoolean("resetMaxHealthOnDeath", true);
 
@@ -215,6 +219,7 @@ public class ColorTeamingConfig {
         config.set("skipGameover", skipGameover);
         config.set("colorRemoveOnDeath", colorRemoveOnDeath);
         config.set("colorRemoveOnQuit", colorRemoveOnQuit);
+        config.set("colorRemoveOnChangeWorld", colorRemoveOnChangeWorld);
         config.set("noDamageSeconds", noDamageSeconds);
         config.set("allowPlayerJoinAny", allowPlayerJoinAny);
         config.set("allowPlayerJoinRandom", allowPlayerJoinRandom);
@@ -277,6 +282,10 @@ public class ColorTeamingConfig {
 
     public boolean isColorRemoveOnQuit() {
         return colorRemoveOnQuit;
+    }
+
+    public boolean isColorRemoveOnChangeWorld() {
+        return colorRemoveOnChangeWorld;
     }
 
     public int getNoDamageSeconds() {
@@ -377,6 +386,10 @@ public class ColorTeamingConfig {
 
     public void setColorRemoveOnDeath(boolean colorRemoveOnDeath) {
         this.colorRemoveOnDeath = colorRemoveOnDeath;
+    }
+
+    public void setColorRemoveOnChangeWorld(boolean colorRemoveOnChangeWorld) {
+        this.colorRemoveOnChangeWorld = colorRemoveOnChangeWorld;
     }
 
     public void setColorRemoveOnQuit(boolean colorRemoveOnQuit) {
