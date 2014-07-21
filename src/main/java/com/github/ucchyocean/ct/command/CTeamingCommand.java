@@ -613,7 +613,7 @@ public class CTeamingCommand implements TabExecutor {
             ArrayList<String> commands = new ArrayList<String>();
             for ( String c : new String[]{"reload", "removeall", "remove", "trophy",
                     "reachTrophy", "allowJoinAny", "allowJoinRandom", "allowLeave",
-                    "add", "side", "list", "below"} ) {
+                    "add", "side", "list", "below", "leave"} ) {
                 if ( c.startsWith(prefix) ) {
                     commands.add(c);
                 }
