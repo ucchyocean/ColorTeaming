@@ -103,6 +103,7 @@ commands:
            /<command> (team) (class) - teamのメンバー全員のアイテムと装備を、config.yml の classes 設定に書かれているクラス設定のアイテムに変更します。
            /<command> (player) (class) - player のアイテムと装備を、config.yml の classes 設定に書かれているクラス設定のアイテムに変更します。
            /<command> all (class) - 全プレイヤーのアイテムと装備を、config.yml の classes 設定に書かれているクラス設定のアイテムに変更します。
+           /<command> export (class) - 実行したプレイヤーの現在の状態を、指定したクラス名でクラス設定を作成して保存します。
     permission: colorteaming.class
     permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorpoint:
