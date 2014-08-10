@@ -318,6 +318,9 @@ public class ColorTeamingManager implements ColorTeamingAPI {
                 removeTeam(team.getName());
             }
         }
+
+        // チームリーダー設定を削除する
+        clearLeaders();
     }
 
     /**
