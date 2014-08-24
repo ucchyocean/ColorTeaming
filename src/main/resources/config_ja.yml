@@ -115,7 +115,8 @@ killReachTrophy: 0
 
 # チーム無所属の人がサーバーに参加したときに、
 # ワールドのリスポーン地点へリスポーンするようになります。
-# ワールドのリスポーン地点は、/cspawn world コマンドを使用してください。
+# ワールドのリスポーン地点の登録は、
+# /cspawn world コマンドや、/setworldspawn コマンドを使用してください。
 worldSpawn: false
 
 # 通常のチャットをJapanize化します。

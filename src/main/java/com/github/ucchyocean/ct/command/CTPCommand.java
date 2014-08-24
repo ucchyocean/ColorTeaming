@@ -153,6 +153,9 @@ public class CTPCommand implements TabExecutor {
                     return true;
                 }
 
+                // ブロックの中心にする
+                location = location.add(0.5, 0, 0.5);
+
                 // テレポート実行
                 HashMap<Player, Location> map = new HashMap<Player, Location>();
                 for ( String team : members.keySet() ) {
