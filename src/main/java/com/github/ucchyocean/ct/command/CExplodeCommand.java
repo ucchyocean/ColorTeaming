@@ -99,13 +99,13 @@ public class CExplodeCommand implements TabExecutor {
             }
             for ( TeamNameSetting tns : plugin.getAPI().getAllTeamNames() ) {
                 String name = tns.getID();
-                if ( name.startsWith(prefix) ) {
+                if ( name.toLowerCase().startsWith(prefix) ) {
                     commands.add(name);
                 }
             }
             for ( Player player : Bukkit.getOnlinePlayers() ) {
                 String name = player.getName();
-                if ( name.startsWith(prefix) ) {
+                if ( name.toLowerCase().startsWith(prefix) ) {
                     commands.add(name);
                 }
             }

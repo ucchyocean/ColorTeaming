@@ -125,7 +125,7 @@ public class CJoinCommand implements TabExecutor {
             ArrayList<String> commands = new ArrayList<String>();
             for ( TeamNameSetting tns : plugin.getAPI().getTeamNameConfig().getTeamNames() ) {
                 String name = tns.getID();
-                if ( name.startsWith(prefix) ) {
+                if ( name.toLowerCase().startsWith(prefix) ) {
                     commands.add(name);
                 }
             }

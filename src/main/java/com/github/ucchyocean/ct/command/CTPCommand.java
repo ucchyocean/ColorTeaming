@@ -451,13 +451,13 @@ public class CTPCommand implements TabExecutor {
             }
             for ( TeamNameSetting tns : plugin.getAPI().getAllTeamNames() ) {
                 String name = tns.getID();
-                if ( name.startsWith(prefix) ) {
+                if ( name.toLowerCase().startsWith(prefix) ) {
                     commands.add(name);
                 }
             }
             for ( Player player : Bukkit.getOnlinePlayers() ) {
                 String name = player.getName();
-                if ( name.startsWith(prefix) ) {
+                if ( name.toLowerCase().startsWith(prefix) ) {
                     commands.add(name);
                 }
             }
@@ -469,7 +469,7 @@ public class CTPCommand implements TabExecutor {
             ArrayList<String> commands = new ArrayList<String>();
             for ( String name :
                     plugin.getAPI().getRespawnConfig().getAllMapNames() ) {
-                if ( name.startsWith(prefix) ) {
+                if ( name.toLowerCase().startsWith(prefix) ) {
                     commands.add(name);
                 }
             }
@@ -494,7 +494,7 @@ public class CTPCommand implements TabExecutor {
             }
             for ( String name :
                     plugin.getAPI().getRespawnConfig().getAllMapNames() ) {
-                if ( name.startsWith(prefix) ) {
+                if ( name.toLowerCase().startsWith(prefix) ) {
                     commands.add(name);
                 }
             }

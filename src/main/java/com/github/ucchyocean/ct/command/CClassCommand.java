@@ -173,13 +173,13 @@ public class CClassCommand implements TabExecutor {
             }
             for ( TeamNameSetting tns : plugin.getAPI().getAllTeamNames() ) {
                 String name = tns.getID();
-                if ( name.startsWith(prefix) ) {
+                if ( name.toLowerCase().startsWith(prefix) ) {
                     commands.add(name);
                 }
             }
             for ( Player player : Bukkit.getOnlinePlayers() ) {
                 String name = player.getName();
-                if ( name.startsWith(prefix) ) {
+                if ( name.toLowerCase().startsWith(prefix) ) {
                     commands.add(name);
                 }
             }
@@ -196,7 +196,7 @@ public class CClassCommand implements TabExecutor {
             String prefix = args[1].toLowerCase();
             ArrayList<String> commands = new ArrayList<String>();
             for ( String name : plugin.getAPI().getClasses().keySet() ) {
-                if ( name.startsWith(prefix) ) {
+                if ( name.toLowerCase().startsWith(prefix) ) {
                     commands.add(name);
                 }
             }

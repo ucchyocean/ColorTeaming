@@ -278,7 +278,7 @@ public class CPointCommand implements TabExecutor {
             ArrayList<String> commands = new ArrayList<String>();
             for ( TeamNameSetting tns : plugin.getAPI().getAllTeamNames() ) {
                 String name = tns.getID();
-                if ( name.startsWith(prefix) ) {
+                if ( name.toLowerCase().startsWith(prefix) ) {
                     commands.add(name);
                 }
             }
