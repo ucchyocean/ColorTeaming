@@ -22,6 +22,7 @@ import com.github.ucchyocean.ct.config.ColorTeamingConfig;
 public class PlayerChatListener implements Listener {
 
     private static final String GLOBAL_CHAT_MARKER = "#GLOBAL#";
+    private static final String REGEX_URL = "https?://[\\w/:%#\\$&\\?\\(\\)~\\.=\\+\\-]+";
 
     private ColorTeaming plugin;
 
@@ -92,8 +93,15 @@ public class PlayerChatListener implements Listener {
         // 処理しないようにする。
         if ( message.getBytes().length == message.length() &&
                 !message.matches("[ \\uFF61-\\uFF9F]+") ) {
-            String kana = KanaConverter.conv(message);
-            message = message + "(" + kana + ")";
+
+            // URL削除
+            String kana = message.replaceAll(REGEX_URL, " ");
+
+            // Japanize化
+            kana = KanaConverter.conv(kana);
+
+            // 元の文字列と合成
+            message = message + " (" + kana + ")";
         }
         return message;
     }
