@@ -16,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.github.ucchyocean.ct.bridge.AttributesAPIBridge;
 import com.github.ucchyocean.ct.bridge.VaultChatBridge;
 import com.github.ucchyocean.ct.command.CChatCommand;
 import com.github.ucchyocean.ct.command.CChatGlobalCommand;
@@ -51,6 +52,7 @@ public class ColorTeaming extends JavaPlugin {
     protected ColorTeamingConfig config;
     private ColorTeamingManager manager;
     private HashMap<String, TabExecutor> commands;
+    private AttributesAPIBridge attributesapi;
 
     /**
      * @see org.bukkit.plugin.java.JavaPlugin#onEnable()
@@ -68,6 +70,12 @@ public class ColorTeaming extends JavaPlugin {
         if ( getServer().getPluginManager().isPluginEnabled("Vault") ) {
             vaultchat = VaultChatBridge.load(
                     getServer().getPluginManager().getPlugin("Vault"));
+        }
+
+        // AttributesAPIをロード
+        if ( getServer().getPluginManager().isPluginEnabled("AttributesAPI") ) {
+            attributesapi = AttributesAPIBridge.load(
+                    getServer().getPluginManager().getPlugin("AttributesAPI"));
         }
 
         // クラスフォルダが存在しない場合は、jarファイルの中からデフォルトをコピーする
@@ -146,6 +154,14 @@ public class ColorTeaming extends JavaPlugin {
      */
     public ColorTeamingAPI getAPI() {
         return manager;
+    }
+
+    /**
+     * AttributesAPI連携クラスを取得する
+     * @return 連携クラス、ロードされていない場合はnullになる
+     */
+    public AttributesAPIBridge getAttributesAPI() {
+        return attributesapi;
     }
 
     /**

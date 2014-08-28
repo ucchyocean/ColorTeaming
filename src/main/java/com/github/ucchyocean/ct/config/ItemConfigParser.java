@@ -27,6 +27,10 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 
+import com.github.ucchyocean.ct.ColorTeaming;
+import com.github.ucchyocean.ct.bridge.AttributeInfo;
+import com.github.ucchyocean.ct.bridge.AttributesAPIBridge;
+
 /**
  * アイテム設定のパーサー
  * @author ucchy
@@ -38,6 +42,10 @@ public class ItemConfigParser {
 
     private Logger logger;
 
+    /**
+     * コンストラクタ
+     * @param logger ロガー（コンフィグのパースに失敗した時に警告出力で使用される）
+     */
     public ItemConfigParser(Logger logger) {
         this.logger = logger;
     }
@@ -316,6 +324,30 @@ public class ItemConfigParser {
             item.setItemMeta(meta);
         }
 
+
+        // Attributeの詳細設定、AttributesAPIがロードされている場合にのみ実施する
+        if ( ColorTeaming.instance.getAttributesAPI() != null &&
+                section.contains("attributes") ) {
+
+            AttributesAPIBridge bridge = ColorTeaming.instance.getAttributesAPI();
+
+            for ( String key :
+                    section.getConfigurationSection("attributes").getKeys(false) ) {
+
+                ConfigurationSection attr_sec =
+                        section.getConfigurationSection("attributes." + key);
+                AttributeInfo attr = AttributeInfo.readFromConfigSection(attr_sec);
+
+                if ( attr == null ) {
+                    logger.warning("指定された属性の、typeまたはoperatorが正しくありません。");
+                    logger.warning("└ " + info);
+                    continue;
+                }
+
+                item = bridge.applyAttribute(item, attr);
+            }
+        }
+
         return item;
     }
 
@@ -476,6 +508,24 @@ public class ItemConfigParser {
                             message.add(indent1 + "    green: " + fade.getGreen());
                         }
                     }
+                }
+            }
+        }
+
+        // Attributeの解析、AttributesAPIがロードされている場合にのみ実施する
+        if ( ColorTeaming.instance.getAttributesAPI() != null ) {
+
+            AttributesAPIBridge bridge = ColorTeaming.instance.getAttributesAPI();
+
+            if ( bridge.getAttributeNum(item) > 0 ) {
+
+                message.add(indent + "attributes:");
+                int index = 0;
+
+                for ( AttributeInfo info : bridge.readAttr(item) ) {
+                    index++;
+                    message.add(indent + "  attribute" + index + ":");
+                    message.addAll(info.toStrings(indent + "    "));
                 }
             }
         }
