@@ -155,8 +155,8 @@ commands:
     description: チームメンバーのインベントリに、アイテムを追加するコマンド
     aliases: cgive
     usage: |
-           /<command> (team) (item) - 指定したアイテムを、teamのメンバー全員に配布します。
-           /<command> (player) (item) - 指定したアイテムを、playerに配布します。
+           /<command> (team) (item[:amount]) - 指定したアイテムを、teamのメンバー全員に配布します。実行例「/<command> red BREAD:64」
+           /<command> (player) (item[:amount]) - 指定したアイテムを、playerに配布します。
            /<command> (team) hand - 手に持ったアイテムを、teamのメンバー全員に配布します。
            /<command> (player) hand - 手に持ったアイテムを、playerに配布します。
     permission: colorteaming.give
