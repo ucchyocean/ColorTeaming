@@ -190,15 +190,33 @@ public class PlayerDeathListener implements Listener {
                         Bukkit.getServer().getPluginManager().callEvent(event2);
                     }
                 }
+            }
 
-                // キルログの変更を行う
-                if ( config.isEnableCustomKilllog() ) {
+            // キルログの変更を行う
+            if ( config.isEnableCustomKilllog() ) {
+
+                if ( killer == null ) {
+                    // 自爆
+                    String message = config.getCustomKilllogFormat();
+                    message = message.replace("%killer", "");
+                    message = message.replace("%deader", deader.getDisplayName());
+                    message = message.replace("%weapon", "自滅");
+                    message = Utility.replaceColorCode(message);
+                    event.setDeathMessage(message);
+
+                } else if ( tnsKiller != null ) {
+                    // キルした人もチームに所属している
                     String message = config.getCustomKilllogFormat();
                     message = message.replace("%killer", killer.getDisplayName());
                     message = message.replace("%deader", deader.getDisplayName());
                     message = message.replace("%weapon", getWeaponName(killer));
                     message = Utility.replaceColorCode(message);
                     event.setDeathMessage(message);
+
+                } else {
+                    // キルされた人はColorTeamingに所属していて、
+                    // キルした人はColorTeamingに所属していない場合。
+                    // ここでは何もしない。
                 }
             }
 
@@ -286,7 +304,7 @@ public class PlayerDeathListener implements Listener {
         }
 
         if ( player.getItemInHand() == null || player.getItemInHand().getType() == Material.AIR ) {
-            return "hand";
+            return "素手";
         }
 
         ItemStack hand = player.getItemInHand();
