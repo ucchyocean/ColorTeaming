@@ -3,8 +3,25 @@
 # @license    LGPLv3
 # @copyright  Copyright ucchy 2013
 
+
+
+# -------------------- 一般設定 --------------------
+
 # PVPを実施するworld名を設定してください。複数指定可能です。
 worlds: ['world']
+
+# チーム無所属の人がサーバーに参加したときに、
+# ワールドのリスポーン地点へリスポーンするようになります。
+# ワールドのリスポーン地点の登録は、
+# /cspawn world コマンドや、/setworldspawn コマンドを使用してください。
+worldSpawn: false
+
+# まとめてテレポート実行時の、ディレイ間隔を指定します。単位はtick（20tick=1秒）
+teleportDelay: 2
+
+
+
+# -------------------- チームチャット設定 --------------------
 
 # サーバー起動時のチームチャットモードを設定します。
 # trueになっている場合は、チャットの発言がチーム内のみになります。
@@ -25,6 +42,20 @@ teamChatLogMode: true
 # Vaultと、チャット装飾関連プラグイン(PermissionsExなど)がロードされている必要があります。
 teamChatFormat: '&a[%team&a]%prefix<%name>%suffix %message'
 
+
+
+# -------------------- チャットのJapanize化設定 --------------------
+
+# 通常のチャットをJapanize化します。
+showJapanizeGlobalChat: false
+
+# チームチャットをJapanize化します。
+showJapanizeTeamChat: true
+
+
+
+# -------------------- PVPのルール設定 --------------------
+
 # 同じチームメンバー同士の攻撃（剣などの直接攻撃と、弓矢やポーション）の
 # 有効/無効を設定します。true → 攻撃が有効、false → 攻撃が無効
 friendlyFire: false
@@ -44,13 +75,6 @@ priorBedRespawn: false
 # false → 通常通りゲームオーバーを表示する
 skipGameover: false
 
-# cpointコマンド用の得点設定。
-# ただし、クラス設定にkill_pointやdeath_pointが設定されている場合は、そちらが優先されます。
-#   ctKillPoint - 他のチームのプレイヤーを倒したときの獲得点数。
-#   ctDeathPoint - 誰かに倒されたときの獲得点数。
-ctKillPoint: 1
-ctDeathPoint: -1
-
 # 死んでリスポンしたときに、チームから自動で抜けるかどうかを設定します。
 colorRemoveOnDeath: false
 
@@ -68,6 +92,10 @@ noDamageSeconds: 5
 # 死んでリスポンしたときに、体力の最大値を20（ハート10個分）に戻すかどうかを設定します。
 resetMaxHealthOnDeath: true
 
+
+
+# -------------------- 一般プレイヤーのコマンド実行設定 --------------------
+
 # 一般プレイヤーが、/cjoin (group) コマンドを使用して、
 # チームを作ったり参加したりすることができるようにするかを、設定します。
 allowPlayerJoinAny: false
@@ -79,6 +107,10 @@ allowPlayerJoinRandom: true
 # 一般プレイヤーが、/cleave コマンドを使用して、
 # チームから離脱することができるようにするかを、設定します。
 allowPlayerLeave: false
+
+
+
+# -------------------- スコア表示設定 --------------------
 
 # サイドバーに表示するチームスコアの種類を指定します。
 #   kill - キル数
@@ -100,6 +132,17 @@ listCriteria: point
 # 指定可能な項目は、listCriteriaと同じです。
 belowCriteria: none
 
+
+
+# -------------------- スコア設定 --------------------
+
+# cpointコマンド用の得点設定。
+# ただし、クラス設定にkill_pointやdeath_pointが設定されている場合は、そちらが優先されます。
+#   ctKillPoint - 他のチームのプレイヤーを倒したときの獲得点数。
+#   ctDeathPoint - 誰かに倒されたときの獲得点数。
+ctKillPoint: 1
+ctDeathPoint: -1
+
 # いずれかのチームが指定のキル数に達したときに、通知を行うかどうかを設定します。
 # 30を指定した場合は、30キル達成で通知します。0の場合は通知オフとなります。
 # clコマンドで大将を選出している場合は、本設定は無視されることに注意してください。
@@ -112,18 +155,3 @@ killTrophy: 0
 # killTrophyが 0 の場合や、killTrophy より killReachTrophy が大きい場合は、この設定は無視されます。
 # clコマンドで大将を選出している場合も、本設定は無視されます。
 killReachTrophy: 0
-
-# チーム無所属の人がサーバーに参加したときに、
-# ワールドのリスポーン地点へリスポーンするようになります。
-# ワールドのリスポーン地点の登録は、
-# /cspawn world コマンドや、/setworldspawn コマンドを使用してください。
-worldSpawn: false
-
-# 通常のチャットをJapanize化します。
-showJapanizeGlobalChat: false
-
-# チームチャットをJapanize化します。
-showJapanizeTeamChat: true
-
-# テレポート実行時の、ディレイ間隔を指定します。単位はtick（20tick=1秒）
-teleportDelay: 2
