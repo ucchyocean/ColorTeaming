@@ -11,12 +11,15 @@ import java.util.HashMap;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Team;
 import org.bukkit.util.Vector;
 
@@ -52,7 +55,7 @@ public class PlayerDeathListener implements Listener {
      * Playerが死亡したときに発生するイベント
      * @param event
      */
-    @EventHandler
+    @EventHandler(priority=EventPriority.LOW)
     public void onPlayerDeath(PlayerDeathEvent event) {
 
         // 倒された人を取得
@@ -187,6 +190,16 @@ public class PlayerDeathListener implements Listener {
                         Bukkit.getServer().getPluginManager().callEvent(event2);
                     }
                 }
+
+                // キルログの変更を行う
+                if ( config.isEnableCustomKilllog() ) {
+                    String message = config.getCustomKilllogFormat();
+                    message = message.replace("%killer", killer.getDisplayName());
+                    message = message.replace("%deader", deader.getDisplayName());
+                    message = message.replace("%weapon", getWeaponName(killer));
+                    message = Utility.replaceColorCode(message);
+                    event.setDeathMessage(message);
+                }
             }
 
             // 色設定を削除する
@@ -209,10 +222,10 @@ public class PlayerDeathListener implements Listener {
                             new ColorTeamingWonTeamEvent(wonTeam, event2);
                     Bukkit.getServer().getPluginManager().callEvent(event3);
                 }
-            }
 
-            // チーム残り人数を更新する
-            api.refreshRestTeamMemberScore();
+                // チーム残り人数を更新する
+                api.refreshRestTeamMemberScore();
+            }
 
             // ゲームオーバー画面をスキップする
             if ( config.isSkipGameover() ) {
@@ -264,5 +277,23 @@ public class PlayerDeathListener implements Listener {
             deader.removeMetadata(ClassData.KILL_POINT_NAME, ColorTeaming.instance);
         }
         return point;
+    }
+
+    private String getWeaponName(Player player) {
+
+        if ( player == null ) {
+            return "";
+        }
+
+        if ( player.getItemInHand() == null || player.getItemInHand().getType() == Material.AIR ) {
+            return "hand";
+        }
+
+        ItemStack hand = player.getItemInHand();
+        if ( !hand.hasItemMeta() || !hand.getItemMeta().hasDisplayName() ) {
+            return hand.getType().toString();
+        }
+
+        return hand.getItemMeta().getDisplayName();
     }
 }

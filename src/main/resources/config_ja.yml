@@ -155,3 +155,16 @@ killTrophy: 0
 # killTrophyが 0 の場合や、killTrophy より killReachTrophy が大きい場合は、この設定は無視されます。
 # clコマンドで大将を選出している場合も、本設定は無視されます。
 killReachTrophy: 0
+
+
+
+# -------------------- キルログ設定 --------------------
+
+# ColorTeamingからのキルログ変更を有効にするかどうかを指定します。
+enableCustomKilllog: false
+
+# カスタムキルログの表示形式です。
+# 次のキーワードが使用できます。
+# %killer → キルした人、%deader → キルされた人、
+# %weapon → キルした人が手に持っていたアイテムの表示名
+customKilllogFormat: '%killer [%weapon&f] %deader'
