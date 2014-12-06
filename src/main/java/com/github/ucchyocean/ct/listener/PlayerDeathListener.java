@@ -197,7 +197,7 @@ public class PlayerDeathListener implements Listener {
 
                 if ( killer == null ) {
                     // 自爆
-                    String message = config.getCustomKilllogFormat();
+                    String message = config.getCustomKilllogSelfDestructFormat();
                     message = message.replace("%deader", deader.getDisplayName());
                     message = Utility.replaceColorCode(message);
                     event.setDeathMessage(message);
