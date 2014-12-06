@@ -161,6 +161,8 @@ killReachTrophy: 0
 # -------------------- キルログ設定 --------------------
 
 # ColorTeamingからのキルログ変更を有効にするかどうかを指定します。
+# trueにすると、ColorTeamingでチーム分けされた人が死亡したときに、
+# 標準のキルログの代わりにカスタムキルログが表示されます。
 enableCustomKilllog: false
 
 # カスタムキルログの表示形式です。
@@ -168,3 +170,9 @@ enableCustomKilllog: false
 # %killer → キルした人、%deader → キルされた人、
 # %weapon → キルした人が手に持っていたアイテムの表示名
 customKilllogFormat: '%killer [%weapon&f] %deader'
+
+# 自滅したときのカスタムキルログの表示形式です。
+# ColorTeamingのチームに所属していて、キルした人が取得できない場合は、
+# こちらが表示されます。
+# キーワードは %deader のみが使用できます。
+customKilllogSelfDestructFormat: 'xxx [自爆&f] %deader'

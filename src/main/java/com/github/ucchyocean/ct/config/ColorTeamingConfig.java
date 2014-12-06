@@ -118,6 +118,9 @@ public class ColorTeamingConfig {
     /** カスタムキルログのフォーマット設定 */
     private String customKilllogFormat;
 
+    /** カスタムキルログ（自滅）のフォーマット設定 */
+    private String customKilllogSelfDestructFormat;
+
     /**
      * config.ymlの読み出し処理。
      * @return 読み込んだ ColorTeamingConfig オブジェクト
@@ -192,8 +195,10 @@ public class ColorTeamingConfig {
                 config.getInt("teleportVisiblePacketSendDelay", 20);
 
         ctconfig.enableCustomKilllog = config.getBoolean("enableCustomKilllog", false);
-        ctconfig.customKilllogFormat = config.getString("customKilllogFormat",
-                "%killer [%weapon&f] %deader");
+        ctconfig.customKilllogFormat = config.getString(
+                "customKilllogFormat", "%killer [%weapon&f] %deader");
+        ctconfig.customKilllogSelfDestructFormat = config.getString(
+                "customKilllogSelfDestructFormat", "xxx [自爆&f] %deader");
 
         return ctconfig;
     }
@@ -247,6 +252,7 @@ public class ColorTeamingConfig {
         config.set("teleportDelay", teleportDelay);
         config.set("enableCustomKilllog", enableCustomKilllog);
         config.set("customKilllogFormat", customKilllogFormat);
+        config.set("customKilllogSelfDestructFormat", customKilllogSelfDestructFormat);
 
         // 保存処理
         try {
@@ -486,6 +492,10 @@ public class ColorTeamingConfig {
 
     public String getCustomKilllogFormat() {
         return customKilllogFormat;
+    }
+
+    public String getCustomKilllogSelfDestructFormat() {
+        return customKilllogSelfDestructFormat;
     }
 
     /**
