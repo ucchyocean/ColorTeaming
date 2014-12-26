@@ -63,6 +63,8 @@ public class ClassData {
     private int killPoint;
     /** デスしたときの得点 */
     private int deathPoint;
+    /** クラス設定したときに状態リセットをするかどうか */
+    private boolean resetOnSetClass;
 
     /**
      * コンストラクタ
@@ -79,6 +81,7 @@ public class ClassData {
         this.level = -1;
         this.killPoint = DISABLE_POINT;
         this.deathPoint = DISABLE_POINT;
+        this.resetOnSetClass = false;
     }
 
     /**
@@ -222,6 +225,20 @@ public class ClassData {
     }
 
     /**
+     * @return resetOnSetClass
+     */
+    public boolean isResetOnSetClass() {
+        return resetOnSetClass;
+    }
+
+    /**
+     * @param resetOnSetClass resetOnSetClass
+     */
+    public void setResetOnSetClass(boolean resetOnSetClass) {
+        this.resetOnSetClass = resetOnSetClass;
+    }
+
+    /**
      * 全てのクラスデータファイルを、指定されたフォルダからロードします。
      * @param dir フォルダ
      * @return 全てのロードされたクラスデータ
@@ -356,6 +373,8 @@ public class ClassData {
 
         cd.setDeathPoint(config.getInt("death_point", DISABLE_POINT));
 
+        cd.setResetOnSetClass(config.getBoolean("resetOnSetClass", false));
+
         return cd;
     }
 
@@ -375,7 +394,12 @@ public class ClassData {
         boolean needToUpdateInventory = false;
 
         // 全回復の実行
-        Utility.resetPlayerStatus(player);
+        boolean doReset =
+                ( resetOnSetClass ||
+                        ColorTeaming.instance.getCTConfig().isResetOnSetClass() );
+        if ( doReset ) {
+            Utility.resetPlayerStatus(player);
+        }
 
         if ( items != null ) {
 
@@ -441,7 +465,9 @@ public class ClassData {
         // 体力最大値の設定
         if ( health != -1 ) {
             player.setMaxHealth(health);
-            player.setHealth(health);
+            if ( doReset ) {
+                player.setHealth(health);
+            }
         }
 
         // エフェクトの設定

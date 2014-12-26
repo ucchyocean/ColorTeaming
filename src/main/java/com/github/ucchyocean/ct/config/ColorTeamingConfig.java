@@ -121,6 +121,9 @@ public class ColorTeamingConfig {
     /** カスタムキルログ（自滅）のフォーマット設定 */
     private String customKilllogSelfDestructFormat;
 
+    /** クラスを設定した時に状態リセットをするかどうか */
+    private boolean resetOnSetClass;
+
     /**
      * config.ymlの読み出し処理。
      * @return 読み込んだ ColorTeamingConfig オブジェクト
@@ -200,6 +203,8 @@ public class ColorTeamingConfig {
         ctconfig.customKilllogSelfDestructFormat = config.getString(
                 "customKilllogSelfDestructFormat", "xxx [自爆&f] %deader");
 
+        ctconfig.resetOnSetClass = config.getBoolean("resetOnSetClass", true);
+
         return ctconfig;
     }
 
@@ -253,6 +258,7 @@ public class ColorTeamingConfig {
         config.set("enableCustomKilllog", enableCustomKilllog);
         config.set("customKilllogFormat", customKilllogFormat);
         config.set("customKilllogSelfDestructFormat", customKilllogSelfDestructFormat);
+        config.set("resetOnSetClass", resetOnSetClass);
 
         // 保存処理
         try {
@@ -496,6 +502,10 @@ public class ColorTeamingConfig {
 
     public String getCustomKilllogSelfDestructFormat() {
         return customKilllogSelfDestructFormat;
+    }
+
+    public boolean isResetOnSetClass() {
+        return resetOnSetClass;
     }
 
     /**
