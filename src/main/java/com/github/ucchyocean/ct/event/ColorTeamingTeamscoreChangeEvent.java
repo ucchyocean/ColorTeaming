@@ -1,6 +1,6 @@
 /*
  * @author     ucchy
- * @license    All Rights Reserved
+ * @license    LGPLv3
  * @copyright  Copyright ucchy 2014
  */
 package com.github.ucchyocean.ct.event;

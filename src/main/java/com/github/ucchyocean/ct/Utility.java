@@ -305,7 +305,7 @@ public class Utility {
             player.removePotionEffect(e.getType());
         }
 
-        // NOTE: Fire ticks は、少し遅れて設定しないと、火が消えない。
+        // NOTE: ゲームオーバー画面をスキップする場合、Fire ticks は少し遅れて設定しないと火が消えない。
         Bukkit.getScheduler().runTaskLater(ColorTeaming.instance, new BukkitRunnable() {
             @Override
             public void run() {
