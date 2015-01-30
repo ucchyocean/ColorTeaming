@@ -35,6 +35,7 @@ public class CSpawnCommand implements TabExecutor {
 
     private static final String PREERR = ChatColor.RED.toString();
     private static final String PREINFO = ChatColor.GRAY.toString();
+    private static final String PRENOTIFY = ChatColor.YELLOW.toString();
 
     private ColorTeaming plugin;
 
@@ -209,6 +210,8 @@ public class CSpawnCommand implements TabExecutor {
                 for ( String l : list ) {
                     sender.sendMessage(PREINFO + l);
                 }
+
+                Bukkit.broadcastMessage(PRENOTIFY + "今回のマップは" + PREERR + map + PRENOTIFY + "です！");
 
                 return true;
 
