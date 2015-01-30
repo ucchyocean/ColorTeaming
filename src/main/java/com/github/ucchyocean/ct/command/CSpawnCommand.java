@@ -21,6 +21,7 @@ import org.bukkit.entity.Player;
 
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingAPI;
+import com.github.ucchyocean.ct.Utility;
 import com.github.ucchyocean.ct.config.RespawnConfiguration;
 import com.github.ucchyocean.ct.config.TeamNameSetting;
 
@@ -35,7 +36,6 @@ public class CSpawnCommand implements TabExecutor {
 
     private static final String PREERR = ChatColor.RED.toString();
     private static final String PREINFO = ChatColor.GRAY.toString();
-    private static final String PRENOTIFY = ChatColor.YELLOW.toString();
 
     private ColorTeaming plugin;
 
@@ -211,7 +211,11 @@ public class CSpawnCommand implements TabExecutor {
                     sender.sendMessage(PREINFO + l);
                 }
 
-                Bukkit.broadcastMessage(PRENOTIFY + "今回のマップは" + PREERR + map + PRENOTIFY + "です！");
+                String announce = plugin.getCTConfig().getRandomMapSelectedMessage();
+                if ( announce != null ) {
+                    String msg = Utility.replaceColorCode(announce.replace("%map", map));
+                    Bukkit.broadcastMessage(msg);
+                }
 
                 return true;
 

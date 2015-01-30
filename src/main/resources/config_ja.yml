@@ -182,3 +182,13 @@ customKilllogFormat: '%killer [%weapon&f] %deader'
 # こちらが表示されます。
 # キーワードは %deader のみが使用できます。
 customKilllogSelfDestructFormat: 'xxx [自爆&f] %deader'
+
+
+
+# -------------------- メッセージ設定 --------------------
+
+# /cspawn switch random を実行した時に表示されるメッセージ
+# 次のキーワードが使用できます。
+# %map → 選択されたマップ名
+# このメッセージをコメントアウトすれば、該当メッセージは非表示になります。
+randomMapSelectedMessage: '&e今回のマップは&c%map&eです！'

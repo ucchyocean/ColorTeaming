@@ -124,6 +124,9 @@ public class ColorTeamingConfig {
     /** クラスを設定した時に状態リセットをするかどうか */
     private boolean resetOnSetClass;
 
+    /** ランダムマップが選択されたときに、表示するアナウンスメッセージ */
+    private String randomMapSelectedMessage;
+
     /**
      * config.ymlの読み出し処理。
      * @return 読み込んだ ColorTeamingConfig オブジェクト
@@ -205,6 +208,8 @@ public class ColorTeamingConfig {
 
         ctconfig.resetOnSetClass = config.getBoolean("resetOnSetClass", true);
 
+        ctconfig.randomMapSelectedMessage = config.getString("randomMapSelectedMessage");
+
         return ctconfig;
     }
 
@@ -259,6 +264,7 @@ public class ColorTeamingConfig {
         config.set("customKilllogFormat", customKilllogFormat);
         config.set("customKilllogSelfDestructFormat", customKilllogSelfDestructFormat);
         config.set("resetOnSetClass", resetOnSetClass);
+        config.set("randomMapSelectedMessage", randomMapSelectedMessage);
 
         // 保存処理
         try {
@@ -506,6 +512,10 @@ public class ColorTeamingConfig {
 
     public boolean isResetOnSetClass() {
         return resetOnSetClass;
+    }
+
+    public String getRandomMapSelectedMessage() {
+        return randomMapSelectedMessage;
     }
 
     /**
