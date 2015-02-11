@@ -112,12 +112,6 @@ public interface ColorTeamingAPI {
     public ArrayList<Player> getTeamMembers(String id);
 
     /**
-     * 全てのプレイヤーを取得する
-     * @return 全てのプレイヤー
-     */
-    public ArrayList<Player> getAllPlayers();
-
-    /**
      * 指定したワールドにいる全てのプレイヤーを取得する。
      * ただし、指定したワールドが存在しない場合は、空のリストが返される。
      * @param worldNames 対象にするワールド名

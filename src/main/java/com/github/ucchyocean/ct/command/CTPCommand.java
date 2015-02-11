@@ -455,7 +455,7 @@ public class CTPCommand implements TabExecutor {
                     commands.add(name);
                 }
             }
-            for ( Player player : Bukkit.getOnlinePlayers() ) {
+            for ( Player player : Utility.getOnlinePlayers() ) {
                 String name = player.getName();
                 if ( name.toLowerCase().startsWith(prefix) ) {
                     commands.add(name);

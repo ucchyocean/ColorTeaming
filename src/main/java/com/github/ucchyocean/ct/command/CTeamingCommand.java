@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.command.Command;
@@ -673,7 +672,7 @@ public class CTeamingCommand implements TabExecutor {
                     commands.add(c);
                 }
             }
-            for ( Player player : Bukkit.getOnlinePlayers() ) {
+            for ( Player player : Utility.getOnlinePlayers() ) {
                 String name = player.getName();
                 if ( name.toLowerCase().startsWith(prefix) ) {
                     commands.add(name);

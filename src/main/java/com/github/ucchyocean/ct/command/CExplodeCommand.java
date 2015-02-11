@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -103,7 +102,7 @@ public class CExplodeCommand implements TabExecutor {
                     commands.add(name);
                 }
             }
-            for ( Player player : Bukkit.getOnlinePlayers() ) {
+            for ( Player player : Utility.getOnlinePlayers() ) {
                 String name = player.getName();
                 if ( name.toLowerCase().startsWith(prefix) ) {
                     commands.add(name);

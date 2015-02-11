@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -57,7 +56,7 @@ public class CGiveCommand implements TabExecutor {
 
         if ( target.equalsIgnoreCase("all") ) {
             // 全員を対象とする
-            playersForGive = plugin.getAPI().getAllPlayers();
+            playersForGive = Utility.getOnlinePlayers();
             targetDesc = "全員";
         } else if ( api.isExistTeam(target) ) {
             // target はチームである場合
@@ -144,7 +143,7 @@ public class CGiveCommand implements TabExecutor {
                     commands.add(name);
                 }
             }
-            for ( Player player : Bukkit.getOnlinePlayers() ) {
+            for ( Player player : Utility.getOnlinePlayers() ) {
                 String name = player.getName();
                 if ( name.toLowerCase().startsWith(prefix) ) {
                     commands.add(name);

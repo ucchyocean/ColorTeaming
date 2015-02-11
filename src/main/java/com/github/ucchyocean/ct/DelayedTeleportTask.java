@@ -8,12 +8,10 @@ package com.github.ucchyocean.ct;
 import java.util.HashMap;
 import java.util.concurrent.ArrayBlockingQueue;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 
 /**
  * 遅延つきテレポート実行タスク
@@ -24,7 +22,6 @@ public class DelayedTeleportTask extends BukkitRunnable {
     private HashMap<Player, Location> locationMap;
     private ArrayBlockingQueue<Player> players;
     private int delay;
-    private BukkitTask task;
 
     /**
      * コンストラクタ
@@ -45,7 +42,7 @@ public class DelayedTeleportTask extends BukkitRunnable {
      * タスクを開始する
      */
     public void startTask() {
-        task = Bukkit.getScheduler().runTaskTimer(ColorTeaming.instance, this, delay, delay);
+        runTaskTimer(ColorTeaming.instance, delay, delay);
     }
 
     /**
@@ -55,12 +52,12 @@ public class DelayedTeleportTask extends BukkitRunnable {
     public void run() {
 
         if ( players.isEmpty() ) {
-            
+
             // プレイヤー表示パケットを送信する (see issue #78)
-            int packetDelay = 
+            int packetDelay =
                     ColorTeaming.instance.getCTConfig().getTeleportVisiblePacketSendDelay();
             if ( packetDelay > 0 ) {
-                Bukkit.getScheduler().runTaskLater(ColorTeaming.instance, new BukkitRunnable() {
+                new BukkitRunnable() {
                     public void run() {
                         for ( Player playerA : locationMap.keySet() ) {
                             for ( Player playerB : locationMap.keySet() ) {
@@ -69,13 +66,12 @@ public class DelayedTeleportTask extends BukkitRunnable {
                             }
                         }
                     }
-                }, packetDelay);
+                }.runTaskLater(ColorTeaming.instance, packetDelay);
             }
-            
+
             // 自己キャンセル
-            if ( task != null ) {
-                Bukkit.getScheduler().cancelTask(task.getTaskId());
-            }
+            cancel();
+
             return;
         }
 

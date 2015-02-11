@@ -17,6 +17,7 @@ import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 
 import com.github.ucchyocean.ct.ColorTeaming;
+import com.github.ucchyocean.ct.Utility;
 import com.github.ucchyocean.ct.config.TeamNameSetting;
 
 /**
@@ -60,8 +61,7 @@ public class CCountCommand implements TabExecutor {
         } else {
             TeamNameSetting emptyTeam = new TeamNameSetting("", "未所属", ChatColor.WHITE);
             members = new HashMap<String, ArrayList<Player>>();
-            ArrayList<Player> players = plugin.getAPI().getAllPlayers();
-            for ( Player p : players ) {
+            for ( Player p : Utility.getOnlinePlayers() ) {
                 TeamNameSetting teamName = plugin.getAPI().getPlayerTeamName(p);
                 if ( teamName == null ) {
                     teamName = emptyTeam;

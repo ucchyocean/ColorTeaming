@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -105,7 +104,7 @@ public class CClassCommand implements TabExecutor {
         } else if ( api.isExistTeam(target) ) {
             // チーム指定
             isTeam = true;
-        } else if ( api.getAllPlayers().contains(Utility.getPlayerExact(target)) ) {
+        } else if ( Utility.getPlayerExact(target) != null ) {
             // ユーザー指定
         } else {
             sender.sendMessage(PREERR + "チームまたはプレイヤー " + target + " が存在しません。");
@@ -177,7 +176,7 @@ public class CClassCommand implements TabExecutor {
                     commands.add(name);
                 }
             }
-            for ( Player player : Bukkit.getOnlinePlayers() ) {
+            for ( Player player : Utility.getOnlinePlayers() ) {
                 String name = player.getName();
                 if ( name.toLowerCase().startsWith(prefix) ) {
                     commands.add(name);

@@ -8,7 +8,6 @@ package com.github.ucchyocean.ct;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Criterias;
@@ -166,7 +165,7 @@ public class ObjectiveManager {
 
     private void initPersonalHealth(Objective objective) {
 
-        for ( Player player : Bukkit.getOnlinePlayers() ) {
+        for ( Player player : Utility.getOnlinePlayers() ) {
             getScore(objective, player).setScore((int)player.getHealth());
         }
     }

@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -306,12 +307,12 @@ public class Utility {
         }
 
         // NOTE: ゲームオーバー画面をスキップする場合、Fire ticks は少し遅れて設定しないと火が消えない。
-        Bukkit.getScheduler().runTaskLater(ColorTeaming.instance, new BukkitRunnable() {
+        new BukkitRunnable() {
             @Override
             public void run() {
                 player.setFireTicks(0);
             }
-        }, 1L);
+        }.runTaskLater(ColorTeaming.instance, 1L);
     }
 
     /**
@@ -377,5 +378,32 @@ public class Utility {
         } else {
             return false;
         }
+    }
+
+    /**
+     * 現在接続中のプレイヤーを全て取得する
+     * @return 接続中の全てのプレイヤー
+     */
+    @SuppressWarnings("unchecked")
+    public static ArrayList<Player> getOnlinePlayers() {
+        // CB179以前と、CB1710以降で戻り値が異なるため、
+        // リフレクションを使って互換性を（無理やり）保つ。
+        try {
+            if (Bukkit.class.getMethod("getOnlinePlayers", new Class<?>[0]).getReturnType() == Collection.class) {
+                Collection<?> temp = ((Collection<?>)Bukkit.class.getMethod("getOnlinePlayers", new Class<?>[0]).invoke(null, new Object[0]));
+                return new ArrayList<Player>((Collection<? extends Player>)temp);
+            } else {
+                Player[] temp = ((Player[])Bukkit.class.getMethod("getOnlinePlayers", new Class<?>[0]).invoke(null, new Object[0]));
+                ArrayList<Player> players = new ArrayList<Player>();
+                for ( Player t : temp ) {
+                    players.add(t);
+                }
+                return players;
+            }
+        }
+        catch (NoSuchMethodException ex){} // never happen
+        catch (InvocationTargetException ex){} // never happen
+        catch (IllegalAccessException ex){} // never happen
+        return new ArrayList<Player>();
     }
 }

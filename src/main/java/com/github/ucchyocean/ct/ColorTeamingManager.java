@@ -367,20 +367,6 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     }
 
     /**
-     * 全てのプレイヤーを取得する
-     * @return 全てのプレイヤー
-     */
-    @Override
-    public ArrayList<Player> getAllPlayers() {
-
-        ArrayList<Player> result = new ArrayList<Player>();
-        for ( Player p : Bukkit.getOnlinePlayers() ) {
-            result.add(p);
-        }
-        return result;
-    }
-
-    /**
      * 指定したワールドにいる全てのプレイヤーを取得する。
      * ただし、指定したワールドが存在しない場合は、空のリストが返される。
      * @param worldNames 対象にするワールド名
@@ -394,7 +380,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         }
 
         ArrayList<Player> result = new ArrayList<Player>();
-        for ( Player p : Bukkit.getOnlinePlayers() ) {
+        for ( Player p : Utility.getOnlinePlayers() ) {
             if ( worldNames.contains(p.getWorld().getName()) ) {
                 result.add(p);
             }
