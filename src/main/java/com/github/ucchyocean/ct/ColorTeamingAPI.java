@@ -28,21 +28,21 @@ import com.github.ucchyocean.ct.item.CustomItem;
  * @author ucchy
  */
 public interface ColorTeamingAPI {
-    
+
     /**
      * 指定されたチームIDが存在するかどうかを返す。
      * @param id チームID
      * @return 存在するかどうか
      */
     public boolean isExistTeam(String id);
-    
+
     /**
      * チーム名をチームIDから取得する。
      * @param id チームID
      * @return チーム名
      */
     public TeamNameSetting getTeamNameFromID(String id);
-    
+
     /**
      * Player に設定されている、チームを取得する。
      * @param player プレイヤー
@@ -110,7 +110,7 @@ public interface ColorTeamingAPI {
      * @return チームメンバー。チームが存在しない場合はnullが返されることに注意
      */
     public ArrayList<Player> getTeamMembers(String id);
-    
+
     /**
      * 全てのプレイヤーを取得する
      * @return 全てのプレイヤー
@@ -145,41 +145,36 @@ public interface ColorTeamingAPI {
      * @param message 送信するメッセージ
      */
     public void sendTeamChat(CommandSender sender, String team, String message);
-    
+
     /**
      * スコアボードの表示を行う
      */
     public void displayScoreboard();
-    
+
     /**
      * 残りチームメンバーのスコアボードを更新する。
      */
     public void refreshRestTeamMemberScore();
-    
-    /**
-     * @deprecated このメソッドは、refreshRestTeamMemberScoreに変わりました。
-     */
-    public void makeSidebarScore();
-    
+
     /**
      * チームのポイント数を全取得する
      * @return チームのポイント数
      */
     public HashMap<String, Integer> getAllTeamPoints();
-    
+
     /**
      * プレイヤーのポイント数を全取得する
      * @return プレイヤーのポイント数
      */
     public HashMap<String, Integer> getAllPlayerPoints();
-    
+
     /**
      * チームポイントを設定する。
      * @param team チーム名
      * @param point ポイント数
      */
     public void setTeamPoint(String team, int point);
-    
+
     /**
      * チームポイントを増減する。
      * @param team チーム名
@@ -192,7 +187,7 @@ public interface ColorTeamingAPI {
      * キルデス数やポイントを全てクリアする
      */
     public void clearKillDeathPoints();
-    
+
     /**
      * チーム単位のキルデス数を取得する
      * @return キルデス数
@@ -204,19 +199,19 @@ public interface ColorTeamingAPI {
      * @return キルデス数
      */
     public HashMap<String, int[]> getKillDeathPersonalCounts();
-    
+
     /**
      * チームのキル数カウントを、+1する。
      * @param team チームID
      */
     public void increaseTeamKillCount(String team);
-    
+
     /**
      * チームのデス数カウントを、+1する。
      * @param team チームID
      */
     public void increaseTeamDeathCount(String team);
-    
+
     /**
      * 指定したプレイヤーのポイントを追加する。
      * @param player プレイヤー
@@ -224,7 +219,7 @@ public interface ColorTeamingAPI {
      * @return 設定後のポイント
      */
     public int addPlayerPoint(Player player, int amount);
-    
+
     /**
      * 指定したプレイヤーのポイントを設定する。
      * @param player プレイヤー
@@ -262,7 +257,7 @@ public interface ColorTeamingAPI {
      * @return TP地点設定
      */
     public TPPointConfiguration getTppointConfig();
-    
+
     /**
      * チーム名設定を取得する
      * @return チーム名設定
@@ -280,13 +275,13 @@ public interface ColorTeamingAPI {
      * @param respawnMapName リスポーンマップ名
      */
     public void setRespawnMapName(String respawnMapName);
-    
+
     /**
      * カスタムアイテムを登録する
      * @param item カスタムアイテム
      */
     public void registerCustomItem(CustomItem item);
-    
+
     /**
      * カスタムアイテムを登録する
      * @param item 登録するアイテム
@@ -294,20 +289,20 @@ public interface ColorTeamingAPI {
      * @param displayName 表示アイテム名
      */
     public void registerCustomItem(ItemStack item, String name, String displayName);
-    
+
     /**
      * 登録されているカスタムアイテムを取得する
      * @param name カスタムアイテム名
      * @return カスタムアイテム、登録されていないアイテム名を指定した場合はnullが返される。
      */
     public CustomItem getCustomItem(String name);
-    
+
     /**
      * 登録されているカスタムアイテムの名前を取得する
      * @return カスタムアイテムの名前
      */
     public Set<String> getCustomItemNames();
-    
+
     /**
      * 指定されたプレイヤーに指定されたクラスを設定する
      * @param players プレイヤー
@@ -316,26 +311,26 @@ public interface ColorTeamingAPI {
      * 例えば、指定されたクラス名が存在しない場合や、指定されたプレイヤーがオフラインの場合は、falseになる。
      */
     public boolean setClassToPlayer(ArrayList<Player> players, String classname);
-    
+
     /**
      * 指定されたクラス名が存在するかどうかを確認する
      * @param classname クラス名
      * @return 存在するかどうか
      */
     public boolean isExistClass(String classname);
-    
+
     /**
      * 登録されている全てのクラスデータをまとめて取得する。
      * @return 全てのクラスデータ
      */
     public HashMap<String, ClassData> getClasses();
-    
+
     /**
      * クラスデータを設定する。同名のクラスが存在する場合は上書きに、無い場合は新規追加になる。
      * @param classdata クラスデータ
      */
     public void setClassData(ClassData classdata);
-    
+
     /**
      * ランダムな順序で、プレイヤーをチームわけします。<br/>
      * 既にチームわけが存在する場合は、全部クリアしてから分けられます。
@@ -351,7 +346,7 @@ public interface ColorTeamingAPI {
      * @param teamNum チーム数（2から9までの数を指定可能です）
      */
     public void makeColorTeamsWithOrderSelection(ArrayList<Player> players, int teamNum);
-    
+
     /**
      * 既存のチームわけをそのままに、指定されたプレイヤーを既存のチームへ加えていきます。<br/>
      * プレイヤーはランダムな順序で追加が行われます。<br/>
@@ -361,7 +356,7 @@ public interface ColorTeamingAPI {
      * @return 最後まで処理が行われたかどうか
      */
     public boolean addPlayerToColorTeamsWithRandomSelection(ArrayList<Player> players);
-    
+
     /**
      * 既存のチームわけをそのままに、指定されたプレイヤーを既存のチームへ加えていきます。<br/>
      * プレイヤーは指定の順序で追加が行われます。<br/>
@@ -371,7 +366,7 @@ public interface ColorTeamingAPI {
      * @return 最後まで処理が行われたかどうか
      */
     public boolean addPlayerToColorTeamsWithOrderSelection(ArrayList<Player> players);
-    
+
     /**
      * ColorTeamingの設定ファイルを全て再読み込みする
      */

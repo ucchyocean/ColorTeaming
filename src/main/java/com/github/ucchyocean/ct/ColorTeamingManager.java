@@ -611,14 +611,6 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     }
 
     /**
-     * @deprecated このメソッドは、refreshRestTeamMemberScoreに変わりました。
-     */
-    @Override
-    public void makeSidebarScore() {
-        refreshRestTeamMemberScore();
-    }
-
-    /**
      * キルデス数やポイントを全てクリアする
      */
     @Override
