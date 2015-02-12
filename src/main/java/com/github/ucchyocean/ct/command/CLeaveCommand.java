@@ -14,6 +14,7 @@ import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 
 import com.github.ucchyocean.ct.ColorTeaming;
+import com.github.ucchyocean.ct.config.ColorTeamingConfig;
 import com.github.ucchyocean.ct.event.ColorTeamingPlayerLeaveEvent.Reason;
 
 /**
@@ -43,21 +44,34 @@ public class CLeaveCommand implements TabExecutor {
         }
 
         Player player = (Player)sender;
+        ColorTeamingConfig config = plugin.getCTConfig();
 
         if ( !plugin.getCTConfig().isAllowPlayerLeave() ) {
-            player.sendMessage(
-                    PREERR + "cleaveコマンドによる離脱は、許可されておりません。");
+
+            String msg = config.getErrorLeaveNotAllowMessage();
+            if ( msg != null ) {
+                player.sendMessage(msg);
+            }
+
             return true;
         }
 
         if ( plugin.getAPI().getPlayerTeamName(player) == null ) {
-            player.sendMessage(
-                    PREERR + "あなたはチームに所属していません。");
+
+            String msg = config.getErrorNotJoinMessage();
+            if ( msg != null ) {
+                player.sendMessage(msg);
+            }
+
             return true;
         }
 
         plugin.getAPI().leavePlayerTeam(player, Reason.SELF);
-        player.sendMessage(ChatColor.GREEN + "チームから離脱しました。");
+
+        String msg = plugin.getCTConfig().getLeaveTeamMessage();
+        if ( msg != null ) {
+            player.sendMessage(msg);
+        }
 
         // スコアボード更新
         plugin.getAPI().refreshRestTeamMemberScore();

@@ -21,7 +21,6 @@ import org.bukkit.entity.Player;
 
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingAPI;
-import com.github.ucchyocean.ct.Utility;
 import com.github.ucchyocean.ct.config.RespawnConfiguration;
 import com.github.ucchyocean.ct.config.TeamNameSetting;
 
@@ -211,10 +210,9 @@ public class CSpawnCommand implements TabExecutor {
                     sender.sendMessage(PREINFO + l);
                 }
 
-                String announce = plugin.getCTConfig().getRandomMapSelectedMessage();
+                String announce = plugin.getCTConfig().getRandomMapSelectedMessage(map);
                 if ( announce != null ) {
-                    String msg = Utility.replaceColorCode(announce.replace("%map", map));
-                    Bukkit.broadcastMessage(msg);
+                    Bukkit.broadcastMessage(announce);
                 }
 
                 return true;

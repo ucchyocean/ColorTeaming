@@ -8,7 +8,6 @@ package com.github.ucchyocean.ct;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Criterias;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -16,6 +15,7 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 
+import com.github.ucchyocean.ct.config.ColorTeamingConfig;
 import com.github.ucchyocean.ct.config.TeamNameSetting;
 
 /**
@@ -33,51 +33,52 @@ public class ObjectiveManager {
     private static final String OBJECTIVE_PERSONAL_DEATH = "CTPlayerDeath";
     private static final String OBJECTIVE_PERSONAL_HEALTH = "CTPlayerHealth";
 
-    private static final String HEART_BLACK = "\u2764";
-
     private Scoreboard scoreboard;
     private ColorTeamingManager parent;
+    private ColorTeamingConfig config;
 
     /**
      * コンストラクタ
      * @param scoreboard
      */
-    protected ObjectiveManager(Scoreboard scoreboard, ColorTeamingManager parent) {
+    protected ObjectiveManager(Scoreboard scoreboard, ColorTeamingManager parent,
+            ColorTeamingConfig config) {
         this.scoreboard = scoreboard;
         this.parent = parent;
+        this.config = config;
         makeAll();
     }
 
     protected Objective getTeamPointObjective() {
-        return getObjective(OBJECTIVE_TEAM_POINT, "", "チームポイント");
+        return getObjective(OBJECTIVE_TEAM_POINT, "", config.getSidebarTitleTeamPoint());
     }
 
     protected Objective getTeamKillObjective() {
-        return getObjective(OBJECTIVE_TEAM_KILL, "", "スコア(キル数)");
+        return getObjective(OBJECTIVE_TEAM_KILL, "", config.getSidebarTitleTeamKill());
     }
 
     protected Objective getTeamDeathObjective() {
-        return getObjective(OBJECTIVE_TEAM_DEATH, "", "スコア(デス数)");
+        return getObjective(OBJECTIVE_TEAM_DEATH, "", config.getSidebarTitleTeamDeath());
     }
 
     protected Objective getTeamRestObjective() {
-        return getObjective(OBJECTIVE_TEAM_REST, "", "チーム人数");
+        return getObjective(OBJECTIVE_TEAM_REST, "", config.getSidebarTitleTeamRest());
     }
 
     protected Objective getPersonalPointObjective() {
-        return getObjective(OBJECTIVE_PERSONAL_POINT, "", "points");
+        return getObjective(OBJECTIVE_PERSONAL_POINT, "", config.getBelowNameTitlePoint());
     }
 
     protected Objective getPersonalKillObjective() {
-        return getObjective(OBJECTIVE_PERSONAL_KILL, Criterias.PLAYER_KILLS, "kills");
+        return getObjective(OBJECTIVE_PERSONAL_KILL, Criterias.PLAYER_KILLS, config.getBelowNameTitleKill());
     }
 
     protected Objective getPersonalDeathObjective() {
-        return getObjective(OBJECTIVE_PERSONAL_DEATH, Criterias.DEATHS, "deaths");
+        return getObjective(OBJECTIVE_PERSONAL_DEATH, Criterias.DEATHS, config.getBelowNameTitleDeath());
     }
 
     protected Objective getPersonalHealthObjective() {
-        return getObjective(OBJECTIVE_PERSONAL_HEALTH, Criterias.HEALTH, HEART_BLACK);
+        return getObjective(OBJECTIVE_PERSONAL_HEALTH, Criterias.HEALTH, config.getBelowNameTitleHealth());
     }
 
     protected void unregisterAll() {
@@ -113,9 +114,13 @@ public class ObjectiveManager {
     private Objective getObjective(String name, String criteria, String displayName) {
 
         Objective objective = scoreboard.getObjective(name);
+        if ( objective != null && !objective.getDisplayName().equals(displayName) ) {
+            unregisterObjective(name);
+            objective = null;
+        }
         if ( objective == null ) {
             objective = scoreboard.registerNewObjective(name, criteria);
-            objective.setDisplayName(ChatColor.YELLOW + displayName + ChatColor.RESET);
+            objective.setDisplayName(displayName);
 
             // 初期化が必要な項目は、ここで初期化を行う
             if ( name.equals(OBJECTIVE_TEAM_REST) ) {

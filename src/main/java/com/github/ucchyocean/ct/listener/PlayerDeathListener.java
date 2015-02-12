@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -42,8 +41,6 @@ import com.github.ucchyocean.ct.event.ColorTeamingWonTeamEvent;
  * @author ucchy
  */
 public class PlayerDeathListener implements Listener {
-
-    private static final String PRENOTICE = ChatColor.LIGHT_PURPLE.toString();
 
     private ColorTeaming plugin;
 
@@ -94,20 +91,27 @@ public class PlayerDeathListener implements Listener {
             // 死亡したプレイヤーが、大将だった場合、倒されたことを全体に通知する。
             if ( leaders.containsKey(teamDeader) &&
                     leaders.get(teamDeader).contains(deader.getName()) ) {
-                String message = String.format(PRENOTICE + "%s チームの大将、%s が倒されました！",
-                        tnsDeader.getName(), deader.getName());
-                Bukkit.broadcastMessage(message);
+
+                String message = config.getLeaderDefeatedMessage(tnsDeader.toString(), deader.getName());
+                if ( message != null ) {
+                    Bukkit.broadcastMessage(message);
+                }
+
                 leaders.get(teamDeader).remove(deader.getName());
 
                 if ( leaders.get(teamDeader).size() >= 1 ) {
-                    message = String.format(PRENOTICE + "%s チームの残り大将は、あと %d 人です。",
-                            tnsDeader.getName(), leaders.get(teamDeader).size());
-                    Bukkit.broadcastMessage(message);
-                } else {
+                    message = config.getLeaderDefeatedRemainMessage(
+                            tnsDeader.toString(), leaders.get(teamDeader).size());
+                    if ( message != null ) {
+                        Bukkit.broadcastMessage(message);
+                    }
 
-                    message = String.format(PRENOTICE + "%s チームの大将は全滅しました！",
-                            tnsDeader.getName());
-                    Bukkit.broadcastMessage(message);
+                } else {
+                    message = config.getLeaderDefeatedAllMessage(tnsDeader.toString());
+                    if ( message != null ) {
+                        Bukkit.broadcastMessage(message);
+                    }
+
                     leaders.remove(teamDeader);
 
                     // チームリーダー全滅イベントのコール
@@ -157,10 +161,13 @@ public class PlayerDeathListener implements Listener {
                     if ( killDeathCounts.get(teamKiller)[0] ==
                             config.getKillReachTrophy() ) {
                         int rest = config.getKillTrophy() - config.getKillReachTrophy();
-                        String message = String.format(
-                                PRENOTICE + "%s チームが、%d キルまでもう少しです(あと %d キル)。",
-                                tnsKiller.getName(), config.getKillTrophy(), rest);
-                        Bukkit.broadcastMessage(message);
+
+                        // 全体通知
+                        String message = config.getKillReachTrophyMessage(
+                                tnsKiller.toString(), config.getKillTrophy(), rest);
+                        if ( message != null ) {
+                            Bukkit.broadcastMessage(message);
+                        }
 
                         // キル数達成イベントのコール
                         Team killerTeam = api.getPlayerTeam(killer);
@@ -178,10 +185,11 @@ public class PlayerDeathListener implements Listener {
                             config.getKillTrophy() ) {
 
                         // 全体通知
-                        String message = String.format(
-                                PRENOTICE + "%s チームは、%d キルを達成しました！",
-                                tnsKiller.getName(), config.getKillTrophy());
-                        Bukkit.broadcastMessage(message);
+                        String message = config.getKillTrophyMessage(
+                                tnsKiller.toString(), config.getKillTrophy());
+                        if ( message != null ) {
+                            Bukkit.broadcastMessage(message);
+                        }
 
                         // キル数リーチイベントのコール
                         Team killerTeam = api.getPlayerTeam(killer);

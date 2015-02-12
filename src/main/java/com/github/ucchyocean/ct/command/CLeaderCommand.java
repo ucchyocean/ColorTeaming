@@ -19,6 +19,7 @@ import org.bukkit.entity.Player;
 
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.Utility;
+import com.github.ucchyocean.ct.config.ColorTeamingConfig;
 import com.github.ucchyocean.ct.config.TeamNameSetting;
 
 /**
@@ -49,12 +50,18 @@ public class CLeaderCommand implements TabExecutor {
 
         String team = args[0];
         HashMap<String, ArrayList<String>> leaders = plugin.getAPI().getLeaders();
+        ColorTeamingConfig config = plugin.getCTConfig();
 
         if ( team.equalsIgnoreCase("clear") ) {
             // clear 指定の場合。
 
             plugin.getAPI().clearLeaders();
-            Bukkit.broadcastMessage(PRENOTICE + "大将設定がクリアされました。");
+
+            String msg = config.getLeaderClearMessage();
+            if ( msg != null ) {
+                Bukkit.broadcastMessage(msg);
+            }
+
             return true;
 
         } else if ( team.equalsIgnoreCase("view") || team.equalsIgnoreCase("say") ) {
@@ -72,6 +79,12 @@ public class CLeaderCommand implements TabExecutor {
             }
 
             for ( String key : leaders.keySet() ) {
+
+                String pre = config.getLeaderInformationSummayMessage(key);
+                if ( pre == null ) {
+                    break;
+                }
+
                 StringBuilder temp = new StringBuilder();
                 for ( String name : leaders.get(key) ) {
                     if ( temp.length() == 0 ) {
@@ -83,10 +96,10 @@ public class CLeaderCommand implements TabExecutor {
                 }
 
                 if ( isBroadcast ) {
-                    Bukkit.broadcastMessage(PRENOTICE + key + " チームの大将：");
+                    Bukkit.broadcastMessage(PRENOTICE + pre);
                     Bukkit.broadcastMessage(PRENOTICE + temp.toString());
                 } else {
-                    sender.sendMessage(PREINFO + key + " チームの大将：");
+                    sender.sendMessage(PREINFO + pre);
                     sender.sendMessage(PREINFO + temp.toString());
                 }
             }
@@ -130,8 +143,12 @@ public class CLeaderCommand implements TabExecutor {
                     }
                     l.append(name);
                 }
-                String message = String.format("%s チームの大将に、%s が選ばれました。", teamName.getName(), l);
-                plugin.getAPI().sendTeamChat(null, key, message);
+
+                String message = config.getLeaderInformationTeamChatMessage(teamName.toString(), l.toString());
+                if ( message != null ) {
+                    plugin.getAPI().sendTeamChat(null, key, message);
+                }
+
                 sender.sendMessage(String.format(PREINFO + "%s チームの大将を、%d 人設定しました。",
                         teamName.getName(), numberOfLeaders));
             }
@@ -168,9 +185,11 @@ public class CLeaderCommand implements TabExecutor {
                 String newLeader = members.get(team).get(value).getName();
                 leaders.get(team).add(newLeader);
 
-                String message = String.format("%s チームの大将に、%s が選ばれました。",
-                        teamName.toString(), newLeader);
-                plugin.getAPI().sendTeamChat(null, team, message);
+                String message = config.getLeaderInformationTeamChatMessage(teamName.toString(), newLeader);
+                if ( message != null ) {
+                    plugin.getAPI().sendTeamChat(null, team, message);
+                }
+
                 sender.sendMessage(String.format(PREINFO + "%s チームの大将を、1 人設定しました。",
                         teamName.toString()));
 
@@ -187,9 +206,11 @@ public class CLeaderCommand implements TabExecutor {
                 leaders.put(team, new ArrayList<String>());
                 leaders.get(team).add(user);
 
-                String message = String.format("%s チームの大将に、%s が選ばれました。",
-                        teamName.toString(), user);
-                plugin.getAPI().sendTeamChat(null, team, message);
+                String message = config.getLeaderInformationTeamChatMessage(teamName.toString(), user);
+                if ( message != null ) {
+                    plugin.getAPI().sendTeamChat(null, team, message);
+                }
+
                 sender.sendMessage(PRENOTICE + message);
 
                 return true;

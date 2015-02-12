@@ -85,7 +85,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         tppointConfig = new TPPointConfiguration();
         teamNameConfig = new TeamNameConfig();
         classDatas = ClassData.loadAllClasses(new File(plugin.getDataFolder(), "classes"));
-        objectives = new ObjectiveManager(scoreboard, this);
+        objectives = new ObjectiveManager(scoreboard, this, config);
     }
 
     /**
@@ -197,8 +197,10 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         plugin.addMemberPermission(player, id);
 
         // 該当プレイヤーに通知
-        player.sendMessage( Utility.replaceColorCode(
-                String.format("&aあなたはチーム %s &aになりました。", teamName.toString() ) ) );
+        String msg = config.getJoinTeamMessage(teamName.toString());
+        if ( msg != null ) {
+            player.sendMessage(msg);
+        }
 
         return team;
     }

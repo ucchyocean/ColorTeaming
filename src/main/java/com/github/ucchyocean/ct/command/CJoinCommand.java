@@ -16,6 +16,7 @@ import org.bukkit.entity.Player;
 
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingAPI;
+import com.github.ucchyocean.ct.config.ColorTeamingConfig;
 import com.github.ucchyocean.ct.config.TeamNameConfig;
 import com.github.ucchyocean.ct.config.TeamNameSetting;
 
@@ -46,19 +47,27 @@ public class CJoinCommand implements TabExecutor {
         }
 
         Player player = (Player)sender;
+        ColorTeamingConfig config = plugin.getCTConfig();
 
         if ( args.length == 0 || args[0].equalsIgnoreCase("random") ) {
 
             if ( !plugin.getCTConfig().isAllowPlayerJoinRandom() ) {
-                player.sendMessage(
-                        PREERR +
-                        "cjoinコマンドによるランダム参加は、許可されておりません。");
+
+                String msg = config.getErrorJoinRandomNotAllowMessage();
+                if ( msg != null ) {
+                    player.sendMessage(msg);
+                }
+
                 return true;
             }
 
             if ( plugin.getAPI().getPlayerTeamName(player) != null ) {
-                player.sendMessage(
-                        PREERR + "あなたは既に、チームに所属しています。");
+
+                String msg = config.getErrorAlreadyJoinMessage();
+                if ( msg != null ) {
+                    player.sendMessage(msg);
+                }
+
                 return true;
             }
 
@@ -67,8 +76,12 @@ public class CJoinCommand implements TabExecutor {
             boolean result = plugin.getAPI().addPlayerToColorTeamsWithOrderSelection(players);
 
             if ( !result ) {
-                sender.sendMessage(
-                        PREERR + "参加できるチームが無いようです。");
+
+                String msg = config.getErrorNoTeamMessage();
+                if ( msg != null ) {
+                    player.sendMessage(msg);
+                }
+
                 return true;
             }
 
@@ -77,22 +90,34 @@ public class CJoinCommand implements TabExecutor {
         } else {
 
             if ( !plugin.getCTConfig().isAllowPlayerJoinAny() ) {
-                player.sendMessage(
-                        PREERR +
-                        "cjoin (group) コマンドによる任意チームへの参加は、許可されておりません。");
+
+                String msg = config.getErrorJoinAnyNotAllowMessage();
+                if ( msg != null ) {
+                    player.sendMessage(msg);
+                }
+
                 return true;
             }
 
             if ( plugin.getAPI().getPlayerTeamName(player) != null ) {
-                player.sendMessage(
-                        PREERR + "あなたは既に、チームに所属しています。");
+
+                String msg = config.getErrorAlreadyJoinMessage();
+                if ( msg != null ) {
+                    player.sendMessage(msg);
+                }
+
                 return true;
             }
 
             String target = args[0];
             ArrayList<TeamNameSetting> teams = plugin.getAPI().getTeamNameConfig().getTeamNames();
             if ( !TeamNameConfig.containsID(teams, target) ) {
-                sender.sendMessage(PREERR + target + " は設定できないチーム名です。");
+
+                String msg = config.getErrorInvalidTeamNameMessage(target);
+                if ( msg != null ) {
+                    player.sendMessage(msg);
+                }
+
                 return true;
             }
 

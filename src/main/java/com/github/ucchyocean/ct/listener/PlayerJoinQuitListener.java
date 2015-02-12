@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -34,8 +33,6 @@ import com.github.ucchyocean.ct.event.ColorTeamingWonTeamEvent;
  * @author ucchy
  */
 public class PlayerJoinQuitListener implements Listener {
-
-    private static final String PRENOTICE = ChatColor.LIGHT_PURPLE.toString();
 
     private ColorTeaming plugin;
 
@@ -125,6 +122,7 @@ public class PlayerJoinQuitListener implements Listener {
     private void leaveTeam(Player player) {
 
         ColorTeamingAPI api = plugin.getAPI();
+        ColorTeamingConfig config = plugin.getCTConfig();
 
         TeamNameSetting tns = api.getPlayerTeamName(player);
 
@@ -137,20 +135,27 @@ public class PlayerJoinQuitListener implements Listener {
         HashMap<String, ArrayList<String>> leaders = api.getLeaders();
         if ( leaders.containsKey(tns.getID()) &&
                 leaders.get(tns.getID()).contains(player.getName()) ) {
-            String message = String.format(PRENOTICE + "%s チームの大将、%s は逃げ出した！",
-                    tns.getName(), player.getName());
-            Bukkit.broadcastMessage(message);
+
+            String message = config.getLeaderDefeatedMessage(
+                    tns.toString(), player.getName());
+            if ( message != null ) {
+                Bukkit.broadcastMessage(message);
+            }
+
             leaders.get(tns.getID()).remove(player.getName());
 
             if ( leaders.get(tns.getID()).size() >= 1 ) {
-                message = String.format(PRENOTICE + "%s チームの残り大将は、あと %d 人です。",
-                        tns.getName(), leaders.get(tns.getID()).size());
-                Bukkit.broadcastMessage(message);
+                message = config.getLeaderDefeatedRemainMessage(
+                        tns.toString(), leaders.get(tns.getID()).size());
+                if ( message != null ) {
+                    Bukkit.broadcastMessage(message);
+                }
 
             } else {
-                message = String.format(PRENOTICE + "%s チームの大将は全滅しました！",
-                        tns.getName());
-                Bukkit.broadcastMessage(message);
+                message = config.getLeaderDefeatedAllMessage(tns.toString());
+                if ( message != null ) {
+                    Bukkit.broadcastMessage(message);
+                }
                 leaders.remove(tns.getID());
 
                 // チームリーダー全滅イベントのコール
