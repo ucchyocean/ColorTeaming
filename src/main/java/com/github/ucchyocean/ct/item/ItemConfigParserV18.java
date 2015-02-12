@@ -38,7 +38,7 @@ public class ItemConfigParserV18 {
             BannerMeta banner = (BannerMeta)item.getItemMeta();
 
             if ( section.contains("basecolor") ) {
-            banner.setBaseColor(getDyeColorFromString(section.getString("basecolor")));
+                banner.setBaseColor(getDyeColorFromString(section.getString("basecolor")));
             }
 
             if ( section.contains("patterns") ) {
@@ -67,6 +67,8 @@ public class ItemConfigParserV18 {
                     banner.addPattern(patterns.get(index));
                 }
             }
+
+            item.setItemMeta(banner);
         }
 
         return item;
@@ -85,7 +87,7 @@ public class ItemConfigParserV18 {
             BannerMeta banner = (BannerMeta)item.getItemMeta();
 
             if ( banner.getBaseColor() != null ) {
-            section.set("basecolor", banner.getBaseColor().toString());
+                section.set("basecolor", banner.getBaseColor().toString());
             }
 
             List<Pattern> patterns = banner.getPatterns();
