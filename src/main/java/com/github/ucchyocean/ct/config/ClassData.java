@@ -487,7 +487,9 @@ public class ClassData {
 
         // エフェクトの設定
         if ( effects != null ) {
-            player.addPotionEffects(effects);
+            for ( PotionEffect effect : effects ) {
+                player.addPotionEffect(effect, true);
+            }
         }
 
         // 経験値の設定
@@ -504,10 +506,14 @@ public class ClassData {
         if ( killPoint != DISABLE_POINT ) {
             player.setMetadata(KILL_POINT_NAME,
                     new FixedMetadataValue(ColorTeaming.instance, killPoint));
+        } else {
+            player.removeMetadata(KILL_POINT_NAME, ColorTeaming.instance);
         }
         if ( deathPoint != DISABLE_POINT ) {
             player.setMetadata(DEATH_POINT_NAME,
                     new FixedMetadataValue(ColorTeaming.instance, deathPoint));
+        } else {
+            player.removeMetadata(DEATH_POINT_NAME, ColorTeaming.instance);
         }
 
         return true;
