@@ -20,8 +20,8 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.scoreboard.Team;
-import org.bukkit.util.Vector;
 
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingAPI;
@@ -249,6 +249,11 @@ public class PlayerDeathListener implements Listener {
                 // NOTE: 回復するとゲームオーバー画面が表示されない
                 Utility.resetPlayerStatus(deader);
 
+                // ポーション効果の削除
+                for ( PotionEffect e : deader.getActivePotionEffects() ) {
+                    deader.removePotionEffect(e.getType());
+                }
+
                 // リスポーンイベントを呼び出す
                 Location respawnLocation = deader.getBedSpawnLocation();
                 if ( respawnLocation == null ) {
@@ -269,7 +274,7 @@ public class PlayerDeathListener implements Listener {
                     // リスポーン場所へテレポートする
                     deader.teleport(respawnLocation, TeleportCause.PLUGIN);
                     // ノックバックの除去
-                    deader.setVelocity(new Vector());
+                    deader.setVelocity(deader.getVelocity().zero());
                 }
             }
         }
