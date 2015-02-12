@@ -25,7 +25,6 @@ import java.util.zip.ZipEntry;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
 
 /**
@@ -292,19 +291,21 @@ public class Utility {
     }
 
     /**
-     * プレイヤーの全回復、および、全エフェクトの除去を行う
+     * プレイヤーの状態リセットを行う
      * @param player 対象プレイヤー
      */
     public static void resetPlayerStatus(final Player player) {
 
         player.setHealth(player.getMaxHealth());
-        player.setFallDistance(0);
         player.setFoodLevel(20);
+        player.setFallDistance(0);
         player.setRemainingAir(player.getMaximumAir());
-        Collection<PotionEffect> effects = player.getActivePotionEffects();
-        for ( PotionEffect e : effects ) {
-            player.removePotionEffect(e.getType());
-        }
+
+        // ポーション効果の除去は、ここでは行わない。see issue #120
+//        Collection<PotionEffect> effects = player.getActivePotionEffects();
+//        for ( PotionEffect e : effects ) {
+//            player.removePotionEffect(e.getType());
+//        }
 
         // NOTE: ゲームオーバー画面をスキップする場合、Fire ticks は少し遅れて設定しないと火が消えない。
         new BukkitRunnable() {

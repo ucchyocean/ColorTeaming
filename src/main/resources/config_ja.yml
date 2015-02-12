@@ -22,8 +22,12 @@ worldSpawn: false
 teleportDelay: 2
 
 # /cclassコマンドでクラスを設定したときに、
-# 体力の回復やポーション効果の削除をするかどうかを設定します。
-resetOnSetClass: true
+# 体力の回復をするかどうかを設定します。
+healOnSetClass: true
+
+# /cclassコマンドでクラスを設定したときに、
+# ポーション効果の除去をするかどうかを設定します。
+clearEffectOnSetClass: true
 
 
 

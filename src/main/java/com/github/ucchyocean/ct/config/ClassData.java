@@ -63,8 +63,10 @@ public class ClassData {
     private int killPoint;
     /** デスしたときの得点 */
     private int deathPoint;
-    /** クラス設定したときに状態リセットをするかどうか */
-    private boolean resetOnSetClass;
+    /** クラス設定したときに回復をするかどうか */
+    private boolean healOnSetClass;
+    /** クラス設定したときにポーション効果の除去をするかどうか */
+    private boolean clearEffectOnSetClass;
 
     /**
      * コンストラクタ
@@ -81,7 +83,8 @@ public class ClassData {
         this.level = -1;
         this.killPoint = DISABLE_POINT;
         this.deathPoint = DISABLE_POINT;
-        this.resetOnSetClass = false;
+        this.healOnSetClass = false;
+        this.clearEffectOnSetClass = false;
     }
 
     /**
@@ -225,17 +228,31 @@ public class ClassData {
     }
 
     /**
-     * @return resetOnSetClass
+     * @return healOnSetClass
      */
-    public boolean isResetOnSetClass() {
-        return resetOnSetClass;
+    public boolean isHealOnSetClass() {
+        return healOnSetClass;
     }
 
     /**
-     * @param resetOnSetClass resetOnSetClass
+     * @param healOnSetClass healOnSetClass
      */
-    public void setResetOnSetClass(boolean resetOnSetClass) {
-        this.resetOnSetClass = resetOnSetClass;
+    public void setHealOnSetClass(boolean healOnSetClass) {
+        this.healOnSetClass = healOnSetClass;
+    }
+
+    /**
+     * @return clearEffectOnSetClass
+     */
+    public boolean isClearEffectOnSetClass() {
+        return clearEffectOnSetClass;
+    }
+
+    /**
+     * @param clearEffectOnSetClass clearEffectOnSetClass
+     */
+    public void setClearEffectOnSetClass(boolean clearEffectOnSetClass) {
+        this.clearEffectOnSetClass = clearEffectOnSetClass;
     }
 
     /**
@@ -378,7 +395,9 @@ public class ClassData {
 
         cd.setDeathPoint(config.getInt("death_point", DISABLE_POINT));
 
-        cd.setResetOnSetClass(config.getBoolean("resetOnSetClass", false));
+        cd.setHealOnSetClass(config.getBoolean("healOnSetClass", false));
+
+        cd.setClearEffectOnSetClass(config.getBoolean("clearEffectOnSetClass", false));
 
         return cd;
     }
@@ -399,11 +418,18 @@ public class ClassData {
         boolean needToUpdateInventory = false;
 
         // 全回復の実行
-        boolean doReset =
-                ( resetOnSetClass ||
-                        ColorTeaming.instance.getCTConfig().isResetOnSetClass() );
-        if ( doReset ) {
+        boolean doHeal = healOnSetClass
+                || ColorTeaming.instance.getCTConfig().isHealOnSetClass();
+        if ( doHeal ) {
             Utility.resetPlayerStatus(player);
+        }
+
+        // ポーション効果の除去
+        if ( clearEffectOnSetClass
+                || ColorTeaming.instance.getCTConfig().isClearEffectOnSetClass() ) {
+            for ( PotionEffect e : player.getActivePotionEffects() ) {
+                player.removePotionEffect(e.getType());
+            }
         }
 
         if ( items != null ) {
@@ -454,7 +480,7 @@ public class ClassData {
         // 体力最大値の設定
         if ( health != -1 ) {
             player.setMaxHealth(health);
-            if ( doReset ) {
+            if ( doHeal ) {
                 player.setHealth(health);
             }
         }

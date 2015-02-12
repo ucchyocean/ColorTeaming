@@ -120,8 +120,11 @@ public class ColorTeamingConfig {
     /** カスタムキルログ（自滅）のフォーマット設定 */
     private String customKilllogSelfDestructFormat;
 
-    /** クラスを設定した時に状態リセットをするかどうか */
-    private boolean resetOnSetClass;
+    /** クラスを設定した時に体力の回復をするかどうか */
+    private boolean healOnSetClass;
+
+    /** クラスを設定した時にエフェクト効果の除去をするかどうか */
+    private boolean clearEffectOnSetClass;
 
     /** ランダムマップが選択されたときに、表示するアナウンスメッセージ */
     private String randomMapSelectedMessage;
@@ -205,7 +208,8 @@ public class ColorTeamingConfig {
         ctconfig.customKilllogSelfDestructFormat = config.getString(
                 "customKilllogSelfDestructFormat", "xxx [自爆&f] %deader");
 
-        ctconfig.resetOnSetClass = config.getBoolean("resetOnSetClass", true);
+        ctconfig.healOnSetClass = config.getBoolean("healOnSetClass", true);
+        ctconfig.clearEffectOnSetClass = config.getBoolean("clearEffectOnSetClass", true);
 
         ctconfig.randomMapSelectedMessage = config.getString("randomMapSelectedMessage");
 
@@ -262,7 +266,8 @@ public class ColorTeamingConfig {
         config.set("enableCustomKilllog", enableCustomKilllog);
         config.set("customKilllogFormat", customKilllogFormat);
         config.set("customKilllogSelfDestructFormat", customKilllogSelfDestructFormat);
-        config.set("resetOnSetClass", resetOnSetClass);
+        config.set("healOnSetClass", healOnSetClass);
+        config.set("clearEffectOnSetClass", clearEffectOnSetClass);
         config.set("randomMapSelectedMessage", randomMapSelectedMessage);
 
         // 保存処理
@@ -509,8 +514,12 @@ public class ColorTeamingConfig {
         return customKilllogSelfDestructFormat;
     }
 
-    public boolean isResetOnSetClass() {
-        return resetOnSetClass;
+    public boolean isHealOnSetClass() {
+        return healOnSetClass;
+    }
+
+    public boolean isClearEffectOnSetClass() {
+        return clearEffectOnSetClass;
     }
 
     public String getRandomMapSelectedMessage() {
