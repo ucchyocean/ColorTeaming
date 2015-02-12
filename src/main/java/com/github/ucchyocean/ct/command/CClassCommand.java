@@ -19,8 +19,8 @@ import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingAPI;
 import com.github.ucchyocean.ct.Utility;
 import com.github.ucchyocean.ct.config.ClassData;
-import com.github.ucchyocean.ct.config.ItemConfigParser;
 import com.github.ucchyocean.ct.config.TeamNameSetting;
+import com.github.ucchyocean.ct.item.ItemConfigParser;
 
 /**
  * colorclass(cclass)コマンドの実行クラス
@@ -52,9 +52,7 @@ public class CClassCommand implements TabExecutor {
             Player player = (Player)sender;
             if ( player.getItemInHand() != null ) {
                 sender.sendMessage("===== アイテム情報 =====");
-                for ( String message : ItemConfigParser.getItemInfo(player.getItemInHand(), "") ) {
-                    sender.sendMessage(message);
-                }
+                sender.sendMessage(ItemConfigParser.getItemInfo(player.getItemInHand()));
             }
             return true;
 

@@ -5,9 +5,6 @@
  */
 package com.github.ucchyocean.ct.bridge;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.bukkit.configuration.ConfigurationSection;
 
 import com.github.ucchyocean.ct.bridge.AttributesAPIBridge.Operator;
@@ -45,15 +42,10 @@ public class AttributeInfo {
      * @param indent インデント
      * @return 文字列表現
      */
-    public List<String> toStrings(String indent) {
-
-        ArrayList<String> result = new ArrayList<String>();
-
-        result.add(indent + "type: " + type.name());
-        result.add(indent + "operator: " + operator.name());
-        result.add(indent + "amount: " + amount);
-
-        return result;
+    public void saveToConfigSection(ConfigurationSection section) {
+        section.set("type", type.name());
+        section.set("operator", operator.name());
+        section.set("amount", amount);
     }
 
     /**

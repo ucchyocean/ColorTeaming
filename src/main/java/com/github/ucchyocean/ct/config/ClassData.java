@@ -5,14 +5,13 @@
  */
 package com.github.ucchyocean.ct.config;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.Material;
@@ -27,7 +26,8 @@ import org.bukkit.potion.PotionEffectType;
 
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.Utility;
-import com.github.ucchyocean.ct.item.CustomItem;
+import com.github.ucchyocean.ct.item.ItemConfigParseException;
+import com.github.ucchyocean.ct.item.ItemConfigParser;
 
 /**
  * クラスデータ
@@ -294,8 +294,7 @@ public class ClassData {
     private static ClassData loadFromConfig(YamlConfiguration config) {
 
         ClassData cd = new ClassData();
-        ItemConfigParser itemParser = new ItemConfigParser(
-                ColorTeaming.instance.getLogger());
+        Logger logger = ColorTeaming.instance.getLogger();
 
         cd.setTitle(config.getString("title"));
 
@@ -308,9 +307,13 @@ public class ClassData {
             ConfigurationSection itemsSection =
                     config.getConfigurationSection("items");
             for ( String sub : itemsSection.getKeys(false) ) {
-                items.add(itemParser.getItemFromSection(
-                            itemsSection.getConfigurationSection(sub),
-                            cd.getTitle() + " - items - " + sub));
+                try {
+                    items.add(ItemConfigParser.getItemFromSection(
+                                itemsSection.getConfigurationSection(sub)));
+                } catch (ItemConfigParseException e) {
+                    logger.log(Level.WARNING,
+                            cd.getTitle() + " - items - " + sub + " に、正しくない設定があります。", e);
+                }
             }
             cd.setItems(items);
         }
@@ -321,9 +324,13 @@ public class ClassData {
                     config.getConfigurationSection("armors");
 
             for ( String parts : new String[]{"boots", "leggings", "chestplate", "helmet"} ) {
-                armors.add(itemParser.getItemFromSection(
-                        armorsSection.getConfigurationSection(parts),
-                        cd.getTitle() + " - armors - " + parts));
+                try {
+                    armors.add(ItemConfigParser.getItemFromSection(
+                            armorsSection.getConfigurationSection(parts)));
+                } catch (ItemConfigParseException e) {
+                    logger.log(Level.WARNING,
+                            cd.getTitle() + " - armors - " + parts + " に、正しくない設定があります。", e);
+                }
             }
             cd.setArmors(armors);
         }
@@ -340,9 +347,7 @@ public class ClassData {
 
                 PotionEffectType type = PotionEffectType.getByName(name);
                 if ( type == null ) {
-                    Logger logger = ColorTeaming.instance.getLogger();
-                    logger.warning("指定されたエフェクト形式 " + name + " が正しくありません。");
-                    logger.warning("└ " + cd.getTitle() + " - effects");
+                    logger.warning(cd.getTitle() + " - effects に指定されたエフェクト形式 " + name + " が正しくありません。");
                     continue;
                 }
 
@@ -409,22 +414,6 @@ public class ClassData {
             // アイテムの配布
             for ( ItemStack item : items ) {
                 if ( item != null ) {
-
-                    if ( item.getType() == ItemConfigParser.DUMMY_ITEM ) {
-                        // カスタムアイテムをあらかじめ置き換える
-
-                        if ( !item.hasItemMeta() || !item.getItemMeta().hasDisplayName() ) {
-                            continue;
-                        }
-
-                        String name = item.getItemMeta().getDisplayName();
-                        CustomItem citem = ColorTeaming.instance.getAPI().getCustomItem(name);
-                        if ( citem == null ) {
-                            continue;
-                        }
-                        item = citem.getItemStack().clone();
-                    }
-
                     player.getInventory().addItem(item);
                 }
             }
@@ -507,67 +496,64 @@ public class ClassData {
      */
     public static boolean exportClassFromPlayer(Player player, String name, boolean isOverwrite) {
 
-        ArrayList<String> contents = new ArrayList<String>();
-        updateInventory(player);
+        YamlConfiguration config = new YamlConfiguration();
+
+        updateInventory(player); // 念のため
         PlayerInventory inv = player.getInventory();
 
-        contents.add("title: " + name);
+        config.set("title", name);
 
         if ( countItem(inv.getContents()) > 0 ) {
 
-            contents.add("items:");
+            ConfigurationSection sub = config.createSection("items");
 
             int index = 1;
 
             for ( ItemStack item : inv.getContents() ) {
                 if ( item != null && item.getType() != Material.AIR ) {
-                    contents.add("  item" + index + ":");
+                    ConfigurationSection itemsec = sub.createSection("item" + index);
                     index++;
-                    contents.addAll(ItemConfigParser.getItemInfo(item, "    "));
+                    ItemConfigParser.setItemToSection(itemsec, item);
                 }
             }
 
         } else if ( isOverwrite ) {
+            config.set("items.item1.material", "AIR");
 
-            contents.add("items:");
-            contents.add("  item1:");
-            contents.add("    material: AIR");
         }
 
         if ( countItem(inv.getArmorContents()) > 0 ) {
 
+            ConfigurationSection sub = config.createSection("armors");
+
             String[] armorNames = new String[]{"boots", "leggings", "chestplate", "helmet"};
-            contents.add("armors:");
 
             for ( int i=0; i<4; i++ ) {
                 ItemStack item = inv.getArmorContents()[i];
                 if ( item != null && item.getType() != Material.AIR ) {
-                    contents.add("  " + armorNames[i] + ":");
-                    contents.addAll(ItemConfigParser.getItemInfo(item, "    "));
+                    ConfigurationSection itemsec = sub.createSection(armorNames[i]);
+                    ItemConfigParser.setItemToSection(itemsec, item);
                 }
             }
 
         } else if ( isOverwrite ) {
+            config.set("armors.helmet.material", "AIR");
 
-            contents.add("armors:");
-            contents.add("  helmet:");
-            contents.add("    material: AIR");
         }
 
         if ( player.getMaxHealth() != 20.0 ) {
-            contents.add("health: " + (int)player.getMaxHealth());
+            config.set("health", player.getMaxHealth());
         }
 
         if ( !player.getActivePotionEffects().isEmpty() ) {
-            contents.add("effects:");
+            ConfigurationSection sub = config.createSection("effects");
             for ( PotionEffect effect : player.getActivePotionEffects() ) {
-                contents.add("  " + effect.getType().getName() + ": " +
-                        (effect.getAmplifier() + 1) );
+                sub.set(effect.getType().getName(), (effect.getAmplifier() + 1));
             }
         }
 
         if ( player.getTotalExperience() > 0 ) {
-            contents.add("experience: " + player.getTotalExperience());
+            config.set("experience", player.getTotalExperience());
         }
 
         // ファイルへ書き込み
@@ -577,26 +563,11 @@ public class ClassData {
         }
 
         File file = new File(folder, name + ".yml");
-        BufferedWriter writer = null;
         try {
-            writer = new BufferedWriter(new FileWriter(file));
-            for ( String line : contents ) {
-                writer.write(line);
-                writer.newLine();
-            }
-
+            config.save(file);
         } catch (IOException e) {
             e.printStackTrace();
             return false;
-        } finally {
-            if ( writer != null ) {
-                try {
-                    writer.flush();
-                    writer.close();
-                } catch (IOException e) {
-                    // do nothing.
-                }
-            }
         }
 
         // ロードして、オンメモリにも反映する。

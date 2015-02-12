@@ -273,28 +273,35 @@ public interface ColorTeamingAPI {
     /**
      * カスタムアイテムを登録する
      * @param item カスタムアイテム
+     * @deprecated ColorTeaming v2.4.0 以降では非サポートとなったため、実行しても何も起こりません。
      */
+    @Deprecated
     public void registerCustomItem(CustomItem item);
 
     /**
      * カスタムアイテムを登録する
      * @param item 登録するアイテム
      * @param name アイテム名
-     * @param displayName 表示アイテム名
+     * @deprecated ColorTeaming v2.4.0 以降では非サポートとなったため、実行しても何も起こりません。
      */
+    @Deprecated
     public void registerCustomItem(ItemStack item, String name, String displayName);
 
     /**
      * 登録されているカスタムアイテムを取得する
      * @param name カスタムアイテム名
      * @return カスタムアイテム、登録されていないアイテム名を指定した場合はnullが返される。
+     * @deprecated ColorTeaming v2.4.0 以降では非サポートとなったため、必ずnullが返されます。
      */
+    @Deprecated
     public CustomItem getCustomItem(String name);
 
     /**
      * 登録されているカスタムアイテムの名前を取得する
      * @return カスタムアイテムの名前
+     * @deprecated ColorTeaming v2.4.0 以降では非サポートとなったため、必ず空配列が返されます。
      */
+    @Deprecated
     public Set<String> getCustomItemNames();
 
     /**

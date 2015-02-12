@@ -9,6 +9,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -62,8 +63,6 @@ public class ColorTeamingManager implements ColorTeamingAPI {
 
     private String respawnMapName;
 
-    private HashMap<String, CustomItem> customItems;
-
     private HashMap<String, ClassData> classDatas;
 
     /**
@@ -85,7 +84,6 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         respawnConfig = new RespawnConfiguration();
         tppointConfig = new TPPointConfiguration();
         teamNameConfig = new TeamNameConfig();
-        customItems = new HashMap<String, CustomItem>();
         classDatas = ClassData.loadAllClasses(new File(plugin.getDataFolder(), "classes"));
         objectives = new ObjectiveManager(scoreboard, this);
     }
@@ -885,12 +883,12 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     /**
      * カスタムアイテムを登録する
      * @param item カスタムアイテム
+     * @deprecated ColorTeaming v2.4.0 以降では非サポートとなったため、実行しても何も起こりません。
      */
     @Override
+    @Deprecated
     public void registerCustomItem(CustomItem item) {
-
-        String name = item.getName();
-        customItems.put(name, item);
+        // do nothing.
     }
 
     /**
@@ -898,29 +896,35 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      * @param item 登録するアイテム
      * @param name アイテム名
      * @param displayName 表示アイテム名
+     * @deprecated ColorTeaming v2.4.0 以降では非サポートとなったため、実行しても何も起こりません。
      */
     @Override
+    @Deprecated
     public void registerCustomItem(ItemStack item, String name, String displayName) {
-        registerCustomItem(new CustomItem(item, name, displayName));
+        // do nothing.
     }
 
     /**
      * 登録されているカスタムアイテムを取得する
      * @param name カスタムアイテム名
      * @return カスタムアイテム、登録されていないアイテム名を指定した場合はnullが返される。
+     * @deprecated ColorTeaming v2.4.0 以降では非サポートとなったため、必ずnullが返されます。
      */
     @Override
+    @Deprecated
     public CustomItem getCustomItem(String name) {
-        return customItems.get(name);
+        return null;
     }
 
     /**
      * 登録されているカスタムアイテムの名前を取得する
      * @return カスタムアイテムの名前
+     * @deprecated ColorTeaming v2.4.0 以降では非サポートとなったため、必ず空配列が返されます。
      */
     @Override
+    @Deprecated
     public Set<String> getCustomItemNames() {
-        return customItems.keySet();
+        return new HashSet<String>();
     }
 
     /**

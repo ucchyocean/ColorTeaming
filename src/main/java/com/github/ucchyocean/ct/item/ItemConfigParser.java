@@ -1,19 +1,21 @@
 /*
  * @author     ucchy
  * @license    LGPLv3
- * @copyright  Copyright ucchy 2014
+ * @copyright  Copyright ucchy 2015
  */
-package com.github.ucchyocean.ct.config;
+package com.github.ucchyocean.ct.item;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.FireworkEffect.Builder;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
@@ -37,26 +39,13 @@ import com.github.ucchyocean.ct.bridge.AttributesAPIBridge;
  */
 public class ItemConfigParser {
 
-    /** カスタムアイテム用のダミーアイテム */
-    protected static final Material DUMMY_ITEM = Material.BED_BLOCK;
-
-    private Logger logger;
-
-    /**
-     * コンストラクタ
-     * @param logger ロガー（コンフィグのパースに失敗した時に警告出力で使用される）
-     */
-    public ItemConfigParser(Logger logger) {
-        this.logger = logger;
-    }
-
     /**
      * コンフィグセクションから、アイテム設定を読みだして、ItemStackを生成して返します。
      * @param section コンフィグセクション
-     * @param info セクションの情報、パースに失敗した時の警告に使用されます。
      * @return ItemStack
      */
-    public ItemStack getItemFromSection(ConfigurationSection section, String info) {
+    public static ItemStack getItemFromSection(ConfigurationSection section)
+            throws ItemConfigParseException {
 
         if ( section == null ) {
             return null;
@@ -64,41 +53,26 @@ public class ItemConfigParser {
 
         ItemStack item = null;
 
-        if ( section.contains("material") ) {
-            // 通常のアイテム設定
-
-            // materialは大文字に変換して読み込ませる
-            String name = section.getString("material");
-            Material material = Material.getMaterial(name.toUpperCase());
-            if ( material == null ) {
-                logger.warning("materialの指定 " + name + " が正しくありません。");
-                logger.warning("└ " + info);
-                return null;
-            }
-            if ( material == Material.AIR ) {
-                return new ItemStack(Material.AIR);
-            }
-
-            // データ値は、ここで設定する（たぶん、将来サポートされなくなるので注意）
-            short data = (short)section.getInt("data", 0);
-            item = new ItemStack(material, 1, data);
-
-        } else if ( section.contains("custom_item") ) {
-            // カスタムアイテムの設定
-
-            String name = section.getString("custom_item");
-            item = new ItemStack(DUMMY_ITEM);
-            ItemMeta meta = item.getItemMeta();
-            meta.setDisplayName(name);
-            item.setItemMeta(meta);
-
-            return item;
-
-        } else {
-            logger.warning("アイテム設定に必須項目（material または custom_item）がありません。");
-            logger.warning("└ " + info);
-            return null;
+        if ( !section.contains("material") ) {
+            throw new ItemConfigParseException("Material tag was not found.");
         }
+
+        // 通常のアイテム設定
+
+        // materialは大文字に変換して読み込ませる
+        String mname = section.getString("material");
+        Material material = Material.getMaterial(mname.toUpperCase());
+        if ( material == null ) {
+            throw new ItemConfigParseException(
+                    "Material name '" + mname + "' is invalid.");
+        }
+        if ( material == Material.AIR ) {
+            return new ItemStack(Material.AIR);
+        }
+
+        // データ値はここで設定する
+        short data = (short)section.getInt("data", 0);
+        item = new ItemStack(material, 1, data);
 
         // アイテムの個数
         item.setAmount(section.getInt("amount", 1));
@@ -126,9 +100,8 @@ public class ItemConfigParser {
                 Enchantment enchant = Enchantment.getByName(type_str);
 
                 if ( enchant == null ) {
-                    logger.warning("指定されたエンチャント形式 " + type_str + " が正しくありません。");
-                    logger.warning("└ " + info);
-                    continue;
+                    throw new ItemConfigParseException(
+                            "Enchant type '" + type_str + "' is invalid.");
                 }
 
                 int level = enchants_sec.getInt(type_str, 1);
@@ -206,61 +179,61 @@ public class ItemConfigParser {
             String name = section.getString("potion_type");
             PotionType type = getPotionTypeByName(name);
             if ( type == null ) {
-                logger.warning("指定されたポーション形式 " + name + " が正しくありません。");
-                logger.warning("└ " + info);
-            } else {
-                int amp = section.getInt("potion_level", 1);
-                if ( amp < 1 ) {
-                    amp = 1;
-                } else if ( amp > type.getMaxLevel() ) {
-                    amp = type.getMaxLevel();
-                }
-                Potion potion = new Potion(type, amp);
-                potion.setSplash(section.getBoolean("splash", false));
-                if ( !type.isInstant() ) {
-                    potion.setHasExtendedDuration(section.getBoolean("extend", false));
-                }
-                potion.apply(item);
+                throw new ItemConfigParseException(
+                        "The potion type '" + name + "' is invalid.");
+            }
 
-                // カスタムポーションの詳細設定
-                if ( section.contains("custom_effects") ) {
+            int amp = section.getInt("potion_level", 1);
+            if ( amp < 1 ) {
+                amp = 1;
+            } else if ( amp > type.getMaxLevel() ) {
+                amp = type.getMaxLevel();
+            }
+            Potion potion = new Potion(type, amp);
+            potion.setSplash(section.getBoolean("splash", false));
+            if ( !type.isInstant() ) {
+                potion.setHasExtendedDuration(section.getBoolean("extend", false));
+            }
+            potion.apply(item);
 
-                    PotionMeta meta = (PotionMeta)item.getItemMeta();
-                    PotionEffectType mainType = null;
+            // カスタムポーションの詳細設定
+            if ( section.contains("custom_effects") ) {
 
-                    for ( String key :
-                            section.getConfigurationSection("custom_effects").getKeys(false) ) {
+                PotionMeta meta = (PotionMeta)item.getItemMeta();
+                PotionEffectType mainType = null;
 
-                        ConfigurationSection custom_sec =
-                                section.getConfigurationSection("custom_effects." + key);
-                        String cname = custom_sec.getString("type");
-                        if ( cname == null ) {
-                            logger.warning("指定されたポーション形式 type の指定がありません。");
-                            logger.warning("└ " + info);
-                            continue;
-                        }
-                        PotionEffectType ctype = PotionEffectType.getByName(cname.toUpperCase());
-                        if ( ctype == null ) {
-                            logger.warning("指定されたポーション形式 " + cname + " が正しくありません。");
-                            logger.warning("└ " + info);
-                            continue;
-                        }
-                        if ( mainType == null ) {
-                            mainType = ctype;
-                        }
-                        int amplifier = custom_sec.getInt("amplifier", 1);
-                        int duration = custom_sec.getInt("duration", 100);
-                        boolean ambient = custom_sec.getBoolean("ambient", true);
-                        PotionEffect effect = new PotionEffect(ctype, duration, amplifier, ambient);
-                        meta.addCustomEffect(effect, ambient);
+                for ( String key :
+                        section.getConfigurationSection("custom_effects").getKeys(false) ) {
+
+                    ConfigurationSection custom_sec =
+                            section.getConfigurationSection("custom_effects." + key);
+                    String cname = custom_sec.getString("type");
+                    if ( cname == null ) {
+//                        throw new ItemConfigParseException(
+//                                "Potion type tag was not found.");
+                        continue;
                     }
-
+                    PotionEffectType ctype = PotionEffectType.getByName(cname.toUpperCase());
+                    if ( ctype == null ) {
+//                        throw new ItemConfigParseException(
+//                                "Potion type '" + cname + "' is invalid.");
+                        continue;
+                    }
                     if ( mainType == null ) {
-                        meta.setMainEffect(mainType);
+                        mainType = ctype;
                     }
-
-                    item.setItemMeta(meta);
+                    int amplifier = custom_sec.getInt("amplifier", 1);
+                    int duration = custom_sec.getInt("duration", 100);
+                    boolean ambient = custom_sec.getBoolean("ambient", true);
+                    PotionEffect effect = new PotionEffect(ctype, duration, amplifier, ambient);
+                    meta.addCustomEffect(effect, ambient);
                 }
+
+                if ( mainType == null ) {
+                    meta.setMainEffect(mainType);
+                }
+
+                item.setItemMeta(meta);
             }
         }
 
@@ -279,14 +252,14 @@ public class ItemConfigParser {
                             section.getConfigurationSection("effects." + key);
                     String tname = effect_sec.getString("type");
                     if ( tname == null ) {
-                        logger.warning("指定されたエフェクト形式 type の指定がありません。");
-                        logger.warning("└ " + info);
+//                        throw new ItemConfigParseException(
+//                                "Effect type tag was not found.");
                         continue;
                     }
                     FireworkEffect.Type type = getFireworkEffectTypeByName(tname);
                     if ( type == null ) {
-                        logger.warning("指定されたエフェクト形式 " + tname + " が正しくありません。");
-                        logger.warning("└ " + info);
+//                        throw new ItemConfigParseException(
+//                                "Effect type '" + tname + "' is invalid.");
                         continue;
                     }
 
@@ -324,7 +297,6 @@ public class ItemConfigParser {
             item.setItemMeta(meta);
         }
 
-
         // Attributeの詳細設定、AttributesAPIがロードされている場合にのみ実施する
         if ( ColorTeaming.instance.getAttributesAPI() != null &&
                 section.contains("attributes") ) {
@@ -339,8 +311,8 @@ public class ItemConfigParser {
                 AttributeInfo attr = AttributeInfo.readFromConfigSection(attr_sec);
 
                 if ( attr == null ) {
-                    logger.warning("指定された属性の、typeまたはoperatorが正しくありません。");
-                    logger.warning("└ " + info);
+//                    logger.warning("指定された属性の、typeまたはoperatorが正しくありません。");
+//                    logger.warning("└ " + info);
                     continue;
                 }
 
@@ -348,54 +320,52 @@ public class ItemConfigParser {
             }
         }
 
+        // バナーの詳細設定
+        if ( isCB18orLater() ) {
+            item = ItemConfigParserV18.addBannerInfoToItem(section, item);
+        }
+
         return item;
     }
 
     /**
-     * アイテムの情報を文字列表現で返す
+     * 指定されたコンフィグセクションに、指定されたItemStackの情報を保存します。
+     * @param section コンフィグセクション
      * @param item アイテム
-     * @param indent 表示文字列のインデント
-     * @return 文字列表現
      */
-    public static ArrayList<String> getItemInfo(ItemStack item, String indent) {
+    public static void setItemToSection(ConfigurationSection section, ItemStack item) {
 
-        if ( item == null ) {
-            return null;
+        if ( section == null || item == null ) {
+            return;
         }
 
-        ArrayList<String> message = new ArrayList<String>();
-
-        message.add(indent + "material: " + item.getType());
+        section.set("material", item.getType().toString());
         if ( item.getAmount() > 1 ) {
-            message.add(indent + "amount: " + item.getAmount());
+            section.set("amount", item.getAmount());
         }
 
         short data = item.getDurability();
         if ( item.getDurability() > 0 && item.getType().getMaxDurability() > 1 ) {
             int remain = item.getType().getMaxDurability() - item.getDurability() + 1;
-            message.add(indent + "remain: " + remain);
+            section.set("remain", remain);
         } else if ( data > 0 && item.getType() != Material.POTION ) {
-            message.add(indent + "data: " + data);
+            section.set("data", data);
         }
 
         if ( item.hasItemMeta() ) {
             ItemMeta meta = item.getItemMeta();
             if ( meta.hasDisplayName() ) {
-                message.add(indent + "display_name: " + meta.getDisplayName());
+                section.set("display_name", meta.getDisplayName());
             }
             if ( meta.hasLore() ) {
-                message.add(indent + "lore: ");
-                for ( String l : meta.getLore() ) {
-                    message.add(indent + "- '" + l + "'");
-                }
+                section.set("lore", meta.getLore());
             }
         }
 
         if ( item.getEnchantments().size() > 0 ) {
-            message.add(indent + "enchants: ");
+            ConfigurationSection sub = section.createSection("enchants");
             for ( Enchantment ench : item.getEnchantments().keySet() ) {
-                message.add(indent + "  " + ench.getName() + ": " +
-                        item.getEnchantmentLevel(ench));
+                sub.set(ench.getName(), item.getEnchantmentLevel(ench));
             }
         }
 
@@ -405,16 +375,16 @@ public class ItemConfigParser {
                 item.getType() == Material.LEATHER_HELMET ) {
 
             LeatherArmorMeta lam = (LeatherArmorMeta)item.getItemMeta();
-            message.add(indent + "red: " + lam.getColor().getRed());
-            message.add(indent + "blue: " + lam.getColor().getBlue());
-            message.add(indent + "green: " + lam.getColor().getGreen());
+            section.set("red", lam.getColor().getRed());
+            section.set("blue", lam.getColor().getBlue());
+            section.set("green", lam.getColor().getGreen());
         }
 
         if ( item.getType() == Material.SKULL_ITEM ) {
 
             SkullMeta sm = (SkullMeta)item.getItemMeta();
             if ( sm.hasOwner() ) {
-                message.add(indent + "owner: " + sm.getOwner() );
+                section.set("owner", sm.getOwner());
             }
         }
 
@@ -423,16 +393,13 @@ public class ItemConfigParser {
 
             BookMeta bm = (BookMeta)item.getItemMeta();
             if ( bm.hasAuthor() ) {
-                message.add(indent + "author: " + bm.getAuthor() );
+                section.set("author", bm.getAuthor());
             }
             if ( bm.hasTitle() ) {
-                message.add(indent + "title: " + bm.getTitle() );
+                section.set("title", bm.getTitle());
             }
             if ( bm.hasPages() ) {
-                message.add(indent + "pages:");
-                for ( String page : bm.getPages() ) {
-                    message.add(indent + "- " + page);
-                }
+                section.set("pages", bm.getPages());
             }
         }
 
@@ -441,28 +408,29 @@ public class ItemConfigParser {
             cleanupInvalidExtendedPotionFlag(item);
 
             Potion potion = Potion.fromItemStack(item);
-            message.add(indent + "potion_type: " + potion.getType());
-            message.add(indent + "potion_level: " + potion.getLevel());
+            section.set("potion_type", potion.getType());
+            section.set("potion_level", potion.getLevel());
             if ( potion.isSplash() ) {
-                message.add(indent + "splash: true");
+                section.set("splash", true);
             }
             if ( potion.hasExtendedDuration() ) {
-                message.add(indent + "extend: true");
+                section.set("extend", true);
             }
 
             PotionMeta meta = (PotionMeta)item.getItemMeta();
             if ( meta.hasCustomEffects() ) {
                 // カスタムポーションの設定
 
-                message.add(indent + "custom_effects:");
+                ConfigurationSection customSection =
+                        section.createSection("custom_effects");
                 List<PotionEffect> customs = meta.getCustomEffects();
                 for ( int i=0; i<customs.size(); i++ ) {
+                    ConfigurationSection sub = customSection.createSection("effect" + (i+1));
                     PotionEffect custom = customs.get(i);
-                    message.add(indent + "  effect" + (i+1) + ":");
-                    message.add(indent + "    type: " + custom.getType().getName());
-                    message.add(indent + "    amplifier: " + custom.getAmplifier());
-                    message.add(indent + "    duration: " + custom.getDuration());
-                    message.add(indent + "    ambient: " + custom.isAmbient());
+                    sub.set("type", custom.getType().getName());
+                    sub.set("amplifier", custom.getAmplifier());
+                    sub.set("duration", custom.getDuration());
+                    sub.set("ambient", custom.isAmbient());
                 }
             }
         }
@@ -470,42 +438,40 @@ public class ItemConfigParser {
         if ( item.getType() == Material.FIREWORK ) {
 
             FireworkMeta meta = (FireworkMeta)item.getItemMeta();
-            message.add(indent + "power: " + meta.getPower());
+            section.set("power", meta.getPower());
 
             if ( meta.hasEffects() ) {
-                message.add(indent + "effects:");
+                ConfigurationSection effectSection = section.createSection("effects");
                 List<FireworkEffect> effects = meta.getEffects();
 
                 for ( int i=0; i<effects.size(); i++ ) {
+                    ConfigurationSection sub = effectSection.createSection("effect" + (i+1));
                     FireworkEffect effect = effects.get(i);
-                    message.add(indent + "  effect" + (i+1) + ":");
-                    message.add(indent + "    type: " + effect.getType().name());
-                    message.add(indent + "    flicker: " + effect.hasFlicker());
-                    message.add(indent + "    trail: " + effect.hasTrail());
+                    sub.set("type", effect.getType().name());
+                    sub.set("flicker", effect.hasFlicker());
+                    sub.set("trail", effect.hasTrail());
 
                     List<Color> colors = effect.getColors();
                     if ( colors.size() > 0 ) {
-                        String indent1 = indent + "    ";
-                        message.add(indent1 + "colors:");
+                        ConfigurationSection colorSection = sub.createSection("colors");
                         for ( int j=0; j<colors.size(); j++ ) {
+                            ConfigurationSection csub = colorSection.createSection("color" + (j+1));
                             Color color = colors.get(j);
-                            message.add(indent1 + "  color" + (j+1) + ":");
-                            message.add(indent1 + "    red: " + color.getRed());
-                            message.add(indent1 + "    blue: " + color.getBlue());
-                            message.add(indent1 + "    green: " + color.getGreen());
+                            csub.set("red", color.getRed());
+                            csub.set("blue", color.getBlue());
+                            csub.set("green", color.getGreen());
                         }
                     }
 
                     List<Color> fades = effect.getFadeColors();
                     if ( fades.size() > 0 ) {
-                        String indent1 = indent + "    ";
-                        message.add(indent1 + "fades:");
+                        ConfigurationSection fadeSection = sub.createSection("fades");
                         for ( int j=0; j<fades.size(); j++ ) {
+                            ConfigurationSection fsub = fadeSection.createSection("fade" + (j+1));
                             Color fade = fades.get(j);
-                            message.add(indent1 + "  fade" + (j+1) + ":");
-                            message.add(indent1 + "    red: " + fade.getRed());
-                            message.add(indent1 + "    blue: " + fade.getBlue());
-                            message.add(indent1 + "    green: " + fade.getGreen());
+                            fsub.set("red", fade.getRed());
+                            fsub.set("blue", fade.getBlue());
+                            fsub.set("green", fade.getGreen());
                         }
                     }
                 }
@@ -519,18 +485,55 @@ public class ItemConfigParser {
 
             if ( bridge.getAttributeNum(item) > 0 ) {
 
-                message.add(indent + "attributes:");
+                ConfigurationSection sub = section.createSection("attributes");
                 int index = 0;
 
                 for ( AttributeInfo info : bridge.readAttr(item) ) {
                     index++;
-                    message.add(indent + "  attribute" + index + ":");
-                    message.addAll(info.toStrings(indent + "    "));
+                    info.saveToConfigSection(sub.createSection("attribute" + index));
                 }
             }
         }
 
-        return message;
+        // バナーの詳細設定
+        if ( isCB18orLater() ) {
+            ItemConfigParserV18.addBannerInfoToSection(section, item);
+        }
+    }
+
+    /**
+     * アイテムの情報を文字列表現で返す
+     * @param item アイテム
+     * @return 文字列表現
+     */
+    public static String getItemInfo(ItemStack item) {
+        YamlConfiguration config = new YamlConfiguration();
+        setItemToSection(config, item);
+        return decodeUnicode(config.saveToString());
+    }
+
+    /**
+     * Unicodeを含む文字列を復号化し、エスケープされた改行を除去する。
+     * @param source
+     * @return
+     */
+    private static String decodeUnicode(String source) {
+
+        // Unicode復号化
+        Pattern pattern = Pattern.compile("\\\\u([0-9a-f]{4})");
+        Matcher matcher = pattern.matcher(source);
+        String result = source;
+        while ( matcher.find() ) {
+            int code = Integer.parseInt(matcher.group(1), 16);
+            String replacement = new String(new int[]{code}, 0, 1);
+            result = matcher.replaceFirst(replacement);
+            matcher = pattern.matcher(result);
+        }
+
+        // エスケープされた改行文字の除去
+        result = result.replaceAll("\\\\\\n *", "");
+
+        return result;
     }
 
     /**
@@ -590,6 +593,46 @@ public class ItemConfigParser {
                 data -= 0x40;
                 item.setDurability(data);
             }
+        }
+    }
+
+
+    /**
+     * 現在動作中のCraftBukkitが、v1.8 以上かどうかを確認する
+     * @return v1.8以上ならtrue、そうでないならfalse
+     */
+    private static boolean isCB18orLater() {
+
+        int[] borderNumbers = {1, 8};
+
+        String version = Bukkit.getBukkitVersion();
+        int hyphen = version.indexOf("-");
+        if ( hyphen > 0 ) {
+            version = version.substring(0, hyphen);
+        }
+
+        String[] versionArray = version.split("\\.");
+        int[] versionNumbers = new int[versionArray.length];
+        for ( int i=0; i<versionArray.length; i++ ) {
+            if ( !versionArray[i].matches("[0-9]+") ) {
+                return false;
+            }
+            versionNumbers[i] = Integer.parseInt(versionArray[i]);
+        }
+
+        int index = 0;
+        while ( (versionNumbers.length > index) && (borderNumbers.length > index) ) {
+            if ( versionNumbers[index] > borderNumbers[index] ) {
+                return true;
+            } else if ( versionNumbers[index] < borderNumbers[index] ) {
+                return false;
+            }
+            index++;
+        }
+        if ( borderNumbers.length == index ) {
+            return true;
+        } else {
+            return false;
         }
     }
 }
