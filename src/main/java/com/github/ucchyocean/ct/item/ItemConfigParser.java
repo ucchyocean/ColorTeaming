@@ -54,6 +54,9 @@ public class ItemConfigParser {
         ItemStack item = null;
 
         if ( !section.contains("material") ) {
+            if ( section.contains("custom_item") ) {
+                return null; // custom_itemは過去の遺物。何も返さずに終了する。
+            }
             throw new ItemConfigParseException("Material tag was not found.");
         }
 
