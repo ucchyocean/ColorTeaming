@@ -271,26 +271,30 @@ public class ItemConfigParser {
                     effect.flicker(effect_sec.getBoolean("flicker", false));
                     effect.trail(effect_sec.getBoolean("trail", false));
 
-                    for ( String ckey :
-                            effect_sec.getConfigurationSection("colors").getKeys(false) ) {
+                    if ( effect_sec.contains("colors") ) {
+                        for ( String ckey :
+                                effect_sec.getConfigurationSection("colors").getKeys(false) ) {
 
-                        ConfigurationSection color_sec =
-                                effect_sec.getConfigurationSection("colors." + ckey);
-                        int red = color_sec.getInt("red", 255);
-                        int blue = color_sec.getInt("blue", 255);
-                        int green = color_sec.getInt("green", 255);
-                        effect.withColor(Color.fromBGR(blue, green, red));
+                            ConfigurationSection color_sec =
+                                    effect_sec.getConfigurationSection("colors." + ckey);
+                            int red = color_sec.getInt("red", 255);
+                            int blue = color_sec.getInt("blue", 255);
+                            int green = color_sec.getInt("green", 255);
+                            effect.withColor(Color.fromBGR(blue, green, red));
+                        }
                     }
 
-                    for ( String fkey :
-                            effect_sec.getConfigurationSection("fades").getKeys(false) ) {
+                    if ( effect_sec.contains("fades") ) {
+                        for ( String fkey :
+                                effect_sec.getConfigurationSection("fades").getKeys(false) ) {
 
-                        ConfigurationSection fade_sec =
-                                effect_sec.getConfigurationSection("fades." + fkey);
-                        int red = fade_sec.getInt("red", 255);
-                        int blue = fade_sec.getInt("blue", 255);
-                        int green = fade_sec.getInt("green", 255);
-                        effect.withFade(Color.fromBGR(blue, green, red));
+                            ConfigurationSection fade_sec =
+                                    effect_sec.getConfigurationSection("fades." + fkey);
+                            int red = fade_sec.getInt("red", 255);
+                            int blue = fade_sec.getInt("blue", 255);
+                            int green = fade_sec.getInt("green", 255);
+                            effect.withFade(Color.fromBGR(blue, green, red));
+                        }
                     }
 
                     meta.addEffect(effect.build());
@@ -411,7 +415,7 @@ public class ItemConfigParser {
             cleanupInvalidExtendedPotionFlag(item);
 
             Potion potion = Potion.fromItemStack(item);
-            section.set("potion_type", potion.getType());
+            section.set("potion_type", potion.getType().toString());
             section.set("potion_level", potion.getLevel());
             if ( potion.isSplash() ) {
                 section.set("splash", true);
