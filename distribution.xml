@@ -13,6 +13,7 @@
   <files>
     <file>
       <source>target/ColorTeaming.jar</source>
+      <destName>plugins/ColorTeaming.jar</destName>
     </file>
   </files>
 
