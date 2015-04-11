@@ -201,16 +201,16 @@ public class PlayerDeathListener implements Listener {
             }
 
             // キルログの変更を行う
-            if ( config.isEnableCustomKilllog() ) {
+            if ( config.isEnableCustomKilllog() || config.isEnableCustomKilllogSelfDestruct() ) {
 
-                if ( killer == null ) {
+                if ( killer == null && config.isEnableCustomKilllogSelfDestruct() ) {
                     // 自爆
                     String message = config.getCustomKilllogSelfDestructFormat();
                     message = message.replace("%deader", deader.getDisplayName());
                     message = Utility.replaceColorCode(message);
                     event.setDeathMessage(message);
 
-                } else if ( tnsKiller != null ) {
+                } else if ( tnsKiller != null && config.isEnableCustomKilllog() ) {
                     // キルした人もチームに所属している
                     String message = config.getCustomKilllogFormat();
                     message = message.replace("%killer", killer.getDisplayName());

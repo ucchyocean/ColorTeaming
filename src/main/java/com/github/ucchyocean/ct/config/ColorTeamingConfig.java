@@ -117,6 +117,9 @@ public class ColorTeamingConfig {
     /** カスタムキルログのフォーマット設定 */
     private String customKilllogFormat;
 
+    /** カスタムキルログ（自滅）を有効にするかどうか */
+    private boolean enableCustomKilllogSelfDestruct;
+
     /** カスタムキルログ（自滅）のフォーマット設定 */
     private String customKilllogSelfDestructFormat;
 
@@ -231,6 +234,8 @@ public class ColorTeamingConfig {
         ctconfig.enableCustomKilllog = config.getBoolean("enableCustomKilllog", false);
         ctconfig.customKilllogFormat = config.getString(
                 "customKilllogFormat", "%killer [%weapon&f] %deader");
+        ctconfig.enableCustomKilllogSelfDestruct =
+                config.getBoolean("enableCustomKilllogSelfDestruct", false);
         ctconfig.customKilllogSelfDestructFormat = config.getString(
                 "customKilllogSelfDestructFormat", "xxx [自爆&f] %deader");
 
@@ -554,6 +559,10 @@ public class ColorTeamingConfig {
 
     public String getCustomKilllogFormat() {
         return customKilllogFormat;
+    }
+
+    public boolean isEnableCustomKilllogSelfDestruct() {
+        return enableCustomKilllogSelfDestruct;
     }
 
     public String getCustomKilllogSelfDestructFormat() {
