@@ -6,8 +6,11 @@
 package com.github.ucchyocean.ct;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -65,6 +68,8 @@ public class ColorTeamingManager implements ColorTeamingAPI {
 
     private HashMap<String, ClassData> classDatas;
 
+    private File debugLogFile;
+
     /**
      * コンストラクタ
      * @param plugin
@@ -96,12 +101,17 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     @Override
     public boolean isExistTeam(String id) {
 
+        writeDebugLog("isExistTeam start. " + id);
+        long start = System.currentTimeMillis();
+
         Set<Team> teams = scoreboard.getTeams();
         for ( Team team : teams ) {
             if ( team.getName().equals(id) ) {
+                writeDebugLog("isExistTeam end. : " + (System.currentTimeMillis() - start));
                 return true;
             }
         }
+        writeDebugLog("isExistTeam end. " + (System.currentTimeMillis() - start));
         return false;
     }
 
@@ -124,15 +134,20 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     @Override
     public Team getPlayerTeam(Player player) {
 
+        writeDebugLog("getPlayerTeam start. " + player);
+        long start = System.currentTimeMillis();
+
         Set<Team> teams = scoreboard.getTeams();
         for ( Team team : teams ) {
             for ( OfflinePlayer p : team.getPlayers() ) {
                 String name = p.getName();
                 if ( name.equalsIgnoreCase(player.getName()) ) {
+                    writeDebugLog("getPlayerTeam end. : " + (System.currentTimeMillis() - start));
                     return team;
                 }
             }
         }
+        writeDebugLog("getPlayerTeam end. : " + (System.currentTimeMillis() - start));
         return null;
     }
 
@@ -157,6 +172,9 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      */
     @Override
     public Team addPlayerTeam(Player player, TeamNameSetting teamName) {
+
+        writeDebugLog("addPlayerTeam start. " + player + ", " + teamName);
+        long start = System.currentTimeMillis();
 
         String id = teamName.getID();
         String name = teamName.getName();
@@ -202,6 +220,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
             player.sendMessage(msg);
         }
 
+        writeDebugLog("addPlayerTeam end. : " + (System.currentTimeMillis() - start));
         return team;
     }
 
@@ -212,6 +231,9 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      */
     @Override
     public void leavePlayerTeam(Player player, Reason reason) {
+
+        writeDebugLog("leavePlayerTeam start. " + player + ", " + reason);
+        long start = System.currentTimeMillis();
 
         Team team = getPlayerTeam(player);
         if ( team != null ) {
@@ -242,6 +264,8 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         }
 
         player.setDisplayName(player.getName());
+
+        writeDebugLog("leavePlayerTeam end. : " + (System.currentTimeMillis() - start));
     }
 
     /**
@@ -284,6 +308,9 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     @Override
     public boolean removeTeam(String id) {
 
+        writeDebugLog("removeTeam start. " + id);
+        long start = System.currentTimeMillis();
+
         TeamNameSetting teamName = teamNameConfig.getTeamNameFromID(id);
 
         // イベントコール
@@ -303,6 +330,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
             }
             team.unregister();
         }
+        writeDebugLog("removeTeam end. : " + (System.currentTimeMillis() - start));
         return true;
     }
 
@@ -311,6 +339,9 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      */
     @Override
     public void removeAllTeam() {
+
+        writeDebugLog("removeAllTeam start.");
+        long start = System.currentTimeMillis();
 
         for ( TeamNameSetting tns : getAllTeamNames() ) {
             Team team = scoreboard.getTeam(tns.getID());
@@ -321,6 +352,8 @@ public class ColorTeamingManager implements ColorTeamingAPI {
 
         // チームリーダー設定を削除する
         clearLeaders();
+
+        writeDebugLog("removeAllTeam end. : " + (System.currentTimeMillis() - start));
     }
 
     /**
@@ -330,6 +363,9 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     @Override
     public HashMap<String, ArrayList<Player>> getAllTeamMembers() {
 
+        writeDebugLog("getAllTeamMembers start.");
+        long start = System.currentTimeMillis();
+
         ArrayList<TeamNameSetting> teamNames = getAllTeamNames();
         HashMap<String, ArrayList<Player>> result =
                 new HashMap<String, ArrayList<Player>>();
@@ -338,6 +374,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
             result.put(tns.getID(), getTeamMembers(tns.getID()));
         }
 
+        writeDebugLog("getAllTeamMembers end. : " + (System.currentTimeMillis() - start));
         return result;
     }
 
@@ -349,9 +386,13 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     @Override
     public ArrayList<Player> getTeamMembers(String id) {
 
+        writeDebugLog("getTeamMembers start. " + id);
+        long start = System.currentTimeMillis();
+
         Team team = scoreboard.getTeam(id);
 
         if ( team == null ) {
+            writeDebugLog("getTeamMembers end. : " + (System.currentTimeMillis() - start));
             return null;
         }
 
@@ -363,6 +404,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
             }
         }
 
+        writeDebugLog("getTeamMembers end. : " + (System.currentTimeMillis() - start));
         return players;
     }
 
@@ -375,7 +417,11 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     @Override
     public ArrayList<Player> getAllPlayersOnWorld(List<String> worldNames) {
 
+        writeDebugLog("getAllPlayersOnWorld start. ");
+        long start = System.currentTimeMillis();
+
         if ( worldNames == null ) {
+            writeDebugLog("getAllPlayersOnWorld end. : " + (System.currentTimeMillis() - start));
             return null;
         }
 
@@ -385,6 +431,8 @@ public class ColorTeamingManager implements ColorTeamingAPI {
                 result.add(p);
             }
         }
+
+        writeDebugLog("getAllPlayersOnWorld end. : " + (System.currentTimeMillis() - start));
         return result;
     }
 
@@ -395,6 +443,9 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     @Override
     public ArrayList<TeamNameSetting> getAllTeamNames() {
 
+        writeDebugLog("getAllTeamNames start. ");
+        long start = System.currentTimeMillis();
+
         ArrayList<TeamNameSetting> result = new ArrayList<TeamNameSetting>();
 
         for ( TeamNameSetting tns : teamNameConfig.getTeamNames() ) {
@@ -404,6 +455,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
             }
         }
 
+        writeDebugLog("getAllTeamNames end. : " + (System.currentTimeMillis() - start));
         return result;
     }
 
@@ -415,6 +467,9 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     @Override
     public void sendTeamChat(Player player, String message) {
 
+        writeDebugLog("sendTeamChat start. " + player + ", " + message);
+        long start = System.currentTimeMillis();
+
         // チームを取得する
         Team team = getPlayerTeam(player);
         if ( team == null ) {
@@ -422,6 +477,8 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         }
 
         sendTeamChat(player, team.getName(), message);
+
+        writeDebugLog("sendTeamChat end. : " + (System.currentTimeMillis() - start));
     }
 
     /**
@@ -432,6 +489,9 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      */
     @Override
     public void sendTeamChat(CommandSender sender, String team, String message) {
+
+        writeDebugLog("sendTeamChat start. " + sender + ", " + team + ", " + message);
+        long start = System.currentTimeMillis();
 
         // チームを取得する
         Team t = scoreboard.getTeam(team);
@@ -503,6 +563,8 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         if ( config.isTeamChatLogMode() ) {
             plugin.getLogger().info(partyMessage);
         }
+
+        writeDebugLog("sendTeamChat end. : " + (System.currentTimeMillis() - start));
     }
 
     /**
@@ -510,6 +572,9 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      */
     @Override
     public void displayScoreboard() {
+
+        writeDebugLog("displayScoreboard start.");
+        long start = System.currentTimeMillis();
 
         // サイドバー
         switch (config.getSideCriteria()) {
@@ -570,6 +635,8 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         default:
             break;
         }
+
+        writeDebugLog("displayScoreboard end. : " + (System.currentTimeMillis() - start));
     }
 
     /**
@@ -577,6 +644,9 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      */
     @Override
     public void refreshRestTeamMemberScore() {
+
+        writeDebugLog("refreshRestTeamMemberScore start.");
+        long start = System.currentTimeMillis();
 
         Objective obj = objectives.getTeamRestObjective();
 
@@ -594,6 +664,8 @@ public class ColorTeamingManager implements ColorTeamingAPI {
             TeamNameSetting tns = getTeamNameFromID(id);
             getScore(obj, tns).setScore(members.get(id).size());
         }
+
+        writeDebugLog("refreshRestTeamMemberScore end. : " + (System.currentTimeMillis() - start));
     }
 
     /**
@@ -601,6 +673,9 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      */
     @Override
     public void clearKillDeathPoints() {
+
+        writeDebugLog("clearKillDeathPoints start.");
+        long start = System.currentTimeMillis();
 
         // イベントコール
         ColorTeamingKillDeathClearedEvent event =
@@ -612,6 +687,8 @@ public class ColorTeamingManager implements ColorTeamingAPI {
 
         // 各オブジェクティブを初期化
         objectives.resetAll();
+
+        writeDebugLog("clearKillDeathPoints end. : " + (System.currentTimeMillis() - start));
     }
 
     /**
@@ -621,6 +698,9 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     @Override
     public HashMap<String, Integer> getAllTeamPoints() {
 
+        writeDebugLog("getAllTeamPoints start.");
+        long start = System.currentTimeMillis();
+
         HashMap<String, Integer> points = new HashMap<String, Integer>();
         Objective obj = objectives.getTeamPointObjective();
 
@@ -629,6 +709,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
             points.put(tns.getID(), p);
         }
 
+        writeDebugLog("getAllTeamPoints end. : " + (System.currentTimeMillis() - start));
         return points;
     }
 
@@ -638,6 +719,9 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      */
     @Override
     public HashMap<String, Integer> getAllPlayerPoints() {
+
+        writeDebugLog("getAllPlayerPoints start.");
+        long start = System.currentTimeMillis();
 
         HashMap<String, Integer> points = new HashMap<String, Integer>();
         Objective obj = objectives.getPersonalPointObjective();
@@ -650,6 +734,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
             }
         }
 
+        writeDebugLog("getAllPlayerPoints end. : " + (System.currentTimeMillis() - start));
         return points;
     }
 
@@ -660,6 +745,9 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      */
     @Override
     public void setTeamPoint(String team, int point) {
+
+        writeDebugLog("setTeamPoint start. " + team + ", " + point);
+        long start = System.currentTimeMillis();
 
         Objective obj = objectives.getTeamPointObjective();
         TeamNameSetting tns = teamNameConfig.getTeamNameFromID(team);
@@ -677,6 +765,8 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         ColorTeamingTeamscoreChangeEvent event =
                 new ColorTeamingTeamscoreChangeEvent(tns, pointBefore, point);
         Bukkit.getPluginManager().callEvent(event);
+
+        writeDebugLog("setTeamPoint end. : " + (System.currentTimeMillis() - start));
     }
 
     /**
@@ -687,6 +777,9 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      */
     @Override
     public int addTeamPoint(String team, int amount) {
+
+        writeDebugLog("addTeamPoint start. " + team + ", " + amount);
+        long start = System.currentTimeMillis();
 
         Objective obj = objectives.getTeamPointObjective();
         TeamNameSetting tns = teamNameConfig.getTeamNameFromID(team);
@@ -700,6 +793,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
                 new ColorTeamingTeamscoreChangeEvent(tns, point, point + amount);
         Bukkit.getPluginManager().callEvent(event);
 
+        writeDebugLog("addTeamPoint end. : " + (System.currentTimeMillis() - start));
         return point + amount;
     }
 
@@ -709,6 +803,9 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      */
     @Override
     public HashMap<String, int[]> getKillDeathCounts() {
+
+        writeDebugLog("getKillDeathCounts start.");
+        long start = System.currentTimeMillis();
 
         Objective kills = objectives.getTeamKillObjective();
         Objective deaths = objectives.getTeamDeathObjective();
@@ -721,6 +818,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
             result.put(tns.getID(), data);
         }
 
+        writeDebugLog("getKillDeathCounts end. : " + (System.currentTimeMillis() - start));
         return result;
     }
 
@@ -730,6 +828,9 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      */
     @Override
     public HashMap<String, int[]> getKillDeathPersonalCounts() {
+
+        writeDebugLog("getKillDeathPersonalCounts start.");
+        long start = System.currentTimeMillis();
 
         Objective kills = objectives.getPersonalKillObjective();
         Objective deaths = objectives.getPersonalDeathObjective();
@@ -745,6 +846,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
             }
         }
 
+        writeDebugLog("getKillDeathPersonalCounts end. : " + (System.currentTimeMillis() - start));
         return result;
     }
 
@@ -755,10 +857,15 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     @Override
     public void increaseTeamKillCount(String team) {
 
+        writeDebugLog("increaseTeamKillCount start.");
+        long start = System.currentTimeMillis();
+
         TeamNameSetting tns = getTeamNameFromID(team);
         Objective obj = objectives.getTeamKillObjective();
         Score score = getScore(obj, tns);
         score.setScore(score.getScore() + 1);
+
+        writeDebugLog("increaseTeamKillCount end. : " + (System.currentTimeMillis() - start));
     }
 
     /**
@@ -768,10 +875,15 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     @Override
     public void increaseTeamDeathCount(String team) {
 
+        writeDebugLog("increaseTeamDeathCount start.");
+        long start = System.currentTimeMillis();
+
         TeamNameSetting tns = getTeamNameFromID(team);
         Objective obj = objectives.getTeamDeathObjective();
         Score score = getScore(obj, tns);
         score.setScore(score.getScore() + 1);
+
+        writeDebugLog("increaseTeamDeathCount end. : " + (System.currentTimeMillis() - start));
     }
 
     /**
@@ -783,9 +895,14 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     @Override
     public int addPlayerPoint(Player player, int amount) {
 
+        writeDebugLog("addPlayerPoint start.");
+        long start = System.currentTimeMillis();
+
         Score score = getScore(objectives.getPersonalPointObjective(), player);
         int point = score.getScore() + amount;
         score.setScore(point);
+
+        writeDebugLog("addPlayerPoint end. : " + (System.currentTimeMillis() - start));
         return point;
     }
 
@@ -808,6 +925,9 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     @Override
     public void setKillDeathUserCounts(String playerName, int kill, int death) {
 
+        writeDebugLog("setKillDeathUserCounts start.");
+        long start = System.currentTimeMillis();
+
         Player player = Utility.getPlayerExact(playerName);
         if ( player == null ) {
             return;
@@ -818,6 +938,8 @@ public class ColorTeamingManager implements ColorTeamingAPI {
 
         getScore(kills, player).setScore(kill);
         getScore(deaths, player).setScore(death);
+
+        writeDebugLog("setKillDeathUserCounts end. : " + (System.currentTimeMillis() - start));
     }
 
     /**
@@ -939,6 +1061,9 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     @Override
     public boolean setClassToPlayer(ArrayList<Player> players, String classname) {
 
+        writeDebugLog("setClassToPlayer start. " + classname);
+        long start = System.currentTimeMillis();
+
         // クラス設定が存在しない場合は falseを返す
         if ( !classDatas.containsKey(classname) ) {
             return false;
@@ -954,6 +1079,8 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         for ( Player player : players ) {
             cd.setClassToPlayer(player);
         }
+
+        writeDebugLog("setKillDeathUserCounts end. : " + (System.currentTimeMillis() - start));
 
         return true;
     }
@@ -1010,6 +1137,9 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     @Override
     public void makeColorTeamsWithOrderSelection(ArrayList<Player> players, int teamNum) {
 
+        writeDebugLog("makeColorTeamsWithOrderSelection start. " + teamNum);
+        long start = System.currentTimeMillis();
+
         // 全てのチームをいったん削除する
         removeAllTeam();
 
@@ -1029,6 +1159,9 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         // チーム人数の更新、スコアボードの表示
         refreshRestTeamMemberScore();
         displayScoreboard();
+
+        writeDebugLog("makeColorTeamsWithOrderSelection end. : "
+                + (System.currentTimeMillis() - start));
     }
 
     /**
@@ -1055,6 +1188,9 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      */
     @Override
     public boolean addPlayerToColorTeamsWithOrderSelection(ArrayList<Player> players) {
+
+        writeDebugLog("addPlayerToColorTeamsWithOrderSelection start. ");
+        long start = System.currentTimeMillis();
 
         // 人数の少ないチームに設定していく
         for ( int i=0; i<players.size(); i++ ) {
@@ -1093,20 +1229,71 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         refreshRestTeamMemberScore();
         displayScoreboard();
 
+        writeDebugLog("addPlayerToColorTeamsWithOrderSelection end. : "
+                + (System.currentTimeMillis() - start));
         return true;
     }
 
     /**
      * ColorTeamingの設定ファイルを全て再読み込みする
+     * @see com.github.ucchyocean.ct.ColorTeamingAPI#realod()
      */
     @Override
     public void realod() {
+
+        writeDebugLog("realod start. ");
+        long start = System.currentTimeMillis();
 
         ColorTeaming.instance.config = ColorTeamingConfig.loadConfig();
         respawnConfig = new RespawnConfiguration();
         tppointConfig = new TPPointConfiguration();
         teamNameConfig = new TeamNameConfig();
         classDatas = ClassData.loadAllClasses(new File(plugin.getDataFolder(), "classes"));
+
+        writeDebugLog("realod end. : " + (System.currentTimeMillis() - start));
+    }
+
+    /**
+     * デバッグが有効ならログを記録する。デバッグが無効なら何もしない。
+     * @see com.github.ucchyocean.ct.ColorTeamingAPI#writeDebugLog(java.lang.String)
+     */
+    @Override
+    public void writeDebugLog(final String log) {
+
+        if ( !config.isDebug() ) return;
+
+        // ログメッセージが前後するので、非同期処理はしない。
+//        new BukkitRunnable() {
+//
+//            @Override
+//            public void run() {
+
+                File file = debugLogFile;
+                if ( file == null ) {
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+                    String filename = "debug_" + sdf.format(new Date()) + ".log";
+                    file = new File(plugin.getDataFolder(), filename);
+                }
+                FileWriter writer = null;
+                try {
+                    writer = new FileWriter(file, true);
+                    String str = new Date() + ", " + log;
+                    writer.write(str + "\r\n");
+                    writer.flush();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    if ( writer != null ) {
+                        try {
+                            writer.close();
+                        } catch (Exception e) {
+                            // do nothing.
+                        }
+                    }
+                }
+
+//            }
+//        }.runTaskAsynchronously(plugin);
     }
 
     /**

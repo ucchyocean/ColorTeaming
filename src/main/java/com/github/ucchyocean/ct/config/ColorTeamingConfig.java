@@ -129,6 +129,9 @@ public class ColorTeamingConfig {
     /** クラスを設定した時にエフェクト効果の除去をするかどうか */
     private boolean clearEffectOnSetClass;
 
+    /** デバッグログの出力 */
+    private boolean debug;
+
     // 以下、メッセージ関連
     private String randomMapSelectedMessage;
     private String joinTeamMessage;
@@ -241,6 +244,8 @@ public class ColorTeamingConfig {
 
         ctconfig.healOnSetClass = config.getBoolean("healOnSetClass", true);
         ctconfig.clearEffectOnSetClass = config.getBoolean("clearEffectOnSetClass", true);
+
+        ctconfig.debug = config.getBoolean("debug", false);
 
         ctconfig.randomMapSelectedMessage = config.getString("randomMapSelectedMessage");
         ctconfig.joinTeamMessage = config.getString("joinTeamMessage");
@@ -576,6 +581,11 @@ public class ColorTeamingConfig {
     public boolean isClearEffectOnSetClass() {
         return clearEffectOnSetClass;
     }
+
+    public boolean isDebug() {
+        return debug;
+    }
+
     public String getRandomMapSelectedMessage(String map) {
         if ( randomMapSelectedMessage == null ) return null;
         return Utility.replaceColorCode(randomMapSelectedMessage.replace("%map", map));

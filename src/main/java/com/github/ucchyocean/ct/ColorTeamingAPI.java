@@ -27,6 +27,10 @@ import com.github.ucchyocean.ct.item.CustomItem;
  * ColorTeaming APIクラス
  * @author ucchy
  */
+/**
+ *
+ * @author ucchy
+ */
 public interface ColorTeamingAPI {
 
     /**
@@ -372,4 +376,9 @@ public interface ColorTeamingAPI {
      * ColorTeamingの設定ファイルを全て再読み込みする
      */
     public void realod();
+
+    /**
+     * デバッグが有効ならログを記録する。デバッグが無効なら何もしない。
+     */
+    public void writeDebugLog(String log);
 }

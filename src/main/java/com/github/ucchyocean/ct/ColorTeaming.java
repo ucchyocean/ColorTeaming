@@ -60,6 +60,8 @@ public class ColorTeaming extends JavaPlugin {
     @Override
     public void onEnable() {
 
+        long startTime = System.currentTimeMillis();
+
         instance = this;
 
         // 設定の読み込み処理
@@ -112,6 +114,8 @@ public class ColorTeaming extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerDeathListener(this), this);
         getServer().getPluginManager().registerEvents(new PlayerJoinQuitListener(this), this);
         getServer().getPluginManager().registerEvents(new PlayerRespawnListener(this), this);
+
+        manager.writeDebugLog("Initialize completed. : " + (System.currentTimeMillis() - startTime) );
     }
 
     /**

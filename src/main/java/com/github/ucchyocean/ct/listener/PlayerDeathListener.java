@@ -55,6 +55,9 @@ public class PlayerDeathListener implements Listener {
     @EventHandler(priority=EventPriority.LOW)
     public void onPlayerDeath(PlayerDeathEvent event) {
 
+        plugin.getAPI().writeDebugLog("onPlayerDeath start. " + event.getEntity());
+        long start = System.currentTimeMillis();
+
         // 倒された人を取得
         Player deader = event.getEntity();
         ColorTeamingConfig config = plugin.getCTConfig();
@@ -286,6 +289,8 @@ public class PlayerDeathListener implements Listener {
                 }
             }
         }
+
+        plugin.getAPI().writeDebugLog("onPlayerDeath end. : " + (System.currentTimeMillis() - start));
     }
 
     private int getDeathPoint(Player deader) {

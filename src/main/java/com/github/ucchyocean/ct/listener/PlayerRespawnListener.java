@@ -34,6 +34,9 @@ public class PlayerRespawnListener implements Listener {
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event) {
 
+        plugin.getAPI().writeDebugLog("onPlayerRespawn start. " + event.getPlayer());
+        long start = System.currentTimeMillis();
+
         Player player = event.getPlayer();
         TeamNameSetting tns = plugin.getAPI().getPlayerTeamName(player);
 
@@ -52,14 +55,16 @@ public class PlayerRespawnListener implements Listener {
                 String respawnMapName = plugin.getAPI().getRespawnMapName();
                 respawn = respawnConfig.get(tns.getID(), respawnMapName);
             }
-                
+
             if ( respawn != null ) {
                 respawn = respawn.add(0.5, 0, 0.5);
                 event.setRespawnLocation(respawn);
             }
-            
+
             // 無敵時間を設定
             player.setNoDamageTicks(plugin.getCTConfig().getNoDamageSeconds() * 20);
         }
+
+        plugin.getAPI().writeDebugLog("onPlayerRespawn end. : " + (System.currentTimeMillis() - start));
     }
 }
