@@ -137,18 +137,9 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         writeDebugLog("getPlayerTeam start. " + player);
         long start = System.currentTimeMillis();
 
-        Set<Team> teams = scoreboard.getTeams();
-        for ( Team team : teams ) {
-            for ( OfflinePlayer p : team.getPlayers() ) {
-                String name = p.getName();
-                if ( name.equalsIgnoreCase(player.getName()) ) {
-                    writeDebugLog("getPlayerTeam end. : " + (System.currentTimeMillis() - start));
-                    return team;
-                }
-            }
-        }
+        Team team = scoreboard.getPlayerTeam(player);
         writeDebugLog("getPlayerTeam end. : " + (System.currentTimeMillis() - start));
-        return null;
+        return team;
     }
 
     /**
@@ -396,9 +387,8 @@ public class ColorTeamingManager implements ColorTeamingAPI {
             return null;
         }
 
-        Set<OfflinePlayer> playersTemp = team.getPlayers();
         ArrayList<Player> players = new ArrayList<Player>();
-        for ( OfflinePlayer player : playersTemp ) {
+        for ( OfflinePlayer player : team.getPlayers() ) {
             if ( player != null && player.isOnline() ) {
                 players.add(player.getPlayer());
             }
