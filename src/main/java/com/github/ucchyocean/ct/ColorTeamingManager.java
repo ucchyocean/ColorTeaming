@@ -31,6 +31,7 @@ import org.bukkit.scoreboard.Team;
 import com.github.ucchyocean.ct.bridge.VaultChatBridge;
 import com.github.ucchyocean.ct.config.ClassData;
 import com.github.ucchyocean.ct.config.ColorTeamingConfig;
+import com.github.ucchyocean.ct.config.NametagVisibilityEnum;
 import com.github.ucchyocean.ct.config.RespawnConfiguration;
 import com.github.ucchyocean.ct.config.TPPointConfiguration;
 import com.github.ucchyocean.ct.config.TeamNameConfig;
@@ -137,6 +138,14 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         writeDebugLog("getPlayerTeam start. " + player);
         long start = System.currentTimeMillis();
 
+        if ( Utility.isCB186orLater() ) {
+            Team team = scoreboard.getEntryTeam(player.getName());
+            writeDebugLog("getPlayerTeam - CB186 API getEntryTeam was selected.");
+            writeDebugLog("getPlayerTeam end. : " + (System.currentTimeMillis() - start));
+            return team;
+        }
+
+        @SuppressWarnings("deprecation")
         Team team = scoreboard.getPlayerTeam(player);
         writeDebugLog("getPlayerTeam end. : " + (System.currentTimeMillis() - start));
         return team;
@@ -188,6 +197,9 @@ public class ColorTeamingManager implements ColorTeamingAPI {
             team.setSuffix(ChatColor.RESET.toString());
             team.setCanSeeFriendlyInvisibles(config.isCanSeeFriendlyInvisibles());
             team.setAllowFriendlyFire(config.isFriendlyFire());
+            if ( Utility.isCB18orLater() ) {
+                team.setNameTagVisibility(config.getNametagVisibility().getBukkit());
+            }
         }
 
         // イベントコール
@@ -199,7 +211,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         }
 
         // チームに所属させる
-        team.addPlayer(player);
+        addPlayerInternal(team, player);
         player.setDisplayName(color + player.getName() + ChatColor.RESET);
 
         // パーミッションを設定する
@@ -243,13 +255,13 @@ public class ColorTeamingManager implements ColorTeamingAPI {
             }
 
             // チーム脱退
-            team.removePlayer(player);
+            removePlayerInternal(team, player);
 
             // パーミッションを削除する
             plugin.removeAllMemberPermission(player);
 
             // チーム削除により呼び出されたのでなければ、メンバー0人でチーム削除する
-            if ( reason != Reason.TEAM_REMOVED && team.getPlayers().size() == 0 ) {
+            if ( reason != Reason.TEAM_REMOVED && getPlayersInternal(team).size() == 0 ) {
                 removeTeam(team.getName());
             }
         }
@@ -314,10 +326,8 @@ public class ColorTeamingManager implements ColorTeamingAPI {
 
         Team team = scoreboard.getTeam(id);
         if ( team != null ) {
-            for ( OfflinePlayer player : team.getPlayers() ) {
-                if ( player.getPlayer() != null && player.isOnline() ) {
-                    leavePlayerTeam(player.getPlayer(), Reason.TEAM_REMOVED);
-                }
+            for ( Player player : getPlayersInternal(team) ) {
+                leavePlayerTeam(player.getPlayer(), Reason.TEAM_REMOVED);
             }
             team.unregister();
         }
@@ -388,10 +398,8 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         }
 
         ArrayList<Player> players = new ArrayList<Player>();
-        for ( OfflinePlayer player : team.getPlayers() ) {
-            if ( player != null && player.isOnline() ) {
-                players.add(player.getPlayer());
-            }
+        for ( Player player : getPlayersInternal(team) ) {
+            players.add(player.getPlayer());
         }
 
         writeDebugLog("getTeamMembers end. : " + (System.currentTimeMillis() - start));
@@ -1224,6 +1232,47 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         return true;
     }
 
+
+    /**
+     * ネームタグの表示/非表示を、コンフィグから取得して設定します。このAPIは、CB1.7.x以前では動作しません。
+     * @see com.github.ucchyocean.ct.ColorTeamingAPI#setNametagVisibility()
+     */
+    @Override
+    public void setNametagVisibility() {
+
+        // CB 1.8 以降でなければ何もしない
+        if ( !Utility.isCB18orLater() ) {
+            return;
+        }
+
+        NametagVisibilityEnum visibility = config.getNametagVisibility();
+
+        for ( TeamNameSetting tns : getAllTeamNames() ) {
+            Team team = scoreboard.getTeam(tns.getID());
+            if ( team != null ) {
+                team.setNameTagVisibility(visibility.getBukkit());
+            }
+        }
+    }
+
+    /**
+     * ネームタグの表示/非表示を設定します。このAPIは、CB1.7.x以前では動作しません。
+     * @param visibility 表示設定
+     * @see com.github.ucchyocean.ct.ColorTeamingAPI#setNametagVisibility(com.github.ucchyocean.ct.config.NametagVisibilityEnum)
+     */
+    @Override
+    public void setNametagVisibility(NametagVisibilityEnum visibility) {
+
+        // CB 1.8 以降でなければ何もしない
+        if ( !Utility.isCB18orLater() ) {
+            return;
+        }
+
+        config.setNametagVisibility(visibility);
+        config.saveConfig();
+        setNametagVisibility();
+    }
+
     /**
      * ColorTeamingの設定ファイルを全て再読み込みする
      * @see com.github.ucchyocean.ct.ColorTeamingAPI#realod()
@@ -1252,38 +1301,28 @@ public class ColorTeamingManager implements ColorTeamingAPI {
 
         if ( !config.isDebug() ) return;
 
-        // ログメッセージが前後するので、非同期処理はしない。
-//        new BukkitRunnable() {
-//
-//            @Override
-//            public void run() {
-
-                File file = debugLogFile;
-                if ( file == null ) {
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-                    String filename = "debug_" + sdf.format(new Date()) + ".log";
-                    file = new File(plugin.getDataFolder(), filename);
-                }
-                FileWriter writer = null;
+        if ( debugLogFile == null ) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+            String filename = "debug_" + sdf.format(new Date()) + ".log";
+            debugLogFile = new File(plugin.getDataFolder(), filename);
+        }
+        FileWriter writer = null;
+        try {
+            writer = new FileWriter(debugLogFile, true);
+            String str = new Date() + ", " + log;
+            writer.write(str + "\r\n");
+            writer.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if ( writer != null ) {
                 try {
-                    writer = new FileWriter(file, true);
-                    String str = new Date() + ", " + log;
-                    writer.write(str + "\r\n");
-                    writer.flush();
+                    writer.close();
                 } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    if ( writer != null ) {
-                        try {
-                            writer.close();
-                        } catch (Exception e) {
-                            // do nothing.
-                        }
-                    }
+                    // do nothing.
                 }
-
-//            }
-//        }.runTaskAsynchronously(plugin);
+            }
+        }
     }
 
     /**
@@ -1318,5 +1357,61 @@ public class ColorTeamingManager implements ColorTeamingAPI {
             Score score = objective.getScore(tns.getScoreItem());
             return score;
         }
+    }
+
+    /**
+     * チームにプレイヤーを追加します（CB186前後の仕様差異を埋めるための実装です）
+     * @param team チーム
+     * @param player プレイヤー
+     */
+    @SuppressWarnings("deprecation")
+    private static void addPlayerInternal(Team team, Player player) {
+
+        if ( Utility.isCB186orLater() ) {
+            team.addEntry(player.getName());
+        } else {
+            team.addPlayer(player);
+        }
+    }
+
+    /**
+     * チームからプレイヤーを削除します（CB186前後の仕様差異を埋めるための実装です）
+     * @param team チーム
+     * @param player プレイヤー
+     */
+    @SuppressWarnings("deprecation")
+    private static void removePlayerInternal(Team team, Player player) {
+
+        if ( Utility.isCB186orLater() ) {
+            team.removeEntry(player.getName());
+        } else {
+            team.removePlayer(player);
+        }
+    }
+
+    /**
+     * チームからプレイヤーの一覧を取得します（CB186前後の仕様差異を埋めるための実装です）
+     * @param team チーム
+     * @return 所属プレイヤー
+     */
+    @SuppressWarnings("deprecation")
+    private static Set<Player> getPlayersInternal(Team team) {
+
+        HashSet<Player> players = new HashSet<Player>();
+        if ( Utility.isCB186orLater() ) {
+            for ( String name : team.getEntries() ) {
+                Player player = Utility.getPlayerExact(name);
+                if ( player != null ) {
+                    players.add(player);
+                }
+            }
+        } else {
+            for ( OfflinePlayer player : team.getPlayers() ) {
+                if ( player.isOnline() ) {
+                    players.add(player.getPlayer());
+                }
+            }
+        }
+        return players;
     }
 }

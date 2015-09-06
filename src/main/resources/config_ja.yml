@@ -74,6 +74,13 @@ friendlyFire: false
 # true → 透明化したメンバーが見える、false → 透明化したプレイヤーは誰からも見えない
 seeFriendlyInvisible: true
 
+# ネームタグの表示非表示を設定します。この設定は、Bukkit 1.7.x 以前のバージョンでは使えません。
+#   always - 表示
+#   never - 非表示
+#   hide_for_other_teams - 他チームから非表示（自チームのメンバーからは表示）
+#   hide_for_own_team - 自チームから非表示（他チームのメンバーからは表示）
+nametagVisibility: 'always'
+
 # ベッドリスポーン地点を、チームリスポーン地点よりも優先するかどうかを設定します。
 # （Rush形式のPVP用設定です。）
 # true → ベッドリスポーン地点＞チームリスポーン地点＞ワールドリスポーン地点

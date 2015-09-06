@@ -161,6 +161,16 @@ commands:
            /<command> (player) hand - 手に持ったアイテムを、playerに配布します。
     permission: colorteaming.give
     permission-message: パーミッション "<permission>" が無いため、実行できません。
+  colornametag:
+    description: ネームタグの表示非表示を切り替えるコマンド
+    aliases: [cn,cnametag]
+    usage: |
+           /<command> on - ネームタグを表示に設定します。
+           /<command> off - ネームタグを非表示に設定します。
+           /<command> team - ネームタグを他チームから非表示に設定します。
+           /<command> other - ネームタグを自チームから非表示に設定します。
+    permission: colorteaming.explode
+    permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorglobal:
     description: チームチャット有効時にグローバルへ発言するためのコマンド
     aliases: [cg,g]

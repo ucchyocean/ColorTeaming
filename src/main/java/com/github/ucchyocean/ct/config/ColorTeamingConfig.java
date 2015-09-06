@@ -44,6 +44,9 @@ public class ColorTeamingConfig {
     /** 仲間の透明が見えるかどうか のオンオフ */
     private boolean canSeeFriendlyInvisibles;
 
+    /** ネームタグの表示・非表示の設定 */
+    private NametagVisibilityEnum nametagVisibility;
+
     /** ベッドリスポーン地点を、チームリスポーン地点よりも優先するかどうか のオンオフ */
     private boolean priorBedRespawn;
 
@@ -193,6 +196,9 @@ public class ColorTeamingConfig {
 
         ctconfig.friendlyFire = config.getBoolean("friendlyFire", true);
         ctconfig.canSeeFriendlyInvisibles = config.getBoolean("seeFriendlyInvisible", true);
+        ctconfig.nametagVisibility = NametagVisibilityEnum.fromString(
+                config.getString("nametagVisibility"), NametagVisibilityEnum.ALWAYS);
+
         ctconfig.priorBedRespawn = config.getBoolean("priorBedRespawn", false);
         ctconfig.skipGameover = config.getBoolean("skipGameover", false);
 
@@ -305,6 +311,7 @@ public class ColorTeamingConfig {
         config.set("teamChatFormat", teamChatFormat);
         config.set("friendlyFire", friendlyFire);
         config.set("seeFriendlyInvisible", canSeeFriendlyInvisibles);
+        config.set("nametagVisibility", nametagVisibility.toString().toLowerCase());
         config.set("priorBedRespawn", priorBedRespawn);
         config.set("skipGameover", skipGameover);
         config.set("colorRemoveOnDeath", colorRemoveOnDeath);
@@ -360,6 +367,10 @@ public class ColorTeamingConfig {
 
     public boolean isCanSeeFriendlyInvisibles() {
         return canSeeFriendlyInvisibles;
+    }
+
+    public NametagVisibilityEnum getNametagVisibility() {
+        return nametagVisibility;
     }
 
     public boolean isSkipGameover() {
@@ -468,6 +479,10 @@ public class ColorTeamingConfig {
 
     public void setCanSeeFriendlyInvisibles(boolean canSeeFriendlyInvisibles) {
         this.canSeeFriendlyInvisibles = canSeeFriendlyInvisibles;
+    }
+
+    public void setNametagVisibility(NametagVisibilityEnum visibility) {
+        this.nametagVisibility = visibility;
     }
 
     public void setSkipGameover(boolean skipGameover) {

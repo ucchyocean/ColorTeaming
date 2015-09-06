@@ -28,6 +28,7 @@ import com.github.ucchyocean.ct.command.CGiveCommand;
 import com.github.ucchyocean.ct.command.CJoinCommand;
 import com.github.ucchyocean.ct.command.CLeaderCommand;
 import com.github.ucchyocean.ct.command.CLeaveCommand;
+import com.github.ucchyocean.ct.command.CNametagCommand;
 import com.github.ucchyocean.ct.command.CPointCommand;
 import com.github.ucchyocean.ct.command.CRandomCommand;
 import com.github.ucchyocean.ct.command.CRemoveCommand;
@@ -107,6 +108,7 @@ public class ColorTeaming extends JavaPlugin {
         commands.put("colorgive", new CGiveCommand(this));
         commands.put("colorjoin", new CJoinCommand(this));
         commands.put("colorleave", new CLeaveCommand(this));
+        commands.put("colornametag", new CNametagCommand(this));
         commands.put("colorteaming", new CTeamingCommand(this));
 
         // イベント購読をサーバーに登録

@@ -16,6 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Team;
 
 import com.github.ucchyocean.ct.config.ClassData;
+import com.github.ucchyocean.ct.config.NametagVisibilityEnum;
 import com.github.ucchyocean.ct.config.RespawnConfiguration;
 import com.github.ucchyocean.ct.config.TPPointConfiguration;
 import com.github.ucchyocean.ct.config.TeamNameConfig;
@@ -371,6 +372,17 @@ public interface ColorTeamingAPI {
      * @return 最後まで処理が行われたかどうか
      */
     public boolean addPlayerToColorTeamsWithOrderSelection(ArrayList<Player> players);
+
+    /**
+     * ネームタグの表示/非表示を、コンフィグから取得して設定します。このAPIは、CB1.7.x以前では動作しません。
+     */
+    public void setNametagVisibility();
+
+    /**
+     * ネームタグの表示/非表示を設定します。このAPIは、CB1.7.x以前では動作しません。
+     * @param visibility 表示設定
+     */
+    public void setNametagVisibility(NametagVisibilityEnum visibility);
 
     /**
      * ColorTeamingの設定ファイルを全て再読み込みする
