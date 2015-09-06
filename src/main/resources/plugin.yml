@@ -169,7 +169,7 @@ commands:
            /<command> off - ネームタグを非表示に設定します。
            /<command> team - ネームタグを他チームから非表示に設定します。
            /<command> other - ネームタグを自チームから非表示に設定します。
-    permission: colorteaming.explode
+    permission: colorteaming.nametag
     permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorglobal:
     description: チームチャット有効時にグローバルへ発言するためのコマンド
@@ -232,6 +232,9 @@ permissions:
   colorteaming.give:
     description: colorgive(cgive)コマンドの使用権限
     default: op
+  colorteaming.nametag:
+    description: colornametag(cn)コマンドの使用権限
+    default: op
   colorteaming.*:
     children:
       colorteaming.team: true
@@ -247,6 +250,7 @@ permissions:
       colorteaming.remove: true
       colorteaming.explode: true
       colorteaming.give: true
+      colorteaming.nametag: true
     description: ColorTeamingプラグインの管理系コマンド全ての使用権限
   colorteaming-user.global:
     description: colorglobal(g)コマンドの使用権限
