@@ -438,9 +438,11 @@ public class ClassData {
             player.getInventory().clear();
 
             // アイテムの配布
+            int index = 0;
             for ( ItemStack item : items ) {
+
                 if ( item != null ) {
-                    player.getInventory().addItem(item);
+                    player.getInventory().setItem(index++, item);
                 }
             }
 
@@ -539,13 +541,23 @@ public class ClassData {
 
             ConfigurationSection sub = config.createSection("items");
 
-            int index = 1;
-
-            for ( ItemStack item : inv.getContents() ) {
+            // アイテムインベントリの終端を調べる
+            int end = 0;
+            for ( int index = 0; index < inv.getSize(); index++ ) {
+                ItemStack item = inv.getItem(index);
                 if ( item != null && item.getType() != Material.AIR ) {
-                    ConfigurationSection itemsec = sub.createSection("item" + index);
-                    index++;
+                    end = index;
+                }
+            }
+
+            // 終端までエクスポートする
+            for ( int index = 0; index <= end; index++ ) {
+                ItemStack item = inv.getItem(index);
+                ConfigurationSection itemsec = sub.createSection("item" + index);
+                if ( item != null ) {
                     ItemConfigParser.setItemToSection(itemsec, item);
+                } else {
+                    ItemConfigParser.setItemToSection(itemsec, new ItemStack(Material.AIR));
                 }
             }
 
