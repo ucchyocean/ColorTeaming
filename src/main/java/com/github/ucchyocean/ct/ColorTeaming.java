@@ -36,6 +36,7 @@ import com.github.ucchyocean.ct.command.CSpawnCommand;
 import com.github.ucchyocean.ct.command.CTPCommand;
 import com.github.ucchyocean.ct.command.CTeamingCommand;
 import com.github.ucchyocean.ct.config.ColorTeamingConfig;
+import com.github.ucchyocean.ct.config.ColorTeamingMessages;
 import com.github.ucchyocean.ct.listener.PlayerChatListener;
 import com.github.ucchyocean.ct.listener.PlayerDeathListener;
 import com.github.ucchyocean.ct.listener.PlayerJoinQuitListener;
@@ -67,6 +68,10 @@ public class ColorTeaming extends JavaPlugin {
 
         // 設定の読み込み処理
         config = ColorTeamingConfig.loadConfig();
+
+        // メッセージの読み込み処理
+        ColorTeamingMessages.initialize(getFile(), getDataFolder());
+        ColorTeamingMessages.reload();
 
         // VaultChatをロード
         VaultChatBridge vaultchat = null;

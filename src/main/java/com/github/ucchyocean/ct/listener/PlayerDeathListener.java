@@ -28,6 +28,7 @@ import com.github.ucchyocean.ct.ColorTeamingAPI;
 import com.github.ucchyocean.ct.Utility;
 import com.github.ucchyocean.ct.config.ClassData;
 import com.github.ucchyocean.ct.config.ColorTeamingConfig;
+import com.github.ucchyocean.ct.config.ColorTeamingMessages;
 import com.github.ucchyocean.ct.config.TeamNameSetting;
 import com.github.ucchyocean.ct.event.ColorTeamingLeaderDefeatedEvent;
 import com.github.ucchyocean.ct.event.ColorTeamingPlayerLeaveEvent.Reason;
@@ -96,7 +97,7 @@ public class PlayerDeathListener implements Listener {
             if ( leaders.containsKey(teamDeader) &&
                     leaders.get(teamDeader).contains(deader.getName()) ) {
 
-                String message = config.getLeaderDefeatedMessage(tnsDeader.toString(), deader.getName());
+                String message = ColorTeamingMessages.getLeaderDefeatedMessage(tnsDeader.toString(), deader.getName());
                 if ( message != null ) {
                     Bukkit.broadcastMessage(message);
                 }
@@ -104,14 +105,14 @@ public class PlayerDeathListener implements Listener {
                 leaders.get(teamDeader).remove(deader.getName());
 
                 if ( leaders.get(teamDeader).size() >= 1 ) {
-                    message = config.getLeaderDefeatedRemainMessage(
+                    message = ColorTeamingMessages.getLeaderDefeatedRemainMessage(
                             tnsDeader.toString(), leaders.get(teamDeader).size());
                     if ( message != null ) {
                         Bukkit.broadcastMessage(message);
                     }
 
                 } else {
-                    message = config.getLeaderDefeatedAllMessage(tnsDeader.toString());
+                    message = ColorTeamingMessages.getLeaderDefeatedAllMessage(tnsDeader.toString());
                     if ( message != null ) {
                         Bukkit.broadcastMessage(message);
                     }
@@ -167,7 +168,7 @@ public class PlayerDeathListener implements Listener {
                         int rest = config.getKillTrophy() - config.getKillReachTrophy();
 
                         // 全体通知
-                        String message = config.getKillReachTrophyMessage(
+                        String message = ColorTeamingMessages.getKillReachTrophyMessage(
                                 tnsKiller.toString(), config.getKillTrophy(), rest);
                         if ( message != null ) {
                             Bukkit.broadcastMessage(message);
@@ -189,7 +190,7 @@ public class PlayerDeathListener implements Listener {
                             config.getKillTrophy() ) {
 
                         // 全体通知
-                        String message = config.getKillTrophyMessage(
+                        String message = ColorTeamingMessages.getKillTrophyMessage(
                                 tnsKiller.toString(), config.getKillTrophy());
                         if ( message != null ) {
                             Bukkit.broadcastMessage(message);

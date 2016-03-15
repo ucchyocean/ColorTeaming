@@ -31,6 +31,7 @@ import org.bukkit.scoreboard.Team;
 import com.github.ucchyocean.ct.bridge.VaultChatBridge;
 import com.github.ucchyocean.ct.config.ClassData;
 import com.github.ucchyocean.ct.config.ColorTeamingConfig;
+import com.github.ucchyocean.ct.config.ColorTeamingMessages;
 import com.github.ucchyocean.ct.config.NametagVisibilityEnum;
 import com.github.ucchyocean.ct.config.RespawnConfiguration;
 import com.github.ucchyocean.ct.config.TPPointConfiguration;
@@ -218,7 +219,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         plugin.addMemberPermission(player, id);
 
         // 該当プレイヤーに通知
-        String msg = config.getJoinTeamMessage(teamName.toString());
+        String msg = ColorTeamingMessages.getJoinTeamMessage(teamName.toString());
         if ( msg != null ) {
             player.sendMessage(msg);
         }

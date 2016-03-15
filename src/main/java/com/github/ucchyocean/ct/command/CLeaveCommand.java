@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.config.ColorTeamingConfig;
+import com.github.ucchyocean.ct.config.ColorTeamingMessages;
 import com.github.ucchyocean.ct.event.ColorTeamingPlayerLeaveEvent.Reason;
 
 /**
@@ -48,7 +49,7 @@ public class CLeaveCommand implements TabExecutor {
 
         if ( !plugin.getCTConfig().isAllowPlayerLeave() ) {
 
-            String msg = config.getErrorLeaveNotAllowMessage();
+            String msg = ColorTeamingMessages.getErrorLeaveNotAllowMessage();
             if ( msg != null ) {
                 player.sendMessage(msg);
             }
@@ -58,7 +59,7 @@ public class CLeaveCommand implements TabExecutor {
 
         if ( plugin.getAPI().getPlayerTeamName(player) == null ) {
 
-            String msg = config.getErrorNotJoinMessage();
+            String msg = ColorTeamingMessages.getErrorNotJoinMessage();
             if ( msg != null ) {
                 player.sendMessage(msg);
             }
@@ -68,7 +69,7 @@ public class CLeaveCommand implements TabExecutor {
 
         plugin.getAPI().leavePlayerTeam(player, Reason.SELF);
 
-        String msg = plugin.getCTConfig().getLeaveTeamMessage();
+        String msg = ColorTeamingMessages.getLeaveTeamMessage();
         if ( msg != null ) {
             player.sendMessage(msg);
         }

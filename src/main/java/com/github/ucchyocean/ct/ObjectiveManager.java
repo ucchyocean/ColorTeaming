@@ -16,6 +16,7 @@ import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 
 import com.github.ucchyocean.ct.config.ColorTeamingConfig;
+import com.github.ucchyocean.ct.config.ColorTeamingMessages;
 import com.github.ucchyocean.ct.config.TeamNameSetting;
 
 /**
@@ -50,35 +51,35 @@ public class ObjectiveManager {
     }
 
     protected Objective getTeamPointObjective() {
-        return getObjective(OBJECTIVE_TEAM_POINT, "", config.getSidebarTitleTeamPoint());
+        return getObjective(OBJECTIVE_TEAM_POINT, "", ColorTeamingMessages.getSidebarTitleTeamPoint());
     }
 
     protected Objective getTeamKillObjective() {
-        return getObjective(OBJECTIVE_TEAM_KILL, "", config.getSidebarTitleTeamKill());
+        return getObjective(OBJECTIVE_TEAM_KILL, "", ColorTeamingMessages.getSidebarTitleTeamKill());
     }
 
     protected Objective getTeamDeathObjective() {
-        return getObjective(OBJECTIVE_TEAM_DEATH, "", config.getSidebarTitleTeamDeath());
+        return getObjective(OBJECTIVE_TEAM_DEATH, "", ColorTeamingMessages.getSidebarTitleTeamDeath());
     }
 
     protected Objective getTeamRestObjective() {
-        return getObjective(OBJECTIVE_TEAM_REST, "", config.getSidebarTitleTeamRest());
+        return getObjective(OBJECTIVE_TEAM_REST, "", ColorTeamingMessages.getSidebarTitleTeamRest());
     }
 
     protected Objective getPersonalPointObjective() {
-        return getObjective(OBJECTIVE_PERSONAL_POINT, "", config.getBelowNameTitlePoint());
+        return getObjective(OBJECTIVE_PERSONAL_POINT, "", ColorTeamingMessages.getBelowNameTitlePoint());
     }
 
     protected Objective getPersonalKillObjective() {
-        return getObjective(OBJECTIVE_PERSONAL_KILL, Criterias.PLAYER_KILLS, config.getBelowNameTitleKill());
+        return getObjective(OBJECTIVE_PERSONAL_KILL, Criterias.PLAYER_KILLS, ColorTeamingMessages.getBelowNameTitleKill());
     }
 
     protected Objective getPersonalDeathObjective() {
-        return getObjective(OBJECTIVE_PERSONAL_DEATH, Criterias.DEATHS, config.getBelowNameTitleDeath());
+        return getObjective(OBJECTIVE_PERSONAL_DEATH, Criterias.DEATHS, ColorTeamingMessages.getBelowNameTitleDeath());
     }
 
     protected Objective getPersonalHealthObjective() {
-        return getObjective(OBJECTIVE_PERSONAL_HEALTH, Criterias.HEALTH, config.getBelowNameTitleHealth());
+        return getObjective(OBJECTIVE_PERSONAL_HEALTH, Criterias.HEALTH, ColorTeamingMessages.getBelowNameTitleHealth());
     }
 
     protected void unregisterAll() {

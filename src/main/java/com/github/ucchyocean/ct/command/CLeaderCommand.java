@@ -20,6 +20,7 @@ import org.bukkit.entity.Player;
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.Utility;
 import com.github.ucchyocean.ct.config.ColorTeamingConfig;
+import com.github.ucchyocean.ct.config.ColorTeamingMessages;
 import com.github.ucchyocean.ct.config.TeamNameSetting;
 
 /**
@@ -57,7 +58,7 @@ public class CLeaderCommand implements TabExecutor {
 
             plugin.getAPI().clearLeaders();
 
-            String msg = config.getLeaderClearMessage();
+            String msg = ColorTeamingMessages.getLeaderClearMessage();
             if ( msg != null ) {
                 Bukkit.broadcastMessage(msg);
             }
@@ -80,7 +81,7 @@ public class CLeaderCommand implements TabExecutor {
 
             for ( String key : leaders.keySet() ) {
 
-                String pre = config.getLeaderInformationSummayMessage(key);
+                String pre = ColorTeamingMessages.getLeaderInformationSummayMessage(key);
                 if ( pre == null ) {
                     break;
                 }
@@ -144,7 +145,7 @@ public class CLeaderCommand implements TabExecutor {
                     l.append(name);
                 }
 
-                String message = config.getLeaderInformationTeamChatMessage(teamName.toString(), l.toString());
+                String message = ColorTeamingMessages.getLeaderInformationTeamChatMessage(teamName.toString(), l.toString());
                 if ( message != null ) {
                     plugin.getAPI().sendTeamChat(null, key, message);
                 }
@@ -185,7 +186,7 @@ public class CLeaderCommand implements TabExecutor {
                 String newLeader = members.get(team).get(value).getName();
                 leaders.get(team).add(newLeader);
 
-                String message = config.getLeaderInformationTeamChatMessage(teamName.toString(), newLeader);
+                String message = ColorTeamingMessages.getLeaderInformationTeamChatMessage(teamName.toString(), newLeader);
                 if ( message != null ) {
                     plugin.getAPI().sendTeamChat(null, team, message);
                 }
@@ -206,7 +207,7 @@ public class CLeaderCommand implements TabExecutor {
                 leaders.put(team, new ArrayList<String>());
                 leaders.get(team).add(user);
 
-                String message = config.getLeaderInformationTeamChatMessage(teamName.toString(), user);
+                String message = ColorTeamingMessages.getLeaderInformationTeamChatMessage(teamName.toString(), user);
                 if ( message != null ) {
                     plugin.getAPI().sendTeamChat(null, team, message);
                 }

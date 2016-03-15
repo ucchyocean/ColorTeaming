@@ -135,35 +135,6 @@ public class ColorTeamingConfig {
     /** デバッグログの出力 */
     private boolean debug;
 
-    // 以下、メッセージ関連
-    private String randomMapSelectedMessage;
-    private String joinTeamMessage;
-    private String leaveTeamMessage;
-    private String leaderDefeatedMessage;
-    private String leaderRunawayMessage;
-    private String leaderDefeatedRemainMessage;
-    private String leaderDefeatedAllMessage;
-    private String leaderClearMessage;
-    private String leaderInformationSummayMessage;
-    private String leaderInformationTeamChatMessage;
-    private String killReachTrophyMessage;
-    private String killTrophyMessage;
-    private String errorJoinRandomNotAllowMessage;
-    private String errorJoinAnyNotAllowMessage;
-    private String errorLeaveNotAllowMessage;
-    private String errorAlreadyJoinMessage;
-    private String errorNotJoinMessage;
-    private String errorNoTeamMessage;
-    private String errorInvalidTeamNameMessage;
-    private String sidebarTitleTeamPoint;
-    private String sidebarTitleTeamKill;
-    private String sidebarTitleTeamDeath;
-    private String sidebarTitleTeamRest;
-    private String belowNameTitlePoint;
-    private String belowNameTitleKill;
-    private String belowNameTitleDeath;
-    private String belowNameTitleHealth;
-
     /**
      * config.ymlの読み出し処理。
      * @return 読み込んだ ColorTeamingConfig オブジェクト
@@ -252,34 +223,6 @@ public class ColorTeamingConfig {
         ctconfig.clearEffectOnSetClass = config.getBoolean("clearEffectOnSetClass", true);
 
         ctconfig.debug = config.getBoolean("debug", false);
-
-        ctconfig.randomMapSelectedMessage = config.getString("randomMapSelectedMessage");
-        ctconfig.joinTeamMessage = config.getString("joinTeamMessage");
-        ctconfig.leaveTeamMessage = config.getString("leaveTeamMessage");
-        ctconfig.leaderDefeatedMessage = config.getString("leaderDefeatedMessage");
-        ctconfig.leaderRunawayMessage = config.getString("leaderRunawayMessage");
-        ctconfig.leaderDefeatedRemainMessage = config.getString("leaderDefeatedRemainMessage");
-        ctconfig.leaderDefeatedAllMessage = config.getString("leaderDefeatedAllMessage");
-        ctconfig.leaderClearMessage = config.getString("leaderClearMessage");
-        ctconfig.leaderInformationSummayMessage = config.getString("leaderInformationSummayMessage");
-        ctconfig.leaderInformationTeamChatMessage = config.getString("leaderInformationTeamChatMessage");
-        ctconfig.killReachTrophyMessage = config.getString("killReachTrophyMessage");
-        ctconfig.killTrophyMessage = config.getString("killTrophyMessage");
-        ctconfig.errorJoinRandomNotAllowMessage = config.getString("errorJoinRandomNotAllowMessage");
-        ctconfig.errorJoinAnyNotAllowMessage = config.getString("errorJoinAnyNotAllowMessage");
-        ctconfig.errorLeaveNotAllowMessage = config.getString("errorLeaveNotAllowMessage");
-        ctconfig.errorAlreadyJoinMessage = config.getString("errorAlreadyJoinMessage");
-        ctconfig.errorNotJoinMessage = config.getString("errorNotJoinMessage");
-        ctconfig.errorNoTeamMessage = config.getString("errorNoTeamMessage");
-        ctconfig.errorInvalidTeamNameMessage = config.getString("errorInvalidTeamNameMessage");
-        ctconfig.sidebarTitleTeamPoint = config.getString("sidebarTitleTeamPoint", "&eチームポイント");
-        ctconfig.sidebarTitleTeamKill = config.getString("sidebarTitleTeamKill", "&eスコア(キル数)");
-        ctconfig.sidebarTitleTeamDeath = config.getString("sidebarTitleTeamDeath", "&eスコア(デス数)");
-        ctconfig.sidebarTitleTeamRest = config.getString("sidebarTitleTeamRest", "&eチーム人数");
-        ctconfig.belowNameTitlePoint = config.getString("belowNameTitlePoint", "&epoints");
-        ctconfig.belowNameTitleKill = config.getString("belowNameTitleKill", "&ekills");
-        ctconfig.belowNameTitleDeath = config.getString("belowNameTitleDeath", "&edeaths");
-        ctconfig.belowNameTitleHealth = config.getString("belowNameTitleHealth", "&eHP");
 
         return ctconfig;
     }
@@ -599,124 +542,5 @@ public class ColorTeamingConfig {
 
     public boolean isDebug() {
         return debug;
-    }
-
-    public String getRandomMapSelectedMessage(String map) {
-        if ( randomMapSelectedMessage == null ) return null;
-        return Utility.replaceColorCode(randomMapSelectedMessage.replace("%map", map));
-    }
-
-    public String getJoinTeamMessage(String team) {
-        if ( joinTeamMessage == null ) return null;
-        return Utility.replaceColorCode(joinTeamMessage.replace("%team", team));
-    }
-
-    public String getLeaveTeamMessage() {
-        return Utility.replaceColorCode(leaveTeamMessage);
-    }
-
-    public String getLeaderDefeatedMessage(String team, String name) {
-        if ( leaderDefeatedMessage == null ) return null;
-        return Utility.replaceColorCode(leaderDefeatedMessage.replace("%team", team).replace("%name", name));
-    }
-
-    public String getLeaderRunawayMessage(String team, String name) {
-        if ( leaderRunawayMessage == null ) return null;
-        return Utility.replaceColorCode(leaderRunawayMessage.replace("%team", team).replace("%name", name));
-    }
-
-    public String getLeaderDefeatedRemainMessage(String team, int num) {
-        if ( leaderDefeatedRemainMessage == null ) return null;
-        return Utility.replaceColorCode(leaderDefeatedRemainMessage.replace("%team", team).replace("%num", num + ""));
-    }
-
-    public String getLeaderDefeatedAllMessage(String team) {
-        if ( leaderDefeatedAllMessage == null ) return null;
-        return Utility.replaceColorCode(leaderDefeatedAllMessage.replace("%team", team));
-    }
-
-    public String getLeaderClearMessage() {
-        return Utility.replaceColorCode(leaderClearMessage);
-    }
-
-    public String getLeaderInformationSummayMessage(String team) {
-        if ( leaderInformationSummayMessage == null ) return null;
-        return Utility.replaceColorCode(leaderInformationSummayMessage.replace("%team", team));
-    }
-
-    public String getLeaderInformationTeamChatMessage(String team, String name) {
-        if ( leaderInformationTeamChatMessage == null ) return null;
-        return Utility.replaceColorCode(leaderInformationTeamChatMessage.replace("%team", team).replace("%name", name));
-    }
-
-    public String getKillReachTrophyMessage(String team, int trophy, int remain) {
-        if ( killReachTrophyMessage == null ) return null;
-        return Utility.replaceColorCode(killReachTrophyMessage.replace("%team", team).replace("%trophy", trophy + "").replace("%remain", remain + ""));
-    }
-
-    public String getKillTrophyMessage(String team, int trophy) {
-        if ( killTrophyMessage == null ) return null;
-        return Utility.replaceColorCode(killTrophyMessage.replace("%team", team).replace("%trophy", trophy + ""));
-    }
-
-    public String getErrorJoinRandomNotAllowMessage() {
-        return Utility.replaceColorCode(errorJoinRandomNotAllowMessage);
-    }
-
-    public String getErrorJoinAnyNotAllowMessage() {
-        return Utility.replaceColorCode(errorJoinAnyNotAllowMessage);
-    }
-
-    public String getErrorLeaveNotAllowMessage() {
-        return Utility.replaceColorCode(errorLeaveNotAllowMessage);
-    }
-
-    public String getErrorAlreadyJoinMessage() {
-        return Utility.replaceColorCode(errorAlreadyJoinMessage);
-    }
-
-    public String getErrorNotJoinMessage() {
-        return Utility.replaceColorCode(errorNotJoinMessage);
-    }
-
-    public String getErrorNoTeamMessage() {
-        return Utility.replaceColorCode(errorNoTeamMessage);
-    }
-
-    public String getErrorInvalidTeamNameMessage(String arg) {
-        if ( errorInvalidTeamNameMessage == null ) return null;
-        return Utility.replaceColorCode(errorInvalidTeamNameMessage.replace("%arg", arg));
-    }
-
-    public String getSidebarTitleTeamPoint() {
-        return Utility.replaceColorCode(sidebarTitleTeamPoint);
-    }
-
-    public String getSidebarTitleTeamKill() {
-        return Utility.replaceColorCode(sidebarTitleTeamKill);
-    }
-
-    public String getSidebarTitleTeamDeath() {
-        return Utility.replaceColorCode(sidebarTitleTeamDeath);
-    }
-
-    public String getSidebarTitleTeamRest() {
-        return Utility.replaceColorCode(sidebarTitleTeamRest);
-    }
-
-    public String getBelowNameTitlePoint() {
-        return Utility.replaceColorCode(belowNameTitlePoint);
-    }
-
-    public String getBelowNameTitleKill() {
-        return Utility.replaceColorCode(belowNameTitleKill);
-    }
-
-    public String getBelowNameTitleDeath() {
-        return Utility.replaceColorCode(belowNameTitleDeath);
-    }
-
-    public String getBelowNameTitleHealth() {
-        return Utility.replaceColorCode(belowNameTitleHealth);
     }
 }

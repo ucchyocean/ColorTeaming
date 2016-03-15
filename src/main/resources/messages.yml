@@ -1,0 +1,45 @@
+# ${project.name} v${project.version}
+# @author     ucchy
+# @license    LGPLv3
+# @copyright  Copyright ucchy 2016
+
+
+
+# -------------------- メッセージ設定 --------------------
+# 各メッセージはコメントアウトすることで、該当メッセージを非表示にすることができます。
+
+randomMapSelectedMessage: '&e今回のマップは&c%map&eです！'
+
+joinTeamMessage: '&aあなたは %team &aチームになりました。'
+leaveTeamMessage: '&aチームから離脱しました。'
+
+leaderDefeatedMessage: '%team &dチームの大将、%name &dが倒されました！'
+leaderRunawayMessage: '%team &dチームの大将、%name &dは逃げ出した！'
+leaderDefeatedRemainMessage: '%team &dチームの残り大将は、あと %num 人です。'
+leaderDefeatedAllMessage: '%team &dチームの大将は全滅しました！'
+leaderClearMessage: '&d大将設定がクリアされました。'
+leaderInformationSummayMessage: '%team チームの大将：'
+leaderInformationTeamChatMessage: '%team &dチームの大将に、%name &dが選ばれました。'
+
+killReachTrophyMessage: '%team &dチームが、%trophy キルまでもう少しです(あと %remain キル)。'
+killTrophyMessage: '%team &dチームは、%trophy キルを達成しました！'
+
+errorJoinRandomNotAllowMessage: '&ccjoinコマンドによるランダム参加は、許可されておりません。'
+errorJoinAnyNotAllowMessage: '&ccjoin (group) コマンドによる任意チームへの参加は、許可されておりません。'
+errorLeaveNotAllowMessage: '&ccleaveコマンドによる離脱は、許可されておりません。'
+errorAlreadyJoinMessage: '&cあなたは既に、チームに所属しています。'
+errorNotJoinMessage: '&cあなたはチームに所属していません。'
+errorNoTeamMessage: '&c参加できるチームが無いようです。'
+errorInvalidTeamNameMessage: '&c%arg は設定できないチーム名です。'
+
+
+# 以下のメッセージは、コメントアウトしないでください。
+
+sidebarTitleTeamPoint: '&eチームポイント'
+sidebarTitleTeamKill: '&eスコア(キル数)'
+sidebarTitleTeamDeath: '&eスコア(デス数)'
+sidebarTitleTeamRest: '&eチーム人数'
+belowNameTitlePoint: '&epoints'
+belowNameTitleKill: '&ekills'
+belowNameTitleDeath: '&edeaths'
+belowNameTitleHealth: '&eHP'

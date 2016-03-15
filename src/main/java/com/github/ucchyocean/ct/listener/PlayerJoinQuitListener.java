@@ -21,6 +21,7 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingAPI;
 import com.github.ucchyocean.ct.config.ColorTeamingConfig;
+import com.github.ucchyocean.ct.config.ColorTeamingMessages;
 import com.github.ucchyocean.ct.config.TeamNameSetting;
 import com.github.ucchyocean.ct.event.ColorTeamingLeaderDefeatedEvent;
 import com.github.ucchyocean.ct.event.ColorTeamingPlayerLeaveEvent.Reason;
@@ -136,7 +137,7 @@ public class PlayerJoinQuitListener implements Listener {
         if ( leaders.containsKey(tns.getID()) &&
                 leaders.get(tns.getID()).contains(player.getName()) ) {
 
-            String message = config.getLeaderDefeatedMessage(
+            String message = ColorTeamingMessages.getLeaderDefeatedMessage(
                     tns.toString(), player.getName());
             if ( message != null ) {
                 Bukkit.broadcastMessage(message);
@@ -145,14 +146,14 @@ public class PlayerJoinQuitListener implements Listener {
             leaders.get(tns.getID()).remove(player.getName());
 
             if ( leaders.get(tns.getID()).size() >= 1 ) {
-                message = config.getLeaderDefeatedRemainMessage(
+                message = ColorTeamingMessages.getLeaderDefeatedRemainMessage(
                         tns.toString(), leaders.get(tns.getID()).size());
                 if ( message != null ) {
                     Bukkit.broadcastMessage(message);
                 }
 
             } else {
-                message = config.getLeaderDefeatedAllMessage(tns.toString());
+                message = ColorTeamingMessages.getLeaderDefeatedAllMessage(tns.toString());
                 if ( message != null ) {
                     Bukkit.broadcastMessage(message);
                 }

@@ -17,6 +17,7 @@ import org.bukkit.entity.Player;
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingAPI;
 import com.github.ucchyocean.ct.config.ColorTeamingConfig;
+import com.github.ucchyocean.ct.config.ColorTeamingMessages;
 import com.github.ucchyocean.ct.config.TeamNameConfig;
 import com.github.ucchyocean.ct.config.TeamNameSetting;
 
@@ -53,7 +54,7 @@ public class CJoinCommand implements TabExecutor {
 
             if ( !plugin.getCTConfig().isAllowPlayerJoinRandom() ) {
 
-                String msg = config.getErrorJoinRandomNotAllowMessage();
+                String msg = ColorTeamingMessages.getErrorJoinRandomNotAllowMessage();
                 if ( msg != null ) {
                     player.sendMessage(msg);
                 }
@@ -63,7 +64,7 @@ public class CJoinCommand implements TabExecutor {
 
             if ( plugin.getAPI().getPlayerTeamName(player) != null ) {
 
-                String msg = config.getErrorAlreadyJoinMessage();
+                String msg = ColorTeamingMessages.getErrorAlreadyJoinMessage();
                 if ( msg != null ) {
                     player.sendMessage(msg);
                 }
@@ -77,7 +78,7 @@ public class CJoinCommand implements TabExecutor {
 
             if ( !result ) {
 
-                String msg = config.getErrorNoTeamMessage();
+                String msg = ColorTeamingMessages.getErrorNoTeamMessage();
                 if ( msg != null ) {
                     player.sendMessage(msg);
                 }
@@ -91,7 +92,7 @@ public class CJoinCommand implements TabExecutor {
 
             if ( !plugin.getCTConfig().isAllowPlayerJoinAny() ) {
 
-                String msg = config.getErrorJoinAnyNotAllowMessage();
+                String msg = ColorTeamingMessages.getErrorJoinAnyNotAllowMessage();
                 if ( msg != null ) {
                     player.sendMessage(msg);
                 }
@@ -101,7 +102,7 @@ public class CJoinCommand implements TabExecutor {
 
             if ( plugin.getAPI().getPlayerTeamName(player) != null ) {
 
-                String msg = config.getErrorAlreadyJoinMessage();
+                String msg = ColorTeamingMessages.getErrorAlreadyJoinMessage();
                 if ( msg != null ) {
                     player.sendMessage(msg);
                 }
@@ -113,7 +114,7 @@ public class CJoinCommand implements TabExecutor {
             ArrayList<TeamNameSetting> teams = plugin.getAPI().getTeamNameConfig().getTeamNames();
             if ( !TeamNameConfig.containsID(teams, target) ) {
 
-                String msg = config.getErrorInvalidTeamNameMessage(target);
+                String msg = ColorTeamingMessages.getErrorInvalidTeamNameMessage(target);
                 if ( msg != null ) {
                     player.sendMessage(msg);
                 }
