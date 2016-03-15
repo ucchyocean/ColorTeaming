@@ -25,6 +25,7 @@ import java.util.zip.ZipEntry;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 /**
@@ -42,6 +43,18 @@ public class Utility {
      */
     public static void copyFileFromJar(
             File jarFile, File targetFile, String sourceFilePath) {
+        copyFileFromJar(jarFile, targetFile, sourceFilePath, false);
+    }
+
+    /**
+     * jarファイルの中に格納されているテキストファイルを、jarファイルの外にコピーするメソッド
+     * @param jarFile jarファイル
+     * @param targetFile コピー先
+     * @param sourceFilePath コピー元
+     * @param forceUTF8 強制的にUTF8で書き出すかどうか
+     */
+    public static void copyFileFromJar(
+            File jarFile, File targetFile, String sourceFilePath, boolean forceUTF8) {
 
         JarFile jar = null;
         InputStream is = null;
@@ -64,7 +77,7 @@ public class Utility {
             reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
 
             // CB190以降は、書き出すファイルエンコードにUTF-8を強制する。
-            if ( isCB19orLater() ) {
+            if ( forceUTF8 || isCB19orLater() ) {
                 writer = new BufferedWriter(new OutputStreamWriter(fos, "UTF-8"));
             } else {
                 writer = new BufferedWriter(new OutputStreamWriter(fos));
@@ -161,7 +174,13 @@ public class Utility {
                         is = jar.getInputStream(entry);
                         reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
                         fos = new FileOutputStream(targetFile);
-                        writer = new BufferedWriter(new OutputStreamWriter(fos));
+
+                        // CB190以降は、書き出すファイルエンコードにUTF-8を強制する。
+                        if ( isCB19orLater() ) {
+                            writer = new BufferedWriter(new OutputStreamWriter(fos, "UTF-8"));
+                        } else {
+                            writer = new BufferedWriter(new OutputStreamWriter(fos));
+                        }
 
                         String line;
                         while ((line = reader.readLine()) != null) {
@@ -473,5 +492,21 @@ public class Utility {
         catch (InvocationTargetException ex){} // never happen
         catch (IllegalAccessException ex){} // never happen
         return new ArrayList<Player>();
+    }
+
+    /**
+     * 指定したプレイヤーが手に持っているアイテムを返します。
+     * CB1.9以降と、CB1.8.8以前で、互換性を保つために使用します。
+     * @param player プレイヤー
+     * @return 手に持っているアイテム
+     */
+    @SuppressWarnings("deprecation")
+    public static ItemStack getItemInHand(Player player) {
+        if ( player == null ) return null;
+        if ( isCB19orLater() ) {
+            return player.getInventory().getItemInMainHand();
+        } else {
+            return player.getItemInHand();
+        }
     }
 }

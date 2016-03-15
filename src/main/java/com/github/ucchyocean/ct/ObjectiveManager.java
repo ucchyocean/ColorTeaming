@@ -15,7 +15,6 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 
-import com.github.ucchyocean.ct.config.ColorTeamingConfig;
 import com.github.ucchyocean.ct.config.ColorTeamingMessages;
 import com.github.ucchyocean.ct.config.TeamNameSetting;
 
@@ -36,17 +35,14 @@ public class ObjectiveManager {
 
     private Scoreboard scoreboard;
     private ColorTeamingManager parent;
-    private ColorTeamingConfig config;
 
     /**
      * コンストラクタ
      * @param scoreboard
      */
-    protected ObjectiveManager(Scoreboard scoreboard, ColorTeamingManager parent,
-            ColorTeamingConfig config) {
+    protected ObjectiveManager(Scoreboard scoreboard, ColorTeamingManager parent) {
         this.scoreboard = scoreboard;
         this.parent = parent;
-        this.config = config;
         makeAll();
     }
 

@@ -19,6 +19,7 @@ import com.github.ucchyocean.ct.config.RespawnConfiguration;
 import com.github.ucchyocean.ct.config.TPPointConfiguration;
 import com.github.ucchyocean.ct.config.TeamNameConfig;
 import com.github.ucchyocean.ct.config.TeamNameSetting;
+import com.github.ucchyocean.ct.config.TeamOptionStatusEnum;
 import com.github.ucchyocean.ct.event.ColorTeamingPlayerLeaveEvent.Reason;
 
 /**
@@ -346,6 +347,28 @@ public interface ColorTeamingAPI {
      * @param visibility 表示設定
      */
     public void setNametagVisibility(NametagVisibilityEnum visibility);
+
+    /**
+     * プレイヤー間の当たり判定を、コンフィグから取得して設定します。このAPIは、CB1.8.x以前では動作しません。
+     */
+    public void setCollisionRule();
+
+    /**
+     * プレイヤー間の当たり判定を設定します。このAPIは、CB1.8.x以前では動作しません。
+     * @param rule 当たり判定設定
+     */
+    public void setCollisionRule(TeamOptionStatusEnum rule);
+
+    /**
+     * 死亡ログの表示設定を、コンフィグから取得して設定します。このAPIは、CB1.8.x以前では動作しません。
+     */
+    public void setDeathMessageVisibility();
+
+    /**
+     * 死亡ログの表示を設定します。このAPIは、CB1.8.x以前では動作しません。
+     * @param visibility 表示設定
+     */
+    public void setDeathMessageVisibility(TeamOptionStatusEnum visibility);
 
     /**
      * ColorTeamingの設定ファイルを全て再読み込みする

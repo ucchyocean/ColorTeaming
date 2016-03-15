@@ -6,12 +6,14 @@
 package com.github.ucchyocean.ct.config;
 
 import org.bukkit.scoreboard.NameTagVisibility;
+import org.bukkit.scoreboard.Team;
 
 
 /**
- * ネームタグの表示非表示の種類
+ * ネームタグの表示非表示の種類(CB1.8互換用)
  * @author ucchy
  */
+@SuppressWarnings("deprecation")
 public enum NametagVisibilityEnum {
 
     /**
@@ -67,6 +69,25 @@ public enum NametagVisibilityEnum {
             return NameTagVisibility.HIDE_FOR_OTHER_TEAMS;
         case HIDE_FOR_OWN_TEAM:
             return NameTagVisibility.HIDE_FOR_OWN_TEAM;
+        }
+        return null;
+    }
+
+    /**
+     * 対応するBukkitのTeam.OptionStatusに変換して返す。
+     * @return
+     */
+    public Team.OptionStatus getBukkitOptionStatus() {
+
+        switch (this) {
+        case ALWAYS:
+            return Team.OptionStatus.ALWAYS;
+        case NEVER:
+            return Team.OptionStatus.NEVER;
+        case HIDE_FOR_OTHER_TEAMS:
+            return Team.OptionStatus.FOR_OTHER_TEAMS;
+        case HIDE_FOR_OWN_TEAM:
+            return Team.OptionStatus.FOR_OWN_TEAM;
         }
         return null;
     }

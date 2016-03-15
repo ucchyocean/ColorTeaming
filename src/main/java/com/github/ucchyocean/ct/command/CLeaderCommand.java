@@ -19,7 +19,6 @@ import org.bukkit.entity.Player;
 
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.Utility;
-import com.github.ucchyocean.ct.config.ColorTeamingConfig;
 import com.github.ucchyocean.ct.config.ColorTeamingMessages;
 import com.github.ucchyocean.ct.config.TeamNameSetting;
 
@@ -51,7 +50,6 @@ public class CLeaderCommand implements TabExecutor {
 
         String team = args[0];
         HashMap<String, ArrayList<String>> leaders = plugin.getAPI().getLeaders();
-        ColorTeamingConfig config = plugin.getCTConfig();
 
         if ( team.equalsIgnoreCase("clear") ) {
             // clear 指定の場合。

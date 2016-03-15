@@ -36,6 +36,7 @@ import com.github.ucchyocean.ct.config.RespawnConfiguration;
 import com.github.ucchyocean.ct.config.TPPointConfiguration;
 import com.github.ucchyocean.ct.config.TeamNameConfig;
 import com.github.ucchyocean.ct.config.TeamNameSetting;
+import com.github.ucchyocean.ct.config.TeamOptionStatusEnum;
 import com.github.ucchyocean.ct.event.ColorTeamingKillDeathClearedEvent;
 import com.github.ucchyocean.ct.event.ColorTeamingPlayerAddEvent;
 import com.github.ucchyocean.ct.event.ColorTeamingPlayerLeaveEvent;
@@ -90,7 +91,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         tppointConfig = new TPPointConfiguration();
         teamNameConfig = new TeamNameConfig();
         classDatas = ClassData.loadAllClasses(new File(plugin.getDataFolder(), "classes"));
-        objectives = new ObjectiveManager(scoreboard, this, config);
+        objectives = new ObjectiveManager(scoreboard, this);
     }
 
     /**
@@ -169,6 +170,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      * @param teamName チーム名
      * @return チーム、イベントキャンセルされた場合はnullになることに注意
      */
+    @SuppressWarnings("deprecation")
     @Override
     public Team addPlayerTeam(Player player, TeamNameSetting teamName) {
 
@@ -196,8 +198,20 @@ public class ColorTeamingManager implements ColorTeamingAPI {
             team.setSuffix(ChatColor.RESET.toString());
             team.setCanSeeFriendlyInvisibles(config.isCanSeeFriendlyInvisibles());
             team.setAllowFriendlyFire(config.isFriendlyFire());
-            if ( Utility.isCB18orLater() ) {
+
+            if ( Utility.isCB19orLater() ) {
+                // CB1.9 以上の固有設定
+                team.setOption(Team.Option.NAME_TAG_VISIBILITY,
+                        config.getNametagVisibility().getBukkitOptionStatus());
+                team.setOption(Team.Option.COLLISION_RULE,
+                        config.getCollisionRule().getBukkit());
+                team.setOption(Team.Option.DEATH_MESSAGE_VISIBILITY,
+                        config.getDeathMessageVisibility().getBukkit());
+
+            } else if ( Utility.isCB18orLater() ) {
+                // CB1.8 の固有設定
                 team.setNameTagVisibility(config.getNametagVisibility().getBukkit());
+
             }
         }
 
@@ -1189,6 +1203,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
      * ネームタグの表示/非表示を、コンフィグから取得して設定します。このAPIは、CB1.7.x以前では動作しません。
      * @see com.github.ucchyocean.ct.ColorTeamingAPI#setNametagVisibility()
      */
+    @SuppressWarnings("deprecation")
     @Override
     public void setNametagVisibility() {
 
@@ -1202,7 +1217,13 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         for ( TeamNameSetting tns : getAllTeamNames() ) {
             Team team = scoreboard.getTeam(tns.getID());
             if ( team != null ) {
-                team.setNameTagVisibility(visibility.getBukkit());
+                if ( Utility.isCB19orLater() ) {
+                    // CB1.9以降
+                    team.setOption(Team.Option.NAME_TAG_VISIBILITY, visibility.getBukkitOptionStatus());
+                } else {
+                    // CB1.8
+                    team.setNameTagVisibility(visibility.getBukkit());
+                }
             }
         }
     }
@@ -1223,6 +1244,86 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         config.setNametagVisibility(visibility);
         config.saveConfig();
         setNametagVisibility();
+    }
+
+    /**
+     * プレイヤー間の当たり判定を、コンフィグから取得して設定します。このAPIは、CB1.8.x以前では動作しません。
+     * @see com.github.ucchyocean.ct.ColorTeamingAPI#setCollisionRule()
+     */
+    @Override
+    public void setCollisionRule() {
+
+        // CB 1.9 以降でなければ何もしない
+        if ( !Utility.isCB19orLater() ) {
+            return;
+        }
+
+        TeamOptionStatusEnum rule = config.getCollisionRule();
+
+        for ( TeamNameSetting tns : getAllTeamNames() ) {
+            Team team = scoreboard.getTeam(tns.getID());
+            if ( team != null ) {
+                team.setOption(Team.Option.COLLISION_RULE, rule.getBukkit());
+            }
+        }
+    }
+
+    /**
+     * プレイヤー間の当たり判定を設定します。このAPIは、CB1.8.x以前では動作しません。
+     * @param rule 当たり判定設定
+     * @see com.github.ucchyocean.ct.ColorTeamingAPI#setCollisionRule(com.github.ucchyocean.ct.config.TeamOptionStatusEnum)
+     */
+    @Override
+    public void setCollisionRule(TeamOptionStatusEnum rule) {
+
+        // CB 1.9 以降でなければ何もしない
+        if ( !Utility.isCB19orLater() ) {
+            return;
+        }
+
+        config.setCollisionRule(rule);
+        config.saveConfig();
+        setCollisionRule();
+    }
+
+    /**
+     * 死亡ログの表示設定を、コンフィグから取得して設定します。このAPIは、CB1.8.x以前では動作しません。
+     * @see com.github.ucchyocean.ct.ColorTeamingAPI#setDeathMessageVisibility()
+     */
+    @Override
+    public void setDeathMessageVisibility() {
+
+        // CB 1.9 以降でなければ何もしない
+        if ( !Utility.isCB19orLater() ) {
+            return;
+        }
+
+        TeamOptionStatusEnum visibility = config.getDeathMessageVisibility();
+
+        for ( TeamNameSetting tns : getAllTeamNames() ) {
+            Team team = scoreboard.getTeam(tns.getID());
+            if ( team != null ) {
+                team.setOption(Team.Option.DEATH_MESSAGE_VISIBILITY, visibility.getBukkit());
+            }
+        }
+    }
+
+    /**
+     * 死亡ログの表示を設定します。このAPIは、CB1.8.x以前では動作しません。
+     * @param visibility 表示設定
+     * @see com.github.ucchyocean.ct.ColorTeamingAPI#setDeathMessageVisibility(com.github.ucchyocean.ct.config.TeamOptionStatusEnum)
+     */
+    @Override
+    public void setDeathMessageVisibility(TeamOptionStatusEnum visibility) {
+
+        // CB 1.9 以降でなければ何もしない
+        if ( !Utility.isCB19orLater() ) {
+            return;
+        }
+
+        config.setDeathMessageVisibility(visibility);
+        config.saveConfig();
+        setDeathMessageVisibility();
     }
 
     /**

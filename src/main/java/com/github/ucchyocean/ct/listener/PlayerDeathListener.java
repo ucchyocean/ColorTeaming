@@ -286,10 +286,10 @@ public class PlayerDeathListener implements Listener {
                     event.setDroppedExp(0);
                     event.getDrops().clear();
 
-                    // リスポーン場所へテレポートする
-                    deader.teleport(respawnLocation, TeleportCause.PLUGIN);
                     // ノックバックの除去
                     deader.setVelocity(new Vector(0, 0, 0));
+                    // リスポーン場所へテレポートする
+                    deader.teleport(respawnLocation, TeleportCause.PLUGIN);
                 }
             }
         }
@@ -323,11 +323,12 @@ public class PlayerDeathListener implements Listener {
             return "";
         }
 
-        if ( player.getItemInHand() == null || player.getItemInHand().getType() == Material.AIR ) {
+        ItemStack hand = Utility.getItemInHand(player);
+
+        if ( hand == null || hand.getType() == Material.AIR ) {
             return "素手";
         }
 
-        ItemStack hand = player.getItemInHand();
         if ( !hand.hasItemMeta() || !hand.getItemMeta().hasDisplayName() ) {
             return hand.getType().toString();
         }

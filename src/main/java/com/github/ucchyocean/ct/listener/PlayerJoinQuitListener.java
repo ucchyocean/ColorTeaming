@@ -123,7 +123,6 @@ public class PlayerJoinQuitListener implements Listener {
     private void leaveTeam(Player player) {
 
         ColorTeamingAPI api = plugin.getAPI();
-        ColorTeamingConfig config = plugin.getCTConfig();
 
         TeamNameSetting tns = api.getPlayerTeamName(player);
 

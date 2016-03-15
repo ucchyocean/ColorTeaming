@@ -171,6 +171,15 @@ commands:
            /<command> other - ネームタグを自チームから非表示に設定します。
     permission: colorteaming.nametag
     permission-message: パーミッション "<permission>" が無いため、実行できません。
+  coloroption:
+    description: チームのオプション設定を切り替えるコマンド
+    aliases: [coption]
+    usage: |
+           /<command> nametag (on|off|team|other) - ネームタグの表示非表示を切り替えます。
+           /<command> collision (on|off|team|other) - プレイヤー間の当たり判定の有り無しを切り替えます。
+           /<command> deathmessage (on|off|team|other) - 死亡メッセージの表示非表示を切り替えます。
+    permission: colorteaming.nametag
+    permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorglobal:
     description: チームチャット有効時にグローバルへ発言するためのコマンド
     aliases: [cg,g]
@@ -235,6 +244,9 @@ permissions:
   colorteaming.nametag:
     description: colornametag(cn)コマンドの使用権限
     default: op
+  colorteaming.option:
+    description: coloroption(coption)コマンドの使用権限
+    default: op
   colorteaming.*:
     children:
       colorteaming.team: true
@@ -251,6 +263,7 @@ permissions:
       colorteaming.explode: true
       colorteaming.give: true
       colorteaming.nametag: true
+      colorteaming.option: true
     description: ColorTeamingプラグインの管理系コマンド全ての使用権限
   colorteaming-user.global:
     description: colorglobal(g)コマンドの使用権限

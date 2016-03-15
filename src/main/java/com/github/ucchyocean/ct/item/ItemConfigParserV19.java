@@ -94,6 +94,9 @@ public class ItemConfigParserV19 {
         int amp = section.getInt("potion_level", 1);
         if ( amp == 2 ) upgraded = true;
 
+        if ( !type.isUpgradeable() ) upgraded = false;
+        if ( !type.isExtendable() ) extended = false;
+
         PotionData data = new PotionData(type, extended, upgraded);
         meta.setBasePotionData(data);
 

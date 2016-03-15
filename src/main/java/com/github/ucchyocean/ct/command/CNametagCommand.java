@@ -18,7 +18,7 @@ import com.github.ucchyocean.ct.Utility;
 import com.github.ucchyocean.ct.config.NametagVisibilityEnum;
 
 /**
- *
+ * colornametag(cn)コマンドの実装クラス
  * @author ucchy
  */
 public class CNametagCommand implements TabExecutor {

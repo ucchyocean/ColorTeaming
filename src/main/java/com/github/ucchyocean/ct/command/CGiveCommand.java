@@ -80,7 +80,7 @@ public class CGiveCommand implements TabExecutor {
                 return true;
             }
             Player player = (Player)sender;
-            item = player.getItemInHand().clone();
+            item = Utility.getItemInHand(player).clone();
         } else {
             item = parseItemInfoToItemStack(args[1]);
             if ( item == null ) {

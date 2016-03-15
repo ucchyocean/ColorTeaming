@@ -14,7 +14,6 @@ import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 
 import com.github.ucchyocean.ct.ColorTeaming;
-import com.github.ucchyocean.ct.config.ColorTeamingConfig;
 import com.github.ucchyocean.ct.config.ColorTeamingMessages;
 import com.github.ucchyocean.ct.event.ColorTeamingPlayerLeaveEvent.Reason;
 
@@ -45,7 +44,6 @@ public class CLeaveCommand implements TabExecutor {
         }
 
         Player player = (Player)sender;
-        ColorTeamingConfig config = plugin.getCTConfig();
 
         if ( !plugin.getCTConfig().isAllowPlayerLeave() ) {
 

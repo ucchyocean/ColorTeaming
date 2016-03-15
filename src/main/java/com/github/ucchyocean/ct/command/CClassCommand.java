@@ -14,6 +14,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingAPI;
@@ -50,9 +51,10 @@ public class CClassCommand implements TabExecutor {
                 return true;
             }
             Player player = (Player)sender;
-            if ( player.getItemInHand() != null ) {
+            ItemStack item = Utility.getItemInHand(player);
+            if ( item != null ) {
                 sender.sendMessage("===== アイテム情報 =====");
-                sender.sendMessage(ItemConfigParser.getItemInfo(player.getItemInHand()));
+                sender.sendMessage(ItemConfigParser.getItemInfo(item));
             }
             return true;
 

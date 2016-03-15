@@ -7,8 +7,9 @@ package com.github.ucchyocean.ct.config;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -40,7 +41,7 @@ public class TeamNameConfig {
         if ( !file.exists() ) {
             Utility.copyFileFromJar(
                     ColorTeaming.instance.getPluginJarFile(),
-                    file, FILE_NAME);
+                    file, FILE_NAME, true);
         }
 
         config = load(file);
@@ -65,7 +66,7 @@ public class TeamNameConfig {
         ArrayList<String> contents = new ArrayList<String>();
         BufferedReader reader = null;
         try {
-            reader = new BufferedReader(new FileReader(file));
+            reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
             String line;
             while ( (line = reader.readLine()) != null ) {
 

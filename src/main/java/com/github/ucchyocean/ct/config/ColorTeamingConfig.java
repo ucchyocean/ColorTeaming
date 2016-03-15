@@ -47,6 +47,12 @@ public class ColorTeamingConfig {
     /** ネームタグの表示・非表示の設定 */
     private NametagVisibilityEnum nametagVisibility;
 
+    /** プレイヤー間の当たり判定の設定 */
+    private TeamOptionStatusEnum collisionRule;
+
+    /** 死亡ログの表示の設定 */
+    private TeamOptionStatusEnum deathMessageVisibility;
+
     /** ベッドリスポーン地点を、チームリスポーン地点よりも優先するかどうか のオンオフ */
     private boolean priorBedRespawn;
 
@@ -169,6 +175,10 @@ public class ColorTeamingConfig {
         ctconfig.canSeeFriendlyInvisibles = config.getBoolean("seeFriendlyInvisible", true);
         ctconfig.nametagVisibility = NametagVisibilityEnum.fromString(
                 config.getString("nametagVisibility"), NametagVisibilityEnum.ALWAYS);
+        ctconfig.collisionRule = TeamOptionStatusEnum.fromString(
+                config.getString("collisionRule"), TeamOptionStatusEnum.ALWAYS);
+        ctconfig.deathMessageVisibility = TeamOptionStatusEnum.fromString(
+                config.getString("deathMessageVisibility"), TeamOptionStatusEnum.ALWAYS);
 
         ctconfig.priorBedRespawn = config.getBoolean("priorBedRespawn", false);
         ctconfig.skipGameover = config.getBoolean("skipGameover", false);
@@ -255,6 +265,8 @@ public class ColorTeamingConfig {
         config.set("friendlyFire", friendlyFire);
         config.set("seeFriendlyInvisible", canSeeFriendlyInvisibles);
         config.set("nametagVisibility", nametagVisibility.toString().toLowerCase());
+        config.set("collisionRule", collisionRule.toString().toLowerCase());
+        config.set("deathMessageVisibility", deathMessageVisibility.toString().toLowerCase());
         config.set("priorBedRespawn", priorBedRespawn);
         config.set("skipGameover", skipGameover);
         config.set("colorRemoveOnDeath", colorRemoveOnDeath);
@@ -314,6 +326,14 @@ public class ColorTeamingConfig {
 
     public NametagVisibilityEnum getNametagVisibility() {
         return nametagVisibility;
+    }
+
+    public TeamOptionStatusEnum getCollisionRule() {
+        return collisionRule;
+    }
+
+    public TeamOptionStatusEnum getDeathMessageVisibility() {
+        return deathMessageVisibility;
     }
 
     public boolean isSkipGameover() {
@@ -426,6 +446,14 @@ public class ColorTeamingConfig {
 
     public void setNametagVisibility(NametagVisibilityEnum visibility) {
         this.nametagVisibility = visibility;
+    }
+
+    public void setCollisionRule(TeamOptionStatusEnum collisionRule) {
+        this.collisionRule = collisionRule;
+    }
+
+    public void setDeathMessageVisibility(TeamOptionStatusEnum deathMessageVisibility) {
+        this.deathMessageVisibility = deathMessageVisibility;
     }
 
     public void setSkipGameover(boolean skipGameover) {
