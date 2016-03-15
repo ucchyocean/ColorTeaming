@@ -33,43 +33,44 @@ public class ItemConfigParserV18 {
     protected static ItemStack addBannerInfoToItem(
             ConfigurationSection section, ItemStack item) {
 
-        if ( item.getType() == Material.BANNER ) {
-
-            BannerMeta banner = (BannerMeta)item.getItemMeta();
-
-            if ( section.contains("basecolor") ) {
-                banner.setBaseColor(getDyeColorFromString(section.getString("basecolor")));
-            }
-
-            if ( section.contains("patterns") ) {
-                ConfigurationSection psec = section.getConfigurationSection("patterns");
-
-                HashMap<Integer, Pattern> patterns = new HashMap<Integer, Pattern>();
-
-                for ( String name : psec.getKeys(false) ) {
-
-                    // 数値にキャストできなさそうなら無視する
-                    if ( !name.matches("[0-9]{1,9}") ) {
-                        continue;
-                    }
-                    int index = Integer.parseInt(name);
-
-                    ConfigurationSection sub = psec.getConfigurationSection(name);
-                    PatternType type = getPatternTypeFromString(sub.getString("type"));
-                    DyeColor color = getDyeColorFromString(sub.getString("color"));
-                    patterns.put(index, new Pattern(color, type));
-                }
-
-                // 序数の低い方から順にaddする
-                ArrayList<Integer> indexes = new ArrayList<Integer>(patterns.keySet());
-                Collections.sort(indexes);
-                for ( int index : indexes ) {
-                    banner.addPattern(patterns.get(index));
-                }
-            }
-
-            item.setItemMeta(banner);
+        if ( item.getType() != Material.BANNER ) {
+            return item;
         }
+
+        BannerMeta banner = (BannerMeta)item.getItemMeta();
+
+        if ( section.contains("basecolor") ) {
+            banner.setBaseColor(getDyeColorFromString(section.getString("basecolor")));
+        }
+
+        if ( section.contains("patterns") ) {
+            ConfigurationSection psec = section.getConfigurationSection("patterns");
+
+            HashMap<Integer, Pattern> patterns = new HashMap<Integer, Pattern>();
+
+            for ( String name : psec.getKeys(false) ) {
+
+                // 数値にキャストできなさそうなら無視する
+                if ( !name.matches("[0-9]{1,9}") ) {
+                    continue;
+                }
+                int index = Integer.parseInt(name);
+
+                ConfigurationSection sub = psec.getConfigurationSection(name);
+                PatternType type = getPatternTypeFromString(sub.getString("type"));
+                DyeColor color = getDyeColorFromString(sub.getString("color"));
+                patterns.put(index, new Pattern(color, type));
+            }
+
+            // 序数の低い方から順にaddする
+            ArrayList<Integer> indexes = new ArrayList<Integer>(patterns.keySet());
+            Collections.sort(indexes);
+            for ( int index : indexes ) {
+                banner.addPattern(patterns.get(index));
+            }
+        }
+
+        item.setItemMeta(banner);
 
         return item;
     }
@@ -82,24 +83,25 @@ public class ItemConfigParserV18 {
     protected static ConfigurationSection addBannerInfoToSection(
             ConfigurationSection section, ItemStack item) {
 
-        if ( item.getType() == Material.BANNER ) {
+        if ( item.getType() != Material.BANNER ) {
+            return section;
+        }
 
-            BannerMeta banner = (BannerMeta)item.getItemMeta();
+        BannerMeta banner = (BannerMeta)item.getItemMeta();
 
-            if ( banner.getBaseColor() != null ) {
-                section.set("basecolor", banner.getBaseColor().toString());
-            }
+        if ( banner.getBaseColor() != null ) {
+            section.set("basecolor", banner.getBaseColor().toString());
+        }
 
-            List<Pattern> patterns = banner.getPatterns();
-            if ( patterns.size() > 0 ) {
-                ConfigurationSection psec = section.createSection("patterns");
+        List<Pattern> patterns = banner.getPatterns();
+        if ( patterns.size() > 0 ) {
+            ConfigurationSection psec = section.createSection("patterns");
 
-                for ( int index=0; index<patterns.size(); index++ ) {
-                    Pattern pattern = patterns.get(index);
-                    ConfigurationSection sub = psec.createSection(index + "");
-                    sub.set("type", pattern.getPattern().toString());
-                    sub.set("color", pattern.getColor().toString());
-                }
+            for ( int index=0; index<patterns.size(); index++ ) {
+                Pattern pattern = patterns.get(index);
+                ConfigurationSection sub = psec.createSection(index + "");
+                sub.set("type", pattern.getPattern().toString());
+                sub.set("color", pattern.getColor().toString());
             }
         }
 

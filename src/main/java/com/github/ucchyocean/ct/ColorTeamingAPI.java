@@ -8,11 +8,9 @@ package com.github.ucchyocean.ct;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Team;
 
 import com.github.ucchyocean.ct.config.ClassData;
@@ -22,7 +20,6 @@ import com.github.ucchyocean.ct.config.TPPointConfiguration;
 import com.github.ucchyocean.ct.config.TeamNameConfig;
 import com.github.ucchyocean.ct.config.TeamNameSetting;
 import com.github.ucchyocean.ct.event.ColorTeamingPlayerLeaveEvent.Reason;
-import com.github.ucchyocean.ct.item.CustomItem;
 
 /**
  * ColorTeaming APIクラス
@@ -274,40 +271,6 @@ public interface ColorTeamingAPI {
      * @param respawnMapName リスポーンマップ名
      */
     public void setRespawnMapName(String respawnMapName);
-
-    /**
-     * カスタムアイテムを登録する
-     * @param item カスタムアイテム
-     * @deprecated ColorTeaming v2.4.0 以降では非サポートとなったため、実行しても何も起こりません。
-     */
-    @Deprecated
-    public void registerCustomItem(CustomItem item);
-
-    /**
-     * カスタムアイテムを登録する
-     * @param item 登録するアイテム
-     * @param name アイテム名
-     * @deprecated ColorTeaming v2.4.0 以降では非サポートとなったため、実行しても何も起こりません。
-     */
-    @Deprecated
-    public void registerCustomItem(ItemStack item, String name, String displayName);
-
-    /**
-     * 登録されているカスタムアイテムを取得する
-     * @param name カスタムアイテム名
-     * @return カスタムアイテム、登録されていないアイテム名を指定した場合はnullが返される。
-     * @deprecated ColorTeaming v2.4.0 以降では非サポートとなったため、必ずnullが返されます。
-     */
-    @Deprecated
-    public CustomItem getCustomItem(String name);
-
-    /**
-     * 登録されているカスタムアイテムの名前を取得する
-     * @return カスタムアイテムの名前
-     * @deprecated ColorTeaming v2.4.0 以降では非サポートとなったため、必ず空配列が返されます。
-     */
-    @Deprecated
-    public Set<String> getCustomItemNames();
 
     /**
      * 指定されたプレイヤーに指定されたクラスを設定する

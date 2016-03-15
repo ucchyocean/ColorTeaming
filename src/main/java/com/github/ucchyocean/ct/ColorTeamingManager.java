@@ -21,7 +21,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
@@ -45,7 +44,6 @@ import com.github.ucchyocean.ct.event.ColorTeamingTeamChatEvent;
 import com.github.ucchyocean.ct.event.ColorTeamingTeamCreateEvent;
 import com.github.ucchyocean.ct.event.ColorTeamingTeamRemoveEvent;
 import com.github.ucchyocean.ct.event.ColorTeamingTeamscoreChangeEvent;
-import com.github.ucchyocean.ct.item.CustomItem;
 
 /**
  * ColorTeamingAPIの実体クラス
@@ -1001,53 +999,6 @@ public class ColorTeamingManager implements ColorTeamingAPI {
     @Override
     public void setRespawnMapName(String respawnMapName) {
         this.respawnMapName = respawnMapName;
-    }
-
-    /**
-     * カスタムアイテムを登録する
-     * @param item カスタムアイテム
-     * @deprecated ColorTeaming v2.4.0 以降では非サポートとなったため、実行しても何も起こりません。
-     */
-    @Override
-    @Deprecated
-    public void registerCustomItem(CustomItem item) {
-        // do nothing.
-    }
-
-    /**
-     * カスタムアイテムを登録する
-     * @param item 登録するアイテム
-     * @param name アイテム名
-     * @param displayName 表示アイテム名
-     * @deprecated ColorTeaming v2.4.0 以降では非サポートとなったため、実行しても何も起こりません。
-     */
-    @Override
-    @Deprecated
-    public void registerCustomItem(ItemStack item, String name, String displayName) {
-        // do nothing.
-    }
-
-    /**
-     * 登録されているカスタムアイテムを取得する
-     * @param name カスタムアイテム名
-     * @return カスタムアイテム、登録されていないアイテム名を指定した場合はnullが返される。
-     * @deprecated ColorTeaming v2.4.0 以降では非サポートとなったため、必ずnullが返されます。
-     */
-    @Override
-    @Deprecated
-    public CustomItem getCustomItem(String name) {
-        return null;
-    }
-
-    /**
-     * 登録されているカスタムアイテムの名前を取得する
-     * @return カスタムアイテムの名前
-     * @deprecated ColorTeaming v2.4.0 以降では非サポートとなったため、必ず空配列が返されます。
-     */
-    @Override
-    @Deprecated
-    public Set<String> getCustomItemNames() {
-        return new HashSet<String>();
     }
 
     /**

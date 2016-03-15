@@ -22,16 +22,7 @@ import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.potion.Potion;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-import org.bukkit.potion.PotionType;
-
-import com.github.ucchyocean.ct.ColorTeaming;
-import com.github.ucchyocean.ct.bridge.AttributeInfo;
-import com.github.ucchyocean.ct.bridge.AttributesAPIBridge;
 
 /**
  * アイテム設定のパーサー
@@ -54,9 +45,6 @@ public class ItemConfigParser {
         ItemStack item = null;
 
         if ( !section.contains("material") ) {
-            if ( section.contains("custom_item") ) {
-                return null; // custom_itemは過去の遺物。何も返さずに終了する。
-            }
             throw new ItemConfigParseException("Material tag was not found.");
         }
 
@@ -177,67 +165,10 @@ public class ItemConfigParser {
         }
 
         // ポーションの詳細設定
-        if ( item.getType() == Material.POTION && section.contains("potion_type") ) {
-
-            String name = section.getString("potion_type");
-            PotionType type = getPotionTypeByName(name);
-            if ( type == null ) {
-                throw new ItemConfigParseException(
-                        "The potion type '" + name + "' is invalid.");
-            }
-
-            int amp = section.getInt("potion_level", 1);
-            if ( amp < 1 ) {
-                amp = 1;
-            } else if ( amp > type.getMaxLevel() ) {
-                amp = type.getMaxLevel();
-            }
-            Potion potion = new Potion(type, amp);
-            potion.setSplash(section.getBoolean("splash", false));
-            if ( !type.isInstant() ) {
-                potion.setHasExtendedDuration(section.getBoolean("extend", false));
-            }
-            potion.apply(item);
-
-            // カスタムポーションの詳細設定
-            if ( section.contains("custom_effects") ) {
-
-                PotionMeta meta = (PotionMeta)item.getItemMeta();
-                PotionEffectType mainType = null;
-
-                for ( String key :
-                        section.getConfigurationSection("custom_effects").getKeys(false) ) {
-
-                    ConfigurationSection custom_sec =
-                            section.getConfigurationSection("custom_effects." + key);
-                    String cname = custom_sec.getString("type");
-                    if ( cname == null ) {
-//                        throw new ItemConfigParseException(
-//                                "Potion type tag was not found.");
-                        continue;
-                    }
-                    PotionEffectType ctype = PotionEffectType.getByName(cname.toUpperCase());
-                    if ( ctype == null ) {
-//                        throw new ItemConfigParseException(
-//                                "Potion type '" + cname + "' is invalid.");
-                        continue;
-                    }
-                    if ( mainType == null ) {
-                        mainType = ctype;
-                    }
-                    int amplifier = custom_sec.getInt("amplifier", 1);
-                    int duration = custom_sec.getInt("duration", 100);
-                    boolean ambient = custom_sec.getBoolean("ambient", true);
-                    PotionEffect effect = new PotionEffect(ctype, duration, amplifier, ambient);
-                    meta.addCustomEffect(effect, ambient);
-                }
-
-                if ( mainType == null ) {
-                    meta.setMainEffect(mainType);
-                }
-
-                item.setItemMeta(meta);
-            }
+        if ( isCB19orLater() ) {
+            ItemConfigParserV19.addPotionInfoToItem(item, section);
+        } else {
+            ItemConfigParserLegacyPotion.addPotionInfoToItem(item, section);
         }
 
         // 花火の詳細設定
@@ -302,29 +233,6 @@ public class ItemConfigParser {
             }
 
             item.setItemMeta(meta);
-        }
-
-        // Attributeの詳細設定、AttributesAPIがロードされている場合にのみ実施する
-        if ( ColorTeaming.instance.getAttributesAPI() != null &&
-                section.contains("attributes") ) {
-
-            AttributesAPIBridge bridge = ColorTeaming.instance.getAttributesAPI();
-
-            for ( String key :
-                    section.getConfigurationSection("attributes").getKeys(false) ) {
-
-                ConfigurationSection attr_sec =
-                        section.getConfigurationSection("attributes." + key);
-                AttributeInfo attr = AttributeInfo.readFromConfigSection(attr_sec);
-
-                if ( attr == null ) {
-//                    logger.warning("指定された属性の、typeまたはoperatorが正しくありません。");
-//                    logger.warning("└ " + info);
-                    continue;
-                }
-
-                item = bridge.applyAttribute(item, attr);
-            }
         }
 
         // バナーの詳細設定
@@ -410,36 +318,10 @@ public class ItemConfigParser {
             }
         }
 
-        if ( item.getType() == Material.POTION && !isWaterBottle(item) ) {
-
-            cleanupInvalidExtendedPotionFlag(item);
-
-            Potion potion = Potion.fromItemStack(item);
-            section.set("potion_type", potion.getType().toString());
-            section.set("potion_level", potion.getLevel());
-            if ( potion.isSplash() ) {
-                section.set("splash", true);
-            }
-            if ( potion.hasExtendedDuration() ) {
-                section.set("extend", true);
-            }
-
-            PotionMeta meta = (PotionMeta)item.getItemMeta();
-            if ( meta.hasCustomEffects() ) {
-                // カスタムポーションの設定
-
-                ConfigurationSection customSection =
-                        section.createSection("custom_effects");
-                List<PotionEffect> customs = meta.getCustomEffects();
-                for ( int i=0; i<customs.size(); i++ ) {
-                    ConfigurationSection sub = customSection.createSection("effect" + (i+1));
-                    PotionEffect custom = customs.get(i);
-                    sub.set("type", custom.getType().getName());
-                    sub.set("amplifier", custom.getAmplifier());
-                    sub.set("duration", custom.getDuration());
-                    sub.set("ambient", custom.isAmbient());
-                }
-            }
+        if ( isCB19orLater() ) {
+            ItemConfigParserV19.addPotionInfoToSection(item, section);
+        } else {
+            ItemConfigParserLegacyPotion.addPotionInfoToSection(item, section);
         }
 
         if ( item.getType() == Material.FIREWORK ) {
@@ -481,23 +363,6 @@ public class ItemConfigParser {
                             fsub.set("green", fade.getGreen());
                         }
                     }
-                }
-            }
-        }
-
-        // Attributeの解析、AttributesAPIがロードされている場合にのみ実施する
-        if ( ColorTeaming.instance.getAttributesAPI() != null ) {
-
-            AttributesAPIBridge bridge = ColorTeaming.instance.getAttributesAPI();
-
-            if ( bridge.getAttributeNum(item) > 0 ) {
-
-                ConfigurationSection sub = section.createSection("attributes");
-                int index = 0;
-
-                for ( AttributeInfo info : bridge.readAttr(item) ) {
-                    index++;
-                    info.saveToConfigSection(sub.createSection("attribute" + index));
                 }
             }
         }
@@ -544,21 +409,6 @@ public class ItemConfigParser {
     }
 
     /**
-     * 指定された文字列に一致するPotionTypeを返します。
-     * @param name
-     * @return
-     */
-    private static PotionType getPotionTypeByName(String name) {
-
-        for ( PotionType type : PotionType.values() ) {
-            if ( type.name().equalsIgnoreCase(name) ) {
-                return type;
-            }
-        }
-        return null;
-    }
-
-    /**
      * 指定された文字列に一致するFireworkEffectTypeを返します。
      * @param name
      * @return
@@ -573,46 +423,33 @@ public class ItemConfigParser {
         return null;
     }
 
-    /**
-     * 指定されたポーションが、水ボトル（データ値が0）かどうかを確認します。
-     * @param item ポーション
-     * @return 水ボトルかどうか
-     */
-    private static boolean isWaterBottle(ItemStack item) {
-        return item.getDurability() == 0;
-    }
-
-    /**
-     * ポーションのデータ値を調べ、タイプにそぐわないextendフラグが立っている場合、
-     * 強制的にフラグを降ろします。
-     * @param item ポーション
-     */
-    private static void cleanupInvalidExtendedPotionFlag(ItemStack item) {
-
-        short data = item.getDurability();
-        int typeFlag = data & 0xF;
-
-        if ( typeFlag == 5 || typeFlag == 12 ) {
-            // INSTANT_DAMAGE か INSTANT_HEAL なら、extendフラグを確認し、
-            // フラグが立っているなら降ろす。
-
-            if ( (data & 0x40) > 0 ) {
-                data -= 0x40;
-                item.setDurability(data);
-            }
-        }
-    }
-
 
     /**
      * 現在動作中のCraftBukkitが、v1.8 以上かどうかを確認する
      * @return v1.8以上ならtrue、そうでないならfalse
      */
     private static boolean isCB18orLater() {
+        return isUpperVersion(Bukkit.getBukkitVersion(), "1.8");
+    }
 
-        int[] borderNumbers = {1, 8};
+    /**
+     * 現在動作中のCraftBukkitが、v1.9 以上かどうかを確認する
+     * @return v1.8以上ならtrue、そうでないならfalse
+     */
+    private static boolean isCB19orLater() {
+        return isUpperVersion(Bukkit.getBukkitVersion(), "1.9");
+    }
 
-        String version = Bukkit.getBukkitVersion();
+    /**
+     * 指定されたバージョンが、基準より新しいバージョンかどうかを確認する
+     * @param version 確認するバージョン
+     * @param border 基準のバージョン
+     * @return 基準より確認対象の方が新しいバージョンかどうか<br/>
+     * ただし、無効なバージョン番号（数値でないなど）が指定された場合はfalseに、
+     * 2つのバージョンが完全一致した場合はtrueになる。
+     */
+    private static boolean isUpperVersion(String version, String border) {
+
         int hyphen = version.indexOf("-");
         if ( hyphen > 0 ) {
             version = version.substring(0, hyphen);
@@ -621,10 +458,17 @@ public class ItemConfigParser {
         String[] versionArray = version.split("\\.");
         int[] versionNumbers = new int[versionArray.length];
         for ( int i=0; i<versionArray.length; i++ ) {
-            if ( !versionArray[i].matches("[0-9]+") ) {
+            if ( !versionArray[i].matches("[0-9]+") )
                 return false;
-            }
             versionNumbers[i] = Integer.parseInt(versionArray[i]);
+        }
+
+        String[] borderArray = border.split("\\.");
+        int[] borderNumbers = new int[borderArray.length];
+        for ( int i=0; i<borderArray.length; i++ ) {
+            if ( !borderArray[i].matches("[0-9]+") )
+                return false;
+            borderNumbers[i] = Integer.parseInt(borderArray[i]);
         }
 
         int index = 0;
