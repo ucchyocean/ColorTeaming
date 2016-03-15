@@ -1337,6 +1337,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         long start = System.currentTimeMillis();
 
         ColorTeaming.instance.config = ColorTeamingConfig.loadConfig();
+        ColorTeamingMessages.reload();
         respawnConfig = new RespawnConfiguration();
         tppointConfig = new TPPointConfiguration();
         teamNameConfig = new TeamNameConfig();
