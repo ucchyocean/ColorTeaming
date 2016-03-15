@@ -19,6 +19,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
@@ -103,6 +104,25 @@ public class ItemConfigParser {
                 }
                 item.addUnsafeEnchantment(enchant, level);
             }
+        }
+
+        // 保存エンチャント
+        if ( section.contains("stored-enchants")
+                && item.getItemMeta() instanceof EnchantmentStorageMeta ) {
+            EnchantmentStorageMeta meta = (EnchantmentStorageMeta)item.getItemMeta();
+            ConfigurationSection enchants_sec = section.getConfigurationSection("stored-enchants");
+            for ( String type_str : enchants_sec.getKeys(false) ) {
+                Enchantment enchant = Enchantment.getByName(type_str);
+
+                if ( enchant == null ) {
+                    throw new ItemConfigParseException(
+                            "Enchant type '" + type_str + "' is invalid.");
+                }
+
+                int level = enchants_sec.getInt(type_str, 1);
+                meta.addStoredEnchant(enchant, level, true);
+            }
+            item.setItemMeta(meta);
         }
 
         // 消耗度
@@ -281,6 +301,14 @@ public class ItemConfigParser {
             ConfigurationSection sub = section.createSection("enchants");
             for ( Enchantment ench : item.getEnchantments().keySet() ) {
                 sub.set(ench.getName(), item.getEnchantmentLevel(ench));
+            }
+        }
+
+        if ( item.getItemMeta() instanceof EnchantmentStorageMeta ) {
+            EnchantmentStorageMeta meta = (EnchantmentStorageMeta)item.getItemMeta();
+            ConfigurationSection sub = section.createSection("stored-enchants");
+            for ( Enchantment ench : meta.getStoredEnchants().keySet() ) {
+                sub.set(ench.getName(), meta.getStoredEnchantLevel(ench));
             }
         }
 

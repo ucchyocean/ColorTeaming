@@ -50,7 +50,7 @@ public class ClassData {
     /** アイテムデータ */
     private List<ItemStack> items;
     /** 防具データ */
-    private List<ItemStack> armors;
+    private HashMap<String, ItemStack> armors;
     /** 体力の最大値 */
     private double health;
     /** エフェクトデータ */
@@ -111,7 +111,7 @@ public class ClassData {
     /**
      * @return armor
      */
-    public List<ItemStack> getArmors() {
+    public HashMap<String, ItemStack> getArmors() {
         return armors;
     }
 
@@ -181,7 +181,7 @@ public class ClassData {
     /**
      * @param armor set armor
      */
-    public void setArmors(List<ItemStack> armors) {
+    public void setArmors(HashMap<String, ItemStack> armors) {
         this.armors = armors;
     }
 
@@ -336,14 +336,15 @@ public class ClassData {
         }
 
         if ( config.contains("armors") ) {
-            ArrayList<ItemStack> armors = new ArrayList<ItemStack>();
+            HashMap<String, ItemStack> armors = new HashMap<String, ItemStack>();
             ConfigurationSection armorsSection =
                     config.getConfigurationSection("armors");
 
-            for ( String parts : new String[]{"boots", "leggings", "chestplate", "helmet"} ) {
+            for ( String parts : new String[]{"boots", "leggings", "chestplate", "helmet", "offhand"} ) {
                 try {
-                    armors.add(ItemConfigParser.getItemFromSection(
-                            armorsSection.getConfigurationSection(parts)));
+                    ItemStack item = ItemConfigParser.getItemFromSection(
+                            armorsSection.getConfigurationSection(parts));
+                    armors.put(parts, item);
                 } catch (ItemConfigParseException e) {
                     logger.log(Level.WARNING,
                             cd.getTitle() + " - armors - " + parts + " に、正しくない設定があります。", e);
@@ -452,23 +453,34 @@ public class ClassData {
         if ( armors != null ) {
 
             // 防具の消去
-            player.getInventory().setHelmet(null);
-            player.getInventory().setChestplate(null);
-            player.getInventory().setLeggings(null);
-            player.getInventory().setBoots(null);
+            player.getInventory().setHelmet(new ItemStack(Material.AIR));
+            player.getInventory().setChestplate(new ItemStack(Material.AIR));
+            player.getInventory().setLeggings(new ItemStack(Material.AIR));
+            player.getInventory().setBoots(new ItemStack(Material.AIR));
 
             // 防具の配布
-            if (armors.size() >= 1 && armors.get(0) != null ) {
-                player.getInventory().setBoots(armors.get(0));
+            if (armors.containsKey("boots")) {
+                player.getInventory().setBoots(armors.get("boots"));
             }
-            if (armors.size() >= 2 && armors.get(1) != null ) {
-                player.getInventory().setLeggings(armors.get(1));
+            if (armors.containsKey("leggings")) {
+                player.getInventory().setLeggings(armors.get("leggings"));
             }
-            if (armors.size() >= 3 && armors.get(2) != null ) {
-                player.getInventory().setChestplate(armors.get(2));
+            if (armors.containsKey("chestplate")) {
+                player.getInventory().setChestplate(armors.get("chestplate"));
             }
-            if (armors.size() >= 4 && armors.get(3) != null ) {
-                player.getInventory().setHelmet(armors.get(3));
+            if (armors.containsKey("helmet")) {
+                player.getInventory().setHelmet(armors.get("helmet"));
+            }
+
+            if ( Utility.isCB19orLater() ) {
+
+                // オフハンドの消去
+                player.getInventory().setItemInOffHand(new ItemStack(Material.AIR));
+
+                // オフハンドの配布
+                if (armors.containsKey("offhand")) {
+                    player.getInventory().setItemInOffHand(armors.get("offhand"));
+                }
             }
 
             needToUpdateInventory = true;
@@ -543,7 +555,7 @@ public class ClassData {
 
             // アイテムインベントリの終端を調べる
             int end = 0;
-            for ( int index = 0; index < inv.getSize(); index++ ) {
+            for ( int index = 0; index < 36; index++ ) {
                 ItemStack item = inv.getItem(index);
                 if ( item != null && item.getType() != Material.AIR ) {
                     end = index;
@@ -566,7 +578,14 @@ public class ClassData {
 
         }
 
-        if ( countItem(inv.getArmorContents()) > 0 ) {
+        int armorCount = countItem(inv.getArmorContents());
+        if ( Utility.isCB19orLater() ) {
+            if ( inv.getItemInOffHand() != null && inv.getItemInOffHand().getType() != Material.AIR ) {
+                armorCount++;
+            }
+        }
+
+        if ( armorCount > 0 ) {
 
             ConfigurationSection sub = config.createSection("armors");
 
@@ -576,6 +595,14 @@ public class ClassData {
                 ItemStack item = inv.getArmorContents()[i];
                 if ( item != null && item.getType() != Material.AIR ) {
                     ConfigurationSection itemsec = sub.createSection(armorNames[i]);
+                    ItemConfigParser.setItemToSection(itemsec, item);
+                }
+            }
+
+            if ( Utility.isCB19orLater() ) {
+                ItemStack item = inv.getItemInOffHand();
+                if ( item != null && item.getType() != Material.AIR ) {
+                    ConfigurationSection itemsec = sub.createSection("offhand");
                     ItemConfigParser.setItemToSection(itemsec, item);
                 }
             }
