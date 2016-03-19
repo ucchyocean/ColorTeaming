@@ -178,7 +178,7 @@ commands:
            /<command> nametag (on|off|team|other) - ネームタグの表示非表示を切り替えます。
            /<command> collision (on|off|team|other) - プレイヤー間の当たり判定の有り無しを切り替えます。
            /<command> deathmessage (on|off|team|other) - 死亡メッセージの表示非表示を切り替えます。
-    permission: colorteaming.nametag
+    permission: colorteaming.option
     permission-message: パーミッション "<permission>" が無いため、実行できません。
   colorglobal:
     description: チームチャット有効時にグローバルへ発言するためのコマンド
