@@ -9,14 +9,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 
 /**
  * アイテム設定のパーサー for Bukkit v1.8
@@ -108,6 +111,54 @@ public class ItemConfigParserV18 {
         return section;
     }
 
+    /**
+     * 指定されたセクションがアイテムフラグ情報を持っているときに、アイテムフラグをアイテムを復帰して含めておく。
+     * @param section
+     * @param item
+     * @return
+     */
+    protected static ItemStack addItemFlagsToItem(
+            ConfigurationSection section, ItemStack item) {
+
+        if ( !section.contains("itemflags") ) return item;
+
+        ItemMeta meta = item.getItemMeta();
+
+        for ( String value : section.getStringList("itemflags") ) {
+            ItemFlag flag = getItemFlagFromString(value);
+            if ( flag != null ) {
+                meta.addItemFlags(flag);
+            }
+        }
+
+        item.setItemMeta(meta);
+
+        return item;
+    }
+
+    /**
+     * 指定されたアイテムがアイテムフラグを持っているときに、アイテムフラグ情報をセクションに保存する。
+     * @param section
+     * @param item
+     * @return
+     */
+    protected static ConfigurationSection addItemFlagsToSection(
+            ConfigurationSection section, ItemStack item) {
+
+        if ( !item.hasItemMeta() ) return section;
+
+        Set<ItemFlag> flags = item.getItemMeta().getItemFlags();
+        if ( flags == null || flags.size() == 0 ) return section;
+
+        List<String> flagList = new ArrayList<String>();
+        for ( ItemFlag flag : flags ) {
+            flagList.add(flag.name());
+        }
+        section.set("itemflags", flagList);
+
+        return section;
+    }
+
     private static DyeColor getDyeColorFromString(String code) {
 
         if ( code == null ) {
@@ -132,5 +183,16 @@ public class ItemConfigParserV18 {
             }
         }
         return PatternType.BASE;
+    }
+
+    private static ItemFlag getItemFlagFromString(String src) {
+
+        if ( src == null ) return null;
+        for ( ItemFlag flag : ItemFlag.values() ) {
+            if ( flag.name().equalsIgnoreCase(src) ) {
+                return flag;
+            }
+        }
+        return null;
     }
 }

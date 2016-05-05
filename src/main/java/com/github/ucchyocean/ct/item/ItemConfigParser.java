@@ -255,9 +255,12 @@ public class ItemConfigParser {
             item.setItemMeta(meta);
         }
 
-        // バナーの詳細設定
         if ( isCB18orLater() ) {
+        // バナーの詳細設定
             item = ItemConfigParserV18.addBannerInfoToItem(section, item);
+
+            // アイテムフラグの詳細設定
+            item = ItemConfigParserV18.addItemFlagsToItem(section, item);
         }
 
         return item;
@@ -395,9 +398,12 @@ public class ItemConfigParser {
             }
         }
 
-        // バナーの詳細設定
         if ( isCB18orLater() ) {
+        // バナーの詳細設定
             ItemConfigParserV18.addBannerInfoToSection(section, item);
+
+            // アイテムフラグの詳細設定
+            ItemConfigParserV18.addItemFlagsToSection(section, item);
         }
     }
 
