@@ -101,11 +101,6 @@ deathMessageVisibility: 'always'
 # false → チームリスポーン地点＞ベッドリスポーン地点＞ワールドリスポーン地点
 priorBedRespawn: false
 
-# プレイヤー死亡時に、ゲームオーバーを表示せずにリスポーンするかどうかを設定します。
-# true → ゲームオーバー画面を表示しないでそのままリスポーンする
-# false → 通常通りゲームオーバーを表示する
-skipGameover: false
-
 # 死んでリスポンしたときに、チームから自動で抜けるかどうかを設定します。
 colorRemoveOnDeath: false
 

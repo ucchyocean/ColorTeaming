@@ -25,12 +25,11 @@ items:
       KNOCKBACK: 5
     remain: 10
   pork:
-    material: GRILLED_PORK
+    material: COOKED_PORKCHOP
     amount: 15
   bricks_slab:
-    material: STEP
+    material: STONE_BRICK_SLAB
     amount: 64
-    data: 4
 
 # 防具として配置されるアイテムです。
 # インデントの2段目は、boots、leggins、chestplate、helmet にしてください。

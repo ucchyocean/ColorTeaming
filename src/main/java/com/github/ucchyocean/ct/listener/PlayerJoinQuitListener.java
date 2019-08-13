@@ -20,6 +20,7 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingAPI;
+import com.github.ucchyocean.ct.Utility;
 import com.github.ucchyocean.ct.config.ColorTeamingConfig;
 import com.github.ucchyocean.ct.config.ColorTeamingMessages;
 import com.github.ucchyocean.ct.config.TeamNameSetting;
@@ -161,7 +162,7 @@ public class PlayerJoinQuitListener implements Listener {
                 // チームリーダー全滅イベントのコール
                 ColorTeamingLeaderDefeatedEvent event2 =
                         new ColorTeamingLeaderDefeatedEvent(tns, null, player.getName());
-                Bukkit.getServer().getPluginManager().callEvent(event2);
+                Utility.callEventSync(event2);
 
                 // リーダーが残っているチームがあと1チームなら、勝利イベントを更にコール
                 if ( leaders.size() == 1 ) {
@@ -171,7 +172,7 @@ public class PlayerJoinQuitListener implements Listener {
                     }
                     ColorTeamingWonLeaderEvent event3 =
                             new ColorTeamingWonLeaderEvent(wonTeam, event2);
-                    Bukkit.getServer().getPluginManager().callEvent(event3);
+                    Utility.callEventSync(event3);
                 }
             }
         }
@@ -182,7 +183,7 @@ public class PlayerJoinQuitListener implements Listener {
         // チームがなくなっていたなら、チーム全滅イベントをコール
         ColorTeamingTeamDefeatedEvent event2 =
                 new ColorTeamingTeamDefeatedEvent(tns, null, player.getName());
-        Bukkit.getServer().getPluginManager().callEvent(event2);
+        Utility.callEventSync(event2);
 
         // 残っているチームがあと1チームなら、勝利イベントを更にコール
         ArrayList<TeamNameSetting> teamNames = api.getAllTeamNames();
@@ -193,7 +194,7 @@ public class PlayerJoinQuitListener implements Listener {
             }
             ColorTeamingWonTeamEvent event3 =
                     new ColorTeamingWonTeamEvent(wonTeam, event2);
-            Bukkit.getServer().getPluginManager().callEvent(event3);
+            Utility.callEventSync(event3);
         }
     }
 }

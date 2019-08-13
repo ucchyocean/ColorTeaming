@@ -24,7 +24,9 @@ import java.util.zip.ZipEntry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -321,7 +323,7 @@ public class Utility {
      */
     public static void resetPlayerStatus(final Player player) {
 
-        player.setHealth(player.getMaxHealth());
+        player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
         player.setFoodLevel(20);
         player.setFallDistance(0);
         player.setRemainingAir(player.getMaximumAir());
@@ -507,6 +509,23 @@ public class Utility {
             return player.getInventory().getItemInMainHand();
         } else {
             return player.getItemInHand();
+        }
+    }
+
+    /**
+     * イベントを同期処理で呼び出します
+     * @param event 対象のイベント
+     */
+    public static void callEventSync(final Event event) {
+        if (Bukkit.isPrimaryThread()) {
+            Bukkit.getPluginManager().callEvent(event);
+        } else {
+            Bukkit.getScheduler().scheduleSyncDelayedTask(ColorTeaming.instance, new Runnable() {
+                @Override
+                public void run() {
+                    Bukkit.getPluginManager().callEvent(event);
+                }
+            });
         }
     }
 }

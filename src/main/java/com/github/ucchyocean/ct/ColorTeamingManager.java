@@ -16,7 +16,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -189,7 +188,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
             // イベントコール
             ColorTeamingTeamCreateEvent event =
                     new ColorTeamingTeamCreateEvent(teamName);
-            Bukkit.getServer().getPluginManager().callEvent(event);
+            Utility.callEventSync(event);
             if ( event.isCancelled() ) {
                 return null;
             }
@@ -220,7 +219,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         // イベントコール
         ColorTeamingPlayerAddEvent event =
                 new ColorTeamingPlayerAddEvent(player, team);
-        Bukkit.getServer().getPluginManager().callEvent(event);
+        Utility.callEventSync(event);
         if ( event.isCancelled() ) {
             return null;
         }
@@ -259,7 +258,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
             // イベントコール
             ColorTeamingPlayerLeaveEvent event =
                     new ColorTeamingPlayerLeaveEvent(player, team, reason);
-            Bukkit.getServer().getPluginManager().callEvent(event);
+            Utility.callEventSync(event);
             if ( event.isCancelled() ) {
                 return;
             }
@@ -334,7 +333,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         // イベントコール
         ColorTeamingTeamRemoveEvent event =
                 new ColorTeamingTeamRemoveEvent(teamName);
-        Bukkit.getServer().getPluginManager().callEvent(event);
+        Utility.callEventSync(event);
         if ( event.isCancelled() ) {
             return false;
         }
@@ -526,7 +525,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         // イベントコール
         ColorTeamingTeamChatEvent event =
                 new ColorTeamingTeamChatEvent(sender, message, t);
-        Bukkit.getServer().getPluginManager().callEvent(event);
+        Utility.callEventSync(event);
         if ( event.isCancelled() ) {
             return;
         }
@@ -693,7 +692,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         // イベントコール
         ColorTeamingKillDeathClearedEvent event =
                 new ColorTeamingKillDeathClearedEvent();
-        Bukkit.getServer().getPluginManager().callEvent(event);
+        Utility.callEventSync(event);
         if ( event.isCancelled() ) {
             return;
         }
@@ -777,7 +776,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         // イベント呼び出し
         ColorTeamingTeamscoreChangeEvent event =
                 new ColorTeamingTeamscoreChangeEvent(tns, pointBefore, point);
-        Bukkit.getPluginManager().callEvent(event);
+        Utility.callEventSync(event);
 
         writeDebugLog("setTeamPoint end. : " + (System.currentTimeMillis() - start));
     }
@@ -804,7 +803,7 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         // イベント呼び出し
         ColorTeamingTeamscoreChangeEvent event =
                 new ColorTeamingTeamscoreChangeEvent(tns, point, point + amount);
-        Bukkit.getPluginManager().callEvent(event);
+        Utility.callEventSync(event);
 
         writeDebugLog("addTeamPoint end. : " + (System.currentTimeMillis() - start));
         return point + amount;

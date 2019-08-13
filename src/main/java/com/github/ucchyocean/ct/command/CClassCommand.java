@@ -21,7 +21,7 @@ import com.github.ucchyocean.ct.ColorTeamingAPI;
 import com.github.ucchyocean.ct.Utility;
 import com.github.ucchyocean.ct.config.ClassData;
 import com.github.ucchyocean.ct.config.TeamNameSetting;
-import com.github.ucchyocean.ct.item.ItemConfigParser;
+import com.github.ucchyocean.itemconfig.ItemConfigParser;
 
 /**
  * colorclass(cclass)コマンドの実行クラス

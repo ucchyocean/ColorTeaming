@@ -54,9 +54,10 @@ armors:
     enchants:
       PROTECTION_ENVIRONMENTAL: 1
   helmet:
-    material: skull_item
-    data: 3
-    owner: ucchy
+    material: LEATHER_HELMET
+    red: 0
+    blue: 0
+    green: 0
 
 # 体力の最大値です。ハート1個分は2を指定してください。
 # 通常どおりハート10個分にするには、20を指定してください。

@@ -9,19 +9,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.scoreboard.Team;
-import org.bukkit.util.Vector;
 
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.ColorTeamingAPI;
@@ -122,7 +117,7 @@ public class PlayerDeathListener implements Listener {
                     // チームリーダー全滅イベントのコール
                     ColorTeamingLeaderDefeatedEvent event2 =
                             new ColorTeamingLeaderDefeatedEvent(tnsDeader, killerName, deader.getName());
-                    Bukkit.getServer().getPluginManager().callEvent(event2);
+                    Utility.callEventSync(event);
 
                     // リーダーが残っているチームがあと1チームなら、勝利イベントを更にコール
                     if ( leaders.size() == 1 ) {
@@ -132,7 +127,7 @@ public class PlayerDeathListener implements Listener {
                         }
                         ColorTeamingWonLeaderEvent event3 =
                                 new ColorTeamingWonLeaderEvent(wonTeam, event2);
-                        Bukkit.getServer().getPluginManager().callEvent(event3);
+                        Utility.callEventSync(event);
                     }
                 }
             }
@@ -178,7 +173,7 @@ public class PlayerDeathListener implements Listener {
                         Team killerTeam = api.getPlayerTeam(killer);
                         ColorTeamingTrophyKillReachEvent event2 =
                                 new ColorTeamingTrophyKillReachEvent(killerTeam, killer);
-                        Bukkit.getServer().getPluginManager().callEvent(event2);
+                        Utility.callEventSync(event2);
                     }
                 }
 
@@ -200,7 +195,7 @@ public class PlayerDeathListener implements Listener {
                         Team killerTeam = api.getPlayerTeam(killer);
                         ColorTeamingTrophyKillEvent event2 =
                                 new ColorTeamingTrophyKillEvent(killerTeam, killer);
-                        Bukkit.getServer().getPluginManager().callEvent(event2);
+                        Utility.callEventSync(event2);
                     }
                 }
             }
@@ -238,7 +233,7 @@ public class PlayerDeathListener implements Listener {
                 // チームがなくなっていたなら、チーム全滅イベントをコール
                 ColorTeamingTeamDefeatedEvent event2 =
                         new ColorTeamingTeamDefeatedEvent(tnsDeader, killerName, deader.getName());
-                Bukkit.getServer().getPluginManager().callEvent(event2);
+                Utility.callEventSync(event2);
 
                 // 残っているチームがあと1チームなら、勝利イベントを更にコール
                 ArrayList<TeamNameSetting> teamNames = api.getAllTeamNames();
@@ -249,7 +244,7 @@ public class PlayerDeathListener implements Listener {
                     }
                     ColorTeamingWonTeamEvent event3 =
                             new ColorTeamingWonTeamEvent(wonTeam, event2);
-                    Bukkit.getServer().getPluginManager().callEvent(event3);
+                    Utility.callEventSync(event3);
                 }
 
                 // チーム残り人数を更新する
@@ -257,6 +252,7 @@ public class PlayerDeathListener implements Listener {
             }
 
             // ゲームオーバー画面をスキップする
+            /*
             if ( config.isSkipGameover() ) {
 
                 plugin.getAPI().writeDebugLog("onPlayerDeath skip gameover.");
@@ -277,7 +273,7 @@ public class PlayerDeathListener implements Listener {
                 }
                 PlayerRespawnEvent respawnEvent =
                         new PlayerRespawnEvent(deader, respawnLocation, true);
-                Bukkit.getServer().getPluginManager().callEvent(respawnEvent);
+                Utility.callEventSync(respawnEvent);
 
                 respawnLocation = respawnEvent.getRespawnLocation();
                 if ( respawnLocation != null ) {
@@ -292,6 +288,7 @@ public class PlayerDeathListener implements Listener {
                     deader.teleport(respawnLocation, TeleportCause.PLUGIN);
                 }
             }
+            */
         }
 
         plugin.getAPI().writeDebugLog("onPlayerDeath end. : " + (System.currentTimeMillis() - start));

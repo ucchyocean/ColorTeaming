@@ -5,13 +5,12 @@
  */
 package com.github.ucchyocean.ct.bridge;
 
-import net.milkbowl.vault.Vault;
-import net.milkbowl.vault.chat.Chat;
-
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
+
+import net.milkbowl.vault.chat.Chat;
 
 /**
  * Vault-Chat連携クラス
@@ -33,16 +32,14 @@ public class VaultChatBridge {
      */
     public static VaultChatBridge load(Plugin plugin) {
 
-        if ( plugin instanceof Vault ) {
-            RegisteredServiceProvider<Chat> chatProvider =
-                    Bukkit.getServicesManager().getRegistration(Chat.class);
-            if ( chatProvider != null ) {
-                VaultChatBridge bridge = new VaultChatBridge();
-                bridge.chatPlugin = chatProvider.getProvider();
-                return bridge;
-            }
+        if ( plugin == null ) return null;
+        RegisteredServiceProvider<Chat> chatProvider =
+                Bukkit.getServicesManager().getRegistration(Chat.class);
+        if ( chatProvider != null ) {
+            VaultChatBridge bridge = new VaultChatBridge();
+            bridge.chatPlugin = chatProvider.getProvider();
+            return bridge;
         }
-
         return null;
     }
 

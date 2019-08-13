@@ -26,8 +26,8 @@ import org.bukkit.potion.PotionEffectType;
 
 import com.github.ucchyocean.ct.ColorTeaming;
 import com.github.ucchyocean.ct.Utility;
-import com.github.ucchyocean.ct.item.ItemConfigParseException;
-import com.github.ucchyocean.ct.item.ItemConfigParser;
+import com.github.ucchyocean.itemconfig.ItemConfigParseException;
+import com.github.ucchyocean.itemconfig.ItemConfigParser;
 
 /**
  * クラスデータ
