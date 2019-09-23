@@ -231,20 +231,23 @@ public class PlayerDeathListener implements Listener {
                 api.leavePlayerTeam(deader, Reason.DEAD);
 
                 // チームがなくなっていたなら、チーム全滅イベントをコール
-                ColorTeamingTeamDefeatedEvent event2 =
-                        new ColorTeamingTeamDefeatedEvent(tnsDeader, killerName, deader.getName());
-                Utility.callEventSync(event2);
+                if ( api.getTeamMembers(tnsDeader.getID()) == null
+                        || api.getTeamMembers(tnsDeader.getID()).size() == 0 ) {
+                    ColorTeamingTeamDefeatedEvent event2 =
+                            new ColorTeamingTeamDefeatedEvent(tnsDeader, killerName, deader.getName());
+                    Utility.callEventSync(event2);
 
-                // 残っているチームがあと1チームなら、勝利イベントを更にコール
-                ArrayList<TeamNameSetting> teamNames = api.getAllTeamNames();
-                if ( teamNames.size() == 1 ) {
-                    TeamNameSetting wonTeam = null;
-                    for ( TeamNameSetting t : teamNames ) {
-                        wonTeam = t;
+                    // 残っているチームがあと1チームなら、勝利イベントを更にコール
+                    ArrayList<TeamNameSetting> teamNames = api.getRemainTeamNames();
+                    if ( teamNames.size() == 1 ) {
+                        TeamNameSetting wonTeam = null;
+                        for ( TeamNameSetting t : teamNames ) {
+                            wonTeam = t;
+                        }
+                        ColorTeamingWonTeamEvent event3 =
+                                new ColorTeamingWonTeamEvent(wonTeam, event2);
+                        Utility.callEventSync(event3);
                     }
-                    ColorTeamingWonTeamEvent event3 =
-                            new ColorTeamingWonTeamEvent(wonTeam, event2);
-                    Utility.callEventSync(event3);
                 }
 
                 // チーム残り人数を更新する

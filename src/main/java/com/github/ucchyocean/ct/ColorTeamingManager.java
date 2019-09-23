@@ -275,7 +275,9 @@ public class ColorTeamingManager implements ColorTeamingAPI {
             plugin.removeAllMemberPermission(player);
 
             // チーム削除により呼び出されたのでなければ、メンバー0人でチーム削除する
-            if ( reason != Reason.TEAM_REMOVED && getPlayersInternal(team).size() == 0 ) {
+            if ( reason != Reason.TEAM_REMOVED &&
+                    config.isRemoveTeamOnZeroMember() &&
+                    getPlayersInternal(team).size() == 0 ) {
                 removeTeam(team.getName());
             }
         }
@@ -468,6 +470,28 @@ public class ColorTeamingManager implements ColorTeamingAPI {
         }
 
         writeDebugLog("getAllTeamNames end. : " + (System.currentTimeMillis() - start));
+        return result;
+    }
+
+    /**
+     * メンバーが1人以上いるチーム名を取得する
+     * @return 残ってるチームのチーム名
+     */
+    public ArrayList<TeamNameSetting> getRemainTeamNames() {
+
+        writeDebugLog("getRemainTeamNames start. ");
+        long start = System.currentTimeMillis();
+
+        ArrayList<TeamNameSetting> result = new ArrayList<TeamNameSetting>();
+
+        for ( TeamNameSetting tns : teamNameConfig.getTeamNames() ) {
+            Team team = scoreboard.getTeam(tns.getID());
+            if ( team != null && team.getSize() > 0 ) {
+                result.add(tns);
+            }
+        }
+
+        writeDebugLog("getRemainTeamNames end. : " + (System.currentTimeMillis() - start));
         return result;
     }
 

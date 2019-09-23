@@ -181,20 +181,23 @@ public class PlayerJoinQuitListener implements Listener {
         api.leavePlayerTeam(player, Reason.DEAD);
 
         // チームがなくなっていたなら、チーム全滅イベントをコール
-        ColorTeamingTeamDefeatedEvent event2 =
-                new ColorTeamingTeamDefeatedEvent(tns, null, player.getName());
-        Utility.callEventSync(event2);
+        if ( api.getTeamMembers(tns.getID()) == null
+                || api.getTeamMembers(tns.getID()).size() == 0 ) {
+            ColorTeamingTeamDefeatedEvent event2 =
+                    new ColorTeamingTeamDefeatedEvent(tns, null, player.getName());
+            Utility.callEventSync(event2);
 
-        // 残っているチームがあと1チームなら、勝利イベントを更にコール
-        ArrayList<TeamNameSetting> teamNames = api.getAllTeamNames();
-        if ( teamNames.size() == 1 ) {
-            TeamNameSetting wonTeam = null;
-            for ( TeamNameSetting t : teamNames ) {
-                wonTeam = t;
+            // 残っているチームがあと1チームなら、勝利イベントを更にコール
+            ArrayList<TeamNameSetting> teamNames = api.getRemainTeamNames();
+            if ( teamNames.size() == 1 ) {
+                TeamNameSetting wonTeam = null;
+                for ( TeamNameSetting t : teamNames ) {
+                    wonTeam = t;
+                }
+                ColorTeamingWonTeamEvent event3 =
+                        new ColorTeamingWonTeamEvent(wonTeam, event2);
+                Utility.callEventSync(event3);
             }
-            ColorTeamingWonTeamEvent event3 =
-                    new ColorTeamingWonTeamEvent(wonTeam, event2);
-            Utility.callEventSync(event3);
         }
     }
 }

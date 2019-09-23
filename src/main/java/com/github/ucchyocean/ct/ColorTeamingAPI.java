@@ -132,6 +132,12 @@ public interface ColorTeamingAPI {
     public ArrayList<TeamNameSetting> getAllTeamNames();
 
     /**
+     * メンバーが1人以上いるチーム名を取得する
+     * @return 残ってるチームのチーム名
+     */
+    public ArrayList<TeamNameSetting> getRemainTeamNames();
+
+    /**
      * メッセージをチームチャットに送信する。
      * @param player 送信元プレイヤー
      * @param message 送信するメッセージ

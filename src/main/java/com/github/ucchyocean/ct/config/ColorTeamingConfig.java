@@ -74,6 +74,9 @@ public class ColorTeamingConfig {
     /** 死亡時の体力最大値のリセット オンオフ */
     private boolean resetMaxHealthOnDeath;
 
+    /** チームメンバーが0人になったときにチームを削除するかどうか */
+    private boolean removeTeamOnZeroMember;
+
     /** /cjoin (group) を一般ユーザーに使用させるかどうか */
     private boolean allowPlayerJoinAny;
 
@@ -188,6 +191,7 @@ public class ColorTeamingConfig {
         ctconfig.colorRemoveOnChangeWorld = config.getBoolean("colorRemoveOnChangeWorld", false);
         ctconfig.noDamageSeconds = config.getInt("noDamageSeconds", 5);
         ctconfig.resetMaxHealthOnDeath = config.getBoolean("resetMaxHealthOnDeath", true);
+        ctconfig.removeTeamOnZeroMember = config.getBoolean("removeTeamOnZeroMember", true);
 
         ctconfig.allowPlayerJoinAny = config.getBoolean("allowPlayerJoinAny", false);
         ctconfig.allowPlayerJoinRandom = config.getBoolean("allowPlayerJoinRandom", true);
@@ -360,6 +364,9 @@ public class ColorTeamingConfig {
         return resetMaxHealthOnDeath;
     }
 
+    public boolean isRemoveTeamOnZeroMember() {
+        return removeTeamOnZeroMember;
+    }
     public boolean isAllowPlayerJoinAny() {
         return allowPlayerJoinAny;
     }
@@ -478,6 +485,10 @@ public class ColorTeamingConfig {
 
     public void setResetMaxHealthOnDeath(boolean resetMaxHealthOnDeath) {
         this.resetMaxHealthOnDeath = resetMaxHealthOnDeath;
+    }
+
+    public void setRemoveTeamOnZeroMember(boolean removeTeamOnZeroMember) {
+        this.removeTeamOnZeroMember = removeTeamOnZeroMember;
     }
 
     public void setAllowPlayerJoinAny(boolean allowPlayerJoinAny) {
