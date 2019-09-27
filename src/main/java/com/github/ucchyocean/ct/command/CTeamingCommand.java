@@ -55,6 +55,10 @@ public class CTeamingCommand implements TabExecutor {
 
             return doReload(sender, command, label, args);
 
+        } else if ( args.length >= 2 && args[0].equalsIgnoreCase("create") ) {
+
+            return doCreate(sender, command, label, args);
+
         } else if ( args[0].equalsIgnoreCase("removeall") ) {
 
             return doRemoveAll(sender, command, label, args);
@@ -125,6 +129,41 @@ public class CTeamingCommand implements TabExecutor {
     }
 
     /**
+     * チーム作成コマンドの実行
+     * @param sender
+     * @param command
+     * @param label
+     * @param args
+     * @return
+     */
+    private boolean doCreate(
+            CommandSender sender, Command command, String label, String[] args) {
+
+        ColorTeamingAPI api = plugin.getAPI();
+
+        String id = args[1];
+        TeamNameSetting tns = api.getTeamNameFromID(id);
+        if (tns == null) {
+            sender.sendMessage(PREERR + "指定されたチーム " + id + " が設定に見つかりません。");
+            return true;
+        }
+        if (api.isExistTeam(id)) {
+            sender.sendMessage(PREERR + "指定されたチーム " + id + " はすでに存在します。");
+            return true;
+        }
+
+        // チーム作成
+        Team team = api.createTeam(id);
+        if (team == null) { // イベントによる実行キャンセル
+            return true;
+        }
+
+        sender.sendMessage(PREINFO + "チーム " + id + " を作成しました。");
+
+        return true;
+    }
+
+    /**
      * 全チーム解散コマンドの実行
      * @param sender
      * @param command
@@ -169,7 +208,7 @@ public class CTeamingCommand implements TabExecutor {
             CommandSender sender, Command command, String label, String[] args) {
 
         if ( args[1].equalsIgnoreCase("all") ) {
-            doRemoveAll(sender, command, label, args);
+            return doRemoveAll(sender, command, label, args);
         }
 
         ColorTeamingAPI api = plugin.getAPI();
@@ -610,7 +649,7 @@ public class CTeamingCommand implements TabExecutor {
 
             String prefix = args[0].toLowerCase();
             ArrayList<String> commands = new ArrayList<String>();
-            for ( String c : new String[]{"reload", "removeall", "remove", "trophy",
+            for ( String c : new String[]{"reload", "create", "removeall", "remove", "trophy",
                     "reachTrophy", "allowJoinAny", "allowJoinRandom", "allowLeave",
                     "add", "side", "list", "below", "leave"} ) {
                 if ( c.startsWith(prefix) ) {
@@ -629,6 +668,18 @@ public class CTeamingCommand implements TabExecutor {
             for ( String c : new String[]{"on", "off"} ) {
                 if ( c.startsWith(prefix) ) {
                     commands.add(c);
+                }
+            }
+            return commands;
+
+        } else if ( args.length == 2 && args[0].equalsIgnoreCase("create") ) {
+
+            String prefix = args[1].toLowerCase();
+            ArrayList<String> commands = new ArrayList<String>();
+            for ( TeamNameSetting tns : plugin.getAPI().getTeamNameConfig().getTeamNames() ) {
+                String name = tns.getID();
+                if ( name.toLowerCase().startsWith(prefix) ) {
+                    commands.add(name);
                 }
             }
             return commands;
