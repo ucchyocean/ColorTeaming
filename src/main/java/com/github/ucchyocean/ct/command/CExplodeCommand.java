@@ -71,7 +71,7 @@ public class CExplodeCommand implements TabExecutor {
 
         for ( Player p : playersToExplode ) {
             p.getWorld().createExplosion(p.getLocation(), 0); // 爆発エフェクト発生
-            p.damage(p.getMaxHealth());
+            p.damage(999);
             p.sendMessage("どーーん！");
         }
 

@@ -116,8 +116,7 @@ public class ObjectiveManager {
             objective = null;
         }
         if ( objective == null ) {
-            objective = scoreboard.registerNewObjective(name, criteria);
-            objective.setDisplayName(displayName);
+            objective = scoreboard.registerNewObjective(name, criteria, displayName);
 
             // 初期化が必要な項目は、ここで初期化を行う
             if ( name.equals(OBJECTIVE_TEAM_REST) ) {
@@ -173,24 +172,10 @@ public class ObjectiveManager {
     }
 
     private static Score getScore(Objective objective, Player player) {
-
-        if ( Utility.isCB178orLater() ) {
-            return objective.getScore(player.getName());
-        } else {
-            @SuppressWarnings("deprecation")
-            Score score = objective.getScore(player);
-            return score;
-        }
+        return objective.getScore(player.getName());
     }
 
     private static Score getScore(Objective objective, TeamNameSetting tns) {
-
-        if ( Utility.isCB178orLater() ) {
-            return objective.getScore(tns.toString());
-        } else {
-            @SuppressWarnings("deprecation")
-            Score score = objective.getScore(tns.getScoreItem());
-            return score;
-        }
+        return objective.getScore(tns.toString());
     }
 }

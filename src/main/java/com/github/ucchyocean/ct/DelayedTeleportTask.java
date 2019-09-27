@@ -54,20 +54,20 @@ public class DelayedTeleportTask extends BukkitRunnable {
         if ( players.isEmpty() ) {
 
             // プレイヤー表示パケットを送信する (see issue #78)
-            int packetDelay =
-                    ColorTeaming.instance.getCTConfig().getTeleportVisiblePacketSendDelay();
-            if ( packetDelay > 0 ) {
-                new BukkitRunnable() {
-                    public void run() {
-                        for ( Player playerA : locationMap.keySet() ) {
-                            for ( Player playerB : locationMap.keySet() ) {
-                                playerA.hidePlayer(playerB);
-                                playerA.showPlayer(playerB);
-                            }
-                        }
-                    }
-                }.runTaskLater(ColorTeaming.instance, packetDelay);
-            }
+//            int packetDelay =
+//                    ColorTeaming.instance.getCTConfig().getTeleportVisiblePacketSendDelay();
+//            if ( packetDelay > 0 ) {
+//                new BukkitRunnable() {
+//                    public void run() {
+//                        for ( Player playerA : locationMap.keySet() ) {
+//                            for ( Player playerB : locationMap.keySet() ) {
+//                                playerA.hidePlayer(playerB);
+//                                playerA.showPlayer(playerB);
+//                            }
+//                        }
+//                    }
+//                }.runTaskLater(ColorTeaming.instance, packetDelay);
+//            }
 
             // 自己キャンセル
             cancel();

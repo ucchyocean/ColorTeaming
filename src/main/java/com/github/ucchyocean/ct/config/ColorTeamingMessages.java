@@ -130,7 +130,7 @@ public class ColorTeamingMessages {
         // コンフィグフォルダにメッセージファイルがまだ無いなら、コピーしておく
         File file = new File(configFolder, "messages.yml");
         if ( !file.exists() ) {
-            Utility.copyFileFromJar(jar, file, "messages.yml", true);
+            Utility.copyFileFromJar(jar, file, "messages.yml");
         }
 
         // デフォルトメッセージを、jarファイル内からロードする

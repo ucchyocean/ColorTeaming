@@ -15,6 +15,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -472,15 +474,12 @@ public class ClassData {
                 player.getInventory().setHelmet(armors.get("helmet"));
             }
 
-            if ( Utility.isCB19orLater() ) {
+            // オフハンドの消去
+            player.getInventory().setItemInOffHand(new ItemStack(Material.AIR));
 
-                // オフハンドの消去
-                player.getInventory().setItemInOffHand(new ItemStack(Material.AIR));
-
-                // オフハンドの配布
-                if (armors.containsKey("offhand")) {
-                    player.getInventory().setItemInOffHand(armors.get("offhand"));
-                }
+            // オフハンドの配布
+            if (armors.containsKey("offhand")) {
+                player.getInventory().setItemInOffHand(armors.get("offhand"));
             }
 
             needToUpdateInventory = true;
@@ -493,7 +492,8 @@ public class ClassData {
 
         // 体力最大値の設定
         if ( health != -1 ) {
-            player.setMaxHealth(health);
+            //player.setMaxHealth(health);
+            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(health);
             if ( doHeal ) {
                 player.setHealth(health);
             }
@@ -579,10 +579,8 @@ public class ClassData {
         }
 
         int armorCount = countItem(inv.getArmorContents());
-        if ( Utility.isCB19orLater() ) {
-            if ( inv.getItemInOffHand() != null && inv.getItemInOffHand().getType() != Material.AIR ) {
-                armorCount++;
-            }
+        if ( inv.getItemInOffHand() != null && inv.getItemInOffHand().getType() != Material.AIR ) {
+            armorCount++;
         }
 
         if ( armorCount > 0 ) {
@@ -599,12 +597,10 @@ public class ClassData {
                 }
             }
 
-            if ( Utility.isCB19orLater() ) {
-                ItemStack item = inv.getItemInOffHand();
-                if ( item != null && item.getType() != Material.AIR ) {
-                    ConfigurationSection itemsec = sub.createSection("offhand");
-                    ItemConfigParser.setItemToSection(itemsec, item);
-                }
+            ItemStack item = inv.getItemInOffHand();
+            if ( item != null && item.getType() != Material.AIR ) {
+                ConfigurationSection itemsec = sub.createSection("offhand");
+                ItemConfigParser.setItemToSection(itemsec, item);
             }
 
         } else if ( isOverwrite ) {
@@ -612,8 +608,11 @@ public class ClassData {
 
         }
 
-        if ( player.getMaxHealth() != 20.0 ) {
-            config.set("health", player.getMaxHealth());
+        AttributeInstance attr = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+        double maxHealth = attr.getValue();
+        double defaultHealth = attr.getDefaultValue();
+        if ( maxHealth != defaultHealth ) {
+            config.set("health", maxHealth);
         }
 
         if ( !player.getActivePotionEffects().isEmpty() ) {

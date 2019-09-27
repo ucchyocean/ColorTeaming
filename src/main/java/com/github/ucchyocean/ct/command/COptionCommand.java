@@ -14,7 +14,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 
 import com.github.ucchyocean.ct.ColorTeaming;
-import com.github.ucchyocean.ct.Utility;
 import com.github.ucchyocean.ct.config.TeamOptionStatusEnum;
 
 /**
@@ -23,7 +22,6 @@ import com.github.ucchyocean.ct.config.TeamOptionStatusEnum;
  */
 public class COptionCommand implements TabExecutor {
 
-    private static final String PREERR = ChatColor.RED.toString();
     private static final String PREINFO = ChatColor.GRAY.toString();
 
     private ColorTeaming plugin;
@@ -41,11 +39,6 @@ public class COptionCommand implements TabExecutor {
 
         if ( args.length <= 1 ) {
             return false;
-        }
-
-        if ( !Utility.isCB19orLater() ) {
-            sender.sendMessage(PREERR + "このコマンドは、Bukkit 1.8.x 以前のバージョンでは使えません。");
-            return true;
         }
 
         TeamOptionStatusEnum status = getSwitchFromString(args[1]);

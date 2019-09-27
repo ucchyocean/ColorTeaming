@@ -93,11 +93,18 @@ public interface ColorTeamingAPI {
     public void setSeeFriendlyInvisibles(boolean fi);
 
     /**
+     * 指定したチーム名のチームを作成する
+     * @param id チームID
+     * @return 作成したチーム（イベントでキャンセルされた場合はnullになる）
+     */
+    public Team createTeam(String id);
+
+    /**
      * 指定したチーム名のチームを削除する
-     * @param name チームID
+     * @param id チームID
      * @return 削除したかどうか（イベントでキャンセルされた場合はfalseになる）
      */
-    public boolean removeTeam(String name);
+    public boolean removeTeam(String id);
 
     /**
      * 全てのチームを削除する

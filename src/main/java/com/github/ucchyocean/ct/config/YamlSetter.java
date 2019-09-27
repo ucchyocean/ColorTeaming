@@ -10,15 +10,11 @@ import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-
-import com.github.ucchyocean.ct.Utility;
 
 /**
  * コメントを壊さずに、Yamlに情報を設定するためのユーティリティクラス
@@ -44,12 +40,8 @@ public class YamlSetter {
 
         BufferedReader reader = null;
         try {
-            if ( Utility.isCB19orLater() ) {
-                reader = new BufferedReader(new InputStreamReader(
-                        new FileInputStream(filename),"UTF-8"));
-            } else {
-                reader = new BufferedReader(new FileReader(filename));
-            }
+            reader = new BufferedReader(new InputStreamReader(
+                    new FileInputStream(filename),"UTF-8"));
             contents = new ArrayList<String>();
             while (reader.ready()) {
                 contents.add(reader.readLine());
@@ -146,12 +138,8 @@ public class YamlSetter {
 
         BufferedWriter writer = null;
         try {
-            if ( Utility.isCB19orLater() ) {
-                writer = new BufferedWriter(new OutputStreamWriter(
-                        new FileOutputStream(filename),"UTF-8"));
-            } else {
-                writer = new BufferedWriter(new FileWriter(filename));
-            }
+            writer = new BufferedWriter(new OutputStreamWriter(
+                    new FileOutputStream(filename),"UTF-8"));
             for ( String line : contents ) {
                 writer.write(line);
                 writer.newLine();

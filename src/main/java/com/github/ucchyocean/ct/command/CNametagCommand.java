@@ -14,7 +14,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 
 import com.github.ucchyocean.ct.ColorTeaming;
-import com.github.ucchyocean.ct.Utility;
 import com.github.ucchyocean.ct.config.NametagVisibilityEnum;
 
 /**
@@ -23,7 +22,6 @@ import com.github.ucchyocean.ct.config.NametagVisibilityEnum;
  */
 public class CNametagCommand implements TabExecutor {
 
-    private static final String PREERR = ChatColor.RED.toString();
     private static final String PREINFO = ChatColor.GRAY.toString();
 
     private ColorTeaming plugin;
@@ -41,11 +39,6 @@ public class CNametagCommand implements TabExecutor {
 
         if ( args.length <= 0 ) {
             return false;
-        }
-
-        if ( !Utility.isCB18orLater() ) {
-            sender.sendMessage(PREERR + "このコマンドは、Bukkit 1.7.x 以前のバージョンでは使えません。");
-            return true;
         }
 
         if ( args[0].equalsIgnoreCase("on") || args[0].equalsIgnoreCase("always") ) {

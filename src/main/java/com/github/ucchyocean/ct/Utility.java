@@ -14,9 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -25,6 +23,7 @@ import java.util.zip.ZipEntry;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
@@ -37,26 +36,13 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class Utility {
 
     /**
-     * jarファイルの中に格納されているテキストファイルを、jarファイルの外にコピーするメソッド<br/>
-     * WindowsだとS-JISで、MacintoshやLinuxだとUTF-8で保存されます。
+     * jarファイルの中に格納されているテキストファイルを、jarファイルの外にコピーするメソッド
      * @param jarFile jarファイル
      * @param targetFile コピー先
      * @param sourceFilePath コピー元
      */
     public static void copyFileFromJar(
             File jarFile, File targetFile, String sourceFilePath) {
-        copyFileFromJar(jarFile, targetFile, sourceFilePath, false);
-    }
-
-    /**
-     * jarファイルの中に格納されているテキストファイルを、jarファイルの外にコピーするメソッド
-     * @param jarFile jarファイル
-     * @param targetFile コピー先
-     * @param sourceFilePath コピー元
-     * @param forceUTF8 強制的にUTF8で書き出すかどうか
-     */
-    public static void copyFileFromJar(
-            File jarFile, File targetFile, String sourceFilePath, boolean forceUTF8) {
 
         JarFile jar = null;
         InputStream is = null;
@@ -79,11 +65,7 @@ public class Utility {
             reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
 
             // CB190以降は、書き出すファイルエンコードにUTF-8を強制する。
-            if ( forceUTF8 || isCB19orLater() ) {
-                writer = new BufferedWriter(new OutputStreamWriter(fos, "UTF-8"));
-            } else {
-                writer = new BufferedWriter(new OutputStreamWriter(fos));
-            }
+            writer = new BufferedWriter(new OutputStreamWriter(fos, "UTF-8"));
 
             String line;
             while ((line = reader.readLine()) != null) {
@@ -178,11 +160,7 @@ public class Utility {
                         fos = new FileOutputStream(targetFile);
 
                         // CB190以降は、書き出すファイルエンコードにUTF-8を強制する。
-                        if ( isCB19orLater() ) {
-                            writer = new BufferedWriter(new OutputStreamWriter(fos, "UTF-8"));
-                        } else {
-                            writer = new BufferedWriter(new OutputStreamWriter(fos));
-                        }
+                        writer = new BufferedWriter(new OutputStreamWriter(fos, "UTF-8"));
 
                         String line;
                         while ((line = reader.readLine()) != null) {
@@ -344,6 +322,16 @@ public class Utility {
     }
 
     /**
+     * プレイヤーの最大体力値をデフォルト値に戻す
+     * @param player 対象プレイヤー
+     */
+    public static void resetPlayerMaxHealth(final Player player) {
+        AttributeInstance attr = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+        double value = attr.getDefaultValue();
+        attr.setBaseValue(value);
+    }
+
+    /**
      * 経験値表示を更新する
      * @param player 更新対象のプレイヤー
      */
@@ -370,58 +358,6 @@ public class Utility {
         return Bukkit.getPlayerExact(name);
     }
 
-    private static Boolean isCB178orLaterCache;
-
-    /**
-     * 現在動作中のCraftBukkitが、v1.7.8 以上かどうかを確認する
-     * @return v1.7.8以上ならtrue、そうでないならfalse
-     */
-    public static boolean isCB178orLater() {
-        if ( isCB178orLaterCache == null ) {
-            isCB178orLaterCache = isUpperVersion(Bukkit.getBukkitVersion(), "1.7.8");
-        }
-        return isCB178orLaterCache;
-    }
-
-    private static Boolean isCB18orLaterCache;
-
-    /**
-     * 現在動作中のCraftBukkitが、v1.8 以上かどうかを確認する
-     * @return v1.8以上ならtrue、そうでないならfalse
-     */
-    public static boolean isCB18orLater() {
-        if ( isCB18orLaterCache == null ) {
-            isCB18orLaterCache = isUpperVersion(Bukkit.getBukkitVersion(), "1.8");
-        }
-        return isCB18orLaterCache;
-    }
-
-    private static Boolean isCB186orLaterCache;
-
-    /**
-     * 現在動作中のCraftBukkitが、v1.8 以上かどうかを確認する
-     * @return v1.8以上ならtrue、そうでないならfalse
-     */
-    public static boolean isCB186orLater() {
-        if ( isCB186orLaterCache == null ) {
-            isCB186orLaterCache = isUpperVersion(Bukkit.getBukkitVersion(), "1.8.6");
-        }
-        return isCB186orLaterCache;
-    }
-
-    private static Boolean isCB19orLaterCache;
-
-    /**
-     * 現在動作中のCraftBukkitが、v1.9 以上かどうかを確認する
-     * @return v1.9以上ならtrue、そうでないならfalse
-     */
-    public static boolean isCB19orLater() {
-        if ( isCB19orLaterCache == null ) {
-            isCB19orLaterCache = isUpperVersion(Bukkit.getBukkitVersion(), "1.9");
-        }
-        return isCB19orLaterCache;
-    }
-
     /**
      * 指定されたバージョンが、基準より新しいバージョンかどうかを確認する
      * @param version 確認するバージョン
@@ -430,6 +366,7 @@ public class Utility {
      * ただし、無効なバージョン番号（数値でないなど）が指定された場合はfalseに、
      * 2つのバージョンが完全一致した場合はtrueになる。
      */
+    @SuppressWarnings("unused")
     private static boolean isUpperVersion(String version, String border) {
 
         int hyphen = version.indexOf("-");
@@ -473,43 +410,18 @@ public class Utility {
      * 現在接続中のプレイヤーを全て取得する
      * @return 接続中の全てのプレイヤー
      */
-    @SuppressWarnings("unchecked")
     public static ArrayList<Player> getOnlinePlayers() {
-        // CB179以前と、CB1710以降で戻り値が異なるため、
-        // リフレクションを使って互換性を（無理やり）保つ。
-        try {
-            if (Bukkit.class.getMethod("getOnlinePlayers", new Class<?>[0]).getReturnType() == Collection.class) {
-                Collection<?> temp = ((Collection<?>)Bukkit.class.getMethod("getOnlinePlayers", new Class<?>[0]).invoke(null, new Object[0]));
-                return new ArrayList<Player>((Collection<? extends Player>)temp);
-            } else {
-                Player[] temp = ((Player[])Bukkit.class.getMethod("getOnlinePlayers", new Class<?>[0]).invoke(null, new Object[0]));
-                ArrayList<Player> players = new ArrayList<Player>();
-                for ( Player t : temp ) {
-                    players.add(t);
-                }
-                return players;
-            }
-        }
-        catch (NoSuchMethodException ex){} // never happen
-        catch (InvocationTargetException ex){} // never happen
-        catch (IllegalAccessException ex){} // never happen
-        return new ArrayList<Player>();
+        return new ArrayList<Player>(Bukkit.getOnlinePlayers());
     }
 
     /**
      * 指定したプレイヤーが手に持っているアイテムを返します。
-     * CB1.9以降と、CB1.8.8以前で、互換性を保つために使用します。
      * @param player プレイヤー
      * @return 手に持っているアイテム
      */
-    @SuppressWarnings("deprecation")
     public static ItemStack getItemInHand(Player player) {
         if ( player == null ) return null;
-        if ( isCB19orLater() ) {
-            return player.getInventory().getItemInMainHand();
-        } else {
-            return player.getItemInHand();
-        }
+        return player.getInventory().getItemInMainHand();
     }
 
     /**

@@ -66,9 +66,9 @@ public class PlayerDeathListener implements Listener {
         if ( tnsDeader != null ) {
             String teamDeader = tnsDeader.getID();
 
-            // チーム所属で死亡したプレイヤーは、ここで体力最大値を20に戻す
+            // チーム所属で死亡したプレイヤーは、ここで体力最大値をデフォルトに戻す
             if ( config.isResetMaxHealthOnDeath() ) {
-                deader.setMaxHealth(20);
+                Utility.resetPlayerMaxHealth(deader);
             }
 
             // 倒したプレイヤーを取得
@@ -127,7 +127,7 @@ public class PlayerDeathListener implements Listener {
                         }
                         ColorTeamingWonLeaderEvent event3 =
                                 new ColorTeamingWonLeaderEvent(wonTeam, event2);
-                        Utility.callEventSync(event);
+                        Utility.callEventSync(event3);
                     }
                 }
             }
